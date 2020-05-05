@@ -11,8 +11,10 @@ class Bootstrap implements BootstrapInterface
         'rules' => [
             '' => 'equipment/',
             'get-equipments' => 'metrolog/get-equipments',
+            'get-department' => 'metrolog/get-department',
             'get-type' => 'metrolog/get-type',
-            'append' => 'metrolog/append',
+            'get-doc-type' => 'metrolog/get-doc-type',
+            'append' => 'metrolog/append-equipment',
             'equipments' => 'metrolog/equipments',
             'change-check' => 'metrolog/change-check',
             'details/<id:\d+>'=>'metrolog/details',

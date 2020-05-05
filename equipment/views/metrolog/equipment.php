@@ -74,10 +74,6 @@
 					<input type="text" v-model="equipment.title">
 				</div>
 				<div class="field">
-					<label>Функциональное назначение</label>
-					<input type="text" v-model="equipment.purpose_of_use">
-				</div>
-				<div class="field">
 					<label>Модель</label>
 					<input type="text" v-model="equipment.model">
 				</div>
@@ -152,10 +148,6 @@
 					<label>Дата следующей поверки | проверки</label>
 					<input type="date" v-model="check.next">
 				</div>
-				<div class="field">
-					<label>Свидетельство</label>
-					<input type="file">
-				</div>
 			</div>
 		</div>
 		<div class="actions">
@@ -167,19 +159,6 @@
 		<div class="content">
 			<div class="content header">
 			Редактирование
-			</div>
-		</div>
-		<div class="content">
-		</div>
-		<div class="actions">
-			<button class="ui approve green button">Отправить</button>
-			<button class="ui deny orange button">Отмена</button>
-		</div>
-	</div>
-	<div id="modalDetails" class="ui tiny card modal">
-		<div class="content">
-			<div class="content header">
-			Подробная информация
 			</div>
 		</div>
 		<div class="content">
@@ -206,9 +185,9 @@
 							<a class="item">Регистрационная карта</a>
 						</div>
 					</div>
-<!-- 					<button class="ui blue right floated mini icon button" v-on:click="showModal('Print')"><i class="icon print"></i>
+<!-- 					<button class="ui blue right floated mini icon button" v-on:click="showModal('Print')"><i class="icon print"></i>v-on:click="showModal('AppendEq')"
 					</button> -->
-					<button class="ui yellow right floated mini icon button" v-on:click="showModal('AppendEq')"><i class="icon plus"></i></button>
+					<a href="<?php echo Url::toRoute(['append/']) ?>" class="ui yellow right floated mini icon button" ><i class="icon plus"></i></a>
 				</th>
 			</tr>
 			<tr>
