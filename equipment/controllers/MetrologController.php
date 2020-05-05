@@ -8,6 +8,10 @@ use app\modules\equipment\models\view_metrolog_equipment;
 use app\modules\equipment\models\equipment_type;
 use app\modules\equipment\models\equipment_equipment;
 use app\modules\equipment\models\equipment_upload_document_type;
+use app\modules\equipment\models\equipment_equipment_details;
+use app\modules\equipment\models\equipment_date_check;
+use app\modules\equipment\models\UploadForm;
+use yii\web\UploadedFile;
 
 class MetrologController extends Controller
 {
@@ -15,7 +19,7 @@ class MetrologController extends Controller
 
 	public function beforeAction($action)
 	{
-		if ($action->id == 'append-equipment')
+		if ($action->id == 'append-equipment' || $action->id == 'upload-file')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -54,8 +58,8 @@ class MetrologController extends Controller
 
 	public function actionDetails()
 	{
-		//номер номер_отдела вид наименование S/N фиф дата_проверки дата_след_проверки
-		return $this->render('details', ['id' => Yii::$app->request->get('id')]);
+		$eq = equipment_equipment_details::find()->where(['id' => Yii::$app->request->get('id')])->one();
+		return $this->render('details', ['id' => Yii::$app->request->get('id'), 'eq' => $eq]);
 	}
 
 	public function actionGetEquipments()
@@ -130,6 +134,26 @@ class MetrologController extends Controller
 				unset($location);
 			}
 			return $this->asJson($arr);
+		}
+	}
+
+	public function actionUploadFile()
+	{
+		$model = new UploadForm();
+		if(Yii::$app->request->isPost)
+		{
+			$model->File = UploadedFile::getInstanceByName('File');
+			if ($model->upload())
+			{
+				$check = equipment_date_check::uploadFile(Yii::$app->request->post('id_equipment'), $model->File->baseName . '.' . $model->File->extension, Yii::$app->request->post('id_type_upload_files'));
+				if($check)
+				{
+					// $arrivalMaterial = arrival_material::updateFileName(Yii::$app->request->post('id_arrival_material'), $check->id);
+					// if($arrivalMaterial)
+						return Yii::$app->response->statusCode = 200;
+				}
+			}
+			else return Yii::$app->response->statusCode = 400;
 		}
 	}
 }

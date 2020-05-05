@@ -44,7 +44,6 @@ Vue.component('equipment-grid', {
 			return rows.slice(from, to);
 		},
 		showModal(modalName, id = null){
-			this.$emit('request', this.selectedMaterials);
 			this.$emit('equipment', this.id_equipment = id);
 			$('#modal' + modalName).modal('show');
 		},
@@ -63,6 +62,11 @@ Vue.component('equipment-grid', {
 				}
 			}
 		},
+		Details(id_equipment)
+		{
+			// "'details/' + equipment.id" КОСТЫЛЬ
+			document.location.href = '/equipment/details/' + id_equipment;
+		}
 	},
 	watch: {
 		filteredRows() {
@@ -133,29 +137,30 @@ let demo1 = new Vue({
 			date_next_check: []
 		},
 		countPost: 64,
-		equipment: {
-			number: null,
-			id_department: null,
-			id_equipment_type: null,
-			title: null,
-			model: null,
-			serial_number: null,
-			manufacturer: null,
-			date_create: null,
-			inventory_number: null,
-			id_location: null
-		},
+		// equipment: {
+		// 	number: null,
+		// 	id_department: null,
+		// 	id_equipment_type: null,
+		// 	title: null,
+		// 	model: null,
+		// 	serial_number: null,
+		// 	manufacturer: null,
+		// 	date_create: null,
+		// 	inventory_number: null,
+		// 	id_location: null
+		// },
 		check: {
 			id_equipment: null,
 			current: null,
 			next: null,
+			number_document: null,
 			typeUploadFile: null,
 			file: [],
 		},
-		listDepartment: [],
-		listLocations: [],
-		selectedMaterials: [],
-		listType: [],
+		// listDepartment: [],
+		// listLocations: [],
+		// selectedMaterials: [],
+		// listType: [],
 		listDocType: []
 	},
 	methods: {
@@ -200,11 +205,11 @@ let demo1 = new Vue({
 		submitFile(id){
 			let formData = new FormData();
 			formData.append('File', this.check.file[0]);
-			formData.append('id_arrival_material', this.check);
+			formData.append('id_equipment', 1);//this.check.id_equipment);
 			formData.append('id_type_upload_files', this.check.typeUploadFile);
 			axios.post( '/equipment/upload-file', formData, {headers:{'Content-Type': 'multipart/form-data'}
 			}).then(response => (this.getEquipments(), this.check.file[0] = [])).catch(error => (alert('FAILURE')));
-		},
+		}
 	},
 	watch: {
 		gridData(){

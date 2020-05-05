@@ -11,7 +11,6 @@
 			:columns="gridColumns.tableColumn"
 			:filters="filters"
 			:count-post="countPost"
-			@request="selectedMaterials"
 			@equipment="check.id_equipment">
 		</equipment-grid>
 	</div>
@@ -45,67 +44,6 @@
 			</div>
 		</div>
 	</div>
-	<div id="modalAppendEq" class="ui tiny card modal">
-		<div class="content">
-			<div class="content header">
-			Оборудование
-			</div>
-		</div>
-		<div class="content">
-			<div class="ui form">
-				<div class="field">
-					<label>Отдел</label>
-					<select class="ui search dropdown" v-model="equipment.id_department">
-						<option v-for="department in listDepartment" v-bind:value="department.id">{{ department.title }}</option>
-					</select>
-				</div>
-				<div class="field">
-					<label>Вид</label>
-					<select class="ui search dropdown" v-model="equipment.id_equipment_type">
-						<option v-for="type in listType" v-bind:value="type.id">{{ type.title }}</option>
-					</select>
-				</div>
-				<div class="field">
-					<label>Номер</label>
-					<input type="text" v-model="equipment.number">
-				</div>
-				<div class="field">
-					<label>Оборудование</label>
-					<input type="text" v-model="equipment.title">
-				</div>
-				<div class="field">
-					<label>Модель</label>
-					<input type="text" v-model="equipment.model">
-				</div>
-				<div class="field">
-					<label>Серийный номер</label>
-					<input type="text" v-model="equipment.serial_number">
-				</div>
-				<div class="field">
-					<label>Производитель</label>
-					<input type="text" v-model="equipment.manufacturer">
-				</div>
-				<div class="field">
-					<label>Дата изготовления</label>
-					<input type="date" v-model="equipment.date_create">
-				</div>
-				<div class="field">
-					<label>Инвентарный номер</label>
-					<input type="text" v-model="equipment.inventory_number">
-				</div>
-				<div class="field">
-					<label>Местоположение</label>
-					<select class="ui search dropdown" v-model="equipment.id_location">
-						<option v-for="location in listLocations" v-bind:value="location.id">{{ location.cabinet_number }}</option>
-					</select>
-				</div>
-			</div>
-		</div>
-		<div class="actions">
-			<button class="ui approve green button" v-on:click="appendEq()">Добавить</button>
-			<button class="ui deny orange button">Отмена</button>
-		</div>
-	</div>
 	<div id="modalHandoff" class="ui tiny card modal">
 		<div class="content">
 			<div class="content header">
@@ -132,8 +70,12 @@
 					<input type="date" v-model="check.current">
 				</div>
 				<div class="field">
-					<label>Cледующая</label>
+					<label>Cледующая (предстоящая)</label>
 					<input type="date" v-model="check.next">
+				</div>
+				<div class="field">
+					<label>Номер документа</label>
+					<input type="text" v-model="check.number_document">
 				</div>
 				<div class="field">
 					<label>Тип загружамого файла</label>
@@ -147,7 +89,7 @@
 			</div>
 		</div>
 		<div class="actions">
-			<button class="ui approve green button" v-on:click="changeCheck()">Сохранить</button>
+			<button class="ui approve green button" v-on:click="submitFile()">Сохранить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
@@ -164,6 +106,7 @@
 						<div class="menu">
 							<a class="item">Архив</a>
 							<a class="item">Консервация</a>
+							<a class="item">Поверка</a>
 							<a class="item">Ремонт</a>
 						</div>
 					</div>
@@ -204,10 +147,10 @@
 				<td class="collapsing">{{ equipment.date_next_check }}</td>
 				<td class="collapsing">
 					<div class="ui icon left pointing dropdown mini button">
-						<!-- <div class="text">Действие</div> -->
 						<i class="settings icon"></i>
 						<div class="menu">
-							<a v-bind:href="'details/' + equipment.id" target="_blank" class="item">Подробнее</a>
+							<!-- <div class="item" v-on:click="Details('Handoff')">Подробнее</div> -->
+							<a v-bind:href="'details/' + equipment.id" class="item">Подробнее</a>
 							<div class="item" v-on:click="showModal('Handoff')">Перемещение</div>
 							<div class="item" v-on:click="showModal('Check', equipment.id)">Поверка - Проверка</div>
 						</div>
