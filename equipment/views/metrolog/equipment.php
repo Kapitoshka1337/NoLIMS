@@ -106,19 +106,6 @@
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
-	<div id="modalArchive" class="ui tiny card modal">
-		<div class="content">
-			<div class="content header">
-			Архив | Консервация
-			</div>
-		</div>
-		<div class="content">
-		</div>
-		<div class="actions">
-			<button class="ui approve green button">Отправить</button>
-			<button class="ui deny orange button">Отмена</button>
-		</div>
-	</div>
 	<div id="modalHandoff" class="ui tiny card modal">
 		<div class="content">
 			<div class="content header">
@@ -141,30 +128,26 @@
 		<div class="content">
 			<div class="ui form">
 				<div class="field">
-					<label>Дата текущей поверки | проверки</label>
+					<label>Текущая (пройденная)</label>
 					<input type="date" v-model="check.current">
 				</div>
 				<div class="field">
-					<label>Дата следующей поверки | проверки</label>
+					<label>Cледующая</label>
 					<input type="date" v-model="check.next">
+				</div>
+				<div class="field">
+					<label>Тип загружамого файла</label>
+					<select class="ui search dropdown" v-model="check.typeUploadFile">
+						<option v-for="doc in listDocType" v-bind:value="doc.id">{{ doc.title }}</option>
+					</select>
+				</div>
+				<div class="field">
+					<input type="file" ref="file" v-on:change="handleFileUpload()">
 				</div>
 			</div>
 		</div>
 		<div class="actions">
-			<button class="ui approve green button" v-on:click="changeCheck()">Изменить</button>
-			<button class="ui deny orange button">Отмена</button>
-		</div>
-	</div>
-	<div id="modalEdit" class="ui tiny card modal">
-		<div class="content">
-			<div class="content header">
-			Редактирование
-			</div>
-		</div>
-		<div class="content">
-		</div>
-		<div class="actions">
-			<button class="ui approve green button">Отправить</button>
+			<button class="ui approve green button" v-on:click="changeCheck()">Сохранить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
@@ -175,8 +158,15 @@
 			<tr>
 				<th v-bind:colspan="columns.length + 1">
 					Оборудование
-					<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>
-					<button class="ui teal right floated mini icon button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
+					<div class="ui orange right floated icon top left mini pointing dropdown button">
+						<i class="icon tags"></i>
+						<i class="icon dropdown"></i>
+						<div class="menu">
+							<a class="item">Архив</a>
+							<a class="item">Консервация</a>
+							<a class="item">Ремонт</a>
+						</div>
+					</div>
 					<div class="ui blue right floated icon top left mini pointing dropdown button">
 						<i class="icon print"></i>
 						<i class="icon dropdown"></i>
@@ -185,8 +175,8 @@
 							<a class="item">Регистрационная карта</a>
 						</div>
 					</div>
-<!-- 					<button class="ui blue right floated mini icon button" v-on:click="showModal('Print')"><i class="icon print"></i>v-on:click="showModal('AppendEq')"
-					</button> -->
+					<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>
+					<button class="ui teal right floated mini icon button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
 					<a href="<?php echo Url::toRoute(['append/']) ?>" class="ui yellow right floated mini icon button" ><i class="icon plus"></i></a>
 				</th>
 			</tr>
@@ -218,10 +208,8 @@
 						<i class="settings icon"></i>
 						<div class="menu">
 							<a v-bind:href="'details/' + equipment.id" target="_blank" class="item">Подробнее</a>
-							<div class="item" v-on:click="showModal('Archive')">Архив - Консервация</div>
 							<div class="item" v-on:click="showModal('Handoff')">Перемещение</div>
 							<div class="item" v-on:click="showModal('Check', equipment.id)">Поверка - Проверка</div>
-							<div class="item" v-on:click="showModal('Edit')">Редактирование</div>
 						</div>
 					</div>
 				</td>

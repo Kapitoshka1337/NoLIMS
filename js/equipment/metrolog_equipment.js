@@ -63,17 +63,6 @@ Vue.component('equipment-grid', {
 				}
 			}
 		},
-		// colorShelfLife(date){
-		// 	let today = new Date();
-		// 	let shelf_life = new Date(date.split(".").reverse().join("-"));
-		// 	return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
-		// },
-		// showPassport(id){
-		// 	axios.get("/reagent/get-passport?id=" + id).then( response => (window.open(response.data)));
-		// },
-		// moveToArchive(id){
-		// 	axios.get("/reagent/material-to-archive?id=" + id).then( response => (demo1.getStorage()));
-		// },
 	},
 	watch: {
 		filteredRows() {
@@ -159,14 +148,15 @@ let demo1 = new Vue({
 		check: {
 			id_equipment: null,
 			current: null,
-			next: null
+			next: null,
+			typeUploadFile: null,
+			file: [],
 		},
 		listDepartment: [],
 		listLocations: [],
 		selectedMaterials: [],
-		listType: []
-		// file: [],
-		// typeUploadFile: '',
+		listType: [],
+		listDocType: []
 	},
 	methods: {
 		appendEq(){
@@ -179,33 +169,11 @@ let demo1 = new Vue({
 		getEquipments(){
 			axios.get("/equipment/get-equipments").then( response => (this.gridData = response.data));
 		},
+		getDocType(){
+			axios.get("/equipment/get-doc-type").then( response => (this.listDocType = response.data));
+		},
 		setDropdown(){
 			console.log($('.dropdown').dropdown({fullTextSearch: true}));
-		},
-		// getToday () {
-		// 	let today = new Date();
-		// 	this.materials.date_record = today.toISOString().split('T')[0];
-		// 	this.materials.date_usage = today.toISOString().split('T')[0];
-		// },
-		// handleFileUpload(){
-		// 	this.file[0] = this.$refs.file.files[0];
-		// },
-		// submitFile(id){
-		// 	let formData = new FormData();
-		// 	formData.append('File', this.file[0]);
-		// 	formData.append('id_arrival_material', this.materials.materialArrivalId);
-		// 	formData.append('id_type_upload_files', this.typeUploadFile);
-		// 	axios.post( '/reagent/upload-file', formData, {headers:{'Content-Type': 'multipart/form-data'}
-		// 	}).then(response => (this.getStorage(), this.file[0] = [])).catch(error => (alert('FAILURE')));
-		// },
-		getDepartment(){
-			axios.get("/reagent/get-department").then( response => (this.listDepartment = response.data));
-		},
-		getLocation(){
-			axios.get("/reagent/get-location").then( response => (this.listLocations = response.data));
-		},
-		getType(){
-			axios.get("/equipment/get-type").then( response => (this.listType = response.data));
 		},
 		changeCheck(){
 			axios.post("/equipment/change-check", JSON.stringify(this.check), {headers: {'Content-Type': 'application/json'}}).then(response =>
@@ -226,9 +194,17 @@ let demo1 = new Vue({
 				})
 			return result;
 		},
-		test(dsd = null){
-			this.check.id_equipment = dsd;
-		}
+		handleFileUpload(){
+			this.check.file[0] = this.$refs.file.files[0];
+		},
+		submitFile(id){
+			let formData = new FormData();
+			formData.append('File', this.check.file[0]);
+			formData.append('id_arrival_material', this.check);
+			formData.append('id_type_upload_files', this.check.typeUploadFile);
+			axios.post( '/equipment/upload-file', formData, {headers:{'Content-Type': 'multipart/form-data'}
+			}).then(response => (this.getEquipments(), this.check.file[0] = [])).catch(error => (alert('FAILURE')));
+		},
 	},
 	watch: {
 		gridData(){
@@ -251,5 +227,6 @@ let demo1 = new Vue({
 	// },
 	mounted: function() {
 		this.getEquipments();
+		this.getDocType();
 	}
 });
