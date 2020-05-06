@@ -38,10 +38,17 @@ class module extends \yii\base\Module
                     [
                         'allow' => false,
                         'actions' => ['edit'],
-                        'roles' => ['corporal-second']
-                        // 'matchCallback' => function ($rule, $action) {
-                        //     return Yii::$app->user->identity['Role'] === 'user';
-                        // }
+                        // 'roles' => ['corporal-second']
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity['role'] === 'corporal-second' || 'corporal-first';
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['logout', 'index', 'report', 'view', 'get-data', 'get-empl', 'get-report', 'create-farm'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity['role'] === 'corporal-first';
+                        }
                     ],
                     [
                         'allow' => true,
