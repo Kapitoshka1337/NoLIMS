@@ -21,7 +21,7 @@ Vue.component('equipment-grid', {
 			currentPage: 1,
 			listPages: [],
 			selectAllMaterials: false,
-			selectedMaterials: [],
+			selectedEquipments: [],
 			id_equipment: null
 		}
 	},
@@ -51,14 +51,12 @@ Vue.component('equipment-grid', {
 			$('.dropdown').dropdown('clear');
 		},
 		select() {
-			this.selectedMaterials = [];
+			this.selectedEquipments = [];
 			if (!this.selectAllMaterials)
 			{
 				for (let i in this.paginateRows)
 				{
-					this.selectedMaterials.push({
-						id_equipment: this.paginateRows[i].id,
-					});
+					this.selectedEquipments.push(this.paginateRows[i].id);
 				}
 			}
 		},
@@ -66,6 +64,13 @@ Vue.component('equipment-grid', {
 		{
 			// "'details/' + equipment.id" КОСТЫЛЬ
 			document.location.href = '/equipment/details/' + id_equipment;
+		},
+		GetSticker() {
+			axios.post("/equipment/create-sticker", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(response =>
+				(
+					window.open(response.data)
+				)
+			).catch(error => (this.listError = error));
 		}
 	},
 	watch: {
@@ -183,7 +188,7 @@ let demo1 = new Vue({
 		changeCheck(){
 			axios.post("/equipment/change-check", JSON.stringify(this.check), {headers: {'Content-Type': 'application/json'}}).then(response =>
 				(
-					this.getEquipments()
+					this.submitFile()
 				)
 			).catch(error => (this.listError = error));
 		},

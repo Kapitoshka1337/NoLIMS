@@ -11,6 +11,7 @@ class Bootstrap implements BootstrapInterface
         'rules' => [
             '' => 'equipment/',
             'get-equipments' => 'metrolog/get-equipments',
+            'create-sticker' => 'metrolog/create-sticker',
             'get-department' => 'metrolog/get-department',
             'get-type' => 'metrolog/get-type',
             'get-doc-type' => 'metrolog/get-doc-type',

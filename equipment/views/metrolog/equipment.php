@@ -89,7 +89,7 @@
 			</div>
 		</div>
 		<div class="actions">
-			<button class="ui approve green button" v-on:click="submitFile()">Сохранить</button>
+			<button class="ui approve green button" v-on:click="changeCheck()">Сохранить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
@@ -114,8 +114,8 @@
 						<i class="icon print"></i>
 						<i class="icon dropdown"></i>
 						<div class="menu">
-							<a class="item">Этикетка</a>
-							<a class="item">Регистрационная карта</a>
+							<div class="item" v-on:click="GetSticker()">Этикетка</div>
+							<div class="item">Регистрационная карта</div>
 						</div>
 					</div>
 					<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>
@@ -135,8 +135,8 @@
 				<td class="collapsing">
 					<div class="ui checkbox">
 					<input type="checkbox"
-					v-bind:value="{id_equipment: equipment.id}" 
-					v-model="selectedMaterials">
+					v-bind:value="equipment.id" 
+					v-model="selectedEquipments">
 					<label></label>
 					</div>
 				</td>
