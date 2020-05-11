@@ -140,56 +140,73 @@ class MetrologController extends Controller
 		}
 	}
 
-	public function actionUploadFile()
-	{
-		$model = new UploadForm();
-		if(Yii::$app->request->isPost)
-		{
-			$model->File = UploadedFile::getInstanceByName('File');
-			if ($model->upload())
-			{
-				$check = equipment_date_check::uploadFile(Yii::$app->request->post('id_equipment'), $model->File->baseName . '.' . $model->File->extension, Yii::$app->request->post('id_type_upload_files'));
-				if($check)
-				{
-					// $arrivalMaterial = arrival_material::updateFileName(Yii::$app->request->post('id_arrival_material'), $check->id);
-					// if($arrivalMaterial)
-						return Yii::$app->response->statusCode = 200;
-				}
-			}
-			else return Yii::$app->response->statusCode = 400;
-		}
-	}
-
 	public function actionChangeCheck()
 	{
 		if(Yii::$app->request->isPost)
 		{
-			return $this->asJson(Yii::$app->request->post());
-			// id_equipment: null,
-			// current: null,
-			// next: null,
-			// number_document: null,
-			// typeUploadFile: null,
-			// file: [],
 			$data = Yii::$app->request->post();
-			// $array = array();
-			// foreach ($data as $eq)
-			// {
-			// 	$equipment = new equipment_equipment();
-			// 	$equipment->id_department = $eq['id_department'];
-			// 	$equipment->id_equipment_type = $eq['id_equipment_type'];
-			// 	$equipment->number = $eq['number'];
-			// 	$equipment->title = $eq['title'];
-			// 	$equipment->model = $eq['model'];
-			// 	$equipment->serial_number = $eq['serial_number'];
-			// 	$equipment->manufacturer = $eq['manufacturer'];
-			// 	$equipment->date_create = $eq['date_create'];
-			// 	$equipment->inventory_number = $eq['inventory_number'];
-			// 	$equipment->id_location = $eq['id_location'];
-			// 	if($equipment->save()) array_push($array, $equipment);
-			// }
-			// return $this->asJson($array);
+			$model = new UploadForm();
+			$eq = equipment_date_check::findByEqId($data['id_equipment']);
+			if($model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
+			{
+				if($eq)
+				{
+					$eq->date_current_check = $data['date_current_check'];
+					$eq->date_next_check = $data['date_next_check'];
+					$eq->id_upload_document_type = $data['id_upload_document_type'];
+					$eq->number_document = $data['number_document'];
+					$eq->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
+					if($eq->save())
+						if ($model->upload()) return Yii::$app->response->statusCode = 200;
+						else return Yii::$app->response->statusCode = 400;
+				}
+				else
+				{
+					$eq = new equipment_date_check();
+					$eq->id_equipment= $data['id_equipment'];
+					$eq->date_current_check = $data['date_current_check'];
+					$eq->date_next_check = $data['date_next_check'];
+					$eq->id_upload_document_type = $data['id_upload_document_type'];
+					$eq->number_document = $data['number_document'];
+					$eq->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
+					if($eq->save())
+						if ($model->upload()) return Yii::$app->response->statusCode = 200;
+						else return Yii::$app->response->statusCode = 400;
+				}
+			}
+			else return Yii::$app->response->statusCode = 200;
 		}
+	}
+
+	public function actionUploadFile()
+	{
+		//ВМЕСТО UPLOADFILE
+		// if(Yii::$app->request->isPost)
+		// {
+		// 	// return $this->asJson(Yii::$app->request->post());
+		// 	$data = Yii::$app->request->post();
+		// 	$eq = equipment_date_check::findByEqId($data['id_equipment']);
+		// 	if($eq)
+		// 	{
+		// 		$eq->date_current_check = $data['date_current_check'];
+		// 		$eq->date_next_check = $data['date_next_check'];
+		// 		$eq->id_upload_document_type = $data['id_upload_document_type'];
+		// 		$eq->number_document = $data['number_document'];
+		// 		if($eq->save()) return Yii::$app->response->statusCode = 200;
+		// 		else Yii::$app->response->statusCode = 400;
+		// 	}
+		// 	else
+		// 	{
+		// 		$eq = new equipment_date_check();
+		// 		$eq->id_equipment= $data['id_equipment'];
+		// 		$eq->date_current_check = $data['date_current_check'];
+		// 		$eq->date_next_check = $data['date_next_check'];
+		// 		$eq->id_upload_document_type = $data['id_upload_document_type'];
+		// 		$eq->number_document = $data['number_document'];
+		// 		if($eq->save()) return Yii::$app->response->statusCode = 200;
+		// 		else Yii::$app->response->statusCode = 400;			
+		// 	}
+		// }
 	}
 
 	public function actionCreateSticker()
@@ -227,11 +244,14 @@ class MetrologController extends Controller
 							}
 							$ht .= '
 								<td>
-									<div class="label">Отдел: <b><u>'. $stick->department .'</u></b></div>
-									<div class="label">Наименовение, тип: <br><u>' .$stick->equipment . ' ' .($stick->type) . '</u></div>
-									<div class="label">Рег.карта: <u>'.$stick->department .'</u></div>';
+									<div class="label">Отдел: <u>'. $stick->department .'</u></div>
+									<div class="label">Наименовение, тип: <br><u>' .$stick->equipment . ' ' .($stick->type) . '</u></div>';
 									if($type === 'поверки')
-										$ht .= '<div class="label">ФИФ: <u>'.$stick->fif_number .'</u></div>';
+										$ht .= '<div class="label">Рег.карта: <u>'.$stick->department .'</u> <span class="label">ФИФ: <u>'. $stick->fif_number .'</u></span></div>';
+										// $ht .= '<div class="label">ФИФ: <u>'. $stick->fif_number .'</u></div>';
+									else
+										$ht .= '<div class="label">Рег.карта: <u>'.$stick->department .'</u></div>';
+
 									$ht .= '<div class="label">Заводской номер: <u>'. $stick->serial_number .'</u></div>
 									<div class="label">Инветарный номер: <u>'. $stick->inventory_number .'</u></div>
 									<div class="label">Дата <u>'. $type .'</u>: <u>'. $stick->date_current_check .'</u></div>

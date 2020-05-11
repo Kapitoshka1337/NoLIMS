@@ -11,7 +11,7 @@
 			:columns="gridColumns.tableColumn"
 			:filters="filters"
 			:count-post="countPost"
-			@equipment="check.id_equipment">
+			:check-Eq="check">
 		</equipment-grid>
 	</div>
 	<div id="modalPrint" class="ui tiny card modal">
@@ -67,29 +67,29 @@
 			<div class="ui form">
 				<div class="field">
 					<label>Текущая (пройденная)</label>
-					<input type="date" v-model="check.current">
+					<input type="date" v-model="check.date_current_check">
 				</div>
 				<div class="field">
 					<label>Cледующая (предстоящая)</label>
-					<input type="date" v-model="check.next">
+					<input type="date" v-model="check.date_next_check">
+				</div>
+				<div class="field">
+					<label>Вид загружамого файла</label>
+					<select class="ui search dropdown" v-model="check.id_upload_document_type">
+						<option v-for="doc in listDocType" v-bind:value="doc.id">{{ doc.title }}</option>
+					</select>
 				</div>
 				<div class="field">
 					<label>Номер документа</label>
 					<input type="text" v-model="check.number_document">
 				</div>
 				<div class="field">
-					<label>Тип загружамого файла</label>
-					<select class="ui search dropdown" v-model="check.typeUploadFile">
-						<option v-for="doc in listDocType" v-bind:value="doc.id">{{ doc.title }}</option>
-					</select>
-				</div>
-				<div class="field">
-					<input type="file" ref="file" v-on:change="handleFileUpload()">
+					<input type="file" ref="upload_file_name" v-on:change="handleFileUpload()">
 				</div>
 			</div>
 		</div>
 		<div class="actions">
-			<button class="ui approve green button" v-on:click="changeCheck()">Сохранить</button>
+			<button class="ui approve green button" v-on:click="submitFile()">Сохранить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>

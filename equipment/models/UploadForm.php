@@ -6,12 +6,12 @@ use yii\web\UploadedFile;
 
 class UploadForm extends Model
 {
-    public $File;
+    public $upload_file_name;
 
     public function rules()
     {
         return [
-            [['File'], 'file', 'skipOnEmpty' => false, 'extensions' => 'pdf'],
+            [['upload_file_name'], 'file', 'skipOnEmpty' => false, 'extensions' => 'pdf'],
         ];
     }
 
@@ -25,7 +25,7 @@ class UploadForm extends Model
         if ($this->validate())
         {
             // $filename = $this->File->name = '1' . '.' . $this->File->extension;
-            $this->File->saveAs($this->filename() . $this->File->baseName. '.' . $this->File->extension);
+            $this->upload_file_name->saveAs($this->filename() . $this->upload_file_name->baseName. '.' . $this->upload_file_name->extension);
             return true;
         }
         else return false;

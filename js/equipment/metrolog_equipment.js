@@ -5,7 +5,8 @@ Vue.component('equipment-grid', {
 		rows: Array,
 		columns: Array,
 		filters: Array,
-		countPost: Number
+		countPost: Number,
+		checkEq: Object
 	},
 	data: function () {
 		let sortColumns = {};
@@ -22,7 +23,6 @@ Vue.component('equipment-grid', {
 			listPages: [],
 			selectAllMaterials: false,
 			selectedEquipments: [],
-			id_equipment: null
 		}
 	},
 	methods: {
@@ -44,7 +44,7 @@ Vue.component('equipment-grid', {
 			return rows.slice(from, to);
 		},
 		showModal(modalName, id = null){
-			this.$emit('equipment', this.id_equipment = id);
+			this.checkEq.id_equipment = id;
 			$('#modal' + modalName).modal('show');
 		},
 		clearFilter(){
@@ -142,40 +142,17 @@ let demo1 = new Vue({
 			date_next_check: []
 		},
 		countPost: 64,
-		// equipment: {
-		// 	number: null,
-		// 	id_department: null,
-		// 	id_equipment_type: null,
-		// 	title: null,
-		// 	model: null,
-		// 	serial_number: null,
-		// 	manufacturer: null,
-		// 	date_create: null,
-		// 	inventory_number: null,
-		// 	id_location: null
-		// },
 		check: {
 			id_equipment: null,
-			current: null,
-			next: null,
+			date_current_check: null,
+			date_next_check: null,
 			number_document: null,
-			typeUploadFile: null,
-			file: [],
+			id_upload_document_type: null,
+			upload_file_name: [],
 		},
-		// listDepartment: [],
-		// listLocations: [],
-		// selectedMaterials: [],
-		// listType: [],
 		listDocType: []
 	},
 	methods: {
-		appendEq(){
-			axios.post("/equipment/append", JSON.stringify(this.equipment), {headers: {'Content-Type': 'application/json'}}).then(response =>
-				(
-					this.getEquipments()
-				)
-			).catch(error => (this.listError = error));
-		},
 		getEquipments(){
 			axios.get("/equipment/get-equipments").then( response => (this.gridData = response.data));
 		},
@@ -184,14 +161,17 @@ let demo1 = new Vue({
 		},
 		setDropdown(){
 			console.log($('.dropdown').dropdown({fullTextSearch: true}));
-		},
-		changeCheck(){
-			axios.post("/equipment/change-check", JSON.stringify(this.check), {headers: {'Content-Type': 'application/json'}}).then(response =>
-				(
-					this.submitFile()
-				)
-			).catch(error => (this.listError = error));
-		},
+		// },
+		// changeCheck(){
+		// 	axios.post("/equipment/change-check", JSON.stringify(this.check), { headers: {'Content-Type': 'application/json'}})
+		// 	.then(function(response)
+		// 		{
+		// 			if(response.status === 200)
+		// 				this.submitFile()
+		// 			// this.getEquipments(), this.check = {}
+		// 			// console.log(1)
+		// 		}).catch(error => (this.listError = error));
+		// },
 		returnUniq(column){
 			let result = [];
 			for (let str of this.gridData)
@@ -205,15 +185,18 @@ let demo1 = new Vue({
 			return result;
 		},
 		handleFileUpload(){
-			this.check.file[0] = this.$refs.file.files[0];
+			this.check.upload_file_name[0] = this.$refs.upload_file_name.files[0];
 		},
-		submitFile(id){
+		submitFile(){
 			let formData = new FormData();
-			formData.append('File', this.check.file[0]);
-			formData.append('id_equipment', 1);//this.check.id_equipment);
-			formData.append('id_type_upload_files', this.check.typeUploadFile);
-			axios.post( '/equipment/upload-file', formData, {headers:{'Content-Type': 'multipart/form-data'}
-			}).then(response => (this.getEquipments(), this.check.file[0] = [])).catch(error => (alert('FAILURE')));
+			formData.append('id_equipment', this.check.id_equipment);
+			formData.append('date_current_check', this.check.date_current_check);
+			formData.append('date_next_check', this.check.date_next_check);
+			formData.append('id_upload_document_type', this.check.id_upload_document_type);
+			formData.append('number_document', this.check.number_document);
+			formData.append('upload_file_name', this.check.upload_file_name[0]);
+			axios.post('/equipment/change-check', formData, {headers:{'Content-Type': 'multipart/form-data'}
+			}).then(response => (this.getEquipments(), this.check.file[0] = [])).catch(error => (alert('ОШИБКА ЗАГРУЗКИ ФАЙЛА')));
 		}
 	},
 	watch: {
@@ -226,15 +209,6 @@ let demo1 = new Vue({
 			}, 1000);
 		}
 	},
-	// computed: {
-	// 	validationExpense(){
-	// 		this.errors = [];
-	// 		if ((this.materials.total - this.materials.amount) < 0)
-	// 			return 'При потреблении ' + this.materials.amount + ' останется ' + (this.materials.total - this.materials.amount) + ' ';
-	// 		// if(this.materials.amount === null || this.materials.amount === '')
-	// 		// 	return 'Введите количество потребления';
-	// 	}
-	// },
 	mounted: function() {
 		this.getEquipments();
 		this.getDocType();
