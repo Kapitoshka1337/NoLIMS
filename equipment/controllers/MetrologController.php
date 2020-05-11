@@ -22,7 +22,8 @@ class MetrologController extends Controller
 
 	public function beforeAction($action)
 	{
-		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check' || $action->id == 'create-sticker' || $action->id == 'set-tag')
+		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -238,7 +239,7 @@ class MetrologController extends Controller
 							}
 							$ht .= '
 								<td>
-									<div class="label">Отдел: <u>'. $stick->department .'</u></div>
+									<div class="label"><b style="font-weight: bold;">Отдел:</b> <u>'. $stick->department .'</u></div>
 									<div class="label">Наименовение, тип: <br><u>' .$stick->equipment . ' ' .($stick->type) . '</u></div>';
 									if($type === 'поверки')
 										$ht .= '<div class="label">Рег.карта: <u>'.$stick->department .'</u> <span class="label">ФИФ: <u>'. $stick->fif_number .'</u></span></div>';
@@ -278,14 +279,21 @@ class MetrologController extends Controller
 	{
 		if(Yii::$app->request->isPost)
 		{
-			// return $this->asJson(Yii::$app->request->post());
 			$data = Yii::$app->request->post();
-			// $eq = view_metrolog_equipment::findAll(['id_equipment' => $data['eq']]);
 			$eq = view_metrolog_equipment::updateAll([$data['tag'] => 1], ['id' => $data['eq']]);
 			if($eq)
 				return Yii::$app->response->statusCode = 200;
-			// foreach ($data as $eq)
-			// {}
+		}
+	}
+
+	public function actionSetHandoff()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$eq = equipment_equipment::updateAll(['id_department' => $data['id_department_to']], ['id' => $data['id_equipment']]);
+			if($eq)
+				return Yii::$app->response->statusCode = 200;
 		}
 	}
 }

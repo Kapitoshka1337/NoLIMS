@@ -7,10 +7,6 @@
     <div class="sixteen wide column">
         <div class="ui fluid card">
             <div class="content">
-                <button class="ui right floated orange button" type="button" v-on:click="Cancel()">Отмена</button>
-                <button class="ui right floated green button" type="button" v-on:click="Submit()">Сохранить</button>
-            </div>
-            <div class="content">
                 <div class="ui fluid card">
                     <div class="content">
                         <div class="ui form">
@@ -70,7 +66,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                        <div class="content">
+                            <button class="ui right floated orange button" type="button" v-on:click="Cancel()">Отмена</button>
+                            <button class="ui right floated green button" type="button" v-on:click="Submit()">Сохранить</button>
+                        </div>
+                </div>  
             </div>
         </div>
     </div>

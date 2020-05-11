@@ -6,7 +6,8 @@ Vue.component('equipment-grid', {
 		columns: Array,
 		filters: Array,
 		countPost: Number,
-		checkEq: Object
+		checkEq: Object,
+		handoff: Object
 	},
 	data: function () {
 		let sortColumns = {};
@@ -43,8 +44,16 @@ Vue.component('equipment-grid', {
 			let to = ((page * curPost));
 			return rows.slice(from, to);
 		},
-		showModal(modalName, id = null){
+		showModal(modalName, id = null, department = null){
 			this.checkEq.id_equipment = id;
+			this.handoff.department = department;
+			$('#modal' + modalName).modal('show');
+		},
+		//ТАК НЕ ДЕЛАТСЯ
+		showModalHandoff(modalName, id = null, department = null, id_to = null){
+			this.handoff.department = department;
+			this.handoff.id_equipment = id;
+			this.handoff.id_department_to = id_to;
 			$('#modal' + modalName).modal('show');
 		},
 		clearFilter(){
@@ -62,20 +71,14 @@ Vue.component('equipment-grid', {
 			document.location.href = '/equipment/details/' + id_equipment;
 		},
 		GetSticker() {
-			axios.post("/equipment/create-sticker", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(response =>
-				(
-					window.open(response.data)
-				)
-			).catch(error => (this.listError = error));
+			if(this.selectedEquipments.length > 0)
+				axios.post("/equipment/create-sticker", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(response =>
+				(window.open(response.data))).catch(error => (this.listError = error));
 		},
 		setTag(tag){
-			//1 - архив, 2 - консервация, 3 - проверка, 4 - ремонт
 			if(this.selectedEquipments.length > 0)
 			{
-				let obj = {
-					tag: tag,
-					eq: this.selectedEquipments
-				}
+				let obj = {tag: tag, eq: this.selectedEquipments};
 				axios.post("/equipment/set-tag", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>
 					(demo1.getEquipments())).catch(error => (this.listError = error));
 			}
@@ -138,7 +141,12 @@ let demo1 = new Vue({
 				{'equipment':'Оборудование'},
 				{'serial_number':'S/N'},
 				{'date_current_check':'Текущая проверка'},
-				{'date_next_check':'Следующая проверка'}
+				{'date_next_check':'Следующая проверка'},
+				{'is_archive':'Архив'},
+				{'is_conservation':'Консервация'},
+				{'is_check':'Проверка'},
+				{'is_repair':'Ремонт'},
+				{'is_working':'В работе'}
 			]
 		},
 		gridData: [],
@@ -148,7 +156,12 @@ let demo1 = new Vue({
 			type: [],
 			equipment: [],
 			date_current_check: [],
-			date_next_check: []
+			date_next_check: [],
+			is_archive: [],
+			is_conservation: [],
+			is_check: [],
+			is_repair: [],
+			is_working: []
 		},
 		countPost: 100,
 		check: {
@@ -159,7 +172,13 @@ let demo1 = new Vue({
 			id_upload_document_type: null,
 			upload_file_name: [],
 		},
-		listDocType: []
+		handoff: {
+			id_equipment: null,
+			department: null,
+			id_department_to: null
+		},
+		listDocType: [],
+		listDepartment: []
 	},
 	methods: {
 		getEquipments(){
@@ -168,19 +187,31 @@ let demo1 = new Vue({
 		getDocType(){
 			axios.get("/equipment/get-doc-type").then( response => (this.listDocType = response.data));
 		},
+		getDepartment(){
+			axios.get("/equipment/get-department").then( response => (this.listDepartment = response.data));
+		},
 		setDropdown(){
 			console.log($('.dropdown').dropdown({fullTextSearch: true}));
 		},
-		// changeCheck(){
-		// 	axios.post("/equipment/change-check", JSON.stringify(this.check), { headers: {'Content-Type': 'application/json'}})
-		// 	.then(function(response)
-		// 		{
-		// 			if(response.status === 200)
-		// 				this.submitFile()
-		// 			// this.getEquipments(), this.check = {}
-		// 			// console.log(1)
-		// 		}).catch(error => (this.listError = error));
-		// },
+		handleFileUpload(){
+			this.check.upload_file_name[0] = this.$refs.upload_file_name.files[0];
+		},
+		submitFile(){
+			//ПЕРЕКИДЫВАЕТ В ERROR
+			let formData = new FormData();
+			formData.append('id_equipment', this.check.id_equipment);
+			formData.append('date_current_check', this.check.date_current_check);
+			formData.append('date_next_check', this.check.date_next_check);
+			formData.append('id_upload_document_type', this.check.id_upload_document_type);
+			formData.append('number_document', this.check.number_document);
+			formData.append('upload_file_name', this.check.upload_file_name[0]);
+			axios.post('/equipment/change-check', formData, {headers:{'Content-Type': 'multipart/form-data'}
+			}).then(response => (this.getEquipments(), this.check.file[0] = [], this.check = {})).catch(error => (alert('ОШИБКА ЗАГРУЗКИ ФАЙЛА')));
+		},
+		setHandoff(){
+			axios.post("/equipment/set-handoff", JSON.stringify(this.handoff), {headers: {'Content-Type': 'application/json'}}).then
+			(response => (this.getEquipments(), this.handoff = {})).catch(error => (this.listError = error));
+		},
 		returnUniq(column){
 			let result = [];
 			for (let str of this.gridData)
@@ -192,20 +223,6 @@ let demo1 = new Vue({
 					else return - 1;
 				})
 			return result;
-		},
-		handleFileUpload(){
-			this.check.upload_file_name[0] = this.$refs.upload_file_name.files[0];
-		},
-		submitFile(){
-			let formData = new FormData();
-			formData.append('id_equipment', this.check.id_equipment);
-			formData.append('date_current_check', this.check.date_current_check);
-			formData.append('date_next_check', this.check.date_next_check);
-			formData.append('id_upload_document_type', this.check.id_upload_document_type);
-			formData.append('number_document', this.check.number_document);
-			formData.append('upload_file_name', this.check.upload_file_name[0]);
-			axios.post('/equipment/change-check', formData, {headers:{'Content-Type': 'multipart/form-data'}
-			}).then(response => (this.getEquipments(), this.check.file[0] = [])).catch(error => (alert('ОШИБКА ЗАГРУЗКИ ФАЙЛА')));
 		}
 	},
 	watch: {
@@ -220,6 +237,7 @@ let demo1 = new Vue({
 	},
 	mounted: function() {
 		this.getEquipments();
+		this.getDepartment();
 		this.getDocType();
 	}
 });

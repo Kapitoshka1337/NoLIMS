@@ -11,14 +11,13 @@
 			:columns="gridColumns.tableColumn"
 			:filters="filters"
 			:count-post="countPost"
-			:check-Eq="check">
+			:check-Eq="check"
+			:handoff="handoff">
 		</equipment-grid>
 	</div>
 	<div id="modalPrint" class="ui tiny card modal">
 		<div class="content">
-			<div class="content header">
-			Регистрационная карта | Этикетка
-			</div>
+			<div class="content header">Регистрационная карта | Этикетка</div>
 		</div>
 		<div class="content">
 		</div>
@@ -29,9 +28,7 @@
 	</div>
 	<div id="modalFilter" class="ui tiny card modal">
 		<div class="content">
-			<div class="content header">
-			Поиск
-			</div>
+			<div class="content header">Поиск</div>
 		</div>
 		<div class="content">
 			<div class="ui form">
@@ -46,22 +43,27 @@
 	</div>
 	<div id="modalHandoff" class="ui tiny card modal">
 		<div class="content">
-			<div class="content header">
-			Перемещение
-			</div>
+			<div class="header">Перемещение</div>
+			<div class="meta">{{ handoff.department }}</div>
 		</div>
 		<div class="content">
+			<div class="ui form">
+				<div class="field">
+					<label>Переместить в отдел</label>
+					<select class="ui search dropdown" v-model="handoff.id_department_to">
+						<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
+					</select>
+				</div>
+			</div>
 		</div>
 		<div class="actions">
-			<button class="ui approve green button">Отправить</button>
+			<button class="ui approve green button" v-on:click="setHandoff()">Сохранить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
 	<div id="modalCheck" class="ui tiny card modal">
 		<div class="content">
-			<div class="content header">
-			Поверка | Проверка
-			</div>
+			<div class="content header">Поверка | Проверка</div>
 		</div>
 		<div class="content">
 			<div class="ui form">
@@ -134,10 +136,10 @@
 			<tr v-for="equipment in paginateRows">
 				<td class="collapsing">
 					<div class="ui checkbox">
-					<input type="checkbox"
-					v-bind:value="equipment.id" 
-					v-model="selectedEquipments">
-					<label></label>
+						<input type="checkbox"
+						v-bind:value="equipment.id" 
+						v-model="selectedEquipments">
+						<label></label>
 					</div>
 				</td>
 				<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.id_department }} / {{ equipment.type }}</td>
@@ -146,8 +148,8 @@
 				<td class="collapsing">{{ equipment.date_current_check }}</td>
 				<td class="collapsing">{{ equipment.date_next_check }}</td>
 				<td class="collapsing">
-					<span  v-bind:class="{'ui yellow small circular label': equipment.is_conservation, 'ui teal small circular label': equipment.is_archive, 'ui red small circular label': equipment.is_repair, 'ui violet small circular label': equipment.is_check}"
-					v-show="equipment.is_conservation || equipment.is_archive || equipment.is_repair || equipment.is_check"></span>
+					<span  v-bind:class="{'ui yellow small circular label': equipment.is_conservation, 'ui teal small circular label': equipment.is_archive, 'ui red small circular label': equipment.is_repair, 'ui violet small circular label': equipment.is_check, 'ui green small circular label': equipment.is_working}"
+					v-show="equipment.is_conservation || equipment.is_archive || equipment.is_repair || equipment.is_check || equipment.is_working"></span>
 <!-- 					<span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span>
 					<span class="ui teal small circular label" v-show="equipment.is_archive">А</span>
 					<span class="ui red small circular label" v-show="equipment.is_repair">Р</span>
@@ -159,7 +161,7 @@
 						<div class="menu">
 							<!-- <div class="item" v-on:click="Details('Handoff')">Подробнее</div> -->
 							<a v-bind:href="'details/' + equipment.id" class="item">Подробнее</a>
-							<div class="item" v-on:click="showModal('Handoff')">Перемещение</div>
+							<div class="item" v-on:click="showModalHandoff('Handoff', equipment.id, equipment.department)">Перемещение</div>
 							<div class="item" v-on:click="showModal('Check', equipment.id)">Поверка - Проверка</div>
 						</div>
 					</div>

@@ -20,6 +20,7 @@ class Bootstrap implements BootstrapInterface
             'equipments' => 'metrolog/equipments',
             'change-check' => 'metrolog/change-check',
             'set-tag' => 'metrolog/set-tag',
+            'set-handoff' => 'metrolog/set-handoff',
             'details/<id:\d+>'=>'metrolog/details',
             'certification' => 'metrolog/certification',
             'verification' => 'metrolog/verification',
