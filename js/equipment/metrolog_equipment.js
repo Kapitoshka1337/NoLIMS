@@ -53,12 +53,8 @@ Vue.component('equipment-grid', {
 		select() {
 			this.selectedEquipments = [];
 			if (!this.selectAllMaterials)
-			{
 				for (let i in this.paginateRows)
-				{
 					this.selectedEquipments.push(this.paginateRows[i].id);
-				}
-			}
 		},
 		Details(id_equipment)
 		{
@@ -71,6 +67,18 @@ Vue.component('equipment-grid', {
 					window.open(response.data)
 				)
 			).catch(error => (this.listError = error));
+		},
+		setTag(tag){
+			//1 - архив, 2 - консервация, 3 - проверка, 4 - ремонт
+			if(this.selectedEquipments.length > 0)
+			{
+				let obj = {
+					tag: tag,
+					eq: this.selectedEquipments
+				}
+				axios.post("/equipment/set-tag", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>
+					(demo1.getEquipments())).catch(error => (this.listError = error));
+			}
 		}
 	},
 	watch: {
@@ -120,6 +128,7 @@ let demo1 = new Vue({
 				{'serial_number':'С/Н'},
 				{'date_current_check':'Текущая'},
 				{'date_next_check':'Следующая'},
+				{'Tag': 'Метка'},
 				{'action': ''}
 			],
 			filterColumn: [
@@ -141,7 +150,7 @@ let demo1 = new Vue({
 			date_current_check: [],
 			date_next_check: []
 		},
-		countPost: 64,
+		countPost: 100,
 		check: {
 			id_equipment: null,
 			date_current_check: null,
@@ -161,7 +170,7 @@ let demo1 = new Vue({
 		},
 		setDropdown(){
 			console.log($('.dropdown').dropdown({fullTextSearch: true}));
-		// },
+		},
 		// changeCheck(){
 		// 	axios.post("/equipment/change-check", JSON.stringify(this.check), { headers: {'Content-Type': 'application/json'}})
 		// 	.then(function(response)

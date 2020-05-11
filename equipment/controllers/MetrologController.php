@@ -22,7 +22,7 @@ class MetrologController extends Controller
 
 	public function beforeAction($action)
 	{
-		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check' || $action->id == 'create-sticker')
+		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check' || $action->id == 'create-sticker' || $action->id == 'set-tag')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -87,25 +87,19 @@ class MetrologController extends Controller
 	{
 		if(Yii::$app->request->isPost)
 		{
-			// return $this->asJson(Yii::$app->request->post());
 			$data = Yii::$app->request->post();
-			$array = array();
-			foreach ($data as $eq)
-			{
-				$equipment = new equipment_equipment();
-				$equipment->id_department = $eq['id_department'];
-				$equipment->id_equipment_type = $eq['id_equipment_type'];
-				$equipment->number = $eq['number'];
-				$equipment->title = $eq['title'];
-				$equipment->model = $eq['model'];
-				$equipment->serial_number = $eq['serial_number'];
-				$equipment->manufacturer = $eq['manufacturer'];
-				$equipment->date_create = $eq['date_create'];
-				$equipment->inventory_number = $eq['inventory_number'];
-				$equipment->id_location = $eq['id_location'];
-				if($equipment->save()) array_push($array, $equipment);
-			}
-			return $this->asJson($array);
+			$equipment = new equipment_equipment();
+			$equipment->id_department = $data['id_department'];
+			$equipment->id_equipment_type = $data['id_equipment_type'];
+			$equipment->number = $data['number'];
+			$equipment->title = $data['title'];
+			$equipment->model = $data['model'];
+			$equipment->serial_number = $data['serial_number'];
+			$equipment->manufacturer = $data['manufacturer'];
+			$equipment->date_create = $data['date_create'];
+			$equipment->inventory_number = $data['inventory_number'];
+			$equipment->id_location = $data['id_location'];
+			if($equipment->save()) return $this->asJson($equipment);
 		}
 		return $this->render('append');
 	}
@@ -277,6 +271,21 @@ class MetrologController extends Controller
 			// Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
 			// Yii::$app->response->headers->add('Content-Type', 'application/pdf');
 			// return $this->render('tcpdf');
+		}
+	}
+
+	public function actionSetTag()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			// return $this->asJson(Yii::$app->request->post());
+			$data = Yii::$app->request->post();
+			// $eq = view_metrolog_equipment::findAll(['id_equipment' => $data['eq']]);
+			$eq = view_metrolog_equipment::updateAll([$data['tag'] => 1], ['id' => $data['eq']]);
+			if($eq)
+				return Yii::$app->response->statusCode = 200;
+			// foreach ($data as $eq)
+			// {}
 		}
 	}
 }

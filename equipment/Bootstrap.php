@@ -19,6 +19,7 @@ class Bootstrap implements BootstrapInterface
             'append' => 'metrolog/append-equipment',
             'equipments' => 'metrolog/equipments',
             'change-check' => 'metrolog/change-check',
+            'set-tag' => 'metrolog/set-tag',
             'details/<id:\d+>'=>'metrolog/details',
             'certification' => 'metrolog/certification',
             'verification' => 'metrolog/verification',

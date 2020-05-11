@@ -6,7 +6,18 @@ var arrival = new Vue({
 		listDepartment: [],
 		listLocations: [],
 		listType: [],
-		listEquipment: []
+		eq: {
+			number: null,
+			id_department: null,
+			id_equipment_type: null,
+			title: null,
+			model: null,
+			serial_number: null,
+			manufacturer: null,
+			date_create: null,
+			inventory_number: null,
+			id_location: null
+		}
 	},
 	methods: {
 		appendEq() {
@@ -28,19 +39,11 @@ var arrival = new Vue({
 			if (idx > -1) this.listEquipment.splice(idx, 1);
 		},
 		Submit(){
-			if (this.listEquipment.length > 0)
+			if (this.eq)
 			{
-				// let obj = [{
-				// 	num_order: this.order.num_order,
-				// 	date_order: this.order.date_order,
-				// 	materials: this.listMaterialForTable
-				// }];
-				axios.post("/equipment/append", JSON.stringify(this.listEquipment), {headers: {'Content-Type': 'application/json'}}).then(function (response)
+				axios.post("/equipment/append", JSON.stringify(this.eq), {headers: {'Content-Type': 'application/json'}}).then(function (response)
 				{ 
-					if (response.status === 200) 
-					{
-						document.location.href = '/equipment/equipments';
-					}
+					if (response.status === 200) document.location.href = '/equipment/equipments';
 				});
 			}
 		},
@@ -87,27 +90,6 @@ var arrival = new Vue({
 		getType(){
 			axios.get("/equipment/get-type").then( response => (this.listType = response.data));
 		},
-	},
-	computed: {
-		// filteredLocation(){
-		// 	let rows = this.listDepartment;
-		// 	let locs = [];
-		// 	if(this.filters.department != '')
-		// 	{
-		// 		rows = rows.filter(r => { return r.department === this.filters.department })
-		// 		rows.forEach(function(key){
-		// 			key.locations.forEach(function(location){
-		// 				locs.push({
-		// 					id: location.id,
-		// 					cabinet_number: location.cabinet_number,
-		// 					place: location.place,
-		// 					notation: location.notation
-		// 				});
-		// 			})
-		// 		})
-		// 	}
-		// 	return locs;
-		// }
 	},
 	mounted: function(){
 		this.setDropdown();

@@ -7,23 +7,14 @@
     <div class="sixteen wide column">
         <div class="ui fluid card">
             <div class="content">
-                <div class="ui small icon buttons">
-                    <button class="ui teal button" type="button" v-on:click="appendEq()"><i class="icon plus"></i></button>
-                </div>
                 <button class="ui right floated orange button" type="button" v-on:click="Cancel()">Отмена</button>
-                <button class="ui right floated green button" type="button" v-on:click="Submit()" v-bind:disabled="listEquipment <= 0">Сохранить</button>
+                <button class="ui right floated green button" type="button" v-on:click="Submit()">Сохранить</button>
             </div>
             <div class="content">
-                <div class="ui fluid card" v-for="(eq, k) in listEquipment">
+                <div class="ui fluid card">
                     <div class="content">
                         <div class="ui form">
                             <div class="three fields">
-<!--                     <div class="field" v-for="key in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))">
-                        <label>{{ Object.values(key)[0] }}</label>
-                        <select class="ui search dropdown" v-model="filters[Object.keys(key)]">
-                            <option v-for="col in returnUniq(Object.keys(key))" v-bind:value="col">{{ col }}</option>
-                        </select>
-                    </div> -->
                                 <div class="field">
                                     <label>Отдел</label>
                                     <select class="ui search dropdown" v-model="eq.id_department" v-on:change="filteredLocation(eq.id_department)">
@@ -77,11 +68,6 @@
                                 <label>Номер</label>
                                 <input type="text" v-model="eq.number">
                             </div>
-                        </div>
-                    </div>
-                    <div class="content">
-                       <div class="ui small icon buttons">
-                            <button class="ui red button" type="button" v-on:click="deleteEq(k, eq)"><i class="icon trash"></i></button>
                         </div>
                     </div>
                 </div>
