@@ -6,6 +6,7 @@ use app\modules\equipment\models\location;
 use app\modules\equipment\models\department;
 use app\modules\equipment\models\view_metrolog_equipment;
 use app\modules\equipment\models\view_equipment_metrolog_sticker;
+use app\modules\equipment\models\view_equipment_metrolog_card;
 use app\modules\equipment\models\equipment_type;
 use app\modules\equipment\models\equipment_equipment;
 use app\modules\equipment\models\equipment_upload_document_type;
@@ -273,6 +274,9 @@ class MetrologController extends Controller
 			//ВО ИО протокол СИ свидетельство
 			$ht = '<head>
 	<style>
+		* {
+			font-size: 14px;
+		}
 		table, th, td { 
 			padding: 10px;
 			border: 1px solid black;
@@ -292,7 +296,7 @@ class MetrologController extends Controller
 	</style>
 </head>
 <body>
-	<table id="element-to-print">
+		<table>
 		<tbody>
 			<tr>
 				<td class="center">ДФ.04.31.2017</td>
@@ -303,6 +307,9 @@ class MetrologController extends Controller
 					<div><b>Регистрационная карточка оборудования</b></div>
 				</td>
 				<td class="center">лицевая сторона регистрационной карточки</td>
+			</tr>
+			<tr>
+				<td colspan="9"></td>
 			</tr>
 			<tr>
 				<td colspan="8" class="center"><b class="header">Регистрационная карточка оборудования ВИД</b></td>
@@ -319,8 +326,8 @@ class MetrologController extends Controller
 				<td class="center" colspan="2"><b>Метрологические характеристики</b></td>
 			</tr>
 			<tr>
-				<td><b>Диапазон измерений</b></td>
-				<td><b>Погрешность измерений</b></td>
+				<td class="center"><b>Диапазон измерений</b></td>
+				<td class="center"><b>Погрешность измерений</b></td>
 			</tr>
 			<tr>
 				<td>Отдел</td>
@@ -381,8 +388,8 @@ class MetrologController extends Controller
 			// $stylesheet = file_get_contents('D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/vendor/semantic/semantic.css');
 			// $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
 			$mpdf->WriteHTML($ht);
-			$mpdf->Output('assets/template/sticker.pdf', \Mpdf\Output\Destination::FILE);
-			return $this->asJson('/assets/template/sticker.pdf');	
+			$mpdf->Output('assets/template/card.pdf', \Mpdf\Output\Destination::FILE);
+			return $this->asJson('/assets/template/card.pdf');	
 		}
 	}
 
