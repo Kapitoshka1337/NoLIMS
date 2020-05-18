@@ -216,9 +216,10 @@ class MetrologController extends Controller
 			$data = Yii::$app->request->post();
 			$stickers = array_chunk(view_equipment_metrolog_sticker::findAll(['id_equipment' => $data]), 5);
 			$ht = '
+			<head><style>table, th, td { padding: 10px; border: 1px solid black; border-collapse: collapse; padding: 6px; margin: 0px; font-size: 100%;} b{font-weight: bold;}</style></head>
 			<body>
-			<div class="sixteen wide column">
-				<table class="ui four column celled table" style="font-size: 7px;">
+			<div>
+				<table>
 					<tbody>';
 					foreach ($stickers as $sticker)
 					{
@@ -238,19 +239,18 @@ class MetrologController extends Controller
 									break;
 							}
 							$ht .= '
-								<td>
-									<div class="label"><b style="font-weight: bold;">Отдел:</b> <u>'. $stick->department .'</u></div>
-									<div class="label">Наименовение, тип: <br><u>' .$stick->equipment . ' ' .($stick->type) . '</u></div>';
+								<td style="width: 288px">
+									<div class="label"><b>Отдел:</b> <u>'. $stick->department .'</u></div>
+									<div class="label"><b>Наименовение, тип:</b> <br><u>' .$stick->equipment . ' ' .($stick->type) . '</u></div>';
 									if($type === 'поверки')
-										$ht .= '<div class="label">Рег.карта: <u>'.$stick->department .'</u> <span class="label">ФИФ: <u>'. $stick->fif_number .'</u></span></div>';
+										$ht .= '<div class="label"><b>Рег.карта:</b> <u>'.$stick->number . '/' . $stick->id_department . '-' . $stick->type .'</u> <span class="label"><b>ФИФ:</b> <u>'. $stick->fif_number .'</u></span></div>';
 										// $ht .= '<div class="label">ФИФ: <u>'. $stick->fif_number .'</u></div>';
 									else
-										$ht .= '<div class="label">Рег.карта: <u>'.$stick->department .'</u></div>';
-
-									$ht .= '<div class="label">Заводской номер: <u>'. $stick->serial_number .'</u></div>
-									<div class="label">Инветарный номер: <u>'. $stick->inventory_number .'</u></div>
-									<div class="label">Дата <u>'. $type .'</u>: <u>'. $stick->date_current_check .'</u></div>
-									<div class="label">Дата следующей: <u>'.$stick->date_next_check .'</u></div>
+										$ht .= '<div class="label"><b>Рег.карта: </b><u>'.$stick->number . '/' . $stick->id_department . '-' . $stick->type .'</u></div>';
+									$ht .= '<div class="label"><b>Заводской номер: </b><u>'. $stick->serial_number .'</u></div>
+									<div class="label"><b>Инветарный номер: </b><u>'. $stick->inventory_number .'</u></div>
+									<div class="label"><b>Дата <u>'. $type .'</u>:</b> <u>'. $stick->date_current_check .'</u></div>
+									<div class="label"><b>Дата следующей: </b><u>'.$stick->date_next_check .'</u></div>
 								</td>';
 						}
 						$ht .= '</tr>';
@@ -260,13 +260,13 @@ class MetrologController extends Controller
 				</table>
 				</div>
 			</body>';
-			include_once 'D:/OSPanel/vendor/autoload.php';
+			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
 			$mpdf = new \Mpdf\Mpdf();
 			$mpdf->SetDisplayMode('fullpage');
 			$mpdf->AddPage('P','','','','',3,3,3,0,0,0);
-			$stylesheet = file_get_contents('D:/OSPanel/domains/nolims/frontend/web/assets/vendor/semantic/semantic.css');
-			$mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
-			$mpdf->WriteHTML($ht, \Mpdf\HTMLParserMode::HTML_BODY);
+			// $stylesheet = file_get_contents('D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/vendor/semantic/semantic.css');
+			// $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
+			$mpdf->WriteHTML($ht);
 			$mpdf->Output('assets/template/sticker.pdf', \Mpdf\Output\Destination::FILE);
 			return $this->asJson('/assets/template/sticker.pdf');
 			// Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;

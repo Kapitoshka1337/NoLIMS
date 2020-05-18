@@ -7,6 +7,21 @@
 <div class="sixteen wide column">
 	<h1><?= $this->context->action->uniqueId ?></h1>
 	<input type="button" onclick='test()'>
+	<table class="ui table celled sixteen column" id="element-to-print">
+		<tbody>
+			<tr>
+				<td>ДФ.04.31.2017</td>
+					<td class="thirteen wide">
+						<div class="label center aligned">БУ УР УВДЦ</div>
+						<div class="label center aligned">Система менеджмента качества ИЦ</div>
+						<div class="label center aligned">Документрированная форма</div>
+						<div class="label center aligned">Регистрационная карточка оборудования</div>
+					</td>
+				</td>
+				<td>лицевая сторона регистрационной карточки</td>
+			</tr>
+		</tbody>
+	</table>
 <!-- 	<div class="ui three cards">
 		<div class="card">
 			<div class="content">
@@ -64,8 +79,8 @@
 			</div>
 		</div>
 	</div> -->
-	<table class="ui five column celled table" id="element-to-print">
-<!-- 		<thead>
+	<!-- <table class="ui five column celled table" id="element-to-print">
+		<thead>
 			<tr>
 				<th>1</th>
 				<th>2</th>
@@ -73,7 +88,7 @@
 				<th>4</th>
 				<th>5</th>
 			</tr>
-		</thead> -->
+		</thead>
 		<tbody>
 			<tr>
 				<td>
@@ -134,7 +149,7 @@
 				</td>
 			</tr>
 		</tbody>
-	</table>
+	</table> -->
 </div>
 	<script>
 		function test(){
