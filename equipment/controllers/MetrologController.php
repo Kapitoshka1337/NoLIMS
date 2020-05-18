@@ -214,13 +214,9 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			$stickers = array_chunk(view_equipment_metrolog_sticker::findAll(['id_equipment' => $data]), 5);
+			$stickers = array_chunk(view_equipment_metrolog_sticker::findAll(['id_equipment' => $data]), 4);
 			$ht = '
-			<head><style>table, th, td { padding: 10px; border: 1px solid black; border-collapse: collapse; padding: 6px; margin: 0px; font-size: 100%;} b{font-weight: bold;}</style></head>
-			<body>
-			<div>
-				<table>
-					<tbody>';
+			<head><style>table, th, td { padding: 10px; border: 1px solid black; border-collapse: collapse; padding: 6px; margin: 0px; font-size: 12px;} b{font-weight: bold;}</style></head><body><div><table><tbody>';
 					foreach ($stickers as $sticker)
 					{
 						$ht .= '<tr>';
@@ -255,11 +251,7 @@ class MetrologController extends Controller
 						}
 						$ht .= '</tr>';
 					}
-						$ht .='
-					</tbody>
-				</table>
-				</div>
-			</body>';
+						$ht .='</tbody></table></div></body>';
 			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
 			$mpdf = new \Mpdf\Mpdf();
 			$mpdf->SetDisplayMode('fullpage');
