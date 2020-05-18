@@ -12,6 +12,7 @@ class Bootstrap implements BootstrapInterface
             '' => 'equipment/',
             'get-equipments' => 'metrolog/get-equipments',
             'create-sticker' => 'metrolog/create-sticker',
+            'create-card' => 'metrolog/create-card',
             'get-department' => 'metrolog/get-department',
             'get-type' => 'metrolog/get-type',
             'get-doc-type' => 'metrolog/get-doc-type',

@@ -117,7 +117,7 @@
 						<i class="icon dropdown"></i>
 						<div class="menu">
 							<div class="item" v-on:click="GetSticker()">Этикетка</div>
-							<div class="item">Регистрационная карта</div>
+							<div class="item" v-on:click="GetCard()">Регистрационная карта</div>
 						</div>
 					</div>
 					<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>

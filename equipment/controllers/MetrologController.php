@@ -23,7 +23,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -215,8 +215,7 @@ class MetrologController extends Controller
 		{
 			$data = Yii::$app->request->post();
 			$stickers = array_chunk(view_equipment_metrolog_sticker::findAll(['id_equipment' => $data]), 4);
-			$ht = '
-			<head><style>table, th, td { padding: 10px; border: 1px solid black; border-collapse: collapse; padding: 6px; margin: 0px; font-size: 12px;} b{font-weight: bold;}</style></head><body><div><table><tbody>';
+			$ht = '<head><style>table, th, td { padding: 10px; border: 1px solid black; border-collapse: collapse; padding: 6px; margin: 0px; font-size: 12px;} b{font-weight: bold;}</style></head><body><div><table><tbody>';
 					foreach ($stickers as $sticker)
 					{
 						$ht .= '<tr>';
@@ -264,6 +263,126 @@ class MetrologController extends Controller
 			// Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
 			// Yii::$app->response->headers->add('Content-Type', 'application/pdf');
 			// return $this->render('tcpdf');
+		}
+	}
+
+	public function actionCreateCard()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			//ВО ИО протокол СИ свидетельство
+			$ht = '<head>
+	<style>
+		table, th, td { 
+			padding: 10px;
+			border: 1px solid black;
+			border-collapse: collapse;
+			padding: 6px;
+			margin: 0px;
+		}
+		b {
+			font-weight: bold;
+		}
+		.center {
+			text-align: center;
+		}
+		.header {
+			font-size: 22px;
+		}
+	</style>
+</head>
+<body>
+	<table id="element-to-print">
+		<tbody>
+			<tr>
+				<td class="center">ДФ.04.31.2017</td>
+				<td colspan="7" class="center">
+					<div>Бюджетное учреждение Удмуртской Республики "Удмуртский ветеринарно-диагностический центр"</div>
+					<div>СИСТЕМА МЕНЕДЖМЕНТА КАЧЕСТВА ИЦ</div>
+					<div>Документированная форма</div>
+					<div><b>Регистрационная карточка оборудования</b></div>
+				</td>
+				<td class="center">лицевая сторона регистрационной карточки</td>
+			</tr>
+			<tr>
+				<td colspan="8" class="center"><b class="header">Регистрационная карточка оборудования ВИД</b></td>
+				<td>кабинет 130</td>
+			</tr>
+			<tr>
+				<td class="center" rowspan="2"><b>Регистрационный №</b></td>
+				<td class="center" rowspan="2"><b>Наименование определяемых (измеряемых) характеристик (параметров), функциональное назначение</b></td>
+				<td class="center" rowspan="2"><b>Наименование оборудования,  тип (марка)</b></td>
+				<td class="center" rowspan="2"><b>Зав.№</b></td>
+				<td class="center" rowspan="2"><b>Изготовитель (страна, город,  наименование организации)</b></td>
+				<td class="center" rowspan="2"><b>Год выпуска/ ввода в эксплуатацию</b></td>
+				<td class="center" rowspan="2"><b>Инвентарный №</b></td>
+				<td class="center" colspan="2"><b>Метрологические характеристики</b></td>
+			</tr>
+			<tr>
+				<td><b>Диапазон измерений</b></td>
+				<td><b>Погрешность измерений</b></td>
+			</tr>
+			<tr>
+				<td>Отдел</td>
+				<td colspan="8">отдел</td>
+			</tr>
+			<!-- ДАННЫЕ -->
+			<tr>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+			</tr>
+			<tr>
+				<td colspan="9">
+					Эксплуатационный документ: рп, св-во <br>
+					Состояние на момент приёмки: соотв <br>
+					<b>Данные о поверках:</b> периодичность 1 раз в год
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">Свид-во № СП 28828282 от 20.02.2020</td>
+				<td colspan="3">Свид-во № СП 28828282 от 20.02.2020</td>
+				<td colspan="3">Свид-во № СП 28828282 от 20.02.2020</td>
+			</tr>
+			<tr>
+				<td colspan="1"><b>Вид ТО</b></td>
+				<td class="center" colspan="1">Сроки выполнения</td>
+				<td class="center" colspan="6">Проводимые работы</td>
+				<td class="center" colspan="1">Ответственный</td>
+			</tr>
+			<tr>
+				<td class="center">Периодическое</td>
+				<td class="center">По мере</td>
+				<td class="center" colspan="6">Замена батареи</td>
+				<td class="center">Экспл. персонал</td>
+			</tr>
+			<tr>
+				<td colspan="9"><b>Данные о ремонте и ТО:</b></td>
+			</tr>
+			<tr>
+				<td class="center" colspan="1">Номер п/п</td>
+				<td class="center" colspan="1">Дата</td>
+				<td class="center" colspan="3">Характер неисправности и вид производимой работы</td>
+				<td colspan="4" class="center">Наименование организации, Ф.И.О.,<br>должность выполнившего работу<br>(подпись внесшего запись с расшифровкой Ф.И.О.)</td>
+			</tr>
+		</tbody>
+	</table>
+</body>';
+			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
+			$mpdf = new \Mpdf\Mpdf();
+			$mpdf->SetDisplayMode('fullpage');
+			$mpdf->AddPage('L','','','','',3,3,3,0,0,0);
+			// $stylesheet = file_get_contents('D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/vendor/semantic/semantic.css');
+			// $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
+			$mpdf->WriteHTML($ht);
+			$mpdf->Output('assets/template/sticker.pdf', \Mpdf\Output\Destination::FILE);
+			return $this->asJson('/assets/template/sticker.pdf');	
 		}
 	}
 

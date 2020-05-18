@@ -75,6 +75,11 @@ Vue.component('equipment-grid', {
 				axios.post("/equipment/create-sticker", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(response =>
 				(window.open(response.data))).catch(error => (this.listError = error));
 		},
+		GetCard() {
+			// if(this.selectedEquipments.length > 0)
+				axios.post("/equipment/create-card", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(response =>
+				(window.open(response.data))).catch(error => (this.listError = error));
+		},
 		setTag(tag){
 			if(this.selectedEquipments.length > 0)
 			{

@@ -1,6 +1,5 @@
-<html lang="en">
+<html>
 <head>
-	<meta charset="UTF-8">
 	<style>
 		table, th, td { 
 			padding: 10px;
@@ -21,51 +20,52 @@
 	</style>
 </head>
 <body>
-	<table>
+	<!-- <input type="button" onclick='test()' value="asd"> -->
+	<table id="element-to-print">
 		<tbody>
-			<tr">
-				<td style="width: 60px;">ДФ.04.31.2017</td>
-				<td style="width: 60px;" colspan="7" class="center">
+			<tr>
+				<td class="center">ДФ.04.31.2017</td>
+				<td colspan="7" class="center">
 					<div>Бюджетное учреждение Удмуртской Республики "Удмуртский ветеринарно-диагностический центр"</div>
 					<div>СИСТЕМА МЕНЕДЖМЕНТА КАЧЕСТВА ИЦ</div>
 					<div>Документированная форма</div>
 					<div><b>Регистрационная карточка оборудования</b></div>
 				</td>
-				<td style="width: 60px;">лицевая сторона регистрационной карточки</td>
+				<td class="center">лицевая сторона регистрационной карточки</td>
 			</tr>
 			<tr>
-				<td style="width: 60px;" colspan="8" class="center"><b class="header">Регистрационная карточка оборудования ВИД</b></td>
-				<td style="width: 60px;">кабинет 130</td>
+				<td colspan="8" class="center"><b class="header">Регистрационная карточка оборудования ВИД</b></td>
+				<td>кабинет 130</td>
 			</tr>
 			<tr>
-				<td style="width: 60px;" rowspan="2">Регистрационный номер</td>
-				<td style="width: 60px;" rowspan="2">Наименование определяемых (измеряемых) характеристик (параметров), функциональное назначение</td>
-				<td style="width: 60px;" rowspan="2">Наименование оборудования,  тип (марка)</td>
-				<td style="width: 60px;" rowspan="2">Зав.№</td>
-				<td style="width: 60px;" rowspan="2">Изготовитель (страна, город,  наименование организации)</td>
-				<td style="width: 60px;" rowspan="2">Год выпуска/ ввода в эксплуатацию</td>
-				<td style="width: 60px;" rowspan="2">Инвентарный №</td>
-				<td style="width: 60px;" colspan="2">Метрологические характеристики</td>
+				<td class="center" rowspan="2"><b>Регистрационный №</b></td>
+				<td class="center" rowspan="2"><b>Наименование определяемых (измеряемых) характеристик (параметров), функциональное назначение</b></td>
+				<td class="center" rowspan="2"><b>Наименование оборудования,  тип (марка)</b></td>
+				<td class="center" rowspan="2"><b>Зав.№</b></td>
+				<td class="center" rowspan="2"><b>Изготовитель (страна, город,  наименование организации)</b></td>
+				<td class="center" rowspan="2"><b>Год выпуска/ ввода в эксплуатацию</b></td>
+				<td class="center" rowspan="2"><b>Инвентарный №</b></td>
+				<td class="center" colspan="2"><b>Метрологические характеристики</b></td>
 			</tr>
 			<tr>
-				<td style="width: 60px;">Диапазон измерений</td>
-				<td style="width: 60px;">Погрешность измерений</td>
+				<td><b>Диапазон измерений</b></td>
+				<td><b>Погрешность измерений</b></td>
 			</tr>
 			<tr>
-				<td style="width: 60px;">Отдел</td>
+				<td>Отдел</td>
 				<td colspan="8">отдел</td>
 			</tr>
 			<!-- ДАННЫЕ -->
 			<tr>
-				<td style="width: 60px;">1</td>
-				<td style="width: 60px;">1</td>
-				<td style="width: 60px;">1</td>
-				<td style="width: 60px;">1</td>
-				<td style="width: 60px;">1</td>
-				<td style="width: 60px;">1</td>
-				<td style="width: 60px;">1</td>
-				<td style="width: 60px;">1</td>
-				<td style="width: 60px;">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
+				<td class="center">1</td>
 			</tr>
 			<tr>
 				<td colspan="9">
@@ -81,26 +81,42 @@
 			</tr>
 			<tr>
 				<td colspan="1"><b>Вид ТО</b></td>
-				<td colspan="1">Сроки выполнения</td>
-				<td colspan="6">Проводимые работы</td>
-				<td colspan="1">Ответственный</td>
+				<td class="center" colspan="1">Сроки выполнения</td>
+				<td class="center" colspan="6">Проводимые работы</td>
+				<td class="center" colspan="1">Ответственный</td>
 			</tr>
 			<tr>
-				<td>Периодическое</td>
-				<td>По мере</td>
-				<td colspan="6">Замена батареи</td>
-				<td>Экспл. персонал</td>
+				<td class="center">Периодическое</td>
+				<td class="center">По мере</td>
+				<td class="center" colspan="6">Замена батареи</td>
+				<td class="center">Экспл. персонал</td>
 			</tr>
 			<tr>
 				<td colspan="9"><b>Данные о ремонте и ТО:</b></td>
 			</tr>
 			<tr>
-				<td colspan="1">Номер п/п</td>
-				<td colspan="1">Дата</td>
-				<td colspan="3">Характер неисправности и вид производимой работы</td>
+				<td class="center" colspan="1">Номер п/п</td>
+				<td class="center" colspan="1">Дата</td>
+				<td class="center" colspan="3">Характер неисправности и вид производимой работы</td>
 				<td colspan="4" class="center">Наименование организации, Ф.И.О.,<br>должность выполнившего работу<br>(подпись внесшего запись с расшифровкой Ф.И.О.)</td>
 			</tr>
 		</tbody>
 	</table>
 </body>
+<script src="D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/vendor/html2pdf.bundle.min.js"></script>
+<script>
+		function test(){
+		var element = document.getElementById('element-to-print');
+		var opt = {
+		  // margin:       0,
+		  filename:     'myfile.pdf',
+		  // image:        { type: 'jpeg', quality: 0.98 },
+		  pagebreak: {mode: ['avoid-all']},
+		  html2canvas:  { scale: 2 },
+		  jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+		};
+		html2pdf().set(opt).from(element).toPdf().save();
+		// html2pdf(element);
+		}
+</script>
 </html>
