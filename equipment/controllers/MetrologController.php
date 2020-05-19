@@ -275,6 +275,7 @@ class MetrologController extends Controller
 			$tmp_card = view_equipment_metrolog_card::findAll(['id_equipment' => $data]);
 			$maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => $data]);
 			$history_check = equipment_history_date_check::findAll(['id_equipment' => $data]);
+			$current_check = equipment_date_check::findOne(['id_equipment' => $data]);
 			//ВО ИО протокол СИ свидетельство
 			foreach ($tmp_card as $card)
 			{
@@ -282,15 +283,15 @@ class MetrologController extends Controller
 				{
 					case 'ВО':
 						$type = 'Протокол №';
-						$type_check = 'ПТС';
+						$type_check = 'о ПТС';
 						break;
 					case 'ИО':
 						$type = 'Протокол №';
-						$type_check = 'аттестации';
+						$type_check = 'об аттестации';
 						break;
 					case 'СИ':
 						$type = 'Свид-во №';
-						$type_check = 'поверках';
+						$type_check = 'о поверках';
 						break;
 				}
 				$ht = '<head>
@@ -369,18 +370,20 @@ class MetrologController extends Controller
 								<td colspan="9">
 									Эксплуатационный документ: рп, св-во <br>
 									Состояние на момент приёмки: соответствует <br>
-									<b>Данные о '. $type_check .':</b> периодичность 1 раз в год
+									<b>Данные '. $type_check .':</b> периодичность 1 раз в год
 								</td>
 							</tr>';
 							if ($history_check != null)
 							{
 								$ht .= '<tr>';
 								foreach ($history_check as $check)
-									$ht .= '<td colspan="3"> '. $type . $check['number_document'] . ' от ' . date_format(date_create($check['date_current_check']), 'd.m.Y') .'</td>';
+									$ht .= '<td colspan="3"> '. $type . ' ' . $check['number_document'] . ' от ' . date_format(date_create($check['date_current_check']), 'd.m.Y') .'</td>';
+								if ($current_check != null)
+									$ht .= '<td colspan="3">'. $type . ' ' .$current_check['number_document'] . ' от ' . date_format(date_create($current_check['date_current_check']), 'd.m.Y') .'</td>';
 								$ht .= '</tr>';
 							}
 							else
-								$ht .= '<tr><td colspan="9">Данных о '. $type_check .' нет</td></tr>';
+								$ht .= '<tr><td colspan="9">Данных '. $type_check .' нет</td></tr>';
 
 							$ht .= '
 							<tr>
