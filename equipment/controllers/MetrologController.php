@@ -425,6 +425,56 @@ class MetrologController extends Controller
 			$mpdf->SetDisplayMode('fullpage');
 			$mpdf->AddPage('L','','','','',3,3,3,0,0,0);
 			$mpdf->WriteHTML($ht);
+			$ht = '
+				<head>
+					<style>
+						* {
+							font-size: 14px;
+						}
+						table, th, td { 
+							padding: 10px;
+							border: 1px solid black;
+							border-collapse: collapse;
+							padding: 6px;
+							margin: 0px;
+						}
+						b {
+							font-weight: bold;
+						}
+						.center {
+							text-align: center;
+						}
+						.header {
+							font-size: 22px;
+						}
+					</style>
+				</head>
+				<body>
+				<table>
+					<tbody>
+						<tr>
+							<td class="center">ДФ.04.31.2017</td>
+							<td colspan="7" class="center">
+								<div>Бюджетное учреждение Удмуртской Республики "Удмуртский ветеринарно-диагностический центр"</div>
+								<div>СИСТЕМА МЕНЕДЖМЕНТА КАЧЕСТВА ИЦ</div>
+								<div>Документированная форма</div>
+								<div><b>Регистрационная карточка оборудования</b></div>
+							</td>
+							<td class="center">оборотная сторона регистрационной карточки</td>
+						</tr>
+						<tr>
+							<td colspan="9"><b>Данные о ремонте и ТО:</b></td>
+						</tr>
+						<tr>
+							<td class="center" colspan="1">Номер п/п</td>
+							<td class="center" colspan="1">Дата</td>
+							<td class="center" colspan="3">Характер неисправности и вид производимой работы</td>
+							<td colspan="4" class="center">Наименование организации, Ф.И.О.,<br>должность выполнившего работу<br>(подпись внесшего запись с расшифровкой Ф.И.О.)</td>
+						</tr>
+					</tbody>
+				</table>		';
+			$mpdf->AddPage('L','','','','',3,3,3,0,0,0);
+			$mpdf->WriteHTML($ht);
 			$mpdf->Output('assets/template/card.pdf', \Mpdf\Output\Destination::FILE);
 			return $this->asJson('/assets/template/card.pdf');	
 		}
