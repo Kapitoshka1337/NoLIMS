@@ -7,6 +7,7 @@ use app\modules\equipment\models\department;
 use app\modules\equipment\models\view_metrolog_equipment;
 use app\modules\equipment\models\view_equipment_metrolog_sticker;
 use app\modules\equipment\models\view_equipment_metrolog_card;
+use app\modules\equipment\models\view_equipment_metrolog_list_work_for_equipment;
 use app\modules\equipment\models\equipment_type;
 use app\modules\equipment\models\equipment_equipment;
 use app\modules\equipment\models\equipment_upload_document_type;
@@ -271,122 +272,133 @@ class MetrologController extends Controller
 	{
 		if(Yii::$app->request->isPost)
 		{
+			$data = Yii::$app->request->post();
+			$tmp_card = view_equipment_metrolog_card::findAll(['id_equipment' => $data]);
+			$maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => $data]);
 			//ВО ИО протокол СИ свидетельство
-			$ht = '<head>
-	<style>
-		* {
-			font-size: 14px;
-		}
-		table, th, td { 
-			padding: 10px;
-			border: 1px solid black;
-			border-collapse: collapse;
-			padding: 6px;
-			margin: 0px;
-		}
-		b {
-			font-weight: bold;
-		}
-		.center {
-			text-align: center;
-		}
-		.header {
-			font-size: 22px;
-		}
-	</style>
-</head>
-<body>
-		<table>
-		<tbody>
-			<tr>
-				<td class="center">ДФ.04.31.2017</td>
-				<td colspan="7" class="center">
-					<div>Бюджетное учреждение Удмуртской Республики "Удмуртский ветеринарно-диагностический центр"</div>
-					<div>СИСТЕМА МЕНЕДЖМЕНТА КАЧЕСТВА ИЦ</div>
-					<div>Документированная форма</div>
-					<div><b>Регистрационная карточка оборудования</b></div>
-				</td>
-				<td class="center">лицевая сторона регистрационной карточки</td>
-			</tr>
-			<tr>
-				<td colspan="9"></td>
-			</tr>
-			<tr>
-				<td colspan="8" class="center"><b class="header">Регистрационная карточка оборудования ВИД</b></td>
-				<td>кабинет 130</td>
-			</tr>
-			<tr>
-				<td class="center" rowspan="2"><b>Регистрационный №</b></td>
-				<td class="center" rowspan="2"><b>Наименование определяемых (измеряемых) характеристик (параметров), функциональное назначение</b></td>
-				<td class="center" rowspan="2"><b>Наименование оборудования,  тип (марка)</b></td>
-				<td class="center" rowspan="2"><b>Зав.№</b></td>
-				<td class="center" rowspan="2"><b>Изготовитель (страна, город,  наименование организации)</b></td>
-				<td class="center" rowspan="2"><b>Год выпуска/ ввода в эксплуатацию</b></td>
-				<td class="center" rowspan="2"><b>Инвентарный №</b></td>
-				<td class="center" colspan="2"><b>Метрологические характеристики</b></td>
-			</tr>
-			<tr>
-				<td class="center"><b>Диапазон измерений</b></td>
-				<td class="center"><b>Погрешность измерений</b></td>
-			</tr>
-			<tr>
-				<td>Отдел</td>
-				<td colspan="8">отдел</td>
-			</tr>
-			<!-- ДАННЫЕ -->
-			<tr>
-				<td class="center">1</td>
-				<td class="center">1</td>
-				<td class="center">1</td>
-				<td class="center">1</td>
-				<td class="center">1</td>
-				<td class="center">1</td>
-				<td class="center">1</td>
-				<td class="center">1</td>
-				<td class="center">1</td>
-			</tr>
-			<tr>
-				<td colspan="9">
-					Эксплуатационный документ: рп, св-во <br>
-					Состояние на момент приёмки: соотв <br>
-					<b>Данные о поверках:</b> периодичность 1 раз в год
-				</td>
-			</tr>
-			<tr>
-				<td colspan="3">Свид-во № СП 28828282 от 20.02.2020</td>
-				<td colspan="3">Свид-во № СП 28828282 от 20.02.2020</td>
-				<td colspan="3">Свид-во № СП 28828282 от 20.02.2020</td>
-			</tr>
-			<tr>
-				<td colspan="1"><b>Вид ТО</b></td>
-				<td class="center" colspan="1">Сроки выполнения</td>
-				<td class="center" colspan="6">Проводимые работы</td>
-				<td class="center" colspan="1">Ответственный</td>
-			</tr>
-			<tr>
-				<td class="center">Периодическое</td>
-				<td class="center">По мере</td>
-				<td class="center" colspan="6">Замена батареи</td>
-				<td class="center">Экспл. персонал</td>
-			</tr>
-			<tr>
-				<td colspan="9"><b>Данные о ремонте и ТО:</b></td>
-			</tr>
-			<tr>
-				<td class="center" colspan="1">Номер п/п</td>
-				<td class="center" colspan="1">Дата</td>
-				<td class="center" colspan="3">Характер неисправности и вид производимой работы</td>
-				<td colspan="4" class="center">Наименование организации, Ф.И.О.,<br>должность выполнившего работу<br>(подпись внесшего запись с расшифровкой Ф.И.О.)</td>
-			</tr>
-		</tbody>
-	</table>
-</body>';
+			foreach ($tmp_card as $card)
+			{
+				if($card['type'] === 'ВО' || $card['type'] === 'ИО') $type = 'Протокол №'; else $type = 'Свид-во №';
+				$ht = '<head>
+					<style>
+						* {
+							font-size: 14px;
+						}
+						table, th, td { 
+							padding: 10px;
+							border: 1px solid black;
+							border-collapse: collapse;
+							padding: 6px;
+							margin: 0px;
+						}
+						b {
+							font-weight: bold;
+						}
+						.center {
+							text-align: center;
+						}
+						.header {
+							font-size: 22px;
+						}
+					</style>
+				</head>
+				<body>
+						<table>
+						<tbody>
+							<tr>
+								<td class="center">ДФ.04.31.2017</td>
+								<td colspan="7" class="center">
+									<div>Бюджетное учреждение Удмуртской Республики "Удмуртский ветеринарно-диагностический центр"</div>
+									<div>СИСТЕМА МЕНЕДЖМЕНТА КАЧЕСТВА ИЦ</div>
+									<div>Документированная форма</div>
+									<div><b>Регистрационная карточка оборудования</b></div>
+								</td>
+								<td class="center">лицевая сторона регистрационной карточки</td>
+							</tr>
+							<tr>
+								<td colspan="9"></td>
+							</tr>
+							<tr>
+								<td colspan="8" class="center"><b class="header">Регистрационная карточка оборудования '. $card['type'] .'</b></td>
+								<td>кабинет '. $card['cabinet_number'] .'</td>
+							</tr>
+							<tr>
+								<td class="center" rowspan="2"><b>Регистрационный №</b></td>
+								<td class="center" rowspan="2"><b>Наименование определяемых (измеряемых) характеристик (параметров), функциональное назначение</b></td>
+								<td class="center" rowspan="2"><b>Наименование оборудования,  тип (марка)</b></td>
+								<td class="center" rowspan="2"><b>Зав.№</b></td>
+								<td class="center" rowspan="2"><b>Изготовитель (страна, город,  наименование организации)</b></td>
+								<td class="center" rowspan="2"><b>Год выпуска/ ввода в эксплуатацию</b></td>
+								<td class="center" rowspan="2"><b>Инвентарный №</b></td>
+								<td class="center" colspan="2"><b>Метрологические характеристики</b></td>
+							</tr>
+							<tr>
+								<td class="center"><b>Диапазон измерений</b></td>
+								<td class="center"><b>Погрешность измерений</b></td>
+							</tr>
+							<tr>
+								<td>Отдел</td>
+								<td colspan="8">'. $card['department'] .'</td>
+							</tr>
+							<tr>
+								<td class="center">'. $card['number'] . '/' . $card['id_department'] . '-' . $card['type'] .'</td>
+								<td class="center">'. $card['function_of_use'] .'</td>
+								<td class="center">'. $card['equipment'] .'</td>
+								<td class="center">'. $card['serial_number'] .'</td>
+								<td class="center">'. $card['manufacturer'] .'</td>
+								<td class="center">'. $card['date_create'] .'</td>
+								<td class="center">'. $card['inventory_number'] .'</td>
+								<td class="center">'. $card['measuring_range'] .'</td>
+								<td class="center">'. $card['class_accuracy'] .'</td>
+							</tr>
+							<tr>
+								<td colspan="9">
+									Эксплуатационный документ: рп, св-во <br>
+									Состояние на момент приёмки: соотв <br>
+									<b>Данные о поверках:</b> периодичность 1 раз в год
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3"> '. $type .' СП 28828282 от 20.02.2020</td>
+							</tr>
+							<tr>
+								<td colspan="1"><b>Вид ТО</b></td>
+								<td class="center" colspan="1">Сроки выполнения</td>
+								<td class="center" colspan="6">Проводимые работы</td>
+								<td class="center" colspan="1">Ответственный</td>
+							</tr>';
+							if($maintenance != null)
+								foreach ($maintenance as $main)
+								{
+									if ($card['id_equipment'] == $main['id_equipment'])
+										$ht .= '<tr>
+									<td class="center">'. $main['maintenance'] .'</td>
+									<td class="center">'. $main['periodicity'] .'</td>
+									<td class="center" colspan="6">'. $main['description'] .'</td>
+									<td class="center">'. $main['executor'] .'</td>
+									</tr>';
+								}
+							else
+								$ht .= '<tr><td class="center" colspan="9">Техническое обслуживание не требуется</td></tr>';
+
+							$ht .='
+							<tr>
+								<td colspan="9"><b>Данные о ремонте и ТО:</b></td>
+							</tr>
+							<tr>
+								<td class="center" colspan="1">Номер п/п</td>
+								<td class="center" colspan="1">Дата</td>
+								<td class="center" colspan="3">Характер неисправности и вид производимой работы</td>
+								<td colspan="4" class="center">Наименование организации, Ф.И.О.,<br>должность выполнившего работу<br>(подпись внесшего запись с расшифровкой Ф.И.О.)</td>
+							</tr>
+						</tbody>
+					</table>
+				</body>';
+			}
 			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
 			$mpdf = new \Mpdf\Mpdf();
 			$mpdf->SetDisplayMode('fullpage');
 			$mpdf->AddPage('L','','','','',3,3,3,0,0,0);
-			// $stylesheet = file_get_contents('D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/vendor/semantic/semantic.css');
-			// $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
 			$mpdf->WriteHTML($ht);
 			$mpdf->Output('assets/template/card.pdf', \Mpdf\Output\Destination::FILE);
 			return $this->asJson('/assets/template/card.pdf');	
