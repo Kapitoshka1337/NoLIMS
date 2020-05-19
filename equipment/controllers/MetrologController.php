@@ -13,10 +13,9 @@ use app\modules\equipment\models\equipment_equipment;
 use app\modules\equipment\models\equipment_upload_document_type;
 use app\modules\equipment\models\equipment_equipment_details;
 use app\modules\equipment\models\equipment_date_check;
+use app\modules\equipment\models\equipment_history_date_check;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 
 class MetrologController extends Controller
 {
@@ -275,10 +274,25 @@ class MetrologController extends Controller
 			$data = Yii::$app->request->post();
 			$tmp_card = view_equipment_metrolog_card::findAll(['id_equipment' => $data]);
 			$maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => $data]);
+			$history_check = equipment_history_date_check::findAll(['id_equipment' => $data]);
 			//ВО ИО протокол СИ свидетельство
 			foreach ($tmp_card as $card)
 			{
-				if($card['type'] === 'ВО' || $card['type'] === 'ИО') $type = 'Протокол №'; else $type = 'Свид-во №';
+				switch ($card['type'])
+				{
+					case 'ВО':
+						$type = 'Протокол №';
+						$type_check = 'ПТС';
+						break;
+					case 'ИО':
+						$type = 'Протокол №';
+						$type_check = 'аттестации';
+						break;
+					case 'СИ':
+						$type = 'Свид-во №';
+						$type_check = 'поверках';
+						break;
+				}
 				$ht = '<head>
 					<style>
 						* {
@@ -338,7 +352,7 @@ class MetrologController extends Controller
 							</tr>
 							<tr>
 								<td>Отдел</td>
-								<td colspan="8">'. $card['department'] .'</td>
+								<td colspan="8"><b>'. $card['department'] .'</b></td>
 							</tr>
 							<tr>
 								<td class="center">'. $card['number'] . '/' . $card['id_department'] . '-' . $card['type'] .'</td>
@@ -354,15 +368,23 @@ class MetrologController extends Controller
 							<tr>
 								<td colspan="9">
 									Эксплуатационный документ: рп, св-во <br>
-									Состояние на момент приёмки: соотв <br>
-									<b>Данные о поверках:</b> периодичность 1 раз в год
+									Состояние на момент приёмки: соответствует <br>
+									<b>Данные о '. $type_check .':</b> периодичность 1 раз в год
 								</td>
-							</tr>
+							</tr>';
+							if ($history_check != null)
+							{
+								$ht .= '<tr>';
+								foreach ($history_check as $check)
+									$ht .= '<td colspan="3"> '. $type . $check['number_document'] . ' от ' . date_format(date_create($check['date_current_check']), 'd.m.Y') .'</td>';
+								$ht .= '</tr>';
+							}
+							else
+								$ht .= '<tr><td colspan="9">Данных о '. $type_check .' нет</td></tr>';
+
+							$ht .= '
 							<tr>
-								<td colspan="3"> '. $type .' СП 28828282 от 20.02.2020</td>
-							</tr>
-							<tr>
-								<td colspan="1"><b>Вид ТО</b></td>
+								<td colspan="1"><b>Вид ТО:</b></td>
 								<td class="center" colspan="1">Сроки выполнения</td>
 								<td class="center" colspan="6">Проводимые работы</td>
 								<td class="center" colspan="1">Ответственный</td>
