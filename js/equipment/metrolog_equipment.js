@@ -63,7 +63,15 @@ Vue.component('equipment-grid', {
 			this.selectedEquipments = [];
 			if (!this.selectAllMaterials)
 				for (let i in this.paginateRows)
-					this.selectedEquipments.push(this.paginateRows[i].id);
+					this.selectedEquipments.push({
+						id_equipment: this.paginateRows[i].id,
+						is_archive: this.paginateRows[i].is_archive,
+						is_conservation: this.paginateRows[i].is_conservation,
+						is_repair: this.paginateRows[i].is_repair,
+						is_check: this.paginateRows[i].is_check,
+						is_working: this.paginateRows[i].is_working
+					});
+					// this.selectedEquipments.push(this.paginateRows[i].id);
 		},
 		Details(id_equipment)
 		{
@@ -76,17 +84,15 @@ Vue.component('equipment-grid', {
 				(window.open(response.data))).catch(error => (this.listError = error));
 		},
 		GetCard() {
-			// if(this.selectedEquipments.length > 0)
+			if(this.selectedEquipments.length > 0)
 				axios.post("/equipment/create-card", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(response =>
 				(window.open(response.data))).catch(error => (this.listError = error));
 		},
 		setTag(tag){
 			if(this.selectedEquipments.length > 0)
-			{
-				let obj = {tag: tag, eq: this.selectedEquipments};
+				// let obj = {tag: tag, eq: this.selectedEquipments};
 				axios.post("/equipment/set-tag", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>
 					(demo1.getEquipments())).catch(error => (this.listError = error));
-			}
 		}
 	},
 	watch: {
@@ -122,6 +128,11 @@ Vue.component('equipment-grid', {
 		paginateRows(){
 			return this.paginate(this.filteredRows);
 		},
+		tagsFromSelected(){
+			let rows = this.selectedEquipments;
+			if (this.selectedEquipments.length > 0)
+				return rows[0].id_equipment;
+		}
 	},
 })
 
@@ -130,7 +141,7 @@ let demo1 = new Vue({
 	data: {
 		gridColumns: {
 			tableColumn: [
-				{'action': ''},
+				// {'action': ''},
 				{'number':'Номер'},
 				{'equipment':'Оборудование'},
 				{'serial_number':'С/Н'},

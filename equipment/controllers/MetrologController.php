@@ -215,7 +215,7 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			$stickers = array_chunk(view_equipment_metrolog_sticker::findAll(['id_equipment' => $data]), 4);
+			$stickers = array_chunk(view_equipment_metrolog_sticker::findAll(['id_equipment' => $data]), 3);
 			$ht = '<head><style>table, th, td { padding: 10px; border: 1px solid black; border-collapse: collapse; padding: 6px; margin: 0px; font-size: 12px;} b{font-weight: bold;}</style></head><body><div><table><tbody>';
 					foreach ($stickers as $sticker)
 					{
@@ -252,7 +252,7 @@ class MetrologController extends Controller
 						$ht .= '</tr>';
 					}
 						$ht .='</tbody></table></div></body>';
-			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
+			include_once 'D:/OSPanel/vendor/autoload.php';
 			$mpdf = new \Mpdf\Mpdf();
 			$mpdf->SetDisplayMode('fullpage');
 			$mpdf->AddPage('P','','','','',3,3,3,0,0,0);
@@ -394,8 +394,7 @@ class MetrologController extends Controller
 							}
 							// else
 								// $ht .= '<tr><td colspan="9">Данных '. $type_check .' нет</td></tr>';
-								$ht .= '<tr><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td></tr>
-								<tr><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td></tr>';
+								// $ht .= '<tr><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td></tr><tr><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td></tr>';
 
 							$ht .= '
 							<tr>
@@ -432,7 +431,7 @@ class MetrologController extends Controller
 					</table>
 				</body>';
 			}
-			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
+			include_once 'D:/OSPanel/vendor/autoload.php';
 			$mpdf = new \Mpdf\Mpdf();
 			$mpdf->SetDisplayMode('fullpage');
 			$mpdf->AddPage('L','','','','',5,5,5,0,0,0);

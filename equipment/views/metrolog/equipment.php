@@ -102,7 +102,45 @@
 			<tr>
 				<th v-bind:colspan="columns.length + 1">
 					Оборудование
-					<div class="ui orange right floated icon top left mini pointing dropdown button">
+					<div class="ui orange right floated icon top right mini pointing dropdown button">
+						<i class="icon tags"></i>
+						<i class="icon dropdown"></i>
+						<div class="menu">
+							<div class="header">
+								<i class="tags icon"></i>
+								Поставить метку
+							</div>
+							<div class="item" v-on:click="setTag('is_archive')">
+								<div class="ui teal empty circular label"></div>
+								Архив
+							</div>
+							<div class="item" v-on:click="setTag('is_conservation')">
+								<div class="ui yellow empty circular label"></div>
+								Консервация
+							</div>
+							<div class="item" v-on:click="setTag('is_repair')">
+								<div class="ui red empty circular label"></div>
+								Ремонт
+							</div>
+							<div class="item" v-on:click="setTag('is_check')">
+								<div class="ui violet empty circular label"></div>
+								ЦСМ
+							</div>
+							<div class="item" v-on:click="setTag('is_working')">
+								<div class="ui green empty circular label"></div>
+								Используется
+							</div>
+							<div class="divider"></div>
+							<div class="header" v-show="selectedEquipments.length > 0">
+								<i class="calendar icon"></i>
+								Снять метку
+							</div>
+							<div class="item" v-for="item in tagsFromSelected">
+								{{ item }}
+							</div>
+						</div>
+					</div>
+<!-- 					<div class="ui orange right floated icon top left mini pointing dropdown button">
 						<i class="icon tags"></i>
 						<i class="icon dropdown"></i>
 						<div class="menu">
@@ -110,8 +148,9 @@
 							<a class="item" v-on:click="setTag('is_conservation')">Консервация</a>
 							<a class="item" v-on:click="setTag('is_check')">Поверка</a>
 							<a class="item" v-on:click="setTag('is_repair')">Ремонт</a>
+							<a class="item" v-on:click="setTag('is_working')">Используется</a>
 						</div>
-					</div>
+					</div> -->
 					<div class="ui blue right floated icon top left mini pointing dropdown button">
 						<i class="icon print"></i>
 						<i class="icon dropdown"></i>
@@ -126,6 +165,12 @@
 				</th>
 			</tr>
 			<tr>
+				<th class="collapsing">
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="selectAllMaterials" v-on:click="select()">
+						<label></label>
+					</div>
+				</th>
 				<th v-for="key in columns" @click="sortBy(Object.keys(key)[0])">
 					{{ Object.values(key)[0] }}
 					<i :class="{'icon caret up': (sortColumns[Object.keys(key)[0]] > 0) && Object.keys(key)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(key)[0]] < 0) && Object.keys(key)[0] === sortKey}"></i>
@@ -137,7 +182,7 @@
 				<td class="collapsing">
 					<div class="ui checkbox">
 						<input type="checkbox"
-						v-bind:value="equipment.id" 
+						v-bind:value="{id_equipment: equipment.id,is_archive: equipment.is_archive,is_conservation: equipment.is_conservation,is_repair: equipment.is_repair,is_check: equipment.is_check,is_working: equipment.is_working}" 
 						v-model="selectedEquipments">
 						<label></label>
 					</div>
@@ -148,12 +193,13 @@
 				<td class="collapsing">{{ equipment.date_current_check }}</td>
 				<td class="collapsing">{{ equipment.date_next_check }}</td>
 				<td class="collapsing">
-					<span  v-bind:class="{'ui yellow small circular label': equipment.is_conservation, 'ui teal small circular label': equipment.is_archive, 'ui red small circular label': equipment.is_repair, 'ui violet small circular label': equipment.is_check, 'ui green small circular label': equipment.is_working}"
-					v-show="equipment.is_conservation || equipment.is_archive || equipment.is_repair || equipment.is_check || equipment.is_working"></span>
-<!-- 					<span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span>
-					<span class="ui teal small circular label" v-show="equipment.is_archive">А</span>
+<!-- 					<span  v-bind:class="{'ui yellow small circular label': equipment.is_conservation, 'ui teal small circular label': equipment.is_archive, 'ui red small circular label': equipment.is_repair, 'ui violet small circular label': equipment.is_check, 'ui green small circular label': equipment.is_working}"
+					v-show="equipment.is_conservation || equipment.is_archive || equipment.is_repair || equipment.is_check || equipment.is_working"></span> -->
+					<span class="ui violet small circular label" v-show="equipment.is_check">Ц</span>
+					<span class="ui green small circular label" v-show="equipment.is_working">И</span>
 					<span class="ui red small circular label" v-show="equipment.is_repair">Р</span>
-					<span class="ui violet small circular label" v-show="equipment.is_check">Ц</span> -->
+					<span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span>
+					<span class="ui teal small circular label" v-show="equipment.is_archive">А</span>
 				</td>
 				<td class="collapsing">
 					<div class="ui icon left pointing dropdown mini button">
