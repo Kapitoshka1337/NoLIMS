@@ -335,7 +335,7 @@ class MetrologController extends Controller
 							</tr>
 							<tr>
 								<td colspan="8" class="center"><b class="header">Регистрационная карточка оборудования '. $card['type'] .'</b></td>
-								<td>кабинет '. $card['cabinet_number'] .'</td>
+								<td class="center">кабинет '. $card['cabinet_number'] .'</td>
 							</tr>
 							<tr>
 								<td class="center" rowspan="2"><b>Регистрационный №</b></td>
@@ -375,15 +375,27 @@ class MetrologController extends Controller
 							</tr>';
 							if ($history_check != null)
 							{
-								$ht .= '<tr>';
 								foreach ($history_check as $check)
-									$ht .= '<td colspan="3"> '. $type . ' ' . $check['number_document'] . ' от ' . date_format(date_create($check['date_current_check']), 'd.m.Y') .'</td>';
+									$ht .= '<tr><td colspan="3"> '. $type . ' ' . $check['number_document'] . ' от ' . date_format(date_create($check['date_current_check']), 'd.m.Y') .'</td>
+										<td colspan="3">'. $type.'</td>
+										<td colspan="3">'. $type.'</td>
+										</tr>';
 								if ($current_check != null)
-									$ht .= '<td colspan="3">'. $type . ' ' .$current_check['number_document'] . ' от ' . date_format(date_create($current_check['date_current_check']), 'd.m.Y') .'</td>';
-								$ht .= '</tr>';
+									$ht .= '<tr><td colspan="3">'. $type . ' ' .$current_check['number_document'] . ' от ' . date_format(date_create($current_check['date_current_check']), 'd.m.Y') .'</td>
+								<td colspan="3">'. $type.'</td>
+								<td colspan="3">'. $type.'</td></tr>';
+
+								// $ht .= '<tr>';
+								// foreach ($history_check as $check)
+								// 	$ht .= '<td colspan="3"> '. $type . ' ' . $check['number_document'] . ' от ' . date_format(date_create($check['date_current_check']), 'd.m.Y') .'</td>';
+								// if ($current_check != null)
+								// 	$ht .= '<td colspan="3">'. $type . ' ' .$current_check['number_document'] . ' от ' . date_format(date_create($current_check['date_current_check']), 'd.m.Y') .'</td>';
+								// $ht .= '</tr>';
 							}
-							else
-								$ht .= '<tr><td colspan="9">Данных '. $type_check .' нет</td></tr>';
+							// else
+								// $ht .= '<tr><td colspan="9">Данных '. $type_check .' нет</td></tr>';
+								$ht .= '<tr><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td></tr>
+								<tr><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td></tr>';
 
 							$ht .= '
 							<tr>
@@ -423,7 +435,7 @@ class MetrologController extends Controller
 			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
 			$mpdf = new \Mpdf\Mpdf();
 			$mpdf->SetDisplayMode('fullpage');
-			$mpdf->AddPage('L','','','','',3,3,3,0,0,0);
+			$mpdf->AddPage('L','','','','',5,5,5,0,0,0);
 			$mpdf->WriteHTML($ht);
 			$ht = '
 				<head>
