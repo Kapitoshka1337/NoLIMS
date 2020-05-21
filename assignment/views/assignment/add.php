@@ -63,6 +63,10 @@
                     <label>Дата</label>
                     <input name="date" type="date" v-bind:value="today" v-model="obj.dateAdd">
                 </div>
+                <div class="five wide field">
+                    <label>Место отбора</label>
+                    <input name="place" type="text" v-model="obj.place">
+                </div>
                 <input name="date_enter" type="date" v-bind:value="today" v-model="obj.date_enter" hidden readonly>
                 <input name="empl" type="text" value="<?php echo Yii::$app->user->identity['ID']?>" hidden readonly>
             </div>

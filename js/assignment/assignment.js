@@ -101,14 +101,15 @@ var demo2 = new Vue({
 				{'vet':'Вет.станция'},
 				{'region':'Район'},
 				{'farm':'Предприятие'},
-				{'animal':'Животное'},
+				// {'animal':'Животное'},
 				{'method':'Исследование'},
 				{'amount':'Кол'},
 				{'block_balance':'Квартал'},
 				{'plan_balance':'Год'},
 				{'total':'Итог'},
 				{'date':'Дата'},
-				{'empl':'Принял'}
+				{'empl':'Принял'},
+				{'place_of_selection':'Место отбора'}
 			],
 			filterColumn: [
 				{'vet':'Вет.станция'},
@@ -116,7 +117,9 @@ var demo2 = new Vue({
 				{'farm':'Предприятие'},
 				{'animal':'Животное'},
 				{'method':'Исследование'},
-				{'date':'Дата'}
+				{'date':'Дата'},
+				{'block':'Квартал'},
+				{'place_of_selection':'Место отбора'}
 			]
 		},
 		gridData: [],
@@ -125,7 +128,8 @@ var demo2 = new Vue({
 			region: [],
 			farm: [],
 			animal: [],
-			method: []
+			method: [],
+			block: []
 		},
 		listType: [],
 		listMeasure: [],

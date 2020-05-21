@@ -309,6 +309,7 @@ class AssignmentController extends GlobalController
 				$pathdata->ID_farm  = $data['farm'];
 				$pathdata->ID_region  = $data['region'];
 				$pathdata->ID_vetstation = $data['vetstation'];
+				$pathdata->place_of_selection = $data['place'];
 				$pathdata->DateAdd = $data['date'];
 				$pathdata->date_enter = $data['date_enter'];
 				$pathdata->Amount  = $data['amount'];

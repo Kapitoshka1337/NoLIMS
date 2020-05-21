@@ -40,12 +40,12 @@ class module extends \yii\base\Module
                         'actions' => ['edit'],
                         // 'roles' => ['corporal-second']
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity['role'] === 'corporal-second' || 'corporal-first';
+                            return Yii::$app->user->identity['role'] === 'corporal-second';
                         }
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['logout', 'index', 'report', 'view', 'get-data', 'get-empl', 'get-report', 'create-farm'],
+                        'actions' => ['logout', 'index', 'report', 'view', 'get-data', 'get-report'],
                         'matchCallback' => function ($rule, $action) {
                             return Yii::$app->user->identity['role'] === 'corporal-first';
                         }

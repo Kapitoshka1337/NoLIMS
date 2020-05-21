@@ -56,14 +56,15 @@
                 <td>{{ data.vet }}</td>
                 <td>{{ data.region }}</td>
                 <td>{{ data.farm.slice(0, 36)}}</td>
-                <td>{{ data.animal }}</td>
-                <td>{{ data.method }}</td>
+                <!-- <td>{{ data.animal }}</td> -->
+                <td><strong>{{ data.animal }}</strong> - {{ data.method }}</td>
                 <td>{{ data.amount }}</td >
                 <td v-bind:class="{success:(data.block_balance) >= Math.round((data.block_plan / 10) * (36 / 10)), caution: (data.block_balance) <= Math.round((data.block_plan / 10) * (36 / 10)), danger: (data.block_balance) <= Math.round((data.block_plan / 10) * (16 / 10))}">{{ data.block_balance }} / <strong>{{ data.block_plan }}</strong></td>
                 <td v-bind:class="{success:(data.plan_balance) >= Math.round((data.plan / 10) * (36 / 10)), caution: (data.plan_balance) <= Math.round((data.plan / 10) * (36 / 10)), danger: (data.plan_balance) <= Math.round((data.plan / 10) * (16 / 10))}">{{ data.plan_balance }} / <strong>{{ data.plan }}</strong></td>
                 <td>{{ data.total }}</td>
                 <td width="100">{{ data.date }}</td>
                 <td width="130" >{{ data.empl.slice(0, 15)}}</td>
+                <td width="130" >{{ data.place_of_selection }}</td>
             </tr>
         </tbody>
         <tfoot>

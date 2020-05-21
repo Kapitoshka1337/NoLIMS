@@ -10,7 +10,8 @@ var addForm = new Vue({
             amount: '0',
             dateAdd: this.today,
             date_enter: this.today,
-            empl: '0'
+            empl: '0',
+            place: ''
         },
         farm: {
             id_reg: '',
