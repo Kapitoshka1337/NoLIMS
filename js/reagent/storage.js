@@ -195,9 +195,7 @@ let demo1 = new Vue({
 		validationExpense(){
 			this.errors = [];
 			if ((this.materials.total - this.materials.amount) < 0)
-				return 'При потреблении ' + this.materials.amount + ' останется ' + (this.materials.total - this.materials.amount) + ' ';
-			// if(this.materials.amount === null || this.materials.amount === '')
-			// 	return 'Введите количество потребления';
+				return 'Нельзя потратить больше ' + this.materials.total;
 		}
 	},
 	mounted: function() {
