@@ -174,7 +174,7 @@ let demo1 = new Vue({
 			let formData = new FormData();
 			formData.append('File', this.file[0]);
 			formData.append('id_arrival_material', this.materials.materialArrivalId);
-			formData.append('id_type_upload_files', this.typeUploadFile);
+			formData.append('id_type_upload_files', 0);//this.typeUploadFile);
 			axios.post( '/reagent/upload-file', formData, {headers:{'Content-Type': 'multipart/form-data'}
 			}).then(response => (this.getStorage(), this.file[0] = [])).catch(error => (alert('FAILURE')));
 		},
