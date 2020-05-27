@@ -215,7 +215,7 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			$stickers = array_chunk(view_equipment_metrolog_sticker::findAll(['id_equipment' => $data]), 3);
+			$stickers = array_chunk(view_equipment_metrolog_sticker::findAll(['id_equipment' => $data]), 4);
 			$ht = '<head><style>table, th, td { padding: 10px; border: 1px solid black; border-collapse: collapse; padding: 6px; margin: 0px; font-size: 12px;} b{font-weight: bold;}</style></head><body><div><table><tbody>';
 					foreach ($stickers as $sticker)
 					{
@@ -252,10 +252,10 @@ class MetrologController extends Controller
 						$ht .= '</tr>';
 					}
 						$ht .='</tbody></table></div></body>';
-			include_once 'D:/OSPanel/vendor/autoload.php';
+			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
 			$mpdf = new \Mpdf\Mpdf();
 			$mpdf->SetDisplayMode('fullpage');
-			$mpdf->AddPage('P','','','','',3,3,3,0,0,0);
+			$mpdf->AddPage('P','','','','',6,6,6,0,0,0);
 			// $stylesheet = file_get_contents('D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/vendor/semantic/semantic.css');
 			// $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
 			$mpdf->WriteHTML($ht);
@@ -272,11 +272,11 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			$tmp_card = view_equipment_metrolog_card::findAll(['id_equipment' => $data]);
-			$maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => $data]);
-			$history_check = equipment_history_date_check::findAll(['id_equipment' => $data]);
-			$current_check = equipment_date_check::findOne(['id_equipment' => $data]);
-			//ВО ИО протокол СИ свидетельство
+			$tmp_card = view_equipment_metrolog_card::findAll(['id_equipment' => $data['id']]);
+			$maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => $data['id']]);
+			$history_check = equipment_history_date_check::findAll(['id_equipment' => $data['id']]);
+			$current_check = equipment_date_check::findOne(['id_equipment' => $data['id']]);
+			// return $this->asJson($tmp_card);
 			foreach ($tmp_card as $card)
 			{
 				switch ($card['type'])
@@ -297,7 +297,7 @@ class MetrologController extends Controller
 				$ht = '<head>
 					<style>
 						* {
-							font-size: 14px;
+							font-size: 12px;
 						}
 						table, th, td { 
 							padding: 10px;
@@ -305,15 +305,17 @@ class MetrologController extends Controller
 							border-collapse: collapse;
 							padding: 6px;
 							margin: 0px;
+							font-size: 12px;
 						}
 						b {
 							font-weight: bold;
+							font-size: 12px;
 						}
 						.center {
 							text-align: center;
 						}
 						.header {
-							font-size: 22px;
+							font-size: 14px;
 						}
 					</style>
 				</head>
@@ -331,13 +333,10 @@ class MetrologController extends Controller
 								<td class="center">лицевая сторона регистрационной карточки</td>
 							</tr>
 							<tr>
-								<td colspan="9"></td>
-							</tr>
-							<tr>
 								<td colspan="8" class="center"><b class="header">Регистрационная карточка оборудования '. $card['type'] .'</b></td>
 								<td class="center">кабинет '. $card['cabinet_number'] .'</td>
 							</tr>
-							<tr>
+							<tr class="center">
 								<td class="center" rowspan="2"><b>Регистрационный №</b></td>
 								<td class="center" rowspan="2"><b>Наименование определяемых (измеряемых) характеристик (параметров), функциональное назначение</b></td>
 								<td class="center" rowspan="2"><b>Наименование оборудования,  тип (марка)</b></td>
@@ -431,7 +430,7 @@ class MetrologController extends Controller
 					</table>
 				</body>';
 			}
-			include_once 'D:/OSPanel/vendor/autoload.php';
+			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
 			$mpdf = new \Mpdf\Mpdf();
 			$mpdf->SetDisplayMode('fullpage');
 			$mpdf->AddPage('L','','','','',5,5,5,0,0,0);

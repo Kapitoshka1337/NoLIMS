@@ -114,6 +114,10 @@
 								<div class="ui teal empty circular label"></div>
 								Архив
 							</div>
+							<div class="item" v-on:click="setTag('is_working')">
+								<div class="ui green empty circular label"></div>
+								Используется
+							</div>
 							<div class="item" v-on:click="setTag('is_conservation')">
 								<div class="ui yellow empty circular label"></div>
 								Консервация
@@ -126,17 +130,13 @@
 								<div class="ui violet empty circular label"></div>
 								ЦСМ
 							</div>
-							<div class="item" v-on:click="setTag('is_working')">
-								<div class="ui green empty circular label"></div>
-								Используется
-							</div>
 							<div class="divider"></div>
 							<div class="header" v-show="selectedEquipments.length > 0">
-								<i class="calendar icon"></i>
+								<i class="tags icon"></i>
 								Снять метку
 							</div>
-							<div class="item" v-for="item in tagsFromSelected">
-								{{ item }}
+							<div class="item" v-for="item in tagsFromSelected" v-on:click="setTag(Object.keys(item))">
+								{{ Object.keys(item) }}
 							</div>
 						</div>
 					</div>

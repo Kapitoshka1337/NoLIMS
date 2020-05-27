@@ -16,7 +16,7 @@ Vue.component('equipment-grid', {
 				if (row !== 'action')
 					sortColumns[row] = 1;
 			});
-		})
+		});
 		return {
 			sortKey: '',
 			sortColumns: sortColumns,
@@ -24,6 +24,13 @@ Vue.component('equipment-grid', {
 			listPages: [],
 			selectAllMaterials: false,
 			selectedEquipments: [],
+			tags: {
+				is_archive: 'Архив',
+				is_conservation: 'Консервация',
+				is_repair: 'Ремонт',
+				is_check: 'ЦСМ',
+				is_working: 'Используется'
+			}
 		}
 	},
 	methods: {
@@ -85,14 +92,35 @@ Vue.component('equipment-grid', {
 		},
 		GetCard() {
 			if(this.selectedEquipments.length > 0)
-				axios.post("/equipment/create-card", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(response =>
+			{
+				let obj;//{tag: tag, eq: this.selectedEquipments};
+				let obj1 = [];
+				for (let item in this.selectedEquipments)
+					obj1.push(this.selectedEquipments[item].id_equipment);
+				obj = {id: obj1};
+				// console.log(this.obj1);
+				axios.post("/equipment/create-card", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>
 				(window.open(response.data))).catch(error => (this.listError = error));
+			}
 		},
 		setTag(tag){
 			if(this.selectedEquipments.length > 0)
-				// let obj = {tag: tag, eq: this.selectedEquipments};
-				axios.post("/equipment/set-tag", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>
-					(demo1.getEquipments())).catch(error => (this.listError = error));
+			{
+				let obj;//{tag: tag, eq: this.selectedEquipments};
+				let obj1 = [];
+				for (let item in this.selectedEquipments)
+					obj1.push(this.selectedEquipments[item].id_equipment);
+				obj = {tag: tag, eq: obj1};
+				console.log(obj);
+				// axios.post("/equipment/set-tag", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(demo1.getEquipments(), this.selectedEquipments = [])).catch(error => (this.listError = error));
+			}
+		},
+		returnUniq(column){
+			let result = [];
+			for (let str of column)
+				if (!result.includes(str))
+					result.push(str);
+			return result;
 		}
 	},
 	watch: {
@@ -129,9 +157,66 @@ Vue.component('equipment-grid', {
 			return this.paginate(this.filteredRows);
 		},
 		tagsFromSelected(){
+			// key[row] == value
+			// key == object
+			// row == name key
 			let rows = this.selectedEquipments;
-			if (this.selectedEquipments.length > 0)
-				return rows[0].id_equipment;
+			let tagg = this.tags;
+			let obj_id = []; //Хранение id выделенного оборудования
+			let obj_tags = {}; //Хранение тегов выделенного оборудования
+			let result = []; //Уникальные теги из obj_tags
+			let obj; //Возвращаемый объект
+				//Выбранные элементы
+				rows.forEach(function(key)
+				{
+					let tags = [];
+					Object.keys(key).forEach(function(row)
+					{
+						if(row === 'id_equipment')
+							obj_id.push(key[row]);
+						else if(key[row])
+						{
+							Object.keys(tagg).forEach(function(tag)
+							{
+								if(row === tag) obj_tags[tag]=tagg[tag];
+								// console.log(obj_tags);
+							});
+							// let result = [];
+							// for (let i in obj_tags)
+							// 	result.push([i, obj_tags[i]]);
+							// result.sort(function(a, b) {
+							// 	return a[1] - b[1];
+							// });
+							// obj_tags = Object.keys(obj_tags).sort(function(a,b){return obj_tags[a]-obj_tags[b]})
+							// Object.keys(obj_tags).forEach(function(tag){
+							// 		if (!result.includes(tag))
+							// 		{
+							// 			result.push(tag);
+										// result = result.slice().sort(function (a, b)
+										// {
+										// 	if(a === b) return 0 ;
+										// 	else if (a > b) return 1;
+										// 	else return - 1;
+										// });
+							// 		}
+							// })
+							//Возврат уникальных значений из тегов
+							// for (let str of obj_tags)
+							// 	if (!result.includes(str))
+							// 	{
+							// 		result.push(str);
+							// 		result = result.slice().sort(function (a, b)
+							// 		{
+							// 			if(a === b) return 0 ;
+							// 			else if (a > b) return 1;
+							// 			else return - 1;
+							// 		});
+							// 	}
+						}
+					});
+				});
+				obj = {id_equipment: obj_id, tags: obj_tags};
+			return obj;
 		}
 	},
 })
@@ -141,7 +226,6 @@ let demo1 = new Vue({
 	data: {
 		gridColumns: {
 			tableColumn: [
-				// {'action': ''},
 				{'number':'Номер'},
 				{'equipment':'Оборудование'},
 				{'serial_number':'С/Н'},
