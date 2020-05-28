@@ -136,7 +136,13 @@
 								Снять метку
 							</div>
 							<div class="item" v-for="item in Object.keys(tagsFromSelected)" v-on:click="setTag(item, false)">
-								{{ tagsFromSelected[item] }}
+								<div v-bind:class="{
+								'ui violet empty circular label': item === 'is_check',
+								'ui red empty circular label': item === 'is_repair',
+								'ui yellow empty circular label': item === 'is_conservation',
+								'ui green empty circular label': item === 'is_working',
+								'ui teal empty circular label': item === 'is_archive',}"></div>
+								{{ tagsFromSelected[item][0] }}
 							</div>
 						</div>
 					</div>
