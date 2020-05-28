@@ -141,7 +141,7 @@
 								'ui red empty circular label': item === 'is_repair',
 								'ui yellow empty circular label': item === 'is_conservation',
 								'ui green empty circular label': item === 'is_working',
-								'ui teal empty circular label': item === 'is_archive',}"></div>
+								'ui teal empty circular label': item === 'is_archive'}"></div>
 								{{ tagsFromSelected[item][0] }}
 							</div>
 						</div>
@@ -201,11 +201,11 @@
 				<td class="collapsing">
 <!-- 					<span  v-bind:class="{'ui yellow small circular label': equipment.is_conservation, 'ui teal small circular label': equipment.is_archive, 'ui red small circular label': equipment.is_repair, 'ui violet small circular label': equipment.is_check, 'ui green small circular label': equipment.is_working}"
 					v-show="equipment.is_conservation || equipment.is_archive || equipment.is_repair || equipment.is_check || equipment.is_working"></span> -->
-					<span class="ui violet small circular label" v-show="equipment.is_check">Ц</span>
-					<span class="ui green small circular label" v-show="equipment.is_working">И</span>
-					<span class="ui red small circular label" v-show="equipment.is_repair">Р</span>
-					<span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span>
-					<span class="ui teal small circular label" v-show="equipment.is_archive">А</span>
+					<a href="#" v-on:click="filters['is_check'].push(1)"><span class="ui violet small circular label" v-show="equipment.is_check">Ц</span></a>
+					<a href="#" v-on:click="filters['is_working'].push(1)"><span class="ui green small circular label" v-show="equipment.is_working">И</span></a>
+					<a href="#" v-on:click="filters['is_repair'].push(1)"><span class="ui red small circular label" v-show="equipment.is_repair">Р</span></a>
+					<a href="#" v-on:click="filters['is_conservation'].push(1)"><span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span></a>
+					<a href="#" v-on:click="filters['is_archive'].push(1)"><span class="ui teal small circular label" v-show="equipment.is_archive">А</span></a>
 				</td>
 				<td class="collapsing">
 					<div class="ui icon left pointing dropdown mini button">
