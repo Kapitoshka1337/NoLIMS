@@ -135,8 +135,8 @@
 								<i class="tags icon"></i>
 								Снять метку
 							</div>
-							<div class="item" v-for="item in tagsFromSelected" v-on:click="setTag(Object.keys(item))">
-								{{ Object.keys(item) }}
+							<div class="item" v-for="item in Object.keys(tagsFromSelected)" v-on:click="setTag(item)">
+								{{ tagsFromSelected[item] }}
 							</div>
 						</div>
 					</div>

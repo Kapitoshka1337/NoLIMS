@@ -161,62 +161,20 @@ Vue.component('equipment-grid', {
 			// key == object
 			// row == name key
 			let rows = this.selectedEquipments;
-			let tagg = this.tags;
-			let obj_id = []; //Хранение id выделенного оборудования
-			let obj_tags = {}; //Хранение тегов выделенного оборудования
-			let result = []; //Уникальные теги из obj_tags
-			let obj; //Возвращаемый объект
-				//Выбранные элементы
+			let tags = this.tags;
+			let obj_tags = {};
 				rows.forEach(function(key)
 				{
-					let tags = [];
 					Object.keys(key).forEach(function(row)
 					{
-						if(row === 'id_equipment')
-							obj_id.push(key[row]);
-						else if(key[row])
-						{
-							Object.keys(tagg).forEach(function(tag)
+						if(key[row])
+							Object.keys(tags).forEach(function(tag)
 							{
-								if(row === tag) obj_tags[tag]=tagg[tag];
-								// console.log(obj_tags);
+								if(row === tag) obj_tags[tag] = tags[tag];
 							});
-							// let result = [];
-							// for (let i in obj_tags)
-							// 	result.push([i, obj_tags[i]]);
-							// result.sort(function(a, b) {
-							// 	return a[1] - b[1];
-							// });
-							// obj_tags = Object.keys(obj_tags).sort(function(a,b){return obj_tags[a]-obj_tags[b]})
-							// Object.keys(obj_tags).forEach(function(tag){
-							// 		if (!result.includes(tag))
-							// 		{
-							// 			result.push(tag);
-										// result = result.slice().sort(function (a, b)
-										// {
-										// 	if(a === b) return 0 ;
-										// 	else if (a > b) return 1;
-										// 	else return - 1;
-										// });
-							// 		}
-							// })
-							//Возврат уникальных значений из тегов
-							// for (let str of obj_tags)
-							// 	if (!result.includes(str))
-							// 	{
-							// 		result.push(str);
-							// 		result = result.slice().sort(function (a, b)
-							// 		{
-							// 			if(a === b) return 0 ;
-							// 			else if (a > b) return 1;
-							// 			else return - 1;
-							// 		});
-							// 	}
-						}
 					});
 				});
-				obj = {id_equipment: obj_id, tags: obj_tags};
-			return obj;
+			return obj_tags;
 		}
 	},
 })
