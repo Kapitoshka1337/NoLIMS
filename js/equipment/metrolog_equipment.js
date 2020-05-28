@@ -103,16 +103,16 @@ Vue.component('equipment-grid', {
 				(window.open(response.data))).catch(error => (this.listError = error));
 			}
 		},
-		setTag(tag){
+		setTag(tag, value){
 			if(this.selectedEquipments.length > 0)
 			{
 				let obj;//{tag: tag, eq: this.selectedEquipments};
 				let obj1 = [];
 				for (let item in this.selectedEquipments)
 					obj1.push(this.selectedEquipments[item].id_equipment);
-				obj = {tag: tag, eq: obj1};
-				console.log(obj);
-				// axios.post("/equipment/set-tag", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(demo1.getEquipments(), this.selectedEquipments = [])).catch(error => (this.listError = error));
+				obj = {tag: tag, value: value, eq: obj1};
+				// console.log(obj);
+				axios.post("/equipment/set-tag", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(demo1.getEquipments(), this.selectedEquipments = [])).catch(error => (this.listError = error));
 			}
 		},
 		returnUniq(column){

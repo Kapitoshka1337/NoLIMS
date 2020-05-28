@@ -110,23 +110,23 @@
 								<i class="tags icon"></i>
 								Поставить метку
 							</div>
-							<div class="item" v-on:click="setTag('is_archive')">
+							<div class="item" v-on:click="setTag('is_archive', true)">
 								<div class="ui teal empty circular label"></div>
 								Архив
 							</div>
-							<div class="item" v-on:click="setTag('is_working')">
+							<div class="item" v-on:click="setTag('is_working', true)">
 								<div class="ui green empty circular label"></div>
 								Используется
 							</div>
-							<div class="item" v-on:click="setTag('is_conservation')">
+							<div class="item" v-on:click="setTag('is_conservation', true)">
 								<div class="ui yellow empty circular label"></div>
 								Консервация
 							</div>
-							<div class="item" v-on:click="setTag('is_repair')">
+							<div class="item" v-on:click="setTag('is_repair', true)">
 								<div class="ui red empty circular label"></div>
 								Ремонт
 							</div>
-							<div class="item" v-on:click="setTag('is_check')">
+							<div class="item" v-on:click="setTag('is_check', true)">
 								<div class="ui violet empty circular label"></div>
 								ЦСМ
 							</div>
@@ -135,7 +135,7 @@
 								<i class="tags icon"></i>
 								Снять метку
 							</div>
-							<div class="item" v-for="item in Object.keys(tagsFromSelected)" v-on:click="setTag(item)">
+							<div class="item" v-for="item in Object.keys(tagsFromSelected)" v-on:click="setTag(item, false)">
 								{{ tagsFromSelected[item] }}
 							</div>
 						</div>

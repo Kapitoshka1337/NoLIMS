@@ -495,7 +495,8 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			$eq = view_metrolog_equipment::updateAll([$data['tag'] => 1], ['id' => $data['eq']]);
+			// return $this->asJson(Yii::$app->request->post());
+			$eq = view_metrolog_equipment::updateAll([$data['tag'] => $data['value']], ['id' => $data['eq']]);
 			if($eq)
 				return Yii::$app->response->statusCode = 200;
 		}
