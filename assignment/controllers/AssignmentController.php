@@ -101,9 +101,6 @@ class AssignmentController extends GlobalController
 			$cache->set('method', $method);
 		}
 		//Определение текущего квартала
-		// $block = $cache->get('block');
-		// if ($block === false)
-		// {
 			$block = gz_blockofyear::find()->all();
 			$today = date('Y-m-d');
 			foreach ($block as $bl)
@@ -115,13 +112,8 @@ class AssignmentController extends GlobalController
 					$cache->set('block', $bl->ID);
 				}
 			}
-		// }
 		$block = $cache->get('block');
-		// $query = gz_getall::find();
-		// $pagination = new Pagination(['defaultPageSize' => 64,'totalCount' => $query->count(),]);
-		// $records = $query->offset($pagination->offset)->limit($pagination->limit)->all();
-		//return $this->render('index');
-		return $this->render('index');
+		return $this->render('index', ['data' => $block]);
 	}
 
 	public function actionGetData()
@@ -129,7 +121,16 @@ class AssignmentController extends GlobalController
 		if(Yii::$app->request->isGet)
 		{
 			$query = gz_getall::find()->all();
-			return $this->asJson($query);
+			$cache = Yii::$app->cache;
+			if($cache->get('pathdata'))
+			{
+				return $this->asJson($cache->get('pathdata'));
+			}
+			else 
+			{
+				$cache->set('pathdata', $query);
+				return $this->asJson($query);
+			}
 		}
 	}
 
@@ -142,46 +143,7 @@ class AssignmentController extends GlobalController
 	{
 		$cache = Yii::$app->cache;
 		$an = $cache->get('animal');
-		// if ($an === false)
-		// {
-		// 	$animal = animal::find();
-		// 	$animals = $animal->all();
-		// 	$arr = array();
-		// 	foreach ($animals as $ani) {
-		// 		$arr[] = array(
-		// 			'id_animal' => $ani->ID,
-		// 			'title' => $ani->Title,
-		// 		);
-		// 	}
-		// 	$an = json_encode($arr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-		// 	$cache->set('animal', $an);
-		// }
-
 		$data = $cache->get('vetreg');
-		// if ($data === false)
-		// {
-		// 	$vetstation = vetstation::find();
-		// 	$region = region::find();
-		// 	$vets = $vetstation->all();
-		// 	$regions = $region->all();
-		// 	$arr = array();
-		// 	$reg = array();
-		// 	foreach ($vets as $vet) {
-		// 		foreach ($regions as $region) {
-		// 			if ($vet->ID == $region->ID_VetStation)
-		// 			{
-		// 				$reg[] = array(
-		// 						'id_reg' => $region->ID,
-		// 						'title' => $region->Title,
-		// 					);
-		// 			}
-		// 		}
-		// 		$arr[] = array( 'id_vet' => $vet->ID, 'title' => $vet->Title, 'regions' => $reg );
-		// 		unset($reg);
-		// 		$data = json_encode($arr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-		// 	}
-		// 	$cache->set('vetreg', $data);
-		// }
 		return $this->render('add', ['data' => $data, 'animal' => $an]);
 	}
 
@@ -269,10 +231,6 @@ class AssignmentController extends GlobalController
 			{
 				case 2:
 					$report = gz_getall2::find()->all();
-					// $string = '{"план_квартальный": {type: "string"}},';
-					// $string = json_encode(array('план_квартальный' => array('type' => 'number')), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK | JSON_FORCE_OBJECT);
-					// $arr = array($string, $report);
-					// $report[0] = $string;
 					return $this->asJson($report);
 					break;
 				case 3:
@@ -280,16 +238,6 @@ class AssignmentController extends GlobalController
 					return $this->asJson($report);
 					break;
 			}
-			// if(isset($get))
-			// {
-			// 	$report = getall3::find()->all();
-			// 	return $this->asJson($report);
-			// }
-			// else
-			// {
-			// 	$report = getall2::find()->all();
-			// 	return $this->asJson($report);
-			// } 
 		}
 	}
 
@@ -298,9 +246,7 @@ class AssignmentController extends GlobalController
 		if (Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			// $postData = file_get_contents("php://input");
-			// $jsonData = json_decode($postData, true);
-
+			$cache = Yii::$app->cache;
 			foreach ($data['method'] as $mhd)
 			{
 				$pathdata = new gz_pathdata();
@@ -309,16 +255,18 @@ class AssignmentController extends GlobalController
 				$pathdata->ID_farm  = $data['farm'];
 				$pathdata->ID_region  = $data['region'];
 				$pathdata->ID_vetstation = $data['vetstation'];
-				$pathdata->place_of_selection = $data['place'];
 				$pathdata->DateAdd = $data['date'];
 				$pathdata->date_enter = $data['date_enter'];
 				$pathdata->Amount  = $data['amount'];
 				$pathdata->ID_empl = $data['empl'];
-				$pathdata->save();
+				if($pathdata->save())
+				{
+					// $an = $cache->get('pathdata');
+					$cache->set('pathdata', $this->actionGetData());
+				}
 			}
+			return $this->redirect(['/assignment']);
 		}
-		return $this->redirect(['/assignment']);
-		// return $this->asJson($jsonData);
 	}
 
 	public function actionCreateFarm()

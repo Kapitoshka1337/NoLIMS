@@ -1,4 +1,4 @@
-Vue.config.devtools = true;
+// Vue.config.devtools = true;
 Vue.component('assignment-grid', {
 	template: '#grid-assignment',
 	props: {
@@ -11,10 +11,7 @@ Vue.component('assignment-grid', {
 		let sortColumns = {};
 		this.columns.forEach(function (key){
 			Object.keys(key).some(function(row){
-				if (row !== 'action')
-				{
-					sortColumns[row] = 1;
-				}
+				if (row !== 'action') sortColumns[row] = 1;
 			});
 		})
 		return {
@@ -37,10 +34,7 @@ Vue.component('assignment-grid', {
 		},
 		setPages () {
 			let numOfPage = Math.ceil(this.filteredRows.length / this.countPost);
-			for (let i = 1; i <= numOfPage; i++)
-			{
-				this.listPages.push(i);
-			}
+			for (let i = 1; i <= numOfPage; i++) this.listPages.push(i);
 		},
 		paginate (rows) {
 			let page = this.currentPage;
@@ -101,15 +95,14 @@ var demo2 = new Vue({
 				{'vet':'Вет.станция'},
 				{'region':'Район'},
 				{'farm':'Предприятие'},
-				// {'animal':'Животное'},
+				{'animal':'Животное'},
 				{'method':'Исследование'},
 				{'amount':'Кол'},
 				{'block_balance':'Квартал'},
 				{'plan_balance':'Год'},
 				{'total':'Итог'},
 				{'date':'Дата'},
-				{'empl':'Принял'},
-				{'place_of_selection':'Место отбора'}
+				{'empl':'Принял'}
 			],
 			filterColumn: [
 				{'vet':'Вет.станция'},
@@ -117,9 +110,7 @@ var demo2 = new Vue({
 				{'farm':'Предприятие'},
 				{'animal':'Животное'},
 				{'method':'Исследование'},
-				{'date':'Дата'},
-				{'block':'Квартал'},
-				{'place_of_selection':'Место отбора'}
+				{'date':'Дата'}
 			]
 		},
 		gridData: [],
@@ -128,8 +119,7 @@ var demo2 = new Vue({
 			region: [],
 			farm: [],
 			animal: [],
-			method: [],
-			block: []
+			method: []
 		},
 		listType: [],
 		listMeasure: [],
@@ -150,6 +140,7 @@ var demo2 = new Vue({
 		},
 		setDropdown(){
 			$('.dropdown').dropdown({fullTextSearch: true});
+			// $('.ui.sticky').sticky({context: '#example'});
 		}
 	},
 	mounted: function() {

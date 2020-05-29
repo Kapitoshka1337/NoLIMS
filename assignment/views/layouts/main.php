@@ -38,15 +38,6 @@ AppAsset::register($this);
         <div class="ui padded grid">
             <?= $content ?>
         </div>
-        <script>
-            $('#drop')
-  .popup({
-    on         : 'hover',
-    inline     : true,
-    hoverable  : true,
-    position   : 'bottom right',
-  });
-        </script>
     <?php $this->endBody() ?>
     </body>
     </html>
