@@ -12,8 +12,10 @@ use app\modules\equipment\models\equipment_type;
 use app\modules\equipment\models\equipment_equipment;
 use app\modules\equipment\models\equipment_upload_document_type;
 use app\modules\equipment\models\equipment_equipment_details;
+use app\modules\equipment\models\equipment_function_of_use;
 use app\modules\equipment\models\equipment_date_check;
 use app\modules\equipment\models\equipment_history_date_check;
+use app\modules\equipment\models\equipment_object_study;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
 
@@ -24,7 +26,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -63,8 +65,58 @@ class MetrologController extends Controller
 
 	public function actionDetails()
 	{
-		$eq = equipment_equipment_details::find()->where(['id' => Yii::$app->request->get('id')])->one();
-		return $this->render('details', ['id' => Yii::$app->request->get('id'), 'eq' => $eq]);
+		// return $this->render('details', ['id' => Yii::$app->request->get('id'), 'eq' => $eq]);
+		return $this->render('details');
+	}
+
+	public function actionGetDetails()
+	{
+		if(Yii::$app->request->isGet)
+		{
+			$eq = equipment_equipment_details::find()->where(['id' => Yii::$app->request->get('id')])->one();
+			// $maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => Yii::$app->request->get('id')]);
+			$history_check = equipment_history_date_check::findAll(['id_equipment' => Yii::$app->request->get('id')]);
+			$current_check = equipment_date_check::findOne(['id_equipment' => Yii::$app->request->get('id')]);
+			$type = equipment_type::find()->all();
+			$of_use = equipment_function_of_use::find()->all();
+			//КОСТЫЛЬ
+			if(!$history_check) $history_check = null;
+			$types = array('type' => $type, 'function_of_use' => $of_use);
+			$main = array('equipment' => $eq, 'history_check' => $history_check, 'current_check' => $current_check, 'types' => $types);
+			return $this->asJson($main);
+		}
+	}
+
+	public function actionSaveEquipment()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			// return $this->asJson(Yii::$app->request->post());
+			$data = Yii::$app->request->post();
+			$eq = equipment_equipment_details::find()->where(['id' => Yii::$app->request->get('id')])->one();
+			foreach ($data as $key => $item)
+			{
+
+			}
+		}
+    // public function renderItems()
+    // {
+    //     $items = '';
+    //     foreach ($this->items as $key => $item) {
+    //         if (is_array($item)) {
+    //             //$items .= $this->renderHeader($key);
+    //             $rawItems = $item;
+    //             foreach ($rawItems as $key => $item) {
+    //                 $items .= $this->renderItem($key, $item);
+    //             }
+    //         } elseif (empty($item)) {
+    //             $items .= $this->renderDivider();
+    //         } else {
+    //             $items .= $this->renderItem($key, $item);
+    //         }
+    //     }
+    //     return $items;
+    // }
 	}
 
 	public function actionGetEquipments()
@@ -77,6 +129,12 @@ class MetrologController extends Controller
 	{
 		$type = equipment_type::find()->all();
 		return $this->asJson($type);
+	}
+
+	public function actionGetObjectStudy()
+	{
+		$object = equipment_object_study::find()->all();
+		return $this->asJson($object);
 	}
 
 	public function actionGetDocType()
@@ -122,7 +180,7 @@ class MetrologController extends Controller
 					if($dep->id == $loc->id_department)
 					{
 						$location[] = array(
-							'id' => $loc->id,
+							'id_location' => $loc->id,
 							'cabinet_number' => $loc->cabinet_number,
 							'place' => $loc->place,
 							'notation' => $loc->notation
@@ -174,6 +232,32 @@ class MetrologController extends Controller
 		}
 	}
 
+	public function actionSetTag()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$eq = view_metrolog_equipment::updateAll([$data['tag'] => $data['value']], ['id' => $data['eq']]);
+			if($eq)
+				return Yii::$app->response->statusCode = 200;
+		}
+	}
+
+	public function actionSetHandoff()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$eq = equipment_equipment::updateAll(['id_department' => $data['id_department_to']], ['id' => $data['id_equipment']]);
+			if($eq)
+			{
+				$eqs = equipment_equipment::updateAll(['id_location' => $data['id_location']], ['id' => $data['id_equipment']]);
+				if($eqs)
+					return Yii::$app->response->statusCode = 200;
+			}
+		}
+	}
+
 	public function actionUploadFile()
 	{
 		//ВМЕСТО UPLOADFILE
@@ -207,11 +291,6 @@ class MetrologController extends Controller
 
 	public function actionCreateSticker()
 	{
-		// $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('assets/template/Temp.docx');
-		// $templateProcessor->setValue('weekday', date('l'));
-		// $templateProcessor->setValue('time', date('H:i'));
-		// $templateProcessor->setValue('serverName', realpath(__DIR__));
-		// $templateProcessor->saveAs('Sample_09_TemplateCloneRow.docx');
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
@@ -240,7 +319,6 @@ class MetrologController extends Controller
 									<div class="label"><b>Наименовение, тип:</b> <br><u>' .$stick->equipment . ' ' .($stick->type) . '</u></div>';
 									if($type === 'поверки')
 										$ht .= '<div class="label"><b>Рег.карта:</b> <u>'.$stick->number . '/' . $stick->id_department . '-' . $stick->type .'</u> <span class="label"><b>ФИФ:</b> <u>'. $stick->fif_number .'</u></span></div>';
-										// $ht .= '<div class="label">ФИФ: <u>'. $stick->fif_number .'</u></div>';
 									else
 										$ht .= '<div class="label"><b>Рег.карта: </b><u>'.$stick->number . '/' . $stick->id_department . '-' . $stick->type .'</u></div>';
 									$ht .= '<div class="label"><b>Заводской номер: </b><u>'. $stick->serial_number .'</u></div>
@@ -256,14 +334,8 @@ class MetrologController extends Controller
 			$mpdf = new \Mpdf\Mpdf();
 			$mpdf->SetDisplayMode('fullpage');
 			$mpdf->AddPage('P','','','','',6,6,6,0,0,0);
-			// $stylesheet = file_get_contents('D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/vendor/semantic/semantic.css');
-			// $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
 			$mpdf->WriteHTML($ht);
 			$mpdf->Output('assets/template/sticker.pdf', \Mpdf\Output\Destination::FILE);
-			return $this->asJson('/assets/template/sticker.pdf');
-			// Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
-			// Yii::$app->response->headers->add('Content-Type', 'application/pdf');
-			// return $this->render('tcpdf');
 		}
 	}
 
@@ -276,7 +348,6 @@ class MetrologController extends Controller
 			$maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => $data['id']]);
 			$history_check = equipment_history_date_check::findAll(['id_equipment' => $data['id']]);
 			$current_check = equipment_date_check::findOne(['id_equipment' => $data['id']]);
-			// return $this->asJson($tmp_card);
 			foreach ($tmp_card as $card)
 			{
 				switch ($card['type'])
@@ -383,18 +454,7 @@ class MetrologController extends Controller
 									$ht .= '<tr><td colspan="3">'. $type . ' ' .$current_check['number_document'] . ' от ' . date_format(date_create($current_check['date_current_check']), 'd.m.Y') .'</td>
 								<td colspan="3">'. $type.'</td>
 								<td colspan="3">'. $type.'</td></tr>';
-
-								// $ht .= '<tr>';
-								// foreach ($history_check as $check)
-								// 	$ht .= '<td colspan="3"> '. $type . ' ' . $check['number_document'] . ' от ' . date_format(date_create($check['date_current_check']), 'd.m.Y') .'</td>';
-								// if ($current_check != null)
-								// 	$ht .= '<td colspan="3">'. $type . ' ' .$current_check['number_document'] . ' от ' . date_format(date_create($current_check['date_current_check']), 'd.m.Y') .'</td>';
-								// $ht .= '</tr>';
 							}
-							// else
-								// $ht .= '<tr><td colspan="9">Данных '. $type_check .' нет</td></tr>';
-								// $ht .= '<tr><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td></tr><tr><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td><td colspan="3">'. $type .'</td></tr>';
-
 							$ht .= '
 							<tr>
 								<td colspan="1"><b>Вид ТО:</b></td>
@@ -487,29 +547,6 @@ class MetrologController extends Controller
 			$mpdf->WriteHTML($ht);
 			$mpdf->Output('assets/template/card.pdf', \Mpdf\Output\Destination::FILE);
 			return $this->asJson('/assets/template/card.pdf');	
-		}
-	}
-
-	public function actionSetTag()
-	{
-		if(Yii::$app->request->isPost)
-		{
-			$data = Yii::$app->request->post();
-			// return $this->asJson(Yii::$app->request->post());
-			$eq = view_metrolog_equipment::updateAll([$data['tag'] => $data['value']], ['id' => $data['eq']]);
-			if($eq)
-				return Yii::$app->response->statusCode = 200;
-		}
-	}
-
-	public function actionSetHandoff()
-	{
-		if(Yii::$app->request->isPost)
-		{
-			$data = Yii::$app->request->post();
-			$eq = equipment_equipment::updateAll(['id_department' => $data['id_department_to']], ['id' => $data['id_equipment']]);
-			if($eq)
-				return Yii::$app->response->statusCode = 200;
 		}
 	}
 }

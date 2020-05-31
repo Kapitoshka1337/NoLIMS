@@ -56,7 +56,7 @@ Vue.component('equipment-grid', {
 			this.handoff.department = department;
 			$('#modal' + modalName).modal('show');
 		},
-		//ТАК НЕ ДЕЛАТСЯ
+		//ТАК НЕ ДЕЛАЕТСЯ
 		showModalHandoff(modalName, id = null, department = null, id_to = null){
 			this.handoff.department = department;
 			this.handoff.id_equipment = id;
@@ -78,7 +78,6 @@ Vue.component('equipment-grid', {
 						is_check: this.paginateRows[i].is_check,
 						is_working: this.paginateRows[i].is_working
 					});
-					// this.selectedEquipments.push(this.paginateRows[i].id);
 		},
 		Details(id_equipment)
 		{
@@ -93,12 +92,11 @@ Vue.component('equipment-grid', {
 		GetCard() {
 			if(this.selectedEquipments.length > 0)
 			{
-				let obj;//{tag: tag, eq: this.selectedEquipments};
+				let obj
 				let obj1 = [];
 				for (let item in this.selectedEquipments)
 					obj1.push(this.selectedEquipments[item].id_equipment);
 				obj = {id: obj1};
-				// console.log(this.obj1);
 				axios.post("/equipment/create-card", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>
 				(window.open(response.data))).catch(error => (this.listError = error));
 			}
@@ -106,21 +104,16 @@ Vue.component('equipment-grid', {
 		setTag(tag, value){
 			if(this.selectedEquipments.length > 0)
 			{
-				let obj;//{tag: tag, eq: this.selectedEquipments};
+				let obj;
 				let obj1 = [];
 				for (let item in this.selectedEquipments)
 					obj1.push(this.selectedEquipments[item].id_equipment);
 				obj = {tag: tag, value: value, eq: obj1};
-				// console.log(obj);
 				axios.post("/equipment/set-tag", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(demo1.getEquipments(), this.selectedEquipments = [])).catch(error => (this.listError = error));
 			}
 		},
-		returnUniq(column){
-			let result = [];
-			for (let str of column)
-				if (!result.includes(str))
-					result.push(str);
-			return result;
+		test(){
+			console.log(1);
 		}
 	},
 	watch: {
@@ -189,7 +182,7 @@ let demo1 = new Vue({
 				{'serial_number':'С/Н'},
 				{'date_current_check':'Текущая'},
 				{'date_next_check':'Следующая'},
-				{'Tag': 'Метка'},
+				{'Tag': ''},
 				{'action': ''}
 			],
 			filterColumn: [
@@ -200,11 +193,11 @@ let demo1 = new Vue({
 				{'serial_number':'S/N'},
 				{'date_current_check':'Текущая проверка'},
 				{'date_next_check':'Следующая проверка'},
-				{'is_archive':'Архив'},
-				{'is_conservation':'Консервация'},
-				{'is_check':'Проверка'},
-				{'is_repair':'Ремонт'},
-				{'is_working':'В работе'}
+				// {'is_archive':'Архив'},
+				// {'is_conservation':'Консервация'},
+				// {'is_check':'Проверка'},
+				// {'is_repair':'Ремонт'},
+				// {'is_working':'В работе'}
 			]
 		},
 		gridData: [],
@@ -233,7 +226,8 @@ let demo1 = new Vue({
 		handoff: {
 			id_equipment: null,
 			department: null,
-			id_department_to: null
+			id_department_to: null,
+			id_location: null
 		},
 		listDocType: [],
 		listDepartment: []
@@ -268,7 +262,7 @@ let demo1 = new Vue({
 		},
 		setHandoff(){
 			axios.post("/equipment/set-handoff", JSON.stringify(this.handoff), {headers: {'Content-Type': 'application/json'}}).then
-			(response => (this.getEquipments(), this.handoff = {})).catch(error => (this.listError = error));
+			(response => ()).catch(error => (this.listError = error));
 		},
 		returnUniq(column){
 			let result = [];
@@ -291,6 +285,28 @@ let demo1 = new Vue({
 					$('.dropdown').dropdown({fullTextSearch: true});
 				else clearInterval(interval);
 			}, 1000);
+		}
+	},
+	computed: {
+		filteredLocation(){
+			let rows = this.listDepartment;
+			let id_department = this.handoff.id_department_to;
+			let locs = [];
+			if(id_department)
+			{
+				rows = rows.filter(r => { return r.id_department === id_department });
+				rows.forEach(function(key){
+					if(key.locations)
+						key.locations.forEach(function(location){
+							locs.push({
+								id: location.id_location,
+								cabinet_number: location.cabinet_number
+							});
+						})
+				})
+				return locs;
+			}
+			else return null;
 		}
 	},
 	mounted: function() {

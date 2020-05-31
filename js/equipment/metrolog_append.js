@@ -72,17 +72,19 @@ var arrival = new Vue({
 			{
 				rows = rows.filter(r => { return r.id_department === id_department })
 				rows.forEach(function(key){
-					key.locations.forEach(function(location){
-						locs.push({
-							id: location.id,
-							cabinet_number: location.cabinet_number,
-							place: location.place,
-							notation: location.notation
-						});
-					})
+					if(key.locations)
+						key.locations.forEach(function(location){
+							locs.push({
+								id: location.id_location,
+								cabinet_number: location.cabinet_number,
+								place: location.place,
+								notation: location.notation
+							});
+						})
 				})
+				this.listLocations = locs;
 			}
-			this.listLocations = locs;
+			else this.listLocations = null; 
 		},
 		getDepartment(){
 			axios.get("/equipment/get-department").then( response => (this.listDepartment = response.data));

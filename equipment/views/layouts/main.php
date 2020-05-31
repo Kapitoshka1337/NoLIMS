@@ -21,8 +21,6 @@ AppAsset::register($this);
             <div class="left menu">
                 <a href="<?php echo Url::toRoute(['equipment/']) ?>" class="item">Оборудование</a>
                 <a href="<?php echo Url::toRoute(['plan/']) ?>" class="item">План-график</a>
-                <a href="<?php echo Url::toRoute(['conservation/']) ?>" class="item">Консервация</a>
-                <a href="<?php echo Url::toRoute(['archive/']) ?>" class="item">Архив</a>
                 <a href="<?php echo Url::toRoute(['metrolog/']) ?>" class="item">Метролог</a>
             </div>
             <div class="right menu">

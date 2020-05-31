@@ -5,82 +5,252 @@
 	$this->registerJsFile('@web/assets/js/equipment/metrolog_equipment_details.js');
 ?>
 <div class="row" id="details">
-	<input type="text" v-bind:value="<?php echo $id?>" v-model="id_eq">
-	{{ id_eq }}
 	<div class="sixteen wide column">
 		<div class="ui form">
 			<div class="ui fluid card">
 				<div class="content">
-					<div class="three fields">
-						<div class="field">
-							<input type="text" value="<?php echo $eq['department'] ?>">
+					<a href="<?php echo Url::toRoute(['equipments/']) ?>" class="ui right floated orange button">Отмена</a>
+					<a class="ui right floated green button" v-on:click="Submit()">Сохранить</a>
+				</div>
+			</div>
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="header">Идентификационные данные</div>
+				</div>
+				<div class="content">
+					<div class="ui form">
+						<div class="two fields">
+							<div class="field">
+								<label>Наименование</label>
+								<textarea cols="30" rows="2" v-model="listDetails.equipment.equipment"></textarea>
+							</div>
+							<div class="field">
+								<label>Производитель</label>
+								<textarea cols="30" rows="2" v-model="listDetails.equipment.manufacturer"></textarea>
+							</div>
 						</div>
-						<div class="field">
-							<input type="text" value="<?php echo $eq['equipment'] ?>">
+						<div class="four fields">
+							<div class="field">
+								<label>Инвентарный номер</label>
+								<input type="text" v-model="listDetails.equipment.inventory_number">
+							</div>
+							<div class="field">
+								<label>Серийный номер</label>
+								<input type="text" v-model="listDetails.equipment.serial_number">
+							</div>
+							<div class="field">
+								<label>Модель</label>
+								<input type="text" v-model="listDetails.equipment.model">
+							</div>
+							<div class="field">
+								<label>Дата изготовления</label>
+								<input type="date" v-model="listDetails.equipment.date_create">
+							</div>
 						</div>
-						<div class="field">
-							<input type="text" value="<?php echo $eq['equipment_type'] ?>">
+						<div class="two fields">
+							<div class="field">
+								<label>Номер</label>
+								<input type="text">
+							</div>
+							<div class="field">
+								<label>ФИФ</label>
+								<input type="text" v-model="listDetails.equipment.fif_number">
+							</div>
 						</div>
 					</div>
-					EQUIPMENT
-					
-					
-					<?php echo $eq['serial_number'] ?>
-					<?php echo $eq['manufacturer'] ?>
-					<?php echo $eq['date_create'] ?>
-					<?php echo $eq['inventory_number'] ?>
-					<?php echo $eq['model'] ?>
+				</div>
+			</div>
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="header">Состояние</div>
 				</div>
 				<div class="content">
-					LOCATION
-					<?php echo $eq['cabinet_number'] ?>
-					<?php echo $eq['place'] ?>
-					<?php echo $eq['notation'] ?>
+					<div class="ui form">
+						<div class="inline fields">
+							<div class="field">
+								<div class="ui checkbox">
+									<input type="checkbox" v-model="listDetails.equipment.is_archive">
+									<label>Архив</label>
+								</div>
+							</div>
+							<div class="field">
+								<div class="ui checkbox">
+									<input type="checkbox" v-model="listDetails.equipment.is_working">
+									<label>Используется</label>
+								</div>
+							</div>
+							<div class="field">
+								<div class="ui checkbox">
+									<input type="checkbox" v-model="listDetails.equipment.is_conservation">
+									<label>Консервация</label>
+								</div>
+							</div>
+							<div class="field">
+								<div class="ui checkbox">
+									<input type="checkbox" v-model="listDetails.equipment.is_repair">
+									<label>Ремонт</label>
+								</div>
+							</div>
+							<div class="field">
+								<div class="ui checkbox">
+									<input type="checkbox" v-model="listDetails.equipment.is_check">
+									<label>ЦСМ</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="header">Местоположение</div>
 				</div>
 				<div class="content">
-					CHARACTERISTICS
-					<?php echo $eq['measuring_range'] ?>
-					<?php echo $eq['measuring_work'] ?>
-					<?php echo $eq['characteristics'] ?>
-					<?php echo $eq['accuracy'] ?>
-					<?php echo $eq['class_accuracy'] ?>
-					<?php echo $eq['purpose_of_use'] ?>
-					<?php echo $eq['fif_number'] ?>
-					<?php echo $eq['object_study'] ?>
-					<?php echo $eq['function_of_use'] ?>
+					<div class="ui form">
+						<div class="two fields">
+							<div class="field">
+								<label>Отдел</label>
+								<select class="ui search dropdown" v-model="listDetails.equipment.id_department">
+									<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>Кабинет</label>
+								<select class="ui search dropdown" v-model="listDetails.equipment.id_location">
+									<option v-for="location in filteredLocation" v-bind:value="location.id">{{ location.cabinet_number }}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="header">История проверок</div>
 				</div>
 				<div class="content">
-					IS BOOL
-					<?php echo $eq['is_conservation'] ?>
-					<?php echo $eq['is_archive'] ?>
-					<?php echo $eq['is_repair'] ?>
+					<table class="ui compact table" v-if="listDetails.history_check || listDetails.current_check">
+						<thead>
+							<tr>
+								<th>Текущая</th>
+								<th>Следующая</th>
+								<th>Документ</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="check in listDetails.history_check">
+								<td>{{ today(check.date_current_check) }}</td>
+								<td>{{ today(check.date_next_check) }}</td>
+								<td><a v-bind:href="'/assets/uploads/' + check.upload_file_name" target="_blank">Открыть</a></td>
+							</tr>
+							<tr>
+								<td>{{today(listDetails.current_check.date_current_check)}}</td>
+								<td>{{today(listDetails.current_check.date_next_check)}}</td>
+								<td><a v-bind:href="'/assets/uploads/' + listDetails.current_check.upload_file_name" target="_blank">Открыть</a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="header">Перемещения <span class="right floated"><button class="ui green right floated mini icon button" v-on:click="showModal('Handoff')"><i class="icon exchange"></i></button></span></div>						
+				</div>
+				<div class="content"></div>
+			</div>
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="header">Характеристки</div>
+				</div>
+				<div class="content">
+					<div class="ui form">
+						<div class="field">
+							<label>Вид</label>
+							<select class="ui search dropdown" v-model="listDetails.equipment.id_equipment_type">
+								<option v-for="type in listDetails.types.type" v-bind:value="type.id">{{ type.title }}</option>
+							</select>
+						</div>
+						<div class="two fields">
+							<div class="field">
+								<label>Диапазон измерений</label>
+								<input type="text" v-model="listDetails.equipment.measuring_range">
+							</div>
+							<div class="field">
+								<label>Диапазон работы</label>
+								<input type="text" v-model="listDetails.equipment.measuring_work">
+							</div>
+						</div>
+						<div class="two fields">
+							<div class="field">
+								<label>Точность</label>
+								<input type="text" v-model="listDetails.equipment.accuracy">
+							</div>
+							<div class="field">
+								<label>Класс точности</label>
+								<input type="text" v-model="listDetails.equipment.class_accuracy">
+							</div>
+						</div>
+						<div class="three fields">
+							<div class="field">
+								<label>Цель использования</label>
+								<input type="text" v-model="listDetails.equipment.purpose_of_use">
+							</div>
+							<div class="field">
+								<label>Объект исследования</label>
+								<select class="ui search dropdown" v-model="listDetails.equipment.id_object_study">
+									<option v-for="object in listObjectStudy" v-bind:value="object.id">{{ object.title }}</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>Функциональное значение</label>
+								<select class="ui search dropdown" v-model="listDetails.equipment.id_function_of_use">
+									<option v-for="location in filteredFunctionOfUse" v-bind:value="location.id">{{ location.title }}</option>
+								</select>
+							</div>
+						</div>
+						<div class="field">
+							<label>Характеристики</label>
+							<textarea cols="30" rows="2" v-model="listDetails.equipment.characteristics"></textarea>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-	    <h1><?php echo $id?></h1>
-	    <?php var_dump($eq) ?>
+	</div>
+	<div id="modalHandoff" class="ui tiny card modal">
+		<div class="content">
+			<div class="header">Перемещение</div>
+			<!-- <div class="meta">{{ handoff.department }}</div> -->
+		</div>
+		<div class="content">
+			<div class="ui form">
+				<div class="two fields">
+					<div class="field">
+						<label>Переместить в отдел</label>
+						<select class="ui search dropdown" v-model="listDetails.equipment.id_department">
+							<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
+						</select>
+					</div>
+					<div class="field">
+						<label>Кабинет</label>
+						<select class="ui search dropdown" v-model="listDetails.equipment.id_location">
+							<option v-for="location in filteredLocation" v-bind:value="location.id">{{ location.cabinet_number }}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+<!-- 			<div class="ui form">
+				<div class="field">
+					<label>Переместить в отдел</label>
+					<select class="ui search dropdown">
+						<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
+					</select>
+				</div>
+			</div> -->
+		</div>
+		<div class="actions">
+			<button class="ui approve green button" v-on:click="setHandoff()">Сохранить</button>
+			<button class="ui deny orange button">Отмена</button>
+		</div>
 	</div>
 </div>
-<!-- id
-id_department
-id_equipment_type
-id_function_of_use
-id_object_study
-number
-title
-measuring_range
-measuring_work
-characteristics
-accuracy
-class_accuracy
-purpose_of_use
-is_conservation
-fif_number
-model
-serial_number
-manufacturer
-date_create
-inventory_number
-id_location
-is_archive
-is_repair -->

@@ -4,24 +4,37 @@
 	$this->registerJsFile('@web/assets/vendor/vue/axios.min.js');
 	$this->registerJsFile('@web/assets/vendor/html2pdf.bundle.min.js');
 ?>
-<div class="sixteen wide column">
+<div class="eight wide column">
 	<h1><?= $this->context->action->uniqueId ?></h1>
-	<input type="button" onclick='test()'>
-	<table class="ui table celled sixteen column" id="element-to-print">
-		<tbody>
-			<tr>
-				<td>ДФ.04.31.2017</td>
-					<td class="thirteen wide">
-						<div class="label center aligned">БУ УР УВДЦ</div>
-						<div class="label center aligned">Система менеджмента качества ИЦ</div>
-						<div class="label center aligned">Документрированная форма</div>
-						<div class="label center aligned">Регистрационная карточка оборудования</div>
-					</td>
-				</td>
-				<td>лицевая сторона регистрационной карточки</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="ui cards">
+        <div class="ui fluid card" v-for="data in paginateRows">
+            <div class="content">
+                <div class="header">Ветстанция (район)<span class="right floated header">Дата поступления</span></div>
+                <div class="meta">Предприятие<span class="right floated meta">Животное (исследование)</span></div>
+            </div>
+            <div class="content">
+                <div class="ui grid">
+                    <div class="row">
+                        <div class="sixteen wide column">
+                            <div class="description">
+                                <div class="ui horizontal list">
+                                    <div class="item">Количество: 1</div>
+                                    <div class="item"><span class="ui green label">Квартальный остаток/план: 1/1</span></div>
+                                    <div class="item"><span class="ui green label">Годовой остаток/план: 1/1</span></div>
+                                    <div class="item">Итого: 2</div>
+                                </div>
+                                <p>Место отбора: 2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="extra content">
+                <div class="left floated">1903</div>
+                <div class="right floated">Сотрудник</div>
+            </div>
+        </div>
+    </div>
 </div>
 	<script>
 		function test(){
