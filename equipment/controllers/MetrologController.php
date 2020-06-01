@@ -339,6 +339,7 @@ class MetrologController extends Controller
 			$mpdf->AddPage('P','','','','',6,6,6,0,0,0);
 			$mpdf->WriteHTML($ht);
 			$mpdf->Output('assets/template/sticker.pdf', \Mpdf\Output\Destination::FILE);
+			return $this->asJson('/assets/template/sticker.pdf');
 		}
 	}
 
@@ -549,7 +550,7 @@ class MetrologController extends Controller
 			$mpdf->AddPage('L','','','','',3,3,3,0,0,0);
 			$mpdf->WriteHTML($ht);
 			$mpdf->Output('assets/template/card.pdf', \Mpdf\Output\Destination::FILE);
-			return $this->asJson('/assets/template/card.pdf');	
+			return $this->asJson('/assets/template/card.pdf');
 		}
 	}
 }
