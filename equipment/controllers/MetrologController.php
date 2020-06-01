@@ -80,7 +80,7 @@ class MetrologController extends Controller
 			$current_check = equipment_date_check::findOne(['id_equipment' => Yii::$app->request->get('id')]);
 			$type = equipment_type::find()->all();
 			$of_use = equipment_function_of_use::find()->all();
-			$condition_working = equipment_condition_working::find()->where(['id_equipment' => Yii::$app->request->get('id')])->all();
+			$condition_working = equipment_condition_working::find()->where(['id_equipment' => Yii::$app->request->get('id')])->one();
 			//КОСТЫЛЬ
 			if(!$history_check) $history_check = null;
 			$types = array('type' => $type, 'function_of_use' => $of_use);
@@ -94,32 +94,26 @@ class MetrologController extends Controller
 	{
 		if(Yii::$app->request->isPost)
 		{
-			// return $this->asJson(Yii::$app->request->post());
 			$data = Yii::$app->request->post();
-			$eq = equipment_equipment_details::find()->where(['id' => Yii::$app->request->get('id')])->one();
-			foreach ($data as $key => $item)
+			if($data['equipment'])
 			{
-
+				$eq = equipment_equipment::find()->where(['id' => $data['id']])->one();
+				if($eq)
+					foreach ($data['equipment'] as $key => $item)
+						$eq[$key] = $item;
+				if($eq->save());
+					Yii::$app->response->statusCode = 200;
+			}
+			if($data['condition_working'])
+			{
+				$eq = equipment_condition_working::find()->where(['id_equipment' => $data['id']])->one();
+				if($eq)
+					foreach ($data['condition_working'] as $key => $item)
+						$eq[$key] = $item;
+				if($eq->save());
+					return Yii::$app->response->statusCode = 200;
 			}
 		}
-    // public function renderItems()
-    // {
-    //     $items = '';
-    //     foreach ($this->items as $key => $item) {
-    //         if (is_array($item)) {
-    //             //$items .= $this->renderHeader($key);
-    //             $rawItems = $item;
-    //             foreach ($rawItems as $key => $item) {
-    //                 $items .= $this->renderItem($key, $item);
-    //             }
-    //         } elseif (empty($item)) {
-    //             $items .= $this->renderDivider();
-    //         } else {
-    //             $items .= $this->renderItem($key, $item);
-    //         }
-    //     }
-    //     return $items;
-    // }
 	}
 
 	public function actionGetEquipments()
@@ -231,7 +225,7 @@ class MetrologController extends Controller
 						else return Yii::$app->response->statusCode = 400;
 				}
 			}
-			else return Yii::$app->response->statusCode = 200;
+			else return Yii::$app->response->statusCode = 400;
 		}
 	}
 

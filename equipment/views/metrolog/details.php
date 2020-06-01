@@ -22,7 +22,7 @@
 						<div class="two fields">
 							<div class="field">
 								<label>Наименование</label>
-								<textarea cols="30" rows="2" v-model="listDetails.equipment.equipment"></textarea>
+								<textarea cols="30" rows="2" v-model="listDetails.equipment.title"></textarea>
 							</div>
 							<div class="field">
 								<label>Производитель</label>
@@ -110,7 +110,7 @@
 						<div class="two fields">
 							<div class="field">
 								<label>Отдел</label>
-								<select class="ui search dropdown" v-model="listDetails.equipment.id_department">
+								<select class="ui search dropdown disabled" v-model="listDetails.equipment.id_department">
 									<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
 								</select>
 							</div>
@@ -224,25 +224,25 @@
 						<div class="three fields">
 							<div class="field">
 								<label>Влажность</label>
-								<input type="text" v-model="listDetails.condition_working[0].humidity">
+								<input type="text" v-model="listDetails.condition_working.humidity">
 							</div>
 							<div class="field">
 								<label>Давление</label>
-								<input type="text" v-model="listDetails.condition_working[0].pressure">
+								<input type="text" v-model="listDetails.condition_working.pressure">
 							</div>
 							<div class="field">
 								<label>Температура</label>
-								<input type="text" v-model="listDetails.condition_working[0].temperature">
+								<input type="text" v-model="listDetails.condition_working.temperature">
 							</div>
 						</div>
 						<div class="two fields">
 							<div class="field">
 								<label>Напряжение</label>
-								<input type="text" v-model="listDetails.condition_working[0].voltage">
+								<input type="text" v-model="listDetails.condition_working.voltage">
 							</div>
 							<div class="field">
 								<label>Ток</label>
-								<input type="text" v-model="listDetails.condition_working[0].amperage">
+								<input type="text" v-model="listDetails.condition_working.amperage">
 							</div>
 						</div>
 					</div>

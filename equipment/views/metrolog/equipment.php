@@ -79,7 +79,7 @@
 	</div>
 	<div id="modalCheck" class="ui tiny card modal">
 		<div class="content">
-			<div class="content header">Поверка</div>
+			<div class="content header">Проверка</div>
 		</div>
 		<div class="content">
 			<div class="ui form">
@@ -92,7 +92,7 @@
 					<input type="date" v-model="check.date_next_check">
 				</div>
 				<div class="field">
-					<label>Вид загружамого файла</label>
+					<label>Загружамый файл</label>
 					<select class="ui search dropdown" v-model="check.id_upload_document_type">
 						<option v-for="doc in listDocType" v-bind:value="doc.id">{{ doc.title }}</option>
 					</select>
@@ -232,7 +232,7 @@
 							<!-- КОСТЫЛЬ v-bind:href="'details/' + equipment.id" --> 
 							<a v-bind:href="'details/' + equipment.id" class="item">Подробнее</a>
 							<div class="item" v-on:click="showModalHandoff('Handoff', equipment.id, equipment.department)">Перемещение</div>
-							<div class="item" v-on:click="showModal('Check', equipment.id)">Поверка - Проверка</div>
+							<div class="item" v-on:click="showModal('Check', equipment.id)">Проверка</div>
 						</div>
 					</div>
 				</td>

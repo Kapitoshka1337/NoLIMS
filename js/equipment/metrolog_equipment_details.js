@@ -17,7 +17,6 @@ let details = new Vue({
 		},
 		getDetails(){
 			axios.get("/equipment/get-details?id=" + this.id_eq).then( response => (this.listDetails = response.data));
-			// axios.get("/equipment/get-details?id=" + this.id_eq).then( response => (this.listDetailsCopy = response.data));
 		},
 		//Перевод из гггг-мм-дд в дд.мм.гггг
 		today(date){
@@ -27,8 +26,17 @@ let details = new Vue({
 		Submit(){
 			let det = this.listDetails;
 			let detCopy = this.listDetailsCopy;
-			axios.post("/equipment/save-equipment", JSON.stringify(this.listDetails), {headers: {'Content-Type': 'application/json'}}).then
-			(response => (this.getDetails())).catch(error => (this.listError = error));
+			let eq = {}, cw = {};
+				Object.keys(det.equipment).forEach(function(row){
+					if(detCopy.equipment[row] != det.equipment[row])
+						eq[row] = det.equipment[row];
+				});
+				Object.keys(det.condition_working).forEach(function(row){
+					if(detCopy.condition_working[row] != det.condition_working[row])
+						cw[row] = det.condition_working[row];
+				});
+				obj = {id: this.id_eq, equipment: eq, condition_working: cw};
+			axios.post("/equipment/save-equipment", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getDetails())).catch(error => (this.listError = error));
 		},
 		getDepartment(){
 			axios.get("/equipment/get-department").then( response => (this.listDepartment = response.data));
@@ -96,22 +104,8 @@ let details = new Vue({
 		}
 	},
 	watch:{
-		'listDetails.equipment':{
-			// key[row] == value
-			// key == object
-			// row == name key
-			handler: function (newValue, oldValue) {
-				// console.log('NEW: ' + newValue + ' OLD: ' + oldValue)
-				// Object.keys(det.equipment).forEach(function(row){
-				// 	if(detCopy.equipment[row] != det.equipment[row])
-				// 		console.log(det.equipment[row]);
-				// })
-				Object.keys(newValue).forEach(function(row){
-					// if(newValue[row] != oldValue[row])
-						console.log(oldValue[row])
-				})
-			},
-			deep: true
+		listDetails(){
+			this.listDetailsCopy = JSON.parse(JSON.stringify(this.listDetails));
 		},
 		listDepartment(){
 			let interval = setInterval(function()
