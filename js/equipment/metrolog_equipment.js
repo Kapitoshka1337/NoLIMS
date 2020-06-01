@@ -193,11 +193,11 @@ let demo1 = new Vue({
 				{'serial_number':'S/N'},
 				{'date_current_check':'Текущая проверка'},
 				{'date_next_check':'Следующая проверка'},
-				// {'is_archive':'Архив'},
-				// {'is_conservation':'Консервация'},
-				// {'is_check':'Проверка'},
-				// {'is_repair':'Ремонт'},
-				// {'is_working':'В работе'}
+				{'is_archive':'Архив'},
+				{'is_conservation':'Консервация'},
+				{'is_check':'Проверка'},
+				{'is_repair':'Ремонт'},
+				{'is_working':'В работе'}
 			]
 		},
 		gridData: [],
@@ -261,8 +261,7 @@ let demo1 = new Vue({
 			}).then(response => (this.getEquipments(), this.check.file[0] = [], this.check = {})).catch(error => (alert('ОШИБКА ЗАГРУЗКИ ФАЙЛА')));
 		},
 		setHandoff(){
-			axios.post("/equipment/set-handoff", JSON.stringify(this.handoff), {headers: {'Content-Type': 'application/json'}}).then
-			(response => ()).catch(error => (this.listError = error));
+			axios.post("/equipment/set-handoff", JSON.stringify(this.handoff), {headers: {'Content-Type': 'application/json'}}).then(response => (console.log(1))).catch(error => (this.listError = error));
 		},
 		returnUniq(column){
 			let result = [];

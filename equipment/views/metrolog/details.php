@@ -215,6 +215,39 @@
 					</div>
 				</div>
 			</div>
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="header">Условия работы</div>
+				</div>
+				<div class="content">
+					<div class="ui form">
+						<div class="three fields">
+							<div class="field">
+								<label>Влажность</label>
+								<input type="text" v-model="listDetails.condition_working[0].humidity">
+							</div>
+							<div class="field">
+								<label>Давление</label>
+								<input type="text" v-model="listDetails.condition_working[0].pressure">
+							</div>
+							<div class="field">
+								<label>Температура</label>
+								<input type="text" v-model="listDetails.condition_working[0].temperature">
+							</div>
+						</div>
+						<div class="two fields">
+							<div class="field">
+								<label>Напряжение</label>
+								<input type="text" v-model="listDetails.condition_working[0].voltage">
+							</div>
+							<div class="field">
+								<label>Ток</label>
+								<input type="text" v-model="listDetails.condition_working[0].amperage">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="modalHandoff" class="ui tiny card modal">

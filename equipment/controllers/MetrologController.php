@@ -10,6 +10,7 @@ use app\modules\equipment\models\view_equipment_metrolog_card;
 use app\modules\equipment\models\view_equipment_metrolog_list_work_for_equipment;
 use app\modules\equipment\models\equipment_type;
 use app\modules\equipment\models\equipment_equipment;
+use app\modules\equipment\models\equipment_condition_working;
 use app\modules\equipment\models\equipment_upload_document_type;
 use app\modules\equipment\models\equipment_equipment_details;
 use app\modules\equipment\models\equipment_function_of_use;
@@ -79,10 +80,12 @@ class MetrologController extends Controller
 			$current_check = equipment_date_check::findOne(['id_equipment' => Yii::$app->request->get('id')]);
 			$type = equipment_type::find()->all();
 			$of_use = equipment_function_of_use::find()->all();
+			$condition_working = equipment_condition_working::find()->where(['id_equipment' => Yii::$app->request->get('id')])->all();
 			//КОСТЫЛЬ
 			if(!$history_check) $history_check = null;
 			$types = array('type' => $type, 'function_of_use' => $of_use);
-			$main = array('equipment' => $eq, 'history_check' => $history_check, 'current_check' => $current_check, 'types' => $types);
+			$main = array('equipment' => $eq, 'history_check' => $history_check, 'current_check' => $current_check, 'types' => $types, 
+				'condition_working' => $condition_working);
 			return $this->asJson($main);
 		}
 	}
