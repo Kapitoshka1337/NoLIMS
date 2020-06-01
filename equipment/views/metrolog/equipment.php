@@ -63,14 +63,6 @@
 					</div>
 				</div>
 			</div>
-<!-- 			<div class="ui form">
-				<div class="field">
-					<label>Переместить в отдел</label>
-					<select class="ui search dropdown" v-model="handoff.id_department_to">
-						<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
-					</select>
-				</div>
-			</div> -->
 		</div>
 		<div class="actions">
 			<button class="ui approve green button" v-on:click="setHandoff()">Сохранить</button>
@@ -131,7 +123,7 @@
 	</div>
 	<div id="modalCheckReq" class="ui tiny card modal">
 		<div class="content">
-			<div class="content header">Сбор оборудования</div>
+			<div class="content header">Выбор оборудования</div>
 		</div>
 		<div class="content"></div>
 		<div class="actions">
@@ -233,8 +225,6 @@
 				<td class="collapsing">{{ equipment.date_current_check }}</td>
 				<td class="collapsing">{{ equipment.date_next_check }}</td>
 				<td class="collapsing">
-<!-- 					<span  v-bind:class="{'ui yellow small circular label': equipment.is_conservation, 'ui teal small circular label': equipment.is_archive, 'ui red small circular label': equipment.is_repair, 'ui violet small circular label': equipment.is_check, 'ui green small circular label': equipment.is_working}"
-					v-show="equipment.is_conservation || equipment.is_archive || equipment.is_repair || equipment.is_check || equipment.is_working"></span> -->
 					<a href="#!" v-on:click="filters['is_archive'].push(1)"><span class="ui teal small circular label" v-show="equipment.is_archive">А</span></a>
 					<a href="#!" v-on:click="filters['is_working'].push(1)"><span class="ui green small circular label" v-show="equipment.is_working">И</span></a>
 					<a href="#!" v-on:click="filters['is_conservation'].push(1)"><span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span></a>
@@ -245,8 +235,6 @@
 					<div class="ui icon left pointing dropdown mini button">
 						<i class="settings icon"></i>
 						<div class="menu">
-							<!-- <div class="item" v-on:click="Details('Handoff')">Подробнее</div> -->
-							<!-- v-bind:href="'details/' + equipment.id" -->
 							<!-- КОСТЫЛЬ v-bind:href="'details/' + equipment.id" --> 
 							<a v-bind:href="'details/' + equipment.id" class="item">Подробнее</a>
 							<div class="item" v-on:click="showModalHandoff('Handoff', equipment.id, equipment.department)">Перемещение</div>
