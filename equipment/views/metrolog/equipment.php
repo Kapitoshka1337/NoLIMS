@@ -83,26 +83,44 @@
 		</div>
 		<div class="content">
 			<div class="ui form">
-				<div class="field">
-					<label>Текущая (пройденная)</label>
-					<input type="date" v-model="check.date_current_check">
+				<div class="inline field">
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="check.is_archive">
+						<label>Переместить в архив</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="check.is_conservation">
+						<label>Переместить в консервацию</label>
+					</div>
 				</div>
-				<div class="field">
-					<label>Cледующая (предстоящая)</label>
-					<input type="date" v-model="check.date_next_check">
+			</div>
+		</div>
+		<div class="content">
+			<div class="ui form">
+				<div class="two fields">
+					<div class="field">
+						<label>Текущая (пройденная)</label>
+						<input type="date" v-model="check.date_current_check">
+					</div>
+					<div class="field">
+						<label>Cледующая (предстоящая)</label>
+						<input type="date" v-model="check.date_next_check">
+					</div>
 				</div>
-				<div class="field">
-					<label>Загружамый файл</label>
-					<select class="ui search dropdown" v-model="check.id_upload_document_type">
-						<option v-for="doc in listDocType" v-bind:value="doc.id">{{ doc.title }}</option>
-					</select>
-				</div>
-				<div class="field">
-					<label>Номер документа</label>
-					<input type="text" v-model="check.number_document">
-				</div>
-				<div class="field">
-					<input type="file" ref="upload_file_name" v-on:change="handleFileUpload()">
+				<div class="field" v-show="!check.is_archive && !check.is_conservation">
+					<div class="field">
+						<label>Загружамый файл</label>
+						<select class="ui search dropdown" v-model="check.id_upload_document_type">
+							<option v-for="doc in listDocType" v-bind:value="doc.id">{{ doc.title }}</option>
+						</select>
+					</div>
+					<div class="field">
+						<label>Номер документа</label>
+						<input type="text" v-model="check.number_document">
+					</div>
+					<div class="field">
+						<input type="file" ref="upload_file_name" v-on:change="handleFileUpload()">
+					</div>
 				</div>
 			</div>
 		</div>

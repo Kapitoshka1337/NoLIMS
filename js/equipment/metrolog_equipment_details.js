@@ -104,6 +104,7 @@ let details = new Vue({
 		}
 	},
 	watch:{
+		//КОПИЯ ОБЪЕКТА
 		listDetails(){
 			this.listDetailsCopy = JSON.parse(JSON.stringify(this.listDetails));
 		},

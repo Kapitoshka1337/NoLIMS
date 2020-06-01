@@ -222,6 +222,8 @@ let demo1 = new Vue({
 			number_document: null,
 			id_upload_document_type: null,
 			upload_file_name: [],
+			is_archive: false,
+			is_conservation: false
 		},
 		handoff: {
 			id_equipment: null,
@@ -256,6 +258,8 @@ let demo1 = new Vue({
 			formData.append('date_next_check', this.check.date_next_check);
 			formData.append('id_upload_document_type', this.check.id_upload_document_type);
 			formData.append('number_document', this.check.number_document);
+			formData.append('is_archive', this.check.is_archive);
+			formData.append('is_conservation', this.check.is_conservation);
 			formData.append('upload_file_name', this.check.upload_file_name[0]);
 			axios.post('/equipment/change-check', formData, {headers:{'Content-Type': 'multipart/form-data'}
 			}).then(response => (this.getEquipments(), this.check.file[0] = [], this.check = {})).catch(error => (alert('ОШИБКА ЗАГРУЗКИ ФАЙЛА')));
