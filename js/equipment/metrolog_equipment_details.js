@@ -12,11 +12,10 @@ let details = new Vue({
 		listObjectStudy: [],
 		listMaintenance: [],
 		maintenance: {
-			id_type: null,
+			id_type_maintenance: null,
 			id_maintenance: null,
-			executor: null,
+			id_executor: null,
 			periodicity: null,
-			id_equipment: this.id_eq
 		}
 	},
 	methods: {
@@ -61,6 +60,9 @@ let details = new Vue({
 		setDropdown(){
 			$('.dropdown').dropdown({fullTextSearch: true});
 		},
+		clearDropdown(){
+			$('.dropdown').dropdown('clear');
+		},
 		showModal(modalName){
 			$('#modal' + modalName).modal('show');
 		},
@@ -75,6 +77,11 @@ let details = new Vue({
 		},
 		getMaintenance(){
 			axios.get("/equipment/get-maintenance").then( response => (this.listMaintenance = response.data));
+		},
+		appendMaintenance(){
+			this.maintenance['id_equipment'] = +this.id_eq;
+			axios.post("/equipment/append-maintenance", JSON.stringify(this.maintenance), {headers: {'Content-Type': 'application/json'}}).then
+			(response => (this.getDetails(), this.clearDropdown(), this.maintenance = {})).catch(error => (this.listError = error));
 		}
 		// returnUniq(column){
 		// 	let result = [];

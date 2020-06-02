@@ -20,6 +20,7 @@ use app\modules\equipment\models\equipment_object_study;
 use app\modules\equipment\models\equipment_executor;
 use app\modules\equipment\models\equipment_list_maintenance;
 use app\modules\equipment\models\equipment_type_maintenance;
+use app\modules\equipment\models\equipment_list_work_maintenance;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
 
@@ -30,7 +31,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -85,6 +86,23 @@ class MetrologController extends Controller
 		}	
 	}
 
+	public function actionAppendMaintenance()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$main = new equipment_list_work_maintenance();
+			$main->id_equipment = $data['id_equipment'];
+			$main->id_type_maintenance = $data['id_type_maintenance'];
+			$main->id_maintenance = $data['id_maintenance'];
+			$main->id_executor = $data['id_executor'];
+			$main->periodicity = $data['periodicity'];
+			if($main->save())
+				return Yii::$app->response->statusCode = 200;
+			else return Yii::$app->response->statusCode = 400;
+		}	
+	}
+
 	public function actionGetDetails()
 	{
 		if(Yii::$app->request->isGet)
@@ -120,7 +138,7 @@ class MetrologController extends Controller
 					foreach ($data['equipment'] as $key => $item)
 						$eq[$key] = $item;
 				if($eq->save());
-					Yii::$app->response->statusCode = 200;
+					return Yii::$app->response->statusCode = 200;
 			}
 			if($data['condition_working'])
 			{

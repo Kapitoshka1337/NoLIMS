@@ -297,14 +297,6 @@
 					</div>
 				</div>
 			</div>
-<!-- 			<div class="ui form">
-				<div class="field">
-					<label>Переместить в отдел</label>
-					<select class="ui search dropdown">
-						<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
-					</select>
-				</div>
-			</div> -->
 		</div>
 		<div class="actions">
 			<button class="ui approve green button" v-on:click="setHandoff()">Сохранить</button>
@@ -321,13 +313,13 @@
 				<div class="two fields">
 					<div class="field">
 						<label>Вид ТО</label>
-						<select class="ui search dropdown" v-model="maintenance.id_type">
+						<select class="ui search dropdown" v-model="maintenance.id_type_maintenance">
 							<option v-for="maintenance in listMaintenance.type_maintenance" v-bind:value="maintenance.id">{{ maintenance.title }}</option>
 						</select>
 					</div>
 					<div class="field">
 						<label>Исполнитель</label>
-						<select class="ui search dropdown" v-model="maintenance.executor">
+						<select class="ui search dropdown" v-model="maintenance.id_executor">
 							<option v-for="executor in listMaintenance.executor" v-bind:value="executor.id">{{ executor.title }}</option>
 						</select>
 					</div>
@@ -345,17 +337,9 @@
 						</div>
 					</div>
 			</div>
-<!-- 			<div class="ui form">
-				<div class="field">
-					<label>Переместить в отдел</label>
-					<select class="ui search dropdown">
-						<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
-					</select>
-				</div>
-			</div> -->
 		</div>
 		<div class="actions">
-			<button class="ui approve green button" v-on:click="setHandoff()">Сохранить</button>
+			<button class="ui approve green button" v-on:click="appendMaintenance()">Сохранить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
