@@ -17,6 +17,7 @@ class Bootstrap implements BootstrapInterface
             'get-type' => 'metrolog/get-type',
             'get-object-study' => 'metrolog/get-object-study',
             'get-doc-type' => 'metrolog/get-doc-type',
+            'get-maintenance' => 'metrolog/get-maintenance',
             'upload-file' => 'metrolog/upload-file',
             'append' => 'metrolog/append-equipment',
             'equipments' => 'metrolog/equipments',

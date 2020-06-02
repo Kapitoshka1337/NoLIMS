@@ -224,11 +224,11 @@
 						<div class="three fields">
 							<div class="field">
 								<label>Влажность</label>
-								<input type="text" v-model="listDetails.condition_working.humidity">
+								<input type="number" v-model="listDetails.condition_working.humidity">
 							</div>
 							<div class="field">
 								<label>Давление</label>
-								<input type="text" v-model="listDetails.condition_working.pressure">
+								<input type="number" v-model="listDetails.condition_working.pressure">
 							</div>
 							<div class="field">
 								<label>Температура</label>
@@ -238,14 +238,39 @@
 						<div class="two fields">
 							<div class="field">
 								<label>Напряжение</label>
-								<input type="text" v-model="listDetails.condition_working.voltage">
+								<input type="number" v-model="listDetails.condition_working.voltage">
 							</div>
 							<div class="field">
 								<label>Ток</label>
-								<input type="text" v-model="listDetails.condition_working.amperage">
+								<input type="number" v-model="listDetails.condition_working.amperage">
 							</div>
 						</div>
 					</div>
+				</div>
+			</div>
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="header">Требуемое техническое обслуживание <span class="right floated"><button class="ui yellow right floated mini icon button" v-on:click="showModal('Maintenance')"><i class="icon plus"></i></button></span</div>
+				</div>
+				<div class="content">
+					<table class="ui compact table" v-if="listDetails.maintenance">
+						<thead>
+							<tr>
+								<th>Вид ТО</th>
+								<th>Исполнитель</th>
+								<th>Периодичность</th>
+								<th>ТО</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="maintenance in listDetails.maintenance">
+								<td>{{ maintenance.maintenance }}</td>
+								<td>{{ maintenance.executor }}</td>
+								<td>{{ maintenance.periodicity }}</td>
+								<td>{{ maintenance.description }}</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -271,6 +296,54 @@
 						</select>
 					</div>
 				</div>
+			</div>
+<!-- 			<div class="ui form">
+				<div class="field">
+					<label>Переместить в отдел</label>
+					<select class="ui search dropdown">
+						<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
+					</select>
+				</div>
+			</div> -->
+		</div>
+		<div class="actions">
+			<button class="ui approve green button" v-on:click="setHandoff()">Сохранить</button>
+			<button class="ui deny orange button">Отмена</button>
+		</div>
+	</div>
+	<div id="modalMaintenance" class="ui small card modal">
+		<div class="content">
+			<div class="header">Техническое обслуживание</div>
+			<!-- <div class="meta">{{ handoff.department }}</div> -->
+		</div>
+		<div class="content">
+			<div class="ui form">
+				<div class="two fields">
+					<div class="field">
+						<label>Вид ТО</label>
+						<select class="ui search dropdown" v-model="maintenance.id_type">
+							<option v-for="maintenance in listMaintenance.type_maintenance" v-bind:value="maintenance.id">{{ maintenance.title }}</option>
+						</select>
+					</div>
+					<div class="field">
+						<label>Исполнитель</label>
+						<select class="ui search dropdown" v-model="maintenance.executor">
+							<option v-for="executor in listMaintenance.executor" v-bind:value="executor.id">{{ executor.title }}</option>
+						</select>
+					</div>
+				</div>
+					<div class="two fields">
+						<div class="field">
+							<label>Периодичность</label>
+							<input type="text" v-model="maintenance.periodicity">
+						</div>
+						<div class="field">
+							<label>Тех. обслуживание</label>
+							<select class="ui search dropdown" v-model="maintenance.id_maintenance">
+								<option v-for="maintenance in listMaintenance.list_maintenance" v-bind:value="maintenance.id">{{ maintenance.description }}</option>
+							</select>
+						</div>
+					</div>
 			</div>
 <!-- 			<div class="ui form">
 				<div class="field">

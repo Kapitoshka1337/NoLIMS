@@ -17,6 +17,9 @@ use app\modules\equipment\models\equipment_function_of_use;
 use app\modules\equipment\models\equipment_date_check;
 use app\modules\equipment\models\equipment_history_date_check;
 use app\modules\equipment\models\equipment_object_study;
+use app\modules\equipment\models\equipment_executor;
+use app\modules\equipment\models\equipment_list_maintenance;
+use app\modules\equipment\models\equipment_type_maintenance;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
 
@@ -70,22 +73,37 @@ class MetrologController extends Controller
 		return $this->render('details');
 	}
 
+	public function actionGetMaintenance()
+	{
+		if(Yii::$app->request->isGet)
+		{
+			$executor = equipment_executor::find()->all();
+			$list_maintenance = equipment_list_maintenance::find()->all();
+			$type_maintenance = equipment_type_maintenance::find()->all();
+			$main = array('executor' => $executor, 'list_maintenance' => $list_maintenance, 'type_maintenance' => $type_maintenance);
+			return $this->asJson($main);
+		}	
+	}
+
 	public function actionGetDetails()
 	{
 		if(Yii::$app->request->isGet)
 		{
 			$eq = equipment_equipment_details::find()->where(['id' => Yii::$app->request->get('id')])->one();
-			// $maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => Yii::$app->request->get('id')]);
+			$maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => Yii::$app->request->get('id')]);
 			$history_check = equipment_history_date_check::findAll(['id_equipment' => Yii::$app->request->get('id')]);
 			$current_check = equipment_date_check::findOne(['id_equipment' => Yii::$app->request->get('id')]);
 			$type = equipment_type::find()->all();
 			$of_use = equipment_function_of_use::find()->all();
 			$condition_working = equipment_condition_working::find()->where(['id_equipment' => Yii::$app->request->get('id')])->one();
 			//КОСТЫЛЬ
+			if(!$condition_working)
+				$condition_working = array('humidity' => null, 'pressure' => null, 'temperature' => null, 'voltage' => null, 'amperage' => null);
+			//КОСТЫЛЬ
 			if(!$history_check) $history_check = null;
 			$types = array('type' => $type, 'function_of_use' => $of_use);
 			$main = array('equipment' => $eq, 'history_check' => $history_check, 'current_check' => $current_check, 'types' => $types, 
-				'condition_working' => $condition_working);
+				'condition_working' => $condition_working, 'maintenance' => $maintenance);
 			return $this->asJson($main);
 		}
 	}
@@ -108,9 +126,27 @@ class MetrologController extends Controller
 			{
 				$eq = equipment_condition_working::find()->where(['id_equipment' => $data['id']])->one();
 				if($eq)
+				{
 					foreach ($data['condition_working'] as $key => $item)
 						$eq[$key] = $item;
-				if($eq->save());
+					if($eq->save()); return Yii::$app->response->statusCode = 200;
+				}
+				else
+				{
+					$eq = new equipment_condition_working();
+					$eq->id_equipment = $data['id'];
+					foreach ($data['condition_working'] as $key => $item)
+						$eq[$key] = $item;
+					if($eq->save()); return Yii::$app->response->statusCode = 200;
+				}
+			}
+			if($data['maintenance'])
+			{
+				// $eq = equipment_condition_working::find()->where(['id_equipment' => $data['id']])->one();
+				// if($eq)
+				// 	foreach ($data['condition_working'] as $key => $item)
+				// 		$eq[$key] = $item;
+				// if($eq->save());
 					return Yii::$app->response->statusCode = 200;
 			}
 		}

@@ -8,7 +8,16 @@ let details = new Vue({
 		listType: [],
 		listLocations: [],
 		listDepartment: [],
-		listError: []
+		listError: [],
+		listObjectStudy: [],
+		listMaintenance: [],
+		maintenance: {
+			id_type: null,
+			id_maintenance: null,
+			executor: null,
+			periodicity: null,
+			id_equipment: this.id_eq
+		}
 	},
 	methods: {
 		getIdEquipmnent(){
@@ -26,16 +35,21 @@ let details = new Vue({
 		Submit(){
 			let det = this.listDetails;
 			let detCopy = this.listDetailsCopy;
-			let eq = {}, cw = {};
+			let eq = {}, cw = {}, mtnc = {};
+				// Object.keys(det.maintenance).forEach(function(row){
+				// 	if(detCopy.maintenance[row] != det.maintenance[row])
+				// 		mtnc[row] = det.maintenance[row];
+				// });
 				Object.keys(det.equipment).forEach(function(row){
 					if(detCopy.equipment[row] != det.equipment[row])
 						eq[row] = det.equipment[row];
 				});
-				Object.keys(det.condition_working).forEach(function(row){
-					if(detCopy.condition_working[row] != det.condition_working[row])
-						cw[row] = det.condition_working[row];
-				});
-				obj = {id: this.id_eq, equipment: eq, condition_working: cw};
+				if(det.condition_working)
+					Object.keys(det.condition_working).forEach(function(row){
+						if(detCopy.condition_working[row] != det.condition_working[row])
+							cw[row] = det.condition_working[row];
+					});
+				obj = {id: this.id_eq, equipment: eq, condition_working: cw, maintenance: mtnc};
 			axios.post("/equipment/save-equipment", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getDetails())).catch(error => (this.listError = error));
 		},
 		getDepartment(){
@@ -59,6 +73,9 @@ let details = new Vue({
 			axios.post("/equipment/set-handoff", JSON.stringify(handoff), {headers: {'Content-Type': 'application/json'}}).then
 			(response => (this.getDetails())).catch(error => (this.listError = error));
 		},
+		getMaintenance(){
+			axios.get("/equipment/get-maintenance").then( response => (this.listMaintenance = response.data));
+		}
 		// returnUniq(column){
 		// 	let result = [];
 		// 	for (let str of this.gridData)
@@ -122,5 +139,6 @@ let details = new Vue({
 		this.getDetails();
 		this.getDepartment();
 		this.getObjectStudy();
+		this.getMaintenance();
 	}
 })

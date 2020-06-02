@@ -219,7 +219,7 @@
 						<label></label>
 					</div>
 				</td>
-				<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.id_department }} / {{ equipment.type }}</td>
+				<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.id_department }} - {{ equipment.type }}</td>
 				<td>{{ equipment.equipment }}</td>
 				<td class="collapsing right aligned">{{ equipment.serial_number }}</td>
 				<td class="collapsing">{{ equipment.date_current_check }}</td>
