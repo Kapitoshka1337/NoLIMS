@@ -26,6 +26,7 @@ class Bootstrap implements BootstrapInterface
             'change-check' => 'metrolog/change-check',
             'set-tag' => 'metrolog/set-tag',
             'set-handoff' => 'metrolog/set-handoff',
+            'send-request' => 'metrolog/send-request',
             'details/<id:\d+>'=>'metrolog/details',
             'get-details'=>'metrolog/get-details',
             'certification' => 'metrolog/certification',

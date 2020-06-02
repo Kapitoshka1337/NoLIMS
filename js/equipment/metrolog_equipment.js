@@ -54,6 +54,8 @@ Vue.component('equipment-grid', {
 		showModal(modalName, id = null, department = null){
 			this.checkEq.id_equipment = id;
 			this.handoff.department = department;
+			if(modalName === 'CheckReq')
+				this.$emit('request', this.selectedEquipments);
 			$('#modal' + modalName).modal('show');
 		},
 		//ТАК НЕ ДЕЛАЕТСЯ
@@ -76,7 +78,13 @@ Vue.component('equipment-grid', {
 						is_conservation: this.paginateRows[i].is_conservation,
 						is_repair: this.paginateRows[i].is_repair,
 						is_check: this.paginateRows[i].is_check,
-						is_working: this.paginateRows[i].is_working
+						is_working: this.paginateRows[i].is_working,
+						number: this.paginateRows[i].number,
+						id_department: this.paginateRows[i].id_department,
+						type: this.paginateRows[i].type,
+						date_current_check: this.paginateRows[i].date_current_check,
+						date_next_check: this.paginateRows[i].date_next_check,
+						equipment: this.paginateRows[i].equipment
 					});
 		},
 		Details(id_equipment)
@@ -232,7 +240,8 @@ let demo1 = new Vue({
 			id_location: null
 		},
 		listDocType: [],
-		listDepartment: []
+		listDepartment: [],
+		selectedEquipments: []
 	},
 	methods: {
 		getEquipments(){
@@ -278,7 +287,28 @@ let demo1 = new Vue({
 					else return - 1;
 				})
 			return result;
-		}
+		},
+		setSelectedEquipments(info){
+			this.selectedEquipments = info;
+		},
+		deleteMaterial(index, equipment){
+			var idx = this.selectedEquipments.indexOf(equipment);
+			if (idx > -1) this.selectedEquipments.splice(idx, 1);
+		},
+		sendRequest(){
+			let request = [];
+			for(let i in this.selectedEquipments)
+			{
+				request.push({
+					id_department: this.selectedEquipments[i].id_department,
+					id_equipment: this.selectedEquipments[i].id_equipment
+				});
+			}
+			// console.log(this.selectedEquipments);
+			// this.SelectedEquipments.forEach(function(row){});
+			axios.post("/equipment/send-request", JSON.stringify(request), {headers: {'Content-Type': 'application/json'}})
+			.then(response => (console.log(1)));
+		},
 	},
 	watch: {
 		gridData(){

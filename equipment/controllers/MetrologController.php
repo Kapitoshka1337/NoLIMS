@@ -21,6 +21,8 @@ use app\modules\equipment\models\equipment_executor;
 use app\modules\equipment\models\equipment_list_maintenance;
 use app\modules\equipment\models\equipment_type_maintenance;
 use app\modules\equipment\models\equipment_list_work_maintenance;
+use app\modules\equipment\models\equipment_kit_equipment;
+use app\modules\equipment\models\equipment_checks;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
 
@@ -31,7 +33,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -349,6 +351,29 @@ class MetrologController extends Controller
 				if($eqs)
 					return Yii::$app->response->statusCode = 200;
 			}
+		}
+	}
+
+	public function actionSendRequest()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$check = new equipment_checks();
+			//1 - подготовка 2 - отправлено 3 - получено
+			$check->id_status_check = 1;
+			$check->date_create = date('Y-m-d');
+			if($check->save())
+				foreach ($data as $key)
+				{
+					$kit = new equipment_kit_equipment();
+					$kit->id_checks = $check->id;
+					$kit->id_department = $key['id_department'];
+					$kit->id_equipment = $key['id_equipment'];
+					$kit->is_received = false;
+					$kit->save();
+				}
+			return $this->asJson(Yii::$app->request->post());
 		}
 	}
 

@@ -12,7 +12,8 @@
 			:filters="filters"
 			:count-post="countPost"
 			:check-Eq="check"
-			:handoff="handoff">
+			:handoff="handoff"
+			@request="setSelectedEquipments">
 		</equipment-grid>
 	</div>
 	<div id="modalPrint" class="ui tiny card modal">
@@ -121,13 +122,39 @@
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
-	<div id="modalCheckReq" class="ui tiny card modal">
+	<div id="modalCheckReq" class="ui large card modal">
 		<div class="content">
 			<div class="content header">Выбор оборудования</div>
 		</div>
-		<div class="content"></div>
+		<div class="scrolling content">
+			<table class="ui compact selectable table">
+				<thead>
+					<tr>
+						<th>Номер</th>
+						<th>Оборудование</th>
+						<th>Текущая</th>
+						<th>Следующая</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+						<tr v-for="(equipment, k) in selectedEquipments">
+							<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.id_department }} - {{ equipment.type }}</td>
+							<td>{{ equipment.equipment }}</td>
+							<td class="collapsing">{{ equipment.date_current_check }}</td>
+							<td class="collapsing">{{ equipment.date_next_check }}</td>
+							<td>
+								<div class="ui small icon buttons">
+									<button class="ui red button" type="button" v-on:click="deleteMaterial(k, equipment)"><i class="icon trash"></i></button>
+								</div>
+							</td>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		<div class="actions">
-			<button class="ui approve green button">Сохранить</button>
+			<button class="ui approve green button" v-on:click="sendRequest()">Сформировать</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
@@ -214,7 +241,9 @@
 				<td class="collapsing">
 					<div class="ui checkbox">
 						<input type="checkbox"
-						v-bind:value="{id_equipment: equipment.id,is_archive: equipment.is_archive,is_conservation: equipment.is_conservation,is_repair: equipment.is_repair,is_check: equipment.is_check,is_working: equipment.is_working}" 
+						v-bind:value="{id_equipment: equipment.id,is_archive: equipment.is_archive,is_conservation: equipment.is_conservation,is_repair: equipment.is_repair,is_check: equipment.is_check,is_working: equipment.is_working,
+						number: equipment.number, id_department: equipment.id_department, type: equipment.type,
+						date_current_check: equipment.date_current_check, date_next_check: equipment.date_next_check, equipment: equipment.equipment}" 
 						v-model="selectedEquipments">
 						<label></label>
 					</div>

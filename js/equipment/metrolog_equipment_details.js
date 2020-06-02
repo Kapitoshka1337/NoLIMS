@@ -81,7 +81,7 @@ let details = new Vue({
 		appendMaintenance(){
 			this.maintenance['id_equipment'] = +this.id_eq;
 			axios.post("/equipment/append-maintenance", JSON.stringify(this.maintenance), {headers: {'Content-Type': 'application/json'}}).then
-			(response => (this.getDetails(), this.clearDropdown(), this.maintenance = {})).catch(error => (this.listError = error));
+			(response => (this.clearDropdown(), this.getDetails(), this.maintenance = {})).catch(error => (this.listError = error));
 		}
 		// returnUniq(column){
 		// 	let result = [];
