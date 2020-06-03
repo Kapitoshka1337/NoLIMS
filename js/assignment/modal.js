@@ -51,7 +51,7 @@ let form = new Vue({
             axios.post("/assignment/create-record", JSON.stringify(this.form),
                 {headers: {'Content-Type': 'application/json'}}
                 ).then(function(response) {
-                    // if (response.status === 200) document.location.href = '/assignment/';
+                    if (response.status === 200) document.location.href = '/assignment/';
                 });
         },
         showModal(modalName){
@@ -59,11 +59,7 @@ let form = new Vue({
         },
         submitFarm(){
             let obj = {id_region: this.form.id_region, farm: this.farm};
-            axios.post("/assignment/create-farm", JSON.stringify(obj),
-                {headers: {'Content-Type': 'application/json'}}
-                ).then(function(response) {
-                    // if (response.status === 200) document.location.href = '/assignment/';
-                });
+            axios.post("/assignment/create-farm", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getFarm()));
         }
     },
     computed: {
