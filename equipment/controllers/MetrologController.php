@@ -22,7 +22,9 @@ use app\modules\equipment\models\equipment_list_maintenance;
 use app\modules\equipment\models\equipment_type_maintenance;
 use app\modules\equipment\models\equipment_list_work_maintenance;
 use app\modules\equipment\models\equipment_kit_equipment;
+use app\modules\equipment\models\view_equipment_kits;
 use app\modules\equipment\models\equipment_checks;
+use app\modules\equipment\models\view_equipment_check;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
 
@@ -74,6 +76,32 @@ class MetrologController extends Controller
 	{
 		// return $this->render('details', ['id' => Yii::$app->request->get('id'), 'eq' => $eq]);
 		return $this->render('details');
+	}
+
+	public function actionGetVerification()
+	{
+		if(Yii::$app->request->isGet)
+		{
+			$checks = view_equipment_check::find()->all();
+			$kits = view_equipment_kits::find()->all();
+			$kt = array();
+			foreach ($checks as $check)
+			{
+				foreach ($kits as $kit)
+				{
+					if($check->id === $kit->id_checks)
+						$kt[] = array(
+							'id_kit_row' => $kit->id_kit_row,
+							'id_checks' => $kit->id_checks,
+							'equipment' => $kit->equipment,
+							'is_received' => $kit->is_received,
+						);
+				}
+			$chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'date_received' => $check->date_received, 'status' => $check->status, 'equipment' => $kt);
+			unset($kt);
+			}
+			return $this->asJson($chk);
+		}	
 	}
 
 	public function actionGetMaintenance()
