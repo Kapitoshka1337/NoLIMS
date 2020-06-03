@@ -249,9 +249,9 @@ class AssignmentController extends GlobalController
 			$data = Yii::$app->request->post();
 			$farm = new gz_farm();
 			$farm->Title  = $data['farm'];
-			$farm->ID_Region = $data['id_reg'];
-			$farm->save();
-			return $this->asJson('200');
+			$farm->ID_Region = $data['id_region'];
+			if($farm->save())
+				return Yii::$app->response->statusCode = 200;
 		}
 	}
 }

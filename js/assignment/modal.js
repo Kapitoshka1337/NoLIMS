@@ -16,7 +16,8 @@ let form = new Vue({
             amount: null,
             date: null,
             place: null,
-        }
+        },
+        farm: null
     },
     methods: {
         gridData(){
@@ -48,6 +49,17 @@ let form = new Vue({
         },
         submit(){
             axios.post("/assignment/create-record", JSON.stringify(this.form),
+                {headers: {'Content-Type': 'application/json'}}
+                ).then(function(response) {
+                    // if (response.status === 200) document.location.href = '/assignment/';
+                });
+        },
+        showModal(modalName){
+            $('#modal' + modalName).modal('show');
+        },
+        submitFarm(){
+            let obj = {id_region: this.form.id_region, farm: this.farm};
+            axios.post("/assignment/create-farm", JSON.stringify(obj),
                 {headers: {'Content-Type': 'application/json'}}
                 ).then(function(response) {
                     // if (response.status === 200) document.location.href = '/assignment/';

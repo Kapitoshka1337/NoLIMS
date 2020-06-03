@@ -62,11 +62,29 @@
                 </div>
             </div>
                 <div class="content">
+                    <button class="ui yellow left floated icon button" v-on:click="showModal('Farm')"><i class="icon home"></i></button>
                     <a href="<?php echo Url::toRoute(['assignment/']) ?>" class="ui right floated orange button">Отмена</a>
                     <a class="ui right floated green button" v-on:click="submit()">Сохранить</a>
                 </div>
         </div>
     </div>
+        <div id="modalFarm" class="ui tiny modal">
+            <div class="centered header">
+                Предприятие
+            </div>
+            <div class="content">
+                <div class="ui form">
+                    <div class="field">
+                        <label>Предприятие</label>
+                        <input type="text" v-model="farm">
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="ui deny orange button">Отмена</button>
+                <button class="ui approve green button" type="submit" v-on:click="submitFarm()">Добавить</button>
+            </div>
+        </div>
 </div>
 <!-- <div class="ui two column centered padded grid">
     <div id="addForm" class="nine wide column">

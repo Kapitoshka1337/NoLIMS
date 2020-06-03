@@ -21,61 +21,54 @@ class module extends \yii\base\Module
     //     }
     // }
 
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['logout', 'index', 'add', 'report', 'view', 'get-data', 'get-region', 'get-farm', 'get-method', 'get-empl', 'get-report', 'create-farm', 'create-record'
-                        ],
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity['role'] === 'corporal-second';
-                        }
-                    ],
-                    [
-                        'allow' => false,
-                        'actions' => ['edit'],
-                        // 'roles' => ['corporal-second']
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity['role'] === 'corporal-second';
-                        }
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['logout', 'index', 'report', 'view', 'get-data', 'get-report'],
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity['role'] === 'corporal-first';
-                        }
-                    ],
-                    [
-                        'allow' => true,
-                        // 'actions' => [
-                        //     'logout',
-                        //     'index',
-                        //     'add',
-                        //     'report',
-                        //     'view',
-                        //     'edit',
-                        //     'plan-create',
-                        //     'delete-plan',
-                        //     'delete-block',
-                        //     'plan-create-block',
-                        //     'update',
-                        //     'farm',
-                        //     'method',
-                        //     'animal',
-                        // ],
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity['role'] === 'major';
-                        }
-                    ],
-                ],
-            ],
-        ];
-    }
+    // public function behaviors()
+    // {
+    //     return [
+    //         'access' => [
+    //             'class' => AccessControl::className(),
+    //             'rules' => [
+    //                 [
+    //                     'allow' => true,
+    //                     'actions' => ['logout', 'index', 'add', 'report', 'view', 'get-data', 'get-region', 'get-farm', 'get-method', 'get-empl', 'get-report', 'create-farm', 'create-record'
+    //                     ],
+    //                     'matchCallback' => function ($rule, $action) {
+    //                         return Yii::$app->user->identity['role'] === 'corporal-second';
+    //                     }
+    //                 ],
+    //                 [
+    //                     'allow' => false,
+    //                     'actions' => ['edit'],
+    //                     'roles' => ['corporal-second']
+    //                     // 'matchCallback' => function ($rule, $action) {
+    //                     //     return Yii::$app->user->identity['Role'] === 'user';
+    //                     // }
+    //                 ],
+    //                 [
+    //                     'allow' => true,
+    //                     // 'actions' => [
+    //                     //     'logout',
+    //                     //     'index',
+    //                     //     'add',
+    //                     //     'report',
+    //                     //     'view',
+    //                     //     'edit',
+    //                     //     'plan-create',
+    //                     //     'delete-plan',
+    //                     //     'delete-block',
+    //                     //     'plan-create-block',
+    //                     //     'update',
+    //                     //     'farm',
+    //                     //     'method',
+    //                     //     'animal',
+    //                     // ],
+    //                     'matchCallback' => function ($rule, $action) {
+    //                         return Yii::$app->user->identity['role'] === 'major';
+    //                     }
+    //                 ],
+    //             ],
+    //         ],
+    //     ];
+    // }
 
     public function init()
     {
