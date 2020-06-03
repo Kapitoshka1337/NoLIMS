@@ -14,6 +14,7 @@ class Bootstrap implements BootstrapInterface
             'view' => 'plan/view',
             'add' => 'assignment/add',
             'get-data' => 'assignment/get-data',
+            'get-vetstation' => 'assignment/get-vetstation',
             'get-region' => 'assignment/get-region',
             'get-farm' => 'assignment/get-farm',
             'get-method' => 'assignment/get-method',

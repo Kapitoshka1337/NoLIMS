@@ -147,21 +147,30 @@ class AssignmentController extends GlobalController
 		return $this->render('add', ['data' => $data, 'animal' => $an]);
 	}
 
+	public function actionGetVetstation()
+	{
+		if(Yii::$app->request->isGet)
+		{
+			$vetstation = gz_vetstation::find()->all();
+			return $this->asJson($vetstation);
+		}
+	}
+
+	public function actionGetAnimal()
+	{
+		if(Yii::$app->request->isGet)
+		{
+			$vetstation = gz_animal::find()->all();
+			return $this->asJson($vetstation);
+		}
+	}
+
 	public function actionGetRegion()
 	{
 		if(Yii::$app->request->isGet)
 		{
-			$arr = array();
-			$id = Yii::$app->request->get('vet');
-			$region = gz_region::find()->where(['ID_VetStation' => $id])->all();
-			foreach ($region as $r) {
-				$arr[] = array(
-					'id_reg' => $r->ID,
-					'title' => $r->Title
-				);
-			}
-			$arr = json_encode($arr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-			return $arr;
+			$vetstation = gz_region::find()->all();
+			return $this->asJson($vetstation);
 		}
 	}
 
@@ -169,17 +178,8 @@ class AssignmentController extends GlobalController
 	{
 		if(Yii::$app->request->isGet)
 		{
-			$arr = array();
-			$id = Yii::$app->request->get('region');
-			$farm = gz_farm::find()->where(['ID_Region' => $id])->all();
-			foreach ($farm as $r) {
-				$arr[] = array(
-					'id_farm' => $r->ID,
-					'title' => $r->Title
-				);
-			}
-			$arr = json_encode($arr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-			return $arr;
+			$vetstation = gz_farm::find()->all();
+			return $this->asJson($vetstation);
 		}
 	}
 
@@ -187,38 +187,10 @@ class AssignmentController extends GlobalController
 	{
 		if(Yii::$app->request->isGet)
 		{
-			$arr = array();
 			$cache = Yii::$app->cache;
 			$block = $cache->get('block');
-			$vet = Yii::$app->request->get('vet');
-			$animal = Yii::$app->request->get('animal');
-			$method = gz_mpforvet::find()->select(['mp_id', 'method', 'vt_id', 'animal_id', 'id_block'])->where(['animal_id' => $animal, 'vt_id' => $vet, 'id_block' => $block])->all();
-			foreach ($method as $r) {
-				$arr[] = array(
-					'id_method' => $r->mp_id,
-					'title' => $r->method
-				);
-			}
-			$arr = json_encode($arr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-			return $arr;
-		}
-	}
-
-	public function actionGetEmpl()
-	{
-		if(Yii::$app->request->isGet)
-		{
-			$arr = array();
-			$empl = Yii::$app->request->get();
-			$empls = empl::find()->all();
-			foreach ($empls as $r) {
-				$arr[] = array(
-					'id_empl' => $r->ID,
-					'title' => $r->Title
-				);
-			}
-			$arr = json_encode($arr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-			return $arr;
+			$vetstation = gz_mpforvet::find()->where(['id_block' => $block])->all();
+			return $this->asJson($vetstation);
 		}
 	}
 
@@ -247,25 +219,26 @@ class AssignmentController extends GlobalController
 		{
 			$data = Yii::$app->request->post();
 			$cache = Yii::$app->cache;
-			foreach ($data['method'] as $mhd)
+			foreach ($data['id_method'] as $mhd)
 			{
 				$pathdata = new gz_pathdata();
 				$pathdata->ID_method_plan = $mhd;
-				$pathdata->ID_animal  = $data['animal'];
-				$pathdata->ID_farm  = $data['farm'];
-				$pathdata->ID_region  = $data['region'];
-				$pathdata->ID_vetstation = $data['vetstation'];
+				$pathdata->ID_animal  = $data['id_animal'];
+				$pathdata->ID_farm  = $data['id_farm'];
+				$pathdata->ID_region  = $data['id_region'];
+				$pathdata->ID_vetstation = $data['id_vetstation'];
 				$pathdata->DateAdd = $data['date'];
-				$pathdata->date_enter = $data['date_enter'];
+				$pathdata->date_enter = date('Y-m-d');
 				$pathdata->Amount  = $data['amount'];
-				$pathdata->ID_empl = $data['empl'];
+				$pathdata->ID_empl = Yii::$app->user->identity['id'];
+				$pathdata->place_of_selection = $data['place'];
 				if($pathdata->save())
 				{
 					// $an = $cache->get('pathdata');
 					$cache->set('pathdata', $this->actionGetData());
 				}
 			}
-			return $this->redirect(['/assignment']);
+			return Yii::$app->response->statusCode = 200;
 		}
 	}
 

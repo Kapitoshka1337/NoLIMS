@@ -1,9 +1,74 @@
 <?php
+    use yii\helpers\Url;
     $this->registerJsFile('@web/assets/vendor/vue/vue.min.js'); 
     $this->registerJsFile('@web/assets/vendor/vue/axios.min.js'); 
     $this->registerJsFile('@web/assets/js/assignment/modal.js'); 
 ?>
-<div class="ui two column centered padded grid">
+<div class="row" id='append'>
+    <div class="sixteen wide column">
+        <div class="ui fluid card">
+            <div class="content">
+                <div class="ui form">
+                    <div class="three fields">
+                        <div class="field">
+                            <label>Ветстанция</label>
+                            <select class="ui search dropdown" v-model="form.id_vetstation">
+                                <option v-for="vet in listVetstation" v-bind:value="vet.ID">{{ vet.Title }}</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Район</label>
+                            <select class="ui search dropdown" v-model="form.id_region">
+                                <option v-for="region in filteredRegion" v-bind:value="region.ID">{{ region.Title }}</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Предприятие</label>
+                            <select class="ui search dropdown" v-model="form.id_farm">
+                                <option v-for="farm in filteredFarm" v-bind:value="farm.ID">{{ farm.Title }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="ui form">
+                    <div class="four fields">
+                        <div class="field">
+                            <label>Животное</label>
+                            <select class="ui search dropdown" v-model="form.id_animal">
+                                <option v-for="animal in listAnimal" v-bind:value="animal.ID">{{ animal.Title }}</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Исследование</label>
+                            <select class="ui search dropdown" multiple v-model="form.id_method">
+                                <option v-for="method in filteredMethod" v-bind:value="method.mp_id">{{ method.method }}</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Количество</label>
+                            <input type="text" v-model="form.amount">
+                        </div>
+                        <div class="field">
+                            <label>Дата поступления</label>
+                            <input type="date" v-model="form.date">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Место отбора</label>
+                        <input type="text" v-model="form.place">
+                    </div>
+                </div>
+            </div>
+                <div class="content">
+                    <a href="<?php echo Url::toRoute(['assignment/']) ?>" class="ui right floated orange button">Отмена</a>
+                    <a class="ui right floated green button" v-on:click="submit()">Сохранить</a>
+                </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="ui two column centered padded grid">
     <div id="addForm" class="nine wide column">
         <form class="ui form" method="post" action="/assignment/create-record">
             <div class="fields">
@@ -63,10 +128,6 @@
                     <label>Дата</label>
                     <input name="date" type="date" v-bind:value="today" v-model="obj.dateAdd">
                 </div>
-                <div class="five wide field">
-                    <label>Место отбора</label>
-                    <input name="place" type="text" v-model="obj.place">
-                </div>
                 <input name="date_enter" type="date" v-bind:value="today" v-model="obj.date_enter" hidden readonly>
                 <input name="empl" type="text" value="<?php echo Yii::$app->user->identity['ID']?>" hidden readonly>
             </div>
@@ -95,4 +156,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
