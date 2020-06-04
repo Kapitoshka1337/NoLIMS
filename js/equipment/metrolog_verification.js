@@ -94,14 +94,13 @@ let demo1 = new Vue({
 			tableColumn: [
 				{'date_create':'Сформировано'},
 				{'date_submit':'Отправлено'},
-				{'date_received':'Получено'},
 				{'status':'Статус'},
+				{'action':'Получено/Отправлено'},
 				{'action':''}
 			],
 			filterColumn: [
 				{'date_create':'Сформировано'},
 				{'date_submit':'Отправлено'},
-				{'date_received':'Получено'},
 				{'status':'Статус'}
 			]
 		},

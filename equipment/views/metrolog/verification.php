@@ -34,14 +34,14 @@
     </div>
     <div id="modalCheckReq" class="ui large card modal">
         <div class="content">
-            <div class="content header">Выбор оборудования</div>
+            <div class="content header">Отправленное оборудование</div>
         </div>
         <div class="scrolling content">
             <table class="ui compact selectable table">
                 <thead>
                     <tr>
                         <th>Оборудование</th>
-                        <th>Статус</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,14 +72,15 @@
         </thead>
         <tbody>
             <tr v-for="check in paginateRows">
-                <td class="collapsiung">{{ check.date_create }}</td>
-                <td class="collapsiung">{{ check.date_submit }}</td>
-                <td class="collapsiung">{{ check.date_received }}</td>
-                <td class="collapsiung">{{ check.status }}</td>
-                <td class="one wide">
-                    <div class="ui mini icon buttons">
-                        <button class="ui yellow button" type="button" v-on:click="showModal('CheckReq', check.equipment)"><i class="icon eye"></i></button>
-                    </div>
+                <td class="collapsing">{{ check.date_create }}</td>
+                <td class="collapsing">{{ check.date_submit }}</td>
+                <td class="collapsing">{{ check.status }}</td>
+                <td class="center aligned collapsing">1/3</td>
+                <td class="two wide">
+                    <!-- <div class="ui mini icon buttons"> -->
+                        <button class="ui mini icon yellow button" type="button" v-on:click="showModal('CheckReq', check.equipment)"><i class="icon eye"></i></button>
+                        <button class="ui mini icon red button" type="button" v-on:click="showModal('CheckReq', check.equipment)"><i class="icon play"></i></button>
+                    <!-- </div> -->
                 </td>
             </tr>
         </tbody>

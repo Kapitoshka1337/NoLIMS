@@ -97,7 +97,7 @@ class MetrologController extends Controller
 							'is_received' => $kit->is_received,
 						);
 				}
-			$chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'date_received' => $check->date_received, 'status' => $check->status, 'equipment' => $kt);
+			$chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'status' => $check->status, 'equipment' => $kt);
 			unset($kt);
 			}
 			return $this->asJson($chk);
