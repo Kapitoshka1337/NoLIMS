@@ -96,6 +96,7 @@ class MetrologController extends Controller
 							'equipment' => $kit->equipment,
 							'is_received_before' => $kit->is_received_before,
 							'is_received_after' => $kit->is_received_after,
+							'number' => $kit->number
 						);
 				}
 			// $chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'status' => $check->status, 'equipment' => $kt);

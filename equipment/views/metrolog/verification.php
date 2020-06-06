@@ -34,18 +34,20 @@
     </div>
     <div id="modalCheckReqBefore" class="ui large card modal">
         <div class="content">
-            <div class="content header">Отправляемое оборудование BEFORE</div>
+            <div class="content header">Отправляемое оборудование</div>
         </div>
         <div class="scrolling content">
             <table class="ui compact selectable table">
                 <thead>
                     <tr>
+                        <th>Номер</th>
                         <th>Оборудование</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                         <tr v-for="(eq, k) in equipment.equipment">
+                            <td class="collapsing">{{ eq.number }}</td>
                             <td class="collapsing">{{ eq.equipment }}</td>
                             <!-- <td class="collapsing">{{ eq.is_received }}</td> -->
                             <td class="one wide">
@@ -61,18 +63,20 @@
     </div>
     <div id="modalCheckReqAfter" class="ui large card modal">
         <div class="content">
-            <div class="content header">Отправленное оборудование AFTER</div>
+            <div class="content header">Отправленное оборудование</div>
         </div>
         <div class="scrolling content">
             <table class="ui compact selectable table">
                 <thead>
                     <tr>
+                        <th>Номер</th>
                         <th>Оборудование</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                         <tr v-for="(eq, k) in filteredEqBeforeAfter">
+                            <td class="collapsing">{{ eq.number }}</td>
                             <td class="collapsing">{{ eq.equipment }}</td>
                             <!-- <td class="collapsing">{{ eq.is_received }}</td> -->
                             <td class="one wide">

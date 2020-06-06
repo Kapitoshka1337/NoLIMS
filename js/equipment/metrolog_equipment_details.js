@@ -82,6 +82,12 @@ let details = new Vue({
 			this.maintenance['id_equipment'] = +this.id_eq;
 			axios.post("/equipment/append-maintenance", JSON.stringify(this.maintenance), {headers: {'Content-Type': 'application/json'}}).then
 			(response => (this.clearDropdown(), this.getDetails(), this.maintenance = {})).catch(error => (this.listError = error));
+		},
+		addPlus(){
+			this.listDetails.equipment.accuracy += String.fromCharCode(177);
+		},
+		addTemp(){
+			this.listDetails.equipment.accuracy += String.fromCharCode(176);
 		}
 		// returnUniq(column){
 		// 	let result = [];
@@ -110,8 +116,6 @@ let details = new Vue({
 							locs.push({
 								id: location.id_location,
 								cabinet_number: location.cabinet_number,
-								// place: location.place,
-								// notation: location.notation
 							});
 						})
 				})

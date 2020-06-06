@@ -182,7 +182,7 @@
 						</div>
 						<div class="two fields">
 							<div class="field">
-								<label>Точность</label>
+								<label>Точность <span>(<span v-on:click="addPlus()">±</span> / <span v-on:click="addTemp()">°</span>)</span></label>
 								<input type="text" v-model="listDetails.equipment.accuracy">
 							</div>
 							<div class="field">
