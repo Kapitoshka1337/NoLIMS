@@ -16,6 +16,7 @@ use app\modules\equipment\models\equipment_equipment_details;
 use app\modules\equipment\models\equipment_function_of_use;
 use app\modules\equipment\models\equipment_date_check;
 use app\modules\equipment\models\equipment_history_date_check;
+use app\modules\equipment\models\equipment_moving_history;
 use app\modules\equipment\models\equipment_object_study;
 use app\modules\equipment\models\equipment_executor;
 use app\modules\equipment\models\equipment_list_maintenance;
@@ -193,14 +194,16 @@ class MetrologController extends Controller
 			$type = equipment_type::find()->all();
 			$of_use = equipment_function_of_use::find()->all();
 			$condition_working = equipment_condition_working::find()->where(['id_equipment' => Yii::$app->request->get('id')])->one();
+			$history_moving = equipment_moving_history::find()->where(['id_equipment' => Yii::$app->request->get('id')])->all();
+			//КОСТЫЛЬ
+			if(!$history_moving) $history_moving = null;
 			//КОСТЫЛЬ
 			if(!$condition_working)
 				$condition_working = array('humidity' => null, 'pressure' => null, 'temperature' => null, 'voltage' => null, 'amperage' => null);
 			//КОСТЫЛЬ
 			if(!$history_check) $history_check = null;
 			$types = array('type' => $type, 'function_of_use' => $of_use);
-			$main = array('equipment' => $eq, 'history_check' => $history_check, 'current_check' => $current_check, 'types' => $types, 
-				'condition_working' => $condition_working, 'maintenance' => $maintenance);
+			$main = array('equipment' => $eq, 'history_check' => $history_check, 'current_check' => $current_check, 'history_moving' => $history_moving, 'types' => $types, 'condition_working' => $condition_working, 'maintenance' => $maintenance);
 			return $this->asJson($main);
 		}
 	}
@@ -421,11 +424,11 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			$eq = equipment_equipment::updateAll(['id_department' => $data['id_department_to']], ['id' => $data['id_equipment']]);
+			$eq = equipment_equipment::updateAll(['id_department' => $data['id_department_to'], 'id_location' => $data['id_location']], ['id' => $data['id_equipment']]);
 			if($eq)
 			{
-				$eqs = equipment_equipment::updateAll(['id_location' => $data['id_location']], ['id' => $data['id_equipment']]);
-				if($eqs)
+				// $eqs = equipment_equipment::updateAll(['id_location' => $data['id_location']], ['id' => $data['id_equipment']]);
+				// if($eqs)
 					return Yii::$app->response->statusCode = 200;
 			}
 		}

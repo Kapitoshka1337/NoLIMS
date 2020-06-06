@@ -156,7 +156,26 @@
 				<div class="content">
 					<div class="header">Перемещения <span class="right floated"><button class="ui green right floated mini icon button" v-on:click="showModal('Handoff')"><i class="icon exchange"></i></button></span></div>						
 				</div>
-				<div class="content"></div>
+				<div class="content">
+					<table class="ui compact table" v-if="listDetails.history_moving">
+						<thead>
+							<tr>
+								<th>Прошлый отдел</th>
+								<th>Текущий отдел</th>
+								<th>Прошлый кабинет</th>
+								<th>Текущий кабинет</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="moving in listDetails.history_moving">
+								<td>{{ moving.current_department }}</td>
+								<td>{{ moving.next_department }}</td>
+								<td>{{ moving.current_location }}</td>
+								<td>{{ moving.next_location }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<div class="ui fluid card">
 				<div class="content">
