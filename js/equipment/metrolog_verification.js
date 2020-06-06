@@ -50,6 +50,9 @@ Vue.component('checks-grid', {
 		clearFilter(){
 			$('.dropdown').dropdown('clear');
 		},
+		submitEq(id_check){
+			axios.post("/equipment/submit-verification", JSON.stringify({id_check: id_check}), {headers: {'Content-Type': 'application/json'}}).then(response =>(demo1.getChecks()));
+		}
 	},
 	watch: {
 		filteredRows() {
@@ -83,6 +86,10 @@ Vue.component('checks-grid', {
 		},
 		paginateRows(){
 			return this.paginate(this.filteredRows);
+		},
+		filreredBefore(){
+			let rows = this.equipment;
+			return rows.filter(r => { return r.is_received_before }).length;
 		}
 	},
 })
@@ -94,14 +101,14 @@ let demo1 = new Vue({
 			tableColumn: [
 				{'date_create':'Сформировано'},
 				{'date_submit':'Отправлено'},
-				{'status':'Статус'},
-				{'action':'Получено/Отправлено'},
+				// {'status':'Статус'},
+				{'action':'Получено/Всего'},
 				{'action':''}
 			],
 			filterColumn: [
 				{'date_create':'Сформировано'},
 				{'date_submit':'Отправлено'},
-				{'status':'Статус'}
+				// {'status':'Статус'}
 			]
 		},
 		gridData: [],
@@ -109,10 +116,10 @@ let demo1 = new Vue({
 			date_create: [],
 			date_submit: [],
 			date_received: [],
-			status: []
+			// status: []
 		},
 		countPost: 100,
-		equipment: []
+		equipment: Object
 	},
 	methods: {
 		getChecks(){
@@ -136,44 +143,24 @@ let demo1 = new Vue({
 		setEq(info){
 			this.equipment = info;
 		},
-		checkEq(index, equipment){
-			
+		checkEqBefore(index){
+			axios.post("/equipment/recieved-eq-before", JSON.stringify({id_kit: this.equipment.equipment[index].id_kit_row}), {headers: {'Content-Type': 'application/json'}}).then(response =>(this.getChecks(), this.equipment.equipment[index].is_received_before = true));
+		},
+		checkEqAfter(index){
+			axios.post("/equipment/recieved-eq-after", JSON.stringify({id_kit: this.filteredEqBeforeAfter[index].id_kit_row}), {headers: {'Content-Type': 'application/json'}}).then(response =>(this.getChecks(), this.equipment.equipment[index].is_received_after = true));
 		}
-		// deleteMaterial(index, equipment){
-		// 	var idx = this.selectedEquipments.indexOf(equipment);
-		// 	if (idx > -1) this.selectedEquipments.splice(idx, 1);
-		// },
 	},
-	// watch: {
-	// 	gridData(){
-	// 		if($('.ui.accordion').accordion().length <= 0)
-	// 		{
-	// 			let interval = setInterval(function()
-	// 			{ 
-	// 				if($('.ui.accordion').accordion().length <= 0)
-	// 				{
-	// 					$('.ui.accordion').accordion();
-	// 				}
-	// 				else clearInterval(interval);
-	// 			}, 1000);
-	// 		}
-	// 	}
-	// },
 	computed: {
-		filteredRows: function () {
-			let rows = this.gridData;
-			return rows.filter(r =>
+		filteredEqBeforeAfter: function () {
+			if(Object.keys(this.equipment).length > 0)
 			{
-				return Object.keys(this.filters).every(f =>
-				{
-					return this.filters[f].length < 1 || this.filters[f].includes(r[f]);
-				})
-			})
+				let rows = this.equipment;
+				return rows.equipment.filter(r => {return r.is_received_before});
+			}
 		}
 	},
 	mounted: function() {
 		this.getChecks();
 		this.setDropdown();
-		// setTimeout(() => { $('.ui.accordion').accordion();}, 2000);
 	}
 });

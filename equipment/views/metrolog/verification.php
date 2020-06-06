@@ -32,9 +32,9 @@
             @request="setEq">
         </checks-grid>
     </div>
-    <div id="modalCheckReq" class="ui large card modal">
+    <div id="modalCheckReqBefore" class="ui large card modal">
         <div class="content">
-            <div class="content header">Отправленное оборудование</div>
+            <div class="content header">Отправляемое оборудование BEFORE</div>
         </div>
         <div class="scrolling content">
             <table class="ui compact selectable table">
@@ -45,12 +45,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                        <tr v-for="(eq, k) in equipment">
+                        <tr v-for="(eq, k) in equipment.equipment">
                             <td class="collapsing">{{ eq.equipment }}</td>
                             <!-- <td class="collapsing">{{ eq.is_received }}</td> -->
                             <td class="one wide">
                                 <div class="ui mini icon buttons">
-                                    <button v-bind:class="{'ui green button': eq.is_received, 'ui red button': !eq.is_received}" type="button" v-on:click="checkEq(k, eq)"><i class="icon check circle outline"></i></button>
+                                    <button v-bind:class="{'ui green button': eq.is_received_before, 'ui red button': !eq.is_received_before}" type="button" v-on:click="checkEqBefore(k)"><i class="icon check"></i></button>
+                                </div>
+                            </td>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="modalCheckReqAfter" class="ui large card modal">
+        <div class="content">
+            <div class="content header">Отправленное оборудование AFTER</div>
+        </div>
+        <div class="scrolling content">
+            <table class="ui compact selectable table">
+                <thead>
+                    <tr>
+                        <th>Оборудование</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr v-for="(eq, k) in filteredEqBeforeAfter">
+                            <td class="collapsing">{{ eq.equipment }}</td>
+                            <!-- <td class="collapsing">{{ eq.is_received }}</td> -->
+                            <td class="one wide">
+                                <div class="ui mini icon buttons">
+                                    <button v-bind:class="{'ui green button': eq.is_received_after, 'ui red button': !eq.is_received_after}" type="button" v-on:click="checkEqAfter(k)"><i class="icon check"></i></button>
                                 </div>
                             </td>
                         </td>
@@ -74,13 +101,19 @@
             <tr v-for="check in paginateRows">
                 <td class="collapsing">{{ check.date_create }}</td>
                 <td class="collapsing">{{ check.date_submit }}</td>
-                <td class="collapsing">{{ check.status }}</td>
-                <td class="center aligned collapsing">1/3</td>
-                <td class="two wide">
-                    <!-- <div class="ui mini icon buttons"> -->
-                        <button class="ui mini icon yellow button" type="button" v-on:click="showModal('CheckReq', check.equipment)"><i class="icon eye"></i></button>
-                        <button class="ui mini icon red button" type="button" v-on:click="showModal('CheckReq', check.equipment)"><i class="icon play"></i></button>
-                    <!-- </div> -->
+                <!-- <td class="collapsing">{{ check.status }}</td> -->
+                <td class="center aligned collapsing" v-if="!check.date_submit"> {{ check.equipment.filter(r => { return r.is_received_before }).length }} / {{ check.equipment.length }}</td>
+                <td class="center aligned collapsing" v-if="check.date_submit"> {{ check.equipment.filter(r => { return r.is_received_after }).length }} / {{ check.equipment.filter(r => { return r.is_received_before }).length }}</td>
+                <td class="right aligned collapsing">
+                    <div class="container" v-if="!check.date_submit">
+                        <a class="ui mini icon yellow button" type="button" v-on:click="showModal('CheckReqBefore', check)"><i class="icon eye"></i></a>
+                        <a class="ui blue mini icon button"><i class="icon print"></i></a>
+                        <a class="ui mini icon green button" type="button" v-on:click="submitEq(check.equipment[0].id_checks)"><i class="icon play"></i></a>
+                    </div>
+                    <div class="container" v-if="check.date_submit">
+                        <a class="ui mini icon yellow button" type="button" v-on:click="showModal('CheckReqAfter', check)"><i class="icon eye"></i></a>
+                        <a class="ui blue mini icon button"><i class="icon print"></i></a>
+                    </div>
                 </td>
             </tr>
         </tbody>

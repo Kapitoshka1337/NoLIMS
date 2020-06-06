@@ -35,7 +35,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -94,14 +94,62 @@ class MetrologController extends Controller
 							'id_kit_row' => $kit->id_kit_row,
 							'id_checks' => $kit->id_checks,
 							'equipment' => $kit->equipment,
-							'is_received' => $kit->is_received,
+							'is_received_before' => $kit->is_received_before,
+							'is_received_after' => $kit->is_received_after,
 						);
 				}
-			$chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'status' => $check->status, 'equipment' => $kt);
+			// $chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'status' => $check->status, 'equipment' => $kt);
+			$chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'equipment' => $kt);
 			unset($kt);
 			}
 			return $this->asJson($chk);
 		}	
+	}
+
+	public function actionSubmitVerification()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$checks = equipment_kit_equipment::find()->where(['id_checks' => $data['id_check'], 'is_received_before' => true])->all();
+			$check = equipment_checks::updateAll(['id_status_check' => 2, 'date_submit' => date('Y-m-d')], ['id' => $data['id_check']]);
+			$eqs = array();
+			foreach ($checks as $check)
+				array_push($eqs, $check->id_equipment);
+			// foreach ($eqs as $eq)
+				equipment_equipment::updateAll(['is_check' => true], ['id' => $eqs]);
+			return Yii::$app->response->statusCode = 200;
+			// return $this->asJson($eqs);
+		}
+	}
+
+	public function actionRecievedEqBefore()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			// return $this->asJson($data);
+			$kit = equipment_kit_equipment::updateAll(['is_received_before' => true], ['id' => $data['id_kit']]);
+			// $checks = equipment_kit_equipment::find()->where(['id_kit' => $data['id_kit']])->all();
+			return Yii::$app->response->statusCode = 200;
+		}
+	}
+
+	public function actionRecievedEqAfter()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$kit = equipment_kit_equipment::updateAll(['is_received_after' => true], ['id' => $data['id_kit']]);
+			$kit = equipment_kit_equipment::find()->where(['id' => $data['id_kit']])->all();
+			// return $this->asJson($kit);
+			$ch = equipment_checks::find()->where(['id' => $kit[0]->id_checks])->all();
+			if($ch->id_status_check != 3)
+				equipment_checks::updateAll(['id_status_check' => 3], ['id' => $kit[0]->id_checks]);
+			equipment_equipment::updateAll(['is_check' => false], ['id' => $kit[0]->id_equipment]);
+			// $checks = equipment_kit_equipment::find()->where(['id_kit' => $data['id_kit']])->all();
+			return Yii::$app->response->statusCode = 200;
+		}
 	}
 
 	public function actionGetMaintenance()
@@ -389,6 +437,8 @@ class MetrologController extends Controller
 			$data = Yii::$app->request->post();
 			$check = new equipment_checks();
 			//1 - подготовка 2 - отправлено 3 - получено
+			//is_received_before - проверка на получение до отправки
+			//is_received_after - проверка на получение после отправки
 			$check->id_status_check = 1;
 			$check->date_create = date('Y-m-d');
 			if($check->save())
@@ -398,7 +448,8 @@ class MetrologController extends Controller
 					$kit->id_checks = $check->id;
 					$kit->id_department = $key['id_department'];
 					$kit->id_equipment = $key['id_equipment'];
-					$kit->is_received = false;
+					$kit->is_received_before = false;
+					$kit->is_received_after = false;
 					$kit->save();
 				}
 			return $this->asJson(Yii::$app->request->post());

@@ -50,7 +50,7 @@
 						<div class="two fields">
 							<div class="field">
 								<label>Номер</label>
-								<input type="text">
+								<input type="text" v-model="listDetails.equipment.number">
 							</div>
 							<div class="field">
 								<label>ФИФ</label>
@@ -224,11 +224,11 @@
 						<div class="three fields">
 							<div class="field">
 								<label>Влажность</label>
-								<input type="number" v-model="listDetails.condition_working.humidity">
+								<input type="text" v-model="listDetails.condition_working.humidity">
 							</div>
 							<div class="field">
 								<label>Давление</label>
-								<input type="number" v-model="listDetails.condition_working.pressure">
+								<input type="text" v-model="listDetails.condition_working.pressure">
 							</div>
 							<div class="field">
 								<label>Температура</label>
@@ -250,7 +250,7 @@
 			</div>
 			<div class="ui fluid card">
 				<div class="content">
-					<div class="header">Требуемое техническое обслуживание <span class="right floated"><button class="ui yellow right floated mini icon button" v-on:click="showModal('Maintenance')"><i class="icon plus"></i></button></span</div>
+					<div class="header">Требуемое техническое обслуживание <span class="right floated"><button class="ui yellow right floated mini icon button" v-on:click="showModal('Maintenance')"><i class="icon plus"></i></button></span></div>
 				</div>
 				<div class="content">
 					<table class="ui compact table" v-if="listDetails.maintenance">

@@ -17,9 +17,9 @@
                             </select>
                         </div>
                         <div class="field">
-                            <label>Местоположение</label>
+                            <label>Кабинет</label>
                             <select class="ui search dropdown" v-model="eq.id_location">
-                                <option v-for="location in listLocations" v-bind:value="location.id">{{ location.cabinet_number }} {{ location.place }} {{ location.notation }}</option>
+                                <option v-for="location in listLocations" v-bind:value="location.id">{{ location.cabinet_number }}</option>
                             </select>
                         </div>
                         <div class="field">
