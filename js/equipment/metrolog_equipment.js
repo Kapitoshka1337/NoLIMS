@@ -274,7 +274,7 @@ let demo1 = new Vue({
 			}).then(response => (this.getEquipments(), this.check.file[0] = [], this.check = {})).catch(error => (alert('ОШИБКА ЗАГРУЗКИ ФАЙЛА')));
 		},
 		setHandoff(){
-			axios.post("/equipment/set-handoff", JSON.stringify(this.handoff), {headers: {'Content-Type': 'application/json'}}).then(response => (console.log(1))).catch(error => (this.listError = error));
+			axios.post("/equipment/set-handoff", JSON.stringify(this.handoff), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getEquipments())).catch(error => (this.listError = error));
 		},
 		returnUniq(column){
 			let result = [];

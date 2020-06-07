@@ -240,15 +240,15 @@ class MetrologController extends Controller
 					if($eq->save()); return Yii::$app->response->statusCode = 200;
 				}
 			}
-			if($data['maintenance'])
-			{
-				// $eq = equipment_condition_working::find()->where(['id_equipment' => $data['id']])->one();
-				// if($eq)
-				// 	foreach ($data['condition_working'] as $key => $item)
-				// 		$eq[$key] = $item;
-				// if($eq->save());
-					return Yii::$app->response->statusCode = 200;
-			}
+			// if($data['maintenance'])
+			// {
+			// 	// $eq = equipment_condition_working::find()->where(['id_equipment' => $data['id']])->one();
+			// 	// if($eq)
+			// 	// 	foreach ($data['condition_working'] as $key => $item)
+			// 	// 		$eq[$key] = $item;
+			// 	// if($eq->save());
+			// 		return Yii::$app->response->statusCode = 200;
+			// }
 		}
 	}
 
@@ -340,7 +340,7 @@ class MetrologController extends Controller
 				if($eq_check)
 				{
 					$eq_check->date_current_check = $data['date_current_check'];
-					$eq_check->date_next_check = null;
+					$eq_check->date_next_check = $data['date_next_check'];
 					$eq_check->id_upload_document_type = null;
 					$eq_check->number_document = null;
 					$eq_check->upload_file_name = null;
@@ -348,6 +348,10 @@ class MetrologController extends Controller
 						if($eq)
 						{
 							$eq->is_archive = true;
+							$eq->is_conservation = false;
+							$eq->is_check = false;
+							$eq->is_repair = false;
+							$eq->is_working = false;
 							if($eq->save())
 								return Yii::$app->response->statusCode = 200;
 							else return Yii::$app->response->statusCode = 400;
@@ -361,7 +365,7 @@ class MetrologController extends Controller
 				if($eq_check)
 				{
 					$eq_check->date_current_check = $data['date_current_check'];
-					$eq_check->date_next_check = null;
+					$eq_check->date_next_check = $data['date_next_check'];
 					$eq_check->id_upload_document_type = null;
 					$eq_check->number_document = null;
 					$eq_check->upload_file_name = null;
@@ -369,6 +373,10 @@ class MetrologController extends Controller
 						if($eq)
 						{
 							$eq->is_conservation = true;
+							$eq->is_archive = false;
+							$eq->is_check = false;
+							$eq->is_repair = false;
+							$eq->is_working = false;
 							if($eq->save())
 								return Yii::$app->response->statusCode = 200;
 							else return Yii::$app->response->statusCode = 400;

@@ -84,10 +84,16 @@ let details = new Vue({
 			(response => (this.clearDropdown(), this.getDetails(), this.maintenance = {})).catch(error => (this.listError = error));
 		},
 		addPlus(){
-			this.listDetails.equipment.accuracy += String.fromCharCode(177);
+			if(!this.listDetails.equipment.accuracy)
+				this.listDetails.equipment.accuracy = '' + String.fromCharCode(177);
+			else
+				this.listDetails.equipment.accuracy += String.fromCharCode(177);
 		},
 		addTemp(){
-			this.listDetails.equipment.accuracy += String.fromCharCode(176);
+			if(!this.listDetails.equipment.accuracy)
+				this.listDetails.equipment.accuracy = '' + String.fromCharCode(176);
+			else
+				this.listDetails.equipment.accuracy += String.fromCharCode(176);
 		}
 		// returnUniq(column){
 		// 	let result = [];
