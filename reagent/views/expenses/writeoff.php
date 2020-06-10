@@ -27,9 +27,9 @@
 					</select>
 				</div>
 				<div class="field">
-					<label>Дата начало</label>
+					<label>Период с</label>
 					<input type="date" v-model='start'>
-					<label>Дата конец</label>
+					<label>по</label>
 					<input type="date" v-model='end'>
 				</div>
 			</div>

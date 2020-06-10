@@ -87,7 +87,7 @@ let demo1 = new Vue({
 	data: {
 		gridColumns: {
 			tableColumn: [
-				{'material_id':'ID'},
+				{'material_id':'Код'},
 				{'date_create':'Дата изг.'},
 				{'material':'Материал'},
 				{'packing_name':'Наименование в накладной'},
@@ -95,7 +95,7 @@ let demo1 = new Vue({
 				{'amount_outgo_total':'Количество'}
 			],
 			filterColumn: [
-				{'material_id':'ID'},
+				{'material_id':'Код материала'},
 				{'material':'Материал'},
 			]
 		},

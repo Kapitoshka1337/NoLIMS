@@ -104,7 +104,7 @@ let demo1 = new Vue({
 	data: {
 		gridColumns: {
 			tableColumn: [
-				{'material_id':'ID'},
+				{'material_id':'Код'},
 				{'date_create':'Дата изг.'},
 				{'location':'Местоположение'},
 				{'material':'Материал'},
@@ -114,7 +114,7 @@ let demo1 = new Vue({
 				{'passport':'Паспорт'}
 			],
 			filterColumn: [
-				{'material_id':'ID'},
+				{'material_id':'Код материала'},
 				{'type':'Тип'},
 				{'material':'Материал'},
 				{'date_create':'Дата изготовления'},

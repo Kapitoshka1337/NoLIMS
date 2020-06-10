@@ -53,7 +53,7 @@ let demo1 = new Vue({
 	data: {
 		gridColumns: {
 			tableColumn: [
-				{'material_id':'ID'},
+				{'material_id':'Код'},
 				{'material':'Материал'},
 				{'measure':'Ед.изм.'},
 				{'amount':'Количество'},

@@ -44,7 +44,7 @@
 			<thead>
 				<tr>
 					<th v-bind:colspan="gridColumns.length">
-						Расход
+						История расхода
 						<div class="ui right floated mini icon buttons">
 							<button class="ui teal button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
 						</div>

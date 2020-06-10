@@ -61,7 +61,7 @@
 							<table class="ui compact selectable table">
 								<thead>
 									<tr>
-										<th class="collapsing">ID</th>
+										<th class="collapsing">Код</th>
 										<th class="collapsing">Тип</th>
 										<th >Материал</th>
 										<th class="collapsing">Ед.изм.</th>

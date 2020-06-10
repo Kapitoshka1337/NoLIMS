@@ -48,7 +48,7 @@
 	<div id="modalAppendPassport" class="ui tiny card modal">
 		<div class="content">
 			<div class="content header">
-				Паспорт | Входной контроль
+				Паспорт
 			</div>
 		</div>
 		<div class="content">
@@ -56,13 +56,6 @@
 				<div class="field">
 					<label>Выберите файл</label>
 					<input type="file" ref="file" v-on:change="handleFileUpload()">
-				</div>
-				<div class="field">
-					<label>Загружаемый файл</label>
-					<select v-model="typeUploadFile">
-						<option value="1">Входной контроль</option>
-						<option value="2">Паспорт</option>
-					</select>
 				</div>
 			</div>
 		</div>

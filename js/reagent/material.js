@@ -146,7 +146,7 @@ var demo = new Vue({
 	el: '#demo',
 	data: {
 		gridColumns: [
-			{'material_id':'ID'},
+			{'material_id':'Код'},
 			{'type':'Тип'},
 			{'material':'Материал'},
 			{'measure':'Ед.изм'},

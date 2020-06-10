@@ -77,7 +77,8 @@ let demo1 = new Vue({
 			{
 				return Object.keys(this.filters).every(f =>
 				{
-					if(r.materials.total === null) r.materials.total = r.materials.amount;
+					for (var i = r.materials.length - 1; i >= 0; i--)
+						if(!r.materials[i].total) r.materials[i].total = r.materials[i].arrival_amount;
 						return this.filters[f].length < 1 || this.filters[f].includes(r[f]);
 				})
 			})

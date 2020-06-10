@@ -5,10 +5,6 @@ use yii\db\ActiveRecord;
 
 class passport extends ActiveRecord
 {
-	// public static function getDb()
-	// {
-	// 	return Yii::$app->get('db1');
-	// }
 	public static function tableName()
 	{
 		return 'reagent_passport';

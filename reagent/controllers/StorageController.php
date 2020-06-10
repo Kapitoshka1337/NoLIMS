@@ -98,7 +98,7 @@ class StorageController extends Controller
 	{
 		$id_passport = arrival_material::returnPassportId(Yii::$app->request->get('id'));
 		$passport = passport::findById($id_passport->id_passport);
-		$filePath = '/assets/uploads/';
+		$filePath = '/frontend/web/assets/uploads/';
 		return $this->asJson($filePath . $passport->filename);
 		// $completePath = Yii::getAlias('@web'.$filePath . $passport->filename);
 		// return Yii::$app->response->sendFile($completePath, $passport->filename);

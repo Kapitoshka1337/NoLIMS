@@ -20,7 +20,7 @@
 			</div>
 			<div class="meta">{{ today }}</div>
 		</div>
-		<div class="content">
+		<div class="scrolling content">
             <table class="ui compact selectable table">
                 <thead>
                     <tr>

@@ -93,7 +93,7 @@ let demo1 = new Vue({
 	data: {
 		gridColumns: {
 			tableColumn: [
-				{'material_id':'ID'},
+				{'material_id':'Код'},
 				{'date_create':'Дата изг.'},
 				{'material':'Материал'},
 				{'measure':'Ед.изм'},
@@ -105,7 +105,7 @@ let demo1 = new Vue({
 				{'action':''}
 			],
 			filterColumn: [
-				{'material_id':'ID'},
+				{'material_id':'Код материала'},
 				{'date_create':'Дата изготовления'},
 				{'type':'Тип'},
 				{'material':'Материал'},

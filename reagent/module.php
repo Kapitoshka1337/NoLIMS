@@ -7,23 +7,6 @@ class module extends \yii\base\Module
 {
     public $controllerNamespace = 'app\modules\reagent\controllers';
 
-    // public function behaviors()
-    // {
-    //     return [
-    //         'access' => [
-    //             'class' => AccessControl::className(),
-    //             'only' => ['archive'],
-    //             'rules' => [
-    //                 [
-    //                     'allow' => false,
-    //                     'actions' => ['archive'],
-    //                     'roles' => ['?'],
-    //                 ],
-    //             ],
-    //         ],
-    //     ];
-    // }
-
     public function behaviors()
     {
         return [
