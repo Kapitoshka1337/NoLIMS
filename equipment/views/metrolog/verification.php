@@ -111,12 +111,12 @@
                 <td class="right aligned collapsing">
                     <div class="container" v-if="!check.date_submit">
                         <a class="ui mini icon yellow button" type="button" v-on:click="showModal('CheckReqBefore', check)"><i class="icon eye"></i></a>
-                        <a class="ui blue mini icon button"><i class="icon print"></i></a>
+                        <a class="ui blue mini icon button" v-on:click="getRequest(check.equipment[0].id_checks)"><i class="icon print"></i></a>
                         <a class="ui mini icon green button" type="button" v-on:click="submitEq(check.equipment[0].id_checks)"><i class="icon play"></i></a>
                     </div>
                     <div class="container" v-if="check.date_submit">
                         <a class="ui mini icon yellow button" type="button" v-on:click="showModal('CheckReqAfter', check)"><i class="icon eye"></i></a>
-                        <a class="ui blue mini icon button"><i class="icon print"></i></a>
+                        <a class="ui blue mini icon button" v-on:click="getRequest(check.equipment[0].id_checks)"><i class="icon print"></i></a>
                     </div>
                 </td>
             </tr>

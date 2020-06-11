@@ -36,7 +36,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -758,6 +758,120 @@ class MetrologController extends Controller
 			$mpdf->WriteHTML($ht);
 			$mpdf->Output('assets/template/card.pdf', \Mpdf\Output\Destination::FILE);
 			return $this->asJson('/assets/template/card.pdf');
+		}
+	}
+
+	public function actionCreateRequest()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$kits = equipment_kit_equipment::find()->select(['id_equipment'])->where(['id_checks' => $data['id_check']])->all();
+			$eq = array();
+			foreach ($kits as $kit)
+				array_push($eq, $kit->id_equipment);
+			$eqs = equipment_equipment::find()->where(['id' => $eq])->all();
+			// return $this->asJson($eqs);
+			$ht = '<head>
+	<style>
+		* {font-size: 12px;}body{width: 29.7cm;height: 21cm;}table, td {padding: 10px;border: 1px solid black;border-collapse: collapse;padding: 3px;margin: 0px;}b{font-weight: bold;}.center{text-align: center;}.right{text-align: right;}.left{text-align: left;}.header{font-size: 22px;}.nbrd{border: 1px solid white;}.nbrdlr{border-left: 1px solid white;border-right: 1px solid white;}.fourteen{font-size: 18px;}.out{margin-bottom: 10px;}#container{width: 100%;font-size: 0;}#left, #middle, #right{display: inline-block;vertical-align: top;}#left{width: 9.9cm;}#middle{width: 9.9cm;}#right{width: 9.9cm;}
+	</style>
+</head>
+<body>
+		<div id="container">
+			<div id="left">
+				<div class="out center">
+					<img src="assets/template/head1.png" width="64" height="64">
+				</div>
+				<div class="center"><strong>Бюджетное учреждение Удмуртской Республики<br>«УДМУРТСКИЙ ВЕТЕРИНАРНО-<br>ДИАГНОСТИЧЕСКИЙ ЦЕНТР»<br>(БУ УР «УВДЦ»)</strong><br><br>ул.Воткинское шоссе, 29 г.Ижевск,<br>Удмуртская Республика, 426039<br>тел./факс: (3412) 39-21-21, 39-21-20<br>e-mail: uvdc@yandex.ru, сайт: www.uvdc.ru<br>ОКПО 70986847, ОГРН 1041803701719<br>ИНН 1833031439, КПП 184001001</div></div>
+			<div id="middle"></div>
+			<div id="right">
+				<span>Приложение к договору № Д-354 от 27.03.2020</span>
+			</div>
+		</div>
+	<div class="out center">
+		<div><b class="fourteen">ЗАЯВКА</b></div>
+		<div>на выполнение метрологических работ (услуг)</div>
+		<div>Представляем на поверку следующие средства измерений (СИ):</div>
+	</div>
+	<table>
+		<tbody>
+			<tr>
+				<td class="center" rowspan="2"><b>№ п/п</b></td>
+				<td class="center" rowspan="2"><b>Наименование СИ, тип (модификация)</b></td>
+				<td class="center" rowspan="2"><b>Заводской номер, год выпуска СИ, завод-изготовитель</b></td>
+				<td class="center" colspan="4"><b>Количество</b></td>
+				<td class="center" rowspan="2"><b>Предел измерений (по каждо-му параметру измерений/ КТ/разряд/погрешность</b></td>
+				<td class="center" rowspan="2"><b>Комплектность</b></td>
+				<td class="center" rowspan="2"><b>Вид поверки (первичная/периодическая</b></td>
+				<td class="center" rowspan="2"><b>№ Госреестра</b></td>
+				<td class="center" rowspan="2"><b>Сфера Государственного регулирования (вид деятельности)*</b></td>
+				<td class="center" rowspan="2"><b>Принадлежность к перечню СИ, приведенных в  Постановлении № 250 от 20 апреля  2010 г., c указанием  пункта перечня</b></td>
+			</tr>
+			<tr>
+				<td class="center" colspan="2"><b>шт.</b></td>
+				<td class="center" colspan="2"><b>Набор, канал</b></td>
+			</tr>
+			<tr>
+				<td class="center">1</td>
+				<td class="center">2</td>
+				<td class="center">3</td>
+				<td class="center" colspan="2">4</td>
+				<td class="center" colspan="2">5</td>
+				<td class="center">6</td>
+				<td class="center">7</td>
+				<td class="center">8</td>
+				<td class="center">9</td>
+				<td class="center">10</td>
+				<td class="center">11</td>
+			</tr>';
+
+			foreach ($eqs as $eq)
+			{
+				$i++;
+				$ht .= '
+			<tr>
+				<td class="center">'. $i .'</td>
+				<td class="center">'. $eq->title .', '. $eq->model .'</td>
+				<td class="center">'. $eq->manufacturer .'</td>
+				<td class="center" colspan="2">1</td>
+				<td class="center" colspan="2">-</td>
+				<td class="center">'. $eq->accuracy .'</td>
+				<td class="center">-</td>
+				<td class="center">периодическая</td>
+				<td class="center">'. $eq->fif_number .'</td>
+				<td class="center">-</td>
+				<td class="center">-</td>
+			</tr>';
+			}
+
+			$ht .= '
+			<tr>
+				<td colspan="13" class="nbrd"></td>
+			</tr>
+			<tr>
+				<td colspan="13" class="nbrd"></td>
+			</tr>
+			<tr>
+				<td colspan="13" class="nbrd"></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="nbrd">«<u>9</u>» <u>июня</u> 2020г.</td>
+				<td colspan="8" class="nbrd">Представитель Заказчика <u>подпись</u> / <u>Фамилия И.О.</u> /</td>
+				<td colspan="5" class="nbrd">Контактный телефон <u>(3412) 39-21-20 (доб.120)</u></td>
+			</tr>
+		</tbody>
+	</table>
+</body>';
+			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
+			$mpdf = new \Mpdf\Mpdf();
+			$mpdf->SetDisplayMode('fullpage');
+			$mpdf->AddPage('L','','','','',3,3,3,0,0,0);
+			$mpdf->WriteHTML($ht);
+			// $mpdf->AddPage('L','','','','',3,3,3,0,0,0);
+			// $mpdf->WriteHTML($ht);
+			$mpdf->Output('assets/template/request.pdf', \Mpdf\Output\Destination::FILE);
+			return $this->asJson('/assets/template/request.pdf');
 		}
 	}
 }

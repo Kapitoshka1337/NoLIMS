@@ -52,6 +52,9 @@ Vue.component('checks-grid', {
 		},
 		submitEq(id_check){
 			axios.post("/equipment/submit-verification", JSON.stringify({id_check: id_check}), {headers: {'Content-Type': 'application/json'}}).then(response =>(demo1.getChecks()));
+		},
+		getRequest(id_check){
+			axios.post("/equipment/create-request", JSON.stringify({id_check: id_check}), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open(response.data)));
 		}
 	},
 	watch: {

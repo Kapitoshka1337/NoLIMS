@@ -5,8 +5,10 @@
     $this->registerJsFile('@web/assets/vendor/html2pdf.bundle.min.js');
 	$this->registerJsFile('@web/assets/vendor/ser.js');
 ?>
-<h1><?= $this->context->action->uniqueId ?></h1>
-<div class="row" id="ser">
+<div class="column">
+    <h1><?= $this->context->action->uniqueId ?></h1>
+</div>
+<!-- <div class="row" id="ser">
     <div class="sixteen wide column">
         <div class="ui fluid card">
             <div class="content">
@@ -65,7 +67,7 @@
                 </div>
         </div>
     </div>
-</div>
+</div> -->
 <!-- <div class="sixteen wide column"> -->
 <!--     <div class="ui cards">
         <div class="ui fluid card" v-for="data in paginateRows">
