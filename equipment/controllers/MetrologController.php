@@ -28,6 +28,8 @@ use app\modules\equipment\models\equipment_checks;
 use app\modules\equipment\models\view_equipment_check;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
+require 'D:/OSPanel/vendor/autoload.php';
+use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
 {
@@ -504,49 +506,32 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			$stickers = array_chunk(view_equipment_metrolog_sticker::findAll(['id_equipment' => $data]), 4);
-			$ht = '<head><style>table, th, td { padding: 10px; border: 1px solid black; border-collapse: collapse; padding: 6px; margin: 0px; font-size: 12px;} b{font-weight: bold;}</style></head><body><div><table><tbody>';
-					foreach ($stickers as $sticker)
-					{
-						$ht .= '<tr>';
-						foreach ($sticker as $stick)
-						{
-							switch ($stick->type)
-							{
-								case 'ВО':
-									$type = 'проверки';
-									break;
-								case 'ИО':
-									$type = 'аттестации';
-									break;
-								case 'СИ':
-									$type = 'поверки';
-									break;
-							}
-							$ht .= '
-								<td style="width: 288px">
-									<div class="label"><b>Отдел:</b> <u>'. $stick->department .'</u></div>
-									<div class="label"><b>Наименовение, тип:</b> <br><u>' .$stick->equipment . ' ' .($stick->type) . '</u></div>';
-									if($type === 'поверки')
-										$ht .= '<div class="label"><b>Рег.карта:</b> <u>'.$stick->number . '/' . $stick->id_department . '-' . $stick->type .'</u> <span class="label"><b>ФИФ:</b> <u>'. $stick->fif_number .'</u></span></div>';
-									else
-										$ht .= '<div class="label"><b>Рег.карта: </b><u>'.$stick->number . '/' . $stick->id_department . '-' . $stick->type .'</u></div>';
-									$ht .= '<div class="label"><b>Заводской номер: </b><u>'. $stick->serial_number .'</u></div>
-									<div class="label"><b>Инветарный номер: </b><u>'. $stick->inventory_number .'</u></div>
-									<div class="label"><b>Дата <u>'. $type .'</u>:</b> <u>'. $stick->date_current_check .'</u></div>
-									<div class="label"><b>Дата следующей: </b><u>'.$stick->date_next_check .'</u></div>
-								</td>';
-						}
-						$ht .= '</tr>';
-					}
-						$ht .='</tbody></table></div></body>';
-			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
-			$mpdf = new \Mpdf\Mpdf();
-			$mpdf->SetDisplayMode('fullpage');
-			$mpdf->AddPage('P','','','','',6,6,6,0,0,0);
-			$mpdf->WriteHTML($ht);
-			$mpdf->Output('assets/template/sticker.pdf', \Mpdf\Output\Destination::FILE);
-			return $this->asJson('/assets/template/sticker.pdf');
+			foreach ($data as $val)
+			{
+				if(end($data) === $val) $ids .= $val;
+				else $ids .= $val . ',';
+			}
+			$input = 'D:/OSPanel/domains/nolims/frontend/web/assets/template/sticker.jasper';
+			$output = 'D:/OSPanel/domains/nolims/frontend/web/assets/template/';
+			// $jdbc_dir = 'D:/OSPanel/vendor/geekcom/phpjasper/bin/jaspertarter/jdbc';
+			$options = [
+				'format' => ['pdf'],
+				// 'locale' => 'ru',
+				'params' => ['id_eq' => 'id_equipment IN ('. $ids .')'],
+				'db_connection' => [
+				'driver' => 'generic',
+				'host' => '192.168.0.55',
+				'port' => '3306',
+				'database' => 'nolims',
+				'username' => 'root',
+				'password' => 'K7D4uotKzWersAc3',
+				'jdbc_driver' => 'com.mysql.jdbc.Driver',
+				'jdbc_url' => 'jdbc:mysql://192.168.0.55/nolims',
+				// 'jdbc_dir' => $jdbc_dir
+				]
+			];
+			$jasper = new PHPJasper;
+			return $this->asJson($jasper->process($input, $output, $options)->execute());
 		}
 	}
 
@@ -766,112 +751,30 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			$kits = equipment_kit_equipment::find()->select(['id_equipment'])->where(['id_checks' => $data['id_check']])->all();
-			$eq = array();
+			$kits = equipment_kit_equipment::find()->select(['id_equipment'])->where(['id_checks' => $data['id_check']])->andWhere(['is_received_before' => 1])->all();
 			foreach ($kits as $kit)
-				array_push($eq, $kit->id_equipment);
-			$eqs = equipment_equipment::find()->where(['id' => $eq])->all();
-			// return $this->asJson($eqs);
-			$ht = '<head>
-	<style>
-		* {font-size: 12px;}body{width: 29.7cm;height: 21cm;}table, td {padding: 10px;border: 1px solid black;border-collapse: collapse;padding: 3px;margin: 0px;}b{font-weight: bold;}.center{text-align: center;}.right{text-align: right;}.left{text-align: left;}.header{font-size: 22px;}.nbrd{border: 1px solid white;}.nbrdlr{border-left: 1px solid white;border-right: 1px solid white;}.fourteen{font-size: 18px;}.out{margin-bottom: 10px;}#container{width: 100%;font-size: 0;}#left, #middle, #right{display: inline-block;vertical-align: top;}#left{width: 9.9cm;}#middle{width: 9.9cm;}#right{width: 9.9cm;}
-	</style>
-</head>
-<body>
-		<div id="container">
-			<div id="left">
-				<div class="out center">
-					<img src="assets/template/head1.png" width="64" height="64">
-				</div>
-				<div class="center"><strong>Бюджетное учреждение Удмуртской Республики<br>«УДМУРТСКИЙ ВЕТЕРИНАРНО-<br>ДИАГНОСТИЧЕСКИЙ ЦЕНТР»<br>(БУ УР «УВДЦ»)</strong><br><br>ул.Воткинское шоссе, 29 г.Ижевск,<br>Удмуртская Республика, 426039<br>тел./факс: (3412) 39-21-21, 39-21-20<br>e-mail: uvdc@yandex.ru, сайт: www.uvdc.ru<br>ОКПО 70986847, ОГРН 1041803701719<br>ИНН 1833031439, КПП 184001001</div></div>
-			<div id="middle"></div>
-			<div id="right">
-				<span>Приложение к договору № Д-354 от 27.03.2020</span>
-			</div>
-		</div>
-	<div class="out center">
-		<div><b class="fourteen">ЗАЯВКА</b></div>
-		<div>на выполнение метрологических работ (услуг)</div>
-		<div>Представляем на поверку следующие средства измерений (СИ):</div>
-	</div>
-	<table>
-		<tbody>
-			<tr>
-				<td class="center" rowspan="2"><b>№ п/п</b></td>
-				<td class="center" rowspan="2"><b>Наименование СИ, тип (модификация)</b></td>
-				<td class="center" rowspan="2"><b>Заводской номер, год выпуска СИ, завод-изготовитель</b></td>
-				<td class="center" colspan="4"><b>Количество</b></td>
-				<td class="center" rowspan="2"><b>Предел измерений (по каждо-му параметру измерений/ КТ/разряд/погрешность</b></td>
-				<td class="center" rowspan="2"><b>Комплектность</b></td>
-				<td class="center" rowspan="2"><b>Вид поверки (первичная/периодическая</b></td>
-				<td class="center" rowspan="2"><b>№ Госреестра</b></td>
-				<td class="center" rowspan="2"><b>Сфера Государственного регулирования (вид деятельности)*</b></td>
-				<td class="center" rowspan="2"><b>Принадлежность к перечню СИ, приведенных в  Постановлении № 250 от 20 апреля  2010 г., c указанием  пункта перечня</b></td>
-			</tr>
-			<tr>
-				<td class="center" colspan="2"><b>шт.</b></td>
-				<td class="center" colspan="2"><b>Набор, канал</b></td>
-			</tr>
-			<tr>
-				<td class="center">1</td>
-				<td class="center">2</td>
-				<td class="center">3</td>
-				<td class="center" colspan="2">4</td>
-				<td class="center" colspan="2">5</td>
-				<td class="center">6</td>
-				<td class="center">7</td>
-				<td class="center">8</td>
-				<td class="center">9</td>
-				<td class="center">10</td>
-				<td class="center">11</td>
-			</tr>';
-
-			foreach ($eqs as $eq)
 			{
-				$i++;
-				$ht .= '
-			<tr>
-				<td class="center">'. $i .'</td>
-				<td class="center">'. $eq->title .', '. $eq->model .'</td>
-				<td class="center">'. $eq->manufacturer .'</td>
-				<td class="center" colspan="2">1</td>
-				<td class="center" colspan="2">-</td>
-				<td class="center">'. $eq->accuracy .'</td>
-				<td class="center">-</td>
-				<td class="center">периодическая</td>
-				<td class="center">'. $eq->fif_number .'</td>
-				<td class="center">-</td>
-				<td class="center">-</td>
-			</tr>';
+				if(end($kits) === $kit) $ids .= $kit->id_equipment;
+				else $ids .= $kit->id_equipment . ',';
 			}
-
-			$ht .= '
-			<tr>
-				<td colspan="13" class="nbrd"></td>
-			</tr>
-			<tr>
-				<td colspan="13" class="nbrd"></td>
-			</tr>
-			<tr>
-				<td colspan="13" class="nbrd"></td>
-			</tr>
-			<tr>
-				<td colspan="2" class="nbrd">«<u>9</u>» <u>июня</u> 2020г.</td>
-				<td colspan="8" class="nbrd">Представитель Заказчика <u>подпись</u> / <u>Фамилия И.О.</u> /</td>
-				<td colspan="5" class="nbrd">Контактный телефон <u>(3412) 39-21-20 (доб.120)</u></td>
-			</tr>
-		</tbody>
-	</table>
-</body>';
-			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
-			$mpdf = new \Mpdf\Mpdf();
-			$mpdf->SetDisplayMode('fullpage');
-			$mpdf->AddPage('L','','','','',3,3,3,0,0,0);
-			$mpdf->WriteHTML($ht);
-			// $mpdf->AddPage('L','','','','',3,3,3,0,0,0);
-			// $mpdf->WriteHTML($ht);
-			$mpdf->Output('assets/template/request.pdf', \Mpdf\Output\Destination::FILE);
-			return $this->asJson('/assets/template/request.pdf');
+			$input = 'D:/OSPanel/domains/nolims/frontend/web/assets/template/csm.jasper';
+			$output = 'D:/OSPanel/domains/nolims/frontend/web/assets/template/';
+			$options = [
+				'format' => ['pdf'],
+				'params' => ['id_eq' => 'id IN ('. $ids .')'],
+				'db_connection' => [
+				'driver' => 'generic',
+				'host' => '192.168.0.55',
+				'port' => '3306',
+				'database' => 'nolims',
+				'username' => 'root',
+				'password' => 'K7D4uotKzWersAc3',
+				'jdbc_driver' => 'com.mysql.jdbc.Driver',
+				'jdbc_url' => 'jdbc:mysql://192.168.0.55/nolims',
+				]
+			];
+			$jasper = new PHPJasper;
+			return $this->asJson($jasper->process($input, $output, $options)->execute());
 		}
 	}
 }

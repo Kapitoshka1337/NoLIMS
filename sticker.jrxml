@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" columnCount="4" printOrder="Horizontal" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="190" leftMargin="20" rightMargin="5" topMargin="5" bottomMargin="5" uuid="aa1e4800-a8d0-46af-9ab7-23e155b860a3">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="278"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="713"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="588"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="398"/>
+	<parameter name="id_eq" class="java.lang.String" nestedType="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT *
+FROM nolims.equipment_metrolog_sticker
+WHERE 
+	 $P!{id_eq}]]>
+	</queryString>
+	<field name="id_equipment" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_equipment"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="department" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="department"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="equipment" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="equipment"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="type"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="fif_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fif_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="serial_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="serial_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="inventory_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="inventory_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="number" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="id_department" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_department"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="date_current_check" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="date_current_check"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<field name="date_next_check" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="date_next_check"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="equipment_metrolog_sticker"/>
+	</field>
+	<group name="id_equipment">
+		<groupExpression><![CDATA[$F{id_equipment}]]></groupExpression>
+	</group>
+	<group name="department">
+		<groupExpression><![CDATA[$F{department}]]></groupExpression>
+	</group>
+	<group name="equipment">
+		<groupExpression><![CDATA[$F{equipment}]]></groupExpression>
+	</group>
+	<group name="type">
+		<groupExpression><![CDATA[$F{type}]]></groupExpression>
+	</group>
+	<group name="fif_number">
+		<groupExpression><![CDATA[$F{fif_number}]]></groupExpression>
+	</group>
+	<group name="serial_number">
+		<groupExpression><![CDATA[$F{serial_number}]]></groupExpression>
+	</group>
+	<group name="inventory_number">
+		<groupExpression><![CDATA[$F{inventory_number}]]></groupExpression>
+	</group>
+	<group name="number">
+		<groupExpression><![CDATA[$F{number}]]></groupExpression>
+	</group>
+	<group name="id_department">
+		<groupExpression><![CDATA[$F{id_department}]]></groupExpression>
+	</group>
+	<group name="date_current_check">
+		<groupExpression><![CDATA[$F{date_current_check}]]></groupExpression>
+	</group>
+	<group name="date_next_check">
+		<groupExpression><![CDATA[$F{date_next_check}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="97" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout"/>
+			<rectangle>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" mode="Transparent" x="-15" y="0" width="183" height="89" uuid="48362f36-c922-4a68-99b7-8db5b636a52e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement x="-10" y="5" width="170" height="10" uuid="6af22ab9-e1ab-48ba-aa7e-7484b849477d"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Отдел: " + $F{department}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="ContainerHeight" x="-10" y="15" width="170" height="10" isPrintWhenDetailOverflows="true" uuid="df9b82fc-5a15-4192-be35-96037dbe7bf8"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Наименование, тип: " + $F{equipment} + ", " + $F{type}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="-10" y="25" width="79" height="10" uuid="9ea35635-d340-453b-8110-a7f5b3b15151"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Рег.карта: " + $F{id_equipment} + "/" + $F{id_department} + "-" + $F{type}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="69" y="25" width="91" height="10" uuid="37d86e60-d9bf-4b27-be2b-25f500e5d014">
+					<printWhenExpression><![CDATA[$F{fif_number} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ФИФ: " + $F{fif_number}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="-10" y="35" width="170" height="10" uuid="53df28ed-cd75-4d13-b13d-53d237613cce">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Заводской номер: " + $F{serial_number}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="-10" y="45" width="170" height="10" uuid="453e1f17-de23-408c-9b4d-06c7665fc897">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Инвентарный номер: " + $F{inventory_number}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="-10" y="65" width="170" height="10" uuid="de184514-943f-46ce-b560-7949c0bd7de7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Дата следущей: " +$F{date_next_check}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="-10" y="55" width="170" height="10" uuid="ca06fde0-ab29-451d-8598-ec5a2ac6b9ac">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Дата текущей: " + $F{date_current_check}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

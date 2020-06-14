@@ -54,7 +54,7 @@ Vue.component('checks-grid', {
 			axios.post("/equipment/submit-verification", JSON.stringify({id_check: id_check}), {headers: {'Content-Type': 'application/json'}}).then(response =>(demo1.getChecks()));
 		},
 		getRequest(id_check){
-			axios.post("/equipment/create-request", JSON.stringify({id_check: id_check}), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open(response.data)));
+			axios.post("/equipment/create-request", JSON.stringify({id_check: id_check}), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/csm.pdf')));
 		}
 	},
 	watch: {
@@ -150,18 +150,18 @@ let demo1 = new Vue({
 			axios.post("/equipment/recieved-eq-before", JSON.stringify({id_kit: this.equipment.equipment[index].id_kit_row}), {headers: {'Content-Type': 'application/json'}}).then(response =>(this.getChecks(), this.equipment.equipment[index].is_received_before = true));
 		},
 		checkEqAfter(index){
-			axios.post("/equipment/recieved-eq-after", JSON.stringify({id_kit: this.filteredEqBeforeAfter[index].id_kit_row}), {headers: {'Content-Type': 'application/json'}}).then(response =>(this.getChecks(), this.equipment.equipment[index].is_received_after = true));
+			axios.post("/equipment/recieved-eq-after", JSON.stringify({id_kit: this.equipment.equipment[index].id_kit_row}), {headers: {'Content-Type': 'application/json'}}).then(response =>(this.getChecks(), this.equipment.equipment[index].is_received_after = true));
 		}
 	},
-	computed: {
-		filteredEqBeforeAfter: function () {
-			if(Object.keys(this.equipment).length > 0)
-			{
-				let rows = this.equipment;
-				return rows.equipment.filter(r => {return r.is_received_before});
-			}
-		}
-	},
+	// computed: {
+	// 	filteredEqBeforeAfter: function () {
+	// 		if(Object.keys(this.equipment).length > 0)
+	// 		{
+	// 			let rows = this.equipment;
+	// 			return rows.equipment.filter(r => {return r.is_received_before});
+	// 		}
+	// 	}
+	// },
 	mounted: function() {
 		this.getChecks();
 		this.setDropdown();

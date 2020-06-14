@@ -94,13 +94,17 @@ Vue.component('equipment-grid', {
 		},
 		GetSticker() {
 			if(this.selectedEquipments.length > 0)
-				axios.post("/equipment/create-sticker", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(response =>
-				(window.open(response.data))).catch(error => (this.listError = error));
+			{
+				let obj = [];
+				for (let item in this.selectedEquipments)
+					obj.push(this.selectedEquipments[item].id_equipment);
+				axios.post("/equipment/create-sticker", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/sticker.pdf'))).catch(error => (this.listError = error));
+			}
 		},
 		GetCard() {
 			if(this.selectedEquipments.length > 0)
 			{
-				let obj
+				let obj;
 				let obj1 = [];
 				for (let item in this.selectedEquipments)
 					obj1.push(this.selectedEquipments[item].id_equipment);

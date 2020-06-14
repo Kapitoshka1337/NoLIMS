@@ -124,7 +124,7 @@
 	</div>
 	<div id="modalCheckReq" class="ui large card modal">
 		<div class="content">
-			<div class="content header">Выбор оборудования</div>
+			<div class="content header">Выбор оборудования на проверку</div>
 		</div>
 		<div class="scrolling content">
 			<table class="ui compact selectable table">
