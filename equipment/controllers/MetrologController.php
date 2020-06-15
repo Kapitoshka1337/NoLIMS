@@ -751,6 +751,7 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
+			// return $this->asJson($data);
 			$kits = equipment_kit_equipment::find()->select(['id_equipment'])->where(['id_checks' => $data['id_check']])->andWhere(['is_received_before' => 1])->all();
 			foreach ($kits as $kit)
 			{
@@ -761,7 +762,7 @@ class MetrologController extends Controller
 			$output = 'D:/OSPanel/domains/nolims/frontend/web/assets/template/';
 			$options = [
 				'format' => ['pdf'],
-				'params' => ['id_eq' => 'id IN ('. $ids .')'],
+				'params' => ['id_eq' => 'id IN ('. $ids .')', 'dogovor' => $data['dogovor'], 'usr' => Yii::$app->user->identity['login']],
 				'db_connection' => [
 				'driver' => 'generic',
 				'host' => '192.168.0.55',
