@@ -90,17 +90,17 @@
 		</div>
 		<div class="content">
 			<div class="ui form">
-				<div class="two fields">
+				<div v-bind:class="{'two fields': !check.is_archive && !check.is_conservation}">
 					<div class="field">
 						<label>Текущая (пройденная)</label>
 						<input type="date" v-model="check.date_current_check">
 					</div>
-					<div class="field">
+					<div class="field" v-show="!check.is_archive && !check.is_conservation">
 						<label>Cледующая (предстоящая)</label>
 						<input type="date" v-model="check.date_next_check">
 					</div>
 				</div>
-				<div class="field" v-show="!check.is_archive && !check.is_conservation">
+				<div class="field">
 					<div class="field">
 						<label>Загружамый файл</label>
 						<select class="ui search dropdown" v-model="check.id_upload_document_type">
@@ -124,7 +124,7 @@
 	</div>
 	<div id="modalCheckReq" class="ui large card modal">
 		<div class="content">
-			<div class="content header">Выбор оборудования на проверку</div>
+			<div class="content header">Подготавливаемое оборудования на проверку</div>
 		</div>
 		<div class="scrolling content">
 			<table class="ui compact selectable table">

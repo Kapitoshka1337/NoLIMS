@@ -134,18 +134,21 @@
 							<tr>
 								<th>Текущая</th>
 								<th>Следующая</th>
+								<th>Вид документа</th>
 								<th>Документ</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr v-for="check in listDetails.history_check">
-								<td>{{ today(check.date_current_check) }}</td>
-								<td>{{ today(check.date_next_check) }}</td>
+								<td>{{ check.date_current_check }}</td>
+								<td>{{ check.date_next_check }}</td>
+								<td>{{ check.document_type }}</td>
 								<td><a v-bind:href="'/assets/uploads/' + check.upload_file_name" target="_blank">Открыть</a></td>
 							</tr>
 							<tr>
-								<td>{{today(listDetails.current_check.date_current_check)}}</td>
-								<td>{{today(listDetails.current_check.date_next_check)}}</td>
+								<td>{{ listDetails.current_check.date_current_check }}</td>
+								<td>{{ listDetails.current_check.date_next_check }}</td>
+								<td>{{ listDetails.current_check.document_type }}</td>
 								<td><a v-bind:href="'/assets/uploads/' + listDetails.current_check.upload_file_name" target="_blank">Открыть</a></td>
 							</tr>
 						</tbody>

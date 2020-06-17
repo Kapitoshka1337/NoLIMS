@@ -258,7 +258,7 @@ let demo1 = new Vue({
 			axios.get("/equipment/get-department").then( response => (this.listDepartment = response.data));
 		},
 		setDropdown(){
-			console.log($('.dropdown').dropdown({fullTextSearch: true}));
+			$('.dropdown').dropdown({fullTextSearch: true});
 		},
 		handleFileUpload(){
 			this.check.upload_file_name[0] = this.$refs.upload_file_name.files[0];

@@ -14,8 +14,9 @@ use app\modules\equipment\models\equipment_condition_working;
 use app\modules\equipment\models\equipment_upload_document_type;
 use app\modules\equipment\models\equipment_equipment_details;
 use app\modules\equipment\models\equipment_function_of_use;
+use app\modules\equipment\models\equipment_details_date_check;
 use app\modules\equipment\models\equipment_date_check;
-use app\modules\equipment\models\equipment_history_date_check;
+use app\modules\equipment\models\equipment_details_history_date_check;
 use app\modules\equipment\models\equipment_moving_history;
 use app\modules\equipment\models\equipment_object_study;
 use app\modules\equipment\models\equipment_executor;
@@ -26,6 +27,7 @@ use app\modules\equipment\models\equipment_kit_equipment;
 use app\modules\equipment\models\view_equipment_kits;
 use app\modules\equipment\models\equipment_checks;
 use app\modules\equipment\models\view_equipment_check;
+use app\modules\equipment\models\equipment_total_check;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
 require 'D:/OSPanel/vendor/autoload.php';
@@ -110,6 +112,15 @@ class MetrologController extends Controller
 		}	
 	}
 
+	public function actionGetPlanVerification()
+	{
+		if(Yii::$app->request->isGet)
+		{
+			$plan = equipment_total_check::find()->where(['id_type' => Yii::$app->request->get('type')])->all();
+			return $this->asJson($plan);
+		}	
+	}
+
 	public function actionSubmitVerification()
 	{
 		if(Yii::$app->request->isPost)
@@ -191,8 +202,8 @@ class MetrologController extends Controller
 		{
 			$eq = equipment_equipment_details::find()->where(['id' => Yii::$app->request->get('id')])->one();
 			$maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => Yii::$app->request->get('id')]);
-			$history_check = equipment_history_date_check::findAll(['id_equipment' => Yii::$app->request->get('id')]);
-			$current_check = equipment_date_check::findOne(['id_equipment' => Yii::$app->request->get('id')]);
+			$history_check = equipment_details_history_date_check::findAll(['id_equipment' => Yii::$app->request->get('id')]);
+			$current_check = equipment_details_date_check::findOne(['id_equipment' => Yii::$app->request->get('id')]);
 			$type = equipment_type::find()->all();
 			$of_use = equipment_function_of_use::find()->all();
 			$condition_working = equipment_condition_working::find()->where(['id_equipment' => Yii::$app->request->get('id')])->one();
@@ -333,19 +344,20 @@ class MetrologController extends Controller
 	{
 		if(Yii::$app->request->isPost)
 		{
+			$model = new UploadForm();
 			$data = Yii::$app->request->post();
-			// return $this->asJson($data['is_archive']);
 			if($data['is_archive'] === 'true')
 			{
 				$eq_check = equipment_date_check::findByEqId($data['id_equipment']);
 				$eq = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
-				if($eq_check)
+			// return $this->asJson($eq_check);
+				if($eq_check && $model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
 				{
 					$eq_check->date_current_check = $data['date_current_check'];
-					$eq_check->date_next_check = $data['date_next_check'];
-					$eq_check->id_upload_document_type = null;
-					$eq_check->number_document = null;
-					$eq_check->upload_file_name = null;
+					// $eq_check->date_next_check = $data['date_current_check'];
+					$eq_check->id_upload_document_type = 11;
+					$eq_check->number_document = $data['number_document'];
+					$eq_check->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
 					if($eq_check->save())
 						if($eq)
 						{
@@ -355,8 +367,30 @@ class MetrologController extends Controller
 							$eq->is_repair = false;
 							$eq->is_working = false;
 							if($eq->save())
-								return Yii::$app->response->statusCode = 200;
-							else return Yii::$app->response->statusCode = 400;
+								if ($model->upload()) return Yii::$app->response->statusCode = 200;
+								else return Yii::$app->response->statusCode = 400;
+						}
+				}
+				else if (!$eq_check && $model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
+				{
+					$eq_check = new equipment_date_check();
+					$eq_check->id_equipment = $data['id_equipment'];
+					$eq_check->date_current_check = $data['date_current_check'];
+					// $eq_check->date_next_check = $data['date_current_check'];
+					$eq_check->id_upload_document_type = 11;
+					$eq_check->number_document = $data['number_document'];
+					$eq_check->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
+					if($eq_check->save())
+						if($eq)
+						{
+							$eq->is_archive = true;
+							$eq->is_conservation = false;
+							$eq->is_check = false;
+							$eq->is_repair = false;
+							$eq->is_working = false;
+							if($eq->save())
+								if ($model->upload()) return Yii::$app->response->statusCode = 200;
+								else return Yii::$app->response->statusCode = 400;
 						}
 				}
 			}
@@ -364,31 +398,53 @@ class MetrologController extends Controller
 			{
 				$eq_check = equipment_date_check::findByEqId($data['id_equipment']);
 				$eq = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
-				if($eq_check)
+			// return $this->asJson($eq);
+				if($eq_check && $model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
 				{
 					$eq_check->date_current_check = $data['date_current_check'];
-					$eq_check->date_next_check = $data['date_next_check'];
-					$eq_check->id_upload_document_type = null;
-					$eq_check->number_document = null;
-					$eq_check->upload_file_name = null;
+					// $eq_check->date_next_check = $data['date_next_check'];
+					$eq_check->id_upload_document_type = 10;
+					$eq_check->number_document = $data['number_document'];
+					$eq_check->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
 					if($eq_check->save())
 						if($eq)
 						{
-							$eq->is_conservation = true;
 							$eq->is_archive = false;
+							$eq->is_conservation = true;
 							$eq->is_check = false;
 							$eq->is_repair = false;
 							$eq->is_working = false;
 							if($eq->save())
-								return Yii::$app->response->statusCode = 200;
-							else return Yii::$app->response->statusCode = 400;
+								if ($model->upload()) return Yii::$app->response->statusCode = 200;
+								else return Yii::$app->response->statusCode = 400;
+						}
+				}
+				else if (!$eq_check && $model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
+				{
+					$eq_check = new equipment_date_check();
+					$eq_check->id_equipment = $data['id_equipment'];
+					$eq_check->date_current_check = $data['date_current_check'];
+					// $eq_check->date_next_check = $data['date_current_check'];
+					$eq_check->id_upload_document_type = 10;
+					$eq_check->number_document = $data['number_document'];
+					$eq_check->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
+					if($eq_check->save())
+						if($eq)
+						{
+							$eq->is_archive = false;
+							$eq->is_conservation = true;
+							$eq->is_check = false;
+							$eq->is_repair = false;
+							$eq->is_working = false;
+							if($eq->save())
+								if ($model->upload()) return Yii::$app->response->statusCode = 200;
+								else return Yii::$app->response->statusCode = 400;
 						}
 				}
 			}
-			$model = new UploadForm();
-			$eq = equipment_date_check::findByEqId($data['id_equipment']);
 			if($model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
 			{
+				$eq = equipment_date_check::findByEqId($data['id_equipment']);
 				if($eq)
 				{
 					$eq->date_current_check = $data['date_current_check'];
