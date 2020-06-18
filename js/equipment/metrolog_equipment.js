@@ -30,7 +30,8 @@ Vue.component('equipment-grid', {
 				is_repair: 'Ремонт',
 				is_check: 'ЦСМ',
 				is_working: 'Используется'
-			}
+			},
+			filterKey: ''
 		}
 	},
 	methods: {
@@ -137,6 +138,7 @@ Vue.component('equipment-grid', {
 	computed: {
 		filteredRows: function () {
 			let sortKey = this.sortKey;
+			let filterKey = this.filterKey && this.filterKey.toLowerCase();
 			let order = this.sortColumns[sortKey] || 1;
 			let rows = this.rows;
 			if (sortKey)
@@ -149,6 +151,14 @@ Vue.component('equipment-grid', {
 					else return - 1 * order;
 				})
 			}
+            if (filterKey) {
+              rows = rows.filter(function(row) {
+                return Object.keys(row).some(function(key) {
+                  return (
+                    String(row[key]).toLowerCase().indexOf(filterKey) > -1);
+                });
+              });
+            }
 			return rows.filter(r =>
 			{
 				return Object.keys(this.filters).every(f =>

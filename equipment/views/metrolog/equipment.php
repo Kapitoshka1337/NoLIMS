@@ -224,6 +224,11 @@
 				</th>
 			</tr>
 			<tr>
+				<th v-bind:colspan="columns.length + 1">
+					<div class="ui form"><div class="field"><input type="text" placeholder="Поиск" v-model="filterKey"></div></div>
+				</th>
+			</tr>
+			<tr>
 				<th class="collapsing">
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="selectAllMaterials" v-on:click="select()">

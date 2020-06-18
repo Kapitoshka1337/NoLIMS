@@ -40,7 +40,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -114,9 +114,12 @@ class MetrologController extends Controller
 
 	public function actionGetPlanVerification()
 	{
-		if(Yii::$app->request->isGet)
+		if(Yii::$app->request->isPost)
 		{
-			$plan = equipment_total_check::find()->where(['id_type' => Yii::$app->request->get('type')])->all();
+			$data = Yii::$app->request->post();
+			$plan = equipment_total_check::find()->where(['id_type' => $data['type']])->andWhere(['between', 'date_next_check', $data['start'], $data['end']])->all();
+			// if(!$plan)
+			// 	$plan = equipment_total_check::find()->where(['id_type' => $data['type']])->andWhere(['between', 'date_certification', $data['start'], $data['end']])->all();
 			return $this->asJson($plan);
 		}	
 	}
