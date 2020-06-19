@@ -30,7 +30,7 @@ use app\modules\equipment\models\view_equipment_check;
 use app\modules\equipment\models\equipment_total_check;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-require 'D:/OSPanel/vendor/autoload.php';
+require 'D:/OpenServer/OSPanel/vendor/autoload.php';
 use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
@@ -40,7 +40,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -122,6 +122,35 @@ class MetrologController extends Controller
 			// 	$plan = equipment_total_check::find()->where(['id_type' => $data['type']])->andWhere(['between', 'date_certification', $data['start'], $data['end']])->all();
 			return $this->asJson($plan);
 		}	
+	}
+
+	public function actionPrintTable()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/plan.jasper';
+			$output = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/';
+			$sql = "id_type = ". $data['type'] ." AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
+			$options = [
+				'format' => ['pdf'],
+				'params' => ['filter' => $sql],
+				'db_connection' => [
+				'driver' => 'generic',
+				'host' => '192.168.0.55',
+				'port' => '3306',
+				'database' => 'nolims',
+				'username' => 'root',
+				'password' => 'K7D4uotKzWersAc3',
+				'jdbc_driver' => 'com.mysql.jdbc.Driver',
+				'jdbc_url' => 'jdbc:mysql://192.168.0.55/nolims',
+				]
+			];
+			$jasper = new PHPJasper;
+			return $this->asJson($jasper->process($input, $output, $options)->execute());
+			// $x = $jasper->process($input, $output, $options)->output();
+			// return $x;
+		}
 	}
 
 	public function actionSubmitVerification()
@@ -570,8 +599,8 @@ class MetrologController extends Controller
 				if(end($data) === $val) $ids .= $val;
 				else $ids .= $val . ',';
 			}
-			$input = 'D:/OSPanel/domains/nolims/frontend/web/assets/template/sticker.jasper';
-			$output = 'D:/OSPanel/domains/nolims/frontend/web/assets/template/';
+			$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/sticker.jasper';
+			$output = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/';
 			// $jdbc_dir = 'D:/OSPanel/vendor/geekcom/phpjasper/bin/jaspertarter/jdbc';
 			$options = [
 				'format' => ['pdf'],
@@ -817,8 +846,8 @@ class MetrologController extends Controller
 				if(end($kits) === $kit) $ids .= $kit->id_equipment;
 				else $ids .= $kit->id_equipment . ',';
 			}
-			$input = 'D:/OSPanel/domains/nolims/frontend/web/assets/template/csm.jasper';
-			$output = 'D:/OSPanel/domains/nolims/frontend/web/assets/template/';
+			$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/csm.jasper';
+			$output = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/';
 			$options = [
 				'format' => ['pdf'],
 				'params' => ['id_eq' => 'id IN ('. $ids .')', 'dogovor' => $data['dogovor'], 'usr' => Yii::$app->user->identity['login']],

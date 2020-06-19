@@ -86,6 +86,7 @@
 			:filters="helpEq.filters"
 			:count-post="countPost"
 			:name-object="NameObject"
+			:filter-date="filterDate"
 			@request="setSelectedEquipments"
 			></help-eq-grid>
 		</div>
@@ -96,6 +97,7 @@
 			:filters="testEq.filters"
 			:count-post="countPost"
 			:name-object="NameObject"
+			:filter-date="filterDate"
 			@request="setSelectedEquipments"
 			></help-eq-grid>
 		</div>
@@ -105,6 +107,7 @@
 			:columns="measuringEq.gridColumns.tableColumn"
 			:filters="measuringEq.filters"
 			:count-post="countPost"
+			:filter-date="filterDate"
 			:name-object="NameObject"
 			@request="setSelectedEquipments"
 			></help-eq-grid>
@@ -115,6 +118,7 @@
 			:columns="measuringEq.gridColumns.tableColumn"
 			:filters="measuringEq.filters"
 			:count-post="countPost"
+			:filter-date="filterDate"
 			:name-object="NameObject"
 			@request="setSelectedEquipments"
 			></help-eq-grid>
@@ -127,7 +131,7 @@
 			<tr>
 				<th v-bind:colspan="columns.length + 1">
 					<button v-show="NameObject === 'measuringEq'" class="ui violet right floated mini icon button" v-on:click="showModal('CheckReq')"><i class="icon calendar check outline"></i></button>
-                    <button class="ui blue right floated mini icon button" v-on:click="showModal('BeforeRequest')"><i class="icon print"></i></button>
+                    <button class="ui blue right floated mini icon button" v-on:click="printTable()"><i class="icon print"></i></button>
 					<button class="ui orange right floated mini icon button" v-on:click="showModal('FilterDate')"><i class="icon calendar check outline"></i></button>
 					<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>
 					<button class="ui teal right floated mini icon button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>

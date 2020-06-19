@@ -57,6 +57,10 @@
 								<input type="text" v-model="listDetails.equipment.fif_number">
 							</div>
 						</div>
+						<div class="field">
+							<label>Дата ввода в эксплуатацию</label>
+							<input type="date" v-model="listDetails.equipment.date_commissioning">
+						</div>
 					</div>
 				</div>
 			</div>

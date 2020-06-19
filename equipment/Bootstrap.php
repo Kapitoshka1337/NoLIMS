@@ -21,6 +21,7 @@ class Bootstrap implements BootstrapInterface
             'get-maintenance' => 'metrolog/get-maintenance',
             'get-verification' => 'metrolog/get-verification',
             'get-plan-verification' => 'metrolog/get-plan-verification',
+            'print-table' => 'metrolog/print-table',
             'create-request' => 'metrolog/create-request',
             'submit-verification' => 'metrolog/submit-verification',
             'recieved-eq-before' => 'metrolog/recieved-eq-before',

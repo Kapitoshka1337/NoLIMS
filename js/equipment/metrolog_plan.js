@@ -6,7 +6,8 @@ Vue.component('help-eq-grid', {
     columns: Array,
     filters: Array,
     countPost: Number,
-    NameObject: String
+    NameObject: String,
+    filterDate: Object
   },
   data: function () {
     let sortColumns = {};
@@ -22,7 +23,12 @@ Vue.component('help-eq-grid', {
       currentPage: 1,
       listPages: [],
       selectAllMaterials: false,
-      selectedEquipments: []
+      selectedEquipments: [],
+      obj: {
+        helpEq: 1,
+        testEq: 2,
+        measuringEq: 3,
+      },
     }
   },
   methods: {
@@ -62,6 +68,14 @@ Vue.component('help-eq-grid', {
             date_next_check: this.paginateRows[i].date_next_check,
             equipment: this.paginateRows[i].equipment
           });
+    },
+    today(date){
+      let today = new Date(date);
+      return today.toLocaleString().split(',')[0];
+    },
+    printTable(){
+      let objs = {start: this.today(this.filterDate.start), end: this.today(this.filterDate.end), type: this.obj[this.NameObject]};
+      axios.post("/equipment/print-table", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
     }
   },
   watch: {
@@ -210,7 +224,7 @@ let verification = new Vue({
         // if(this.$data[this.NameObject].gridData.length === 0)
         // {
           let objs = {start: this.today(this.filterDate.start), end: this.today(this.filterDate.end), type: this.obj[this.NameObject]};
-          axios.post("/equipment/get-plan-verification", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (this.$data[this.NameObject].gridData = response.data, this.filterDate = {}));
+          axios.post("/equipment/get-plan-verification", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (this.$data[this.NameObject].gridData = response.data));
         // }
     },
     today(date){
