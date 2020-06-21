@@ -28,9 +28,10 @@ use app\modules\equipment\models\view_equipment_kits;
 use app\modules\equipment\models\equipment_checks;
 use app\modules\equipment\models\view_equipment_check;
 use app\modules\equipment\models\equipment_total_check;
+use app\modules\equipment\models\equipment_list_maintenances;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-require 'D:/OpenServer/OSPanel/vendor/autoload.php';
+require 'D:/OSPanel/vendor/autoload.php';
 use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
@@ -209,6 +210,15 @@ class MetrologController extends Controller
 			$main = array('executor' => $executor, 'list_maintenance' => $list_maintenance, 'type_maintenance' => $type_maintenance);
 			return $this->asJson($main);
 		}	
+	}
+
+	public function actionGetMaintenances()
+	{
+		if(Yii::$app->request->isGet)
+		{
+			$list = equipment_list_maintenances::find()->all();
+			return $this->asJson($list);
+		}
 	}
 
 	public function actionAppendMaintenance()
