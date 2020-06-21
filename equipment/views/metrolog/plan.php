@@ -125,9 +125,6 @@
 				:filters="maintenanceEqAppend.filters"
 				:count-post="countPost">
 				</tree-item>
-<!-- 				<ul class="ui list">
-					<tree-item v-for="itm in treeData" :item="itm"></tree-item>
-				</ul> -->
 			</div>
 			<div class="ui bottom attached tab segment" data-tab="six">
 				<help-eq-grid
@@ -157,26 +154,15 @@
 					
 				</div>
 			</div>
-<!-- 			<div class="ui form">
-				<div class="three fields">
-					<div class="field">
-						<label>Исполнитель</label>
-						<input type="text">
-					</div>
-					<div class="field">
-						<label>ТО</label>
-						<input type="text">
-					</div>
-					<div class="field">
-						<label>Оборудование</label>
-						<input type="text">
-					</div>
-				</div>
-			</div> -->
 		</div>
 		<div class="content">
 			<table class="ui compact selectable table">
 				<thead>
+					<tr>
+						<th v-bind:colspan="columns.length + 1">
+							<button class="ui green right floated mini icon button"><i class="icon check"></i></button>
+						</th>
+					</tr>
 					<tr>
 						<th class="collapsing">
 							<div class="ui checkbox">
@@ -195,7 +181,7 @@
 						<td class="collapsing">
 							<div class="ui checkbox">
 								<input type="checkbox"
-								v-bind:value="{id_equipment: equipment.id, number: equipment.number, id_department: equipment.id_department, type: equipment.type, date_next_check: equipment.date_next_check, equipment: equipment.equipment}" v-model="selectedEquipments">
+								v-bind:value="{id_equipment: equipment.id_equipment, id_work: equipment.id_work}" v-model="selectedEquipments">
 								<label></label>
 							</div>
 						</td>
@@ -211,6 +197,9 @@
 								</div>
 							</div>
 						</td>
+<!-- 						<td>
+							<button class="ui green right floated mini icon button"><i class="icon check"></i></button>
+						</td> -->
 					</tr>
 				</tbody>
 				<tfoot>
@@ -236,15 +225,6 @@
 			</table>
 		</div>
 	</div>
-<!-- 		<li>
-			<div v-on:click="toggle(item)">
-				{{item.name}}
-				<span v-if="isFolder">[{{isOpen ? '-' : '+'}}]</span>
-			</div>
-			<ul class="ui list" v-show="isOpen" v-if="isFolder">
-				<tree-item v-for="itm in item.children" :item="itm"></tree-item>
-			</ul>
-		</li> -->
 </template>
 <template id="help-eq-grid">
 	<table class="ui compact selectable table">

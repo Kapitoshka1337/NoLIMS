@@ -175,12 +175,8 @@ Vue.component("tree-item", {
       if (!this.selectAllMaterials)
         for (let i in this.paginateRows)
           this.selectedEquipments.push({
-            id_equipment: this.paginateRows[i].id,
-            number: this.paginateRows[i].number,
-            id_department: this.paginateRows[i].id_department,
-            type: this.paginateRows[i].type,
-            date_next_check: this.paginateRows[i].date_next_check,
-            equipment: this.paginateRows[i].equipment
+            id_equipment: this.paginateRows[i].id_equipment,
+            id_work: this.paginateRows[i].id_work
           });
     },
     today(date){
@@ -237,44 +233,6 @@ Vue.component("tree-item", {
       return this.paginate(this.filteredRows);
     }
   }
-  // props: {
-  //   item: Array,
-  //   // listExecutor: Array
-  // },
-  // data: function() {
-  //   return {
-  //     isOpen: false
-  //   };
-  // },
-  // computed: {
-  //   isFolder: function() {
-  //     return this.item.children && this.item.children.length;
-  //   }
-  // },
-  // methods: {
-  //   toggle: function(item) {
-  //     switch(item.type)
-  //     {
-  //       case 'executor':
-  //         if(!item.children)
-  //           axios.get("/equipment/get-maintenances?executor=" + item.id).then( response => (item.children = response.data));
-  //         break;
-  //       case 'maintenance':
-  //         if(!item.children)
-  //           axios.get("/equipment/get-maintenances?maintenance=" + item.id).then( response => (item.children = response.data));
-  //         break;
-  //     }
-  //     if (this.isFolder) {
-  //       this.isOpen = !this.isOpen;
-  //     }
-  //   },
-  //   makeFolder: function(index) {
-  //     if (!this.isFolder) {
-  //       this.$emit("make-folder", this.item[index]);
-  //       this.isOpen = true;
-  //     }
-  //   }
-  // }
 });
 
 let verification = new Vue({
@@ -355,12 +313,12 @@ let verification = new Vue({
           {'maintenance':'ТО'},
           {'equipment':'Оборудование'},
           {'date_next_check':'Дата проверки'},
-          {'date_maintenance':'Дата ТО'}
+          {'date_maintenance':'Дата ТО'},
+          // {'action':''}
         ],
         filterColumn: [
           {'executor':'Исполнитель'},
-          {'maintenance':'ТО'},
-          // {'equipment': 'Обор'}
+          {'maintenance':'ТО'}
         ]
       },
       gridData: [],
@@ -383,20 +341,7 @@ let verification = new Vue({
       start: null,
       end:  null
     },
-    treeData: []
-    // treeData: [
-    //   {name:'1', isOpen: false, children: [
-    //       {name: '1.1', isOpen: false, children: []},
-    //       {name: '1.2', isOpen: false, children: []},
-    //       {name: '1.3',isOpen: false,  children: [
-    //         {name: '1.3.1', isOpen: false, children: []},
-    //         {name: '1.3.2', isOpen: false, children: []},
-    //         {name: '1.3.3', isOpen: false, children: []}
-    //         ]},
-    //     ]},
-    //   {name:'2', isOpen: false, children: []},
-    //   {name:'3', isOpen: false, children: []}
-    // ]
+    // treeData: []
   },
   methods:{
     makeFolder: function(item) {
