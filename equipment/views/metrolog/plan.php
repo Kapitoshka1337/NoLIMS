@@ -160,7 +160,7 @@
 				<thead>
 					<tr>
 						<th v-bind:colspan="columns.length + 1">
-							<button class="ui green right floated mini icon button"><i class="icon check"></i></button>
+							<button class="ui green right floated mini icon button" v-on:click="saveMaintenance()"><i class="icon check"></i></button>
 						</th>
 					</tr>
 					<tr>
@@ -181,7 +181,7 @@
 						<td class="collapsing">
 							<div class="ui checkbox">
 								<input type="checkbox"
-								v-bind:value="{id_equipment: equipment.id_equipment, id_work: equipment.id_work}" v-model="selectedEquipments">
+								v-bind:value="{id_equipment: equipment.id_equipment, id_work: equipment.id_work, date_maintenance: equipment.date_maintenance}" v-model="selectedEquipments">
 								<label></label>
 							</div>
 						</td>

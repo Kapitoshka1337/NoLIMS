@@ -29,6 +29,7 @@ use app\modules\equipment\models\equipment_checks;
 use app\modules\equipment\models\view_equipment_check;
 use app\modules\equipment\models\equipment_total_check;
 use app\modules\equipment\models\equipment_list_maintenances;
+use app\modules\equipment\models\equipment_list_works_plan;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
 require 'D:/OSPanel/vendor/autoload.php';
@@ -41,7 +42,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -238,6 +239,23 @@ class MetrologController extends Controller
 		}	
 	}
 
+	public function actionSaveMaintenance()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			foreach ($data as $dts)
+			{
+				$plan = new equipment_list_works_plan();
+				$plan->id_equipment = $dts['id_equipment'];
+				$plan->date_maintenance = $dts['date_maintenance'];
+				$plan->id_work_maintenance = $dts['id_work'];
+				$plan->save();
+			}
+			return Yii::$app->response->statusCode = 200;
+		}
+	}
+
 	public function actionGetDetails()
 	{
 		if(Yii::$app->request->isGet)
@@ -295,15 +313,6 @@ class MetrologController extends Controller
 					if($eq->save()); return Yii::$app->response->statusCode = 200;
 				}
 			}
-			// if($data['maintenance'])
-			// {
-			// 	// $eq = equipment_condition_working::find()->where(['id_equipment' => $data['id']])->one();
-			// 	// if($eq)
-			// 	// 	foreach ($data['condition_working'] as $key => $item)
-			// 	// 		$eq[$key] = $item;
-			// 	// if($eq->save());
-			// 		return Yii::$app->response->statusCode = 200;
-			// }
 		}
 	}
 

@@ -163,30 +163,31 @@ Vue.component("tree-item", {
       let to = ((page * curPost));
       return rows.slice(from, to);
     },
-    showModal(modalName, eq){
-      this.$emit('request', this.selectedEquipments);
-      $('#modal' + modalName).modal('show');
-    },
-    clearFilter(){
-      $('.dropdown').dropdown('clear');
-    },
+    // showModal(modalName, eq){
+    //   this.$emit('request', this.selectedEquipments);
+    //   $('#modal' + modalName).modal('show');
+    // },
+    // clearFilter(){
+    //   $('.dropdown').dropdown('clear');
+    // },
     select() {
       this.selectedEquipments = [];
       if (!this.selectAllMaterials)
         for (let i in this.paginateRows)
           this.selectedEquipments.push({
             id_equipment: this.paginateRows[i].id_equipment,
-            id_work: this.paginateRows[i].id_work
+            id_work: this.paginateRows[i].id_work,
+            date_maintenance: this.paginateRows[i].date_maintenance
           });
     },
-    today(date){
-      let today = new Date(date);
-      return today.toLocaleString().split(',')[0];
-    },
-    printTable(){
-      let objs = {start: this.today(this.filterDate.start), end: this.today(this.filterDate.end), type: this.obj[this.NameObject]};
-      axios.post("/equipment/print-table", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
-    },
+    // today(date){
+    //   let today = new Date(date);
+    //   return today.toLocaleString().split(',')[0];
+    // },
+    // printTable(){
+    //   let objs = {start: this.today(this.filterDate.start), end: this.today(this.filterDate.end), type: this.obj[this.NameObject]};
+    //   axios.post("/equipment/print-table", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
+    // },
     returnUniq(column){
       let result = [];
       for (let str of this.rows)
@@ -198,6 +199,9 @@ Vue.component("tree-item", {
           else return - 1;
         })
       return result;
+    },
+    saveMaintenance(){
+      axios.post("/equipment/save-maintenance", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(function(response) {if(response.status === 200) {this.selectedEquipments = []}});
     }
   },
   watch: {
@@ -405,7 +409,7 @@ let verification = new Vue({
       axios.post("/equipment/send-request", JSON.stringify(request), {headers: {'Content-Type': 'application/json'}})
       .then(response => (console.log(1)));
     },
-    getExecutor(){
+    getMaintenances(){
       axios.get("/equipment/get-maintenances").then( response => (this.maintenanceEqAppend.gridData = response.data));
     }
   },
@@ -419,6 +423,6 @@ let verification = new Vue({
   mounted: function() {
     this.setTab();
     this.setDropdown();
-    this.getExecutor();
+    this.getMaintenances();
   }
 });
