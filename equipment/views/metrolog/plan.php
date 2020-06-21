@@ -77,7 +77,7 @@
 			<a class="item" data-tab="first" v-on:click="getPlanVerification('helpEq')">ВО</a>
 			<a class="item" data-tab="second" v-on:click="getPlanVerification('testEq')">ИО</a>
 			<a class="item" data-tab="third" v-on:click="getPlanVerification('measuringEq')">СИ</a>
-			<a class="item" data-tab="four" v-on:click="getPlanVerification('maintenanceEq')">ТО</a>
+			<a class="item" data-tab="four">ТО</a>
 		</div>
 		<div class="ui bottom attached tab segment" data-tab="first">
 			<help-eq-grid
@@ -114,8 +114,8 @@
 		</div>
 		<div class="ui bottom attached tab segment" data-tab="four">
 			<div class="ui top attached tabular menu">
-				<a class="item" data-tab="five" v-on:click="getPlanVerification('helpEq')">Создание</a>
-				<a class="item" data-tab="six" v-on:click="getPlanVerification('testEq')">План-график</a>
+				<a class="item" data-tab="five" v-on:click="getPlanVerification('maintenanceEqAppend')">Создание</a>
+				<a class="item" data-tab="six" v-on:click="getPlanVerification('maintenanceEq')">План-график</a>
 			</div>
 			<div class="ui bottom attached tab segment" data-tab="five">
 				<tree-item
@@ -188,7 +188,7 @@
 						<td>{{equipment.executor}}</td>
 						<td>{{equipment.maintenance}}</td>
 						<td>{{equipment.equipment}}</td>
-						<td>{{equipment.date_next_check}}</td>
+						<td>{{today(equipment.date_next_check)}}</td>
 						<td>
 							<!-- {{equipment[Object.keys(key)[0]]}} -->
 							<div class="ui form">
@@ -262,7 +262,7 @@
 				</td>
 				<td v-for="key in columns">
 					{{equipment[Object.keys(key)[0]]}}
-				</td>s
+				</td>
 			</tr>
 		</tbody>
 		<tfoot>

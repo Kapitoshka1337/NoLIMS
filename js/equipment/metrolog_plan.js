@@ -163,13 +163,13 @@ Vue.component("tree-item", {
       let to = ((page * curPost));
       return rows.slice(from, to);
     },
-    // showModal(modalName, eq){
-    //   this.$emit('request', this.selectedEquipments);
-    //   $('#modal' + modalName).modal('show');
-    // },
-    // clearFilter(){
-    //   $('.dropdown').dropdown('clear');
-    // },
+    showModal(modalName, eq){
+      this.$emit('request', this.selectedEquipments);
+      $('#modal' + modalName).modal('show');
+    },
+    clearFilter(){
+      $('.dropdown').dropdown('clear');
+    },
     select() {
       this.selectedEquipments = [];
       if (!this.selectAllMaterials)
@@ -180,14 +180,10 @@ Vue.component("tree-item", {
             date_maintenance: this.paginateRows[i].date_maintenance
           });
     },
-    // today(date){
-    //   let today = new Date(date);
-    //   return today.toLocaleString().split(',')[0];
-    // },
-    // printTable(){
-    //   let objs = {start: this.today(this.filterDate.start), end: this.today(this.filterDate.end), type: this.obj[this.NameObject]};
-    //   axios.post("/equipment/print-table", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
-    // },
+    today(date){
+      let today = new Date(date);
+      return today.toLocaleString().split(',')[0];
+    },
     returnUniq(column){
       let result = [];
       for (let str of this.rows)
@@ -317,8 +313,7 @@ let verification = new Vue({
           {'maintenance':'ТО'},
           {'equipment':'Оборудование'},
           {'date_next_check':'Дата проверки'},
-          {'date_maintenance':'Дата ТО'},
-          // {'action':''}
+          {'date_maintenance':'Дата ТО'}
         ],
         filterColumn: [
           {'executor':'Исполнитель'},
@@ -328,8 +323,7 @@ let verification = new Vue({
       gridData: [],
       filters: {
         executor: [],
-        maintenance: [],
-        // equipment: []
+        maintenance: []
       }
     },
     countPost: 100,
@@ -339,22 +333,15 @@ let verification = new Vue({
       helpEq: 1,
       testEq: 2,
       measuringEq: 3,
+      maintenanceEq: 4
     },
     selectedEquipments: [],
     filterDate: {
       start: null,
       end:  null
-    },
-    // treeData: []
+    }
   },
   methods:{
-    makeFolder: function(item) {
-      Vue.set(item, "children", []);
-      this.addItem(item);
-    },
-    addItem: function(item) {
-      item.children.push({name: "new stuff", children: []});
-    },
     setTab(){
       let interval = setInterval(function()
       { 
@@ -368,7 +355,7 @@ let verification = new Vue({
       this.NameObject = type;
     },
     getVer(){
-          let objs = {start: this.today(this.filterDate.start), end: this.today(this.filterDate.end), type: this.obj[this.NameObject]};
+          let objs = {start: this.filterDate.start, end: this.filterDate.end, type: this.obj[this.NameObject]};
           axios.post("/equipment/get-plan-verification", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (this.$data[this.NameObject].gridData = response.data));
     },
     today(date){

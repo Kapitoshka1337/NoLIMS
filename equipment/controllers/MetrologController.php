@@ -119,7 +119,10 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			$plan = equipment_total_check::find()->where(['id_type' => $data['type']])->andWhere(['between', 'date_next_check', $data['start'], $data['end']])->all();
+			if($data['type'] === 4)
+				$plan = equipment_list_works_plan::find()->where(['between', 'date_maintenance', $data['start'], $data['end']])->all();
+			else
+				$plan = equipment_total_check::find()->where(['id_type' => $data['type']])->andWhere(['between', 'date_next_check', date_format(date_create($data['start']), 'd.m.Y'), date_format(date_create($data['end']), 'd.m.Y')])->all();
 			// if(!$plan)
 			// 	$plan = equipment_total_check::find()->where(['id_type' => $data['type']])->andWhere(['between', 'date_certification', $data['start'], $data['end']])->all();
 			return $this->asJson($plan);
