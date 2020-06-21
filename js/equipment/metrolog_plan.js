@@ -201,7 +201,7 @@ Vue.component("tree-item", {
       return result;
     },
     saveMaintenance(){
-      axios.post("/equipment/save-maintenance", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(function(response) {if(response.status === 200) {this.selectedEquipments = []}});
+      axios.post("/equipment/save-maintenance", JSON.stringify(this.selectedEquipments), {headers: {'Content-Type': 'application/json'}}).then(response => (verification.getMaintenances()));
     }
   },
   watch: {
