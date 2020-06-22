@@ -5,6 +5,7 @@ Vue.component('equipment-grid', {
 		rows: Array,
 		columns: Array,
 		filters: Array,
+		filtersCheck: Object,
 		countPost: Number,
 		checkEq: Object,
 		handoff: Object
@@ -152,19 +153,26 @@ Vue.component('equipment-grid', {
 					else return - 1 * order;
 				})
 			}
-            if (filterKey) {
-              rows = rows.filter(function(row) {
-                return Object.keys(row).some(function(key) {
-                  return (
-                    String(row[key]).toLowerCase().indexOf(filterKey) > -1);
-                });
-              });
-            }
+			if (filterKey)
+			{
+				rows = rows.filter(function(row)
+				{
+					return Object.keys(row).some(function(key)
+					{
+						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);});
+				});
+			}
+			Object.keys(this.filtersCheck).forEach(f =>
+			{
+				if(this.filtersCheck[f])
+					rows = rows.filter(row => {
+						return row[f] === 1;
+					})
+			})
 			return rows.filter(r =>
 			{
 				return Object.keys(this.filters).every(f =>
 				{
-					if(r.total === null) r.total = r.amount;
 						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				})
 			})
@@ -216,11 +224,11 @@ let demo1 = new Vue({
 				{'serial_number':'S/N'},
 				{'date_current_check':'Текущая проверка'},
 				{'date_next_check':'Следующая проверка'},
-				{'is_archive':'Архив'},
-				{'is_conservation':'Консервация'},
-				{'is_check':'Проверка'},
-				{'is_repair':'Ремонт'},
-				{'is_working':'В работе'}
+				// {'is_archive':'Архив'},
+				// {'is_conservation':'Консервация'},
+				// {'is_check':'Проверка'},
+				// {'is_repair':'Ремонт'},
+				// {'is_working':'В работе'}
 			]
 		},
 		gridData: [],
@@ -231,11 +239,11 @@ let demo1 = new Vue({
 			equipment: [],
 			date_current_check: [],
 			date_next_check: [],
-			is_archive: [],
-			is_conservation: [],
-			is_check: [],
-			is_repair: [],
-			is_working: []
+			// is_archive: [],
+			// is_conservation: [],
+			// is_check: [],
+			// is_repair: [],
+			// is_working: []
 		},
 		countPost: 100,
 		check: {
@@ -247,6 +255,13 @@ let demo1 = new Vue({
 			upload_file_name: [],
 			is_archive: false,
 			is_conservation: false
+		},
+		checks: {
+			is_archive: false,
+			is_conservation: false,
+			is_check: false,
+			is_repair: false,
+			is_working: false
 		},
 		handoff: {
 			id_equipment: null,

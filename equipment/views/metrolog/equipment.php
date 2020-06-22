@@ -10,6 +10,7 @@
 			:rows="gridData"
 			:columns="gridColumns.tableColumn"
 			:filters="filters"
+			:filters-check="checks"
 			:count-post="countPost"
 			:check-Eq="check"
 			:handoff="handoff"
@@ -229,6 +230,30 @@
 				</th>
 			</tr>
 			<tr>
+				<th v-bind:colspan="columns.length + 1">
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="filtersCheck.is_archive">
+						<label>Архив</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="filtersCheck.is_working">
+						<label>Используется</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="filtersCheck.is_conservation">
+						<label>Консервация</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="filtersCheck.is_repair">
+						<label>Ремонт</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="filtersCheck.is_check">
+						<label>ЦСМ</label>
+					</div>
+				</th>
+			</tr>
+			<tr>
 				<th class="collapsing">
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="selectAllMaterials" v-on:click="select()">
@@ -259,11 +284,11 @@
 				<td class="collapsing">{{ equipment.date_current_check }}</td>
 				<td class="collapsing">{{ equipment.date_next_check }}</td>
 				<td class="collapsing">
-					<a href="#!" v-on:click="filters['is_archive'].push(1)"><span class="ui teal small circular label" v-show="equipment.is_archive">А</span></a>
-					<a href="#!" v-on:click="filters['is_working'].push(1)"><span class="ui green small circular label" v-show="equipment.is_working">И</span></a>
-					<a href="#!" v-on:click="filters['is_conservation'].push(1)"><span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span></a>
-					<a href="#!" v-on:click="filters['is_repair'].push(1)"><span class="ui red small circular label" v-show="equipment.is_repair">Р</span></a>
-					<a href="#!" v-on:click="filters['is_check'].push(1)"><span class="ui violet small circular label" v-show="equipment.is_check">Ц</span></a>
+					<a><span class="ui teal small circular label" v-show="equipment.is_archive">А</span></a>
+					<a><span class="ui green small circular label" v-show="equipment.is_working">И</span></a>
+					<a><span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span></a>
+					<a><span class="ui red small circular label" v-show="equipment.is_repair">Р</span></a>
+					<a><span class="ui violet small circular label" v-show="equipment.is_check">Ц</span></a>
 				</td>
 				<td class="collapsing">
 					<div class="ui icon left pointing dropdown mini button">
