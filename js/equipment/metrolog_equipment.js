@@ -85,7 +85,8 @@ Vue.component('equipment-grid', {
 						type: this.paginateRows[i].type,
 						date_current_check: this.paginateRows[i].date_current_check,
 						date_next_check: this.paginateRows[i].date_next_check,
-						equipment: this.paginateRows[i].equipment
+						equipment: this.paginateRows[i].equipment,
+						number_department: this.paginateRows[i].number_department
 					});
 		},
 		Details(id_equipment)

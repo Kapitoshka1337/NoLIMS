@@ -139,7 +139,7 @@
 				</thead>
 				<tbody>
 						<tr v-for="(equipment, k) in selectedEquipments">
-							<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.id_department }} - {{ equipment.type }}</td>
+							<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.number_department }} - {{ equipment.type }}</td>
 							<td>{{ equipment.equipment }}</td>
 							<td class="collapsing">{{ equipment.date_current_check }}</td>
 							<td class="collapsing">{{ equipment.date_next_check }}</td>
@@ -247,13 +247,13 @@
 					<div class="ui checkbox">
 						<input type="checkbox"
 						v-bind:value="{id_equipment: equipment.id,is_archive: equipment.is_archive,is_conservation: equipment.is_conservation,is_repair: equipment.is_repair,is_check: equipment.is_check,is_working: equipment.is_working,
-						number: equipment.number, id_department: equipment.id_department, type: equipment.type,
+						number: equipment.number, number_department: equipment.number_department, id_department: equipment.id_department, type: equipment.type,
 						date_current_check: equipment.date_current_check, date_next_check: equipment.date_next_check, equipment: equipment.equipment}" 
 						v-model="selectedEquipments">
 						<label></label>
 					</div>
 				</td>
-				<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.id_department }} - {{ equipment.type }}</td>
+				<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.number_department }} - {{ equipment.type }}</td>
 				<td>{{ equipment.equipment }}</td>
 				<td class="collapsing right aligned">{{ equipment.serial_number }}</td>
 				<td class="collapsing">{{ equipment.date_current_check }}</td>
