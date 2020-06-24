@@ -61,6 +61,10 @@
 							<label>Дата ввода в эксплуатацию</label>
 							<input type="date" v-model="listDetails.equipment.date_commissioning">
 						</div>
+						<div class="field">
+							<label>Примечание</label>
+							<textarea cols="30" rows="2" v-model="listDetails.equipment.description"></textarea>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -290,7 +294,7 @@
 						</thead>
 						<tbody>
 							<tr v-for="maintenance in listDetails.maintenance">
-								<td>{{ maintenance.maintenance }}</td>
+								<td>{{ maintenance.type_maintenance }}</td>
 								<td>{{ maintenance.executor }}</td>
 								<td>{{ maintenance.periodicity }}</td>
 								<td>{{ maintenance.description }}</td>

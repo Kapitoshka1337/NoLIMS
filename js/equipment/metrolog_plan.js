@@ -74,7 +74,7 @@ Vue.component('help-eq-grid', {
       return today.toLocaleString().split(',')[0];
     },
     printTable(){
-      let objs = {start: this.today(this.filterDate.start), end: this.today(this.filterDate.end), type: this.obj[this.NameObject]};
+      let objs = {start: this.filterDate.start, end: this.filterDate.end, type: this.obj[this.NameObject]};
       axios.post("/equipment/print-table", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
     }
   },
@@ -103,7 +103,7 @@ Vue.component('help-eq-grid', {
       {
         return Object.keys(this.filters).every(f =>
         {
-          if(r.total === null) r.total = r.amount;
+          if(r.date_next_check != null) r.date_next_check = this.today(r.date_next_check);
             return this.filters[f].length < 1 || this.filters[f].includes(r[f])
         })
       })

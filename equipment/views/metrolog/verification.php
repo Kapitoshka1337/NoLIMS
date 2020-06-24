@@ -95,18 +95,6 @@
             <div class="content header">Добавляемое оборудование в заявку</div>
         </div>
         <div class="scrolling content">
-            <div class="ui form">
-                <div class="ui two fields">
-                    <div class="field">
-                        <label>Приложение к договору</label>
-                        <input type="text" v-model="forRequest.dogovor">
-                    </div>
-<!--                     <div class="field">
-                        <label>Контактый номер</label>
-                        <input type="text" v-model="forRequest.telephone">
-                    </div> -->
-                </div>
-            </div>
             <table class="ui compact selectable table">
                 <thead>
                     <tr>
@@ -137,6 +125,18 @@
                     </tr>
                 </tbody>
             </table>
+            <div class="ui form">
+                <div class="ui two fields">
+                    <div class="field">
+                        <label>Приложение к договору</label>
+                        <input type="text" v-model="forRequest.dogovor">
+                    </div>
+                    <div class="field">
+                        <label>Контактый номер</label>
+                        <input type="text" v-model="forRequest.telephone">
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="actions">
             <button class="ui approve green button" v-on:click="getRequest(filteredEqBeforeAfter[0].id_checks)">Печать</button>

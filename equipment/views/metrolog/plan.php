@@ -261,7 +261,7 @@
 					</div>
 				</td>
 				<td v-for="key in columns">
-					{{equipment[Object.keys(key)[0]]}}
+					{{ equipment[Object.keys(key)[0]] }}
 				</td>
 			</tr>
 		</tbody>

@@ -11,10 +11,12 @@
 			:columns="gridColumns.tableColumn"
 			:filters="filters"
 			:filters-check="checks"
+			:filter-date="dateFilter"
 			:count-post="countPost"
 			:check-Eq="check"
 			:handoff="handoff"
-			@request="setSelectedEquipments">
+			@request="setSelectedEquipments"
+			@clear="clearDate">
 		</equipment-grid>
 	</div>
 	<div id="modalPrint" class="ui tiny card modal">
@@ -40,12 +42,20 @@
 						<option v-for="col in returnUniq(Object.keys(key))" v-bind:value="col">{{ col }}</option>
 					</select>
 				</div>
+				<div class="field">
+					<label>Дата следующей проверки (от)</label>
+					<input type="date" v-model="dateFilter.start">
+				</div>
+				<div class="field">
+					<label>Дата следующей проверки (по)</label>
+					<input type="date" v-model="dateFilter.end">
+				</div>
 			</div>
 		</div>
 	</div>
 	<div id="modalHandoff" class="ui tiny card modal">
 		<div class="content">
-			<div class="header">Перемещение</div>
+			<div class="header">Перемещение оборудования</div>
 			<div class="meta">{{ handoff.department }}</div>
 		</div>
 		<div class="content">
@@ -73,7 +83,7 @@
 	</div>
 	<div id="modalCheck" class="ui tiny card modal">
 		<div class="content">
-			<div class="content header">Проверка</div>
+			<div class="content header">Добавление пройденой проверки</div>
 		</div>
 		<div class="content">
 			<div class="ui form">
@@ -251,6 +261,16 @@
 						<input type="checkbox" v-model="filtersCheck.is_check">
 						<label>ЦСМ</label>
 					</div>
+<!-- 					<div class="ui form">
+						<div class="two fields">
+							<div class="field">
+								<input type="date" v-model="filterDate[0]">
+							</div>
+							<div class="field">
+								<input type="date" v-model="filterDate[1]">
+							</div>
+						</div>
+					</div> -->
 				</th>
 			</tr>
 			<tr>
@@ -281,8 +301,8 @@
 				<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.number_department }} - {{ equipment.type }}</td>
 				<td>{{ equipment.equipment }}</td>
 				<td class="collapsing right aligned">{{ equipment.serial_number }}</td>
-				<td class="collapsing">{{ equipment.date_current_check }}</td>
-				<td class="collapsing">{{ equipment.date_next_check }}</td>
+				<td class="collapsing">{{ today(equipment.date_current_check) }}</td>
+				<td class="collapsing">{{ today(equipment.date_next_check) }}</td>
 				<td class="collapsing">
 					<a><span class="ui teal small circular label" v-show="equipment.is_archive">А</span></a>
 					<a><span class="ui green small circular label" v-show="equipment.is_working">И</span></a>

@@ -81,7 +81,6 @@ class MetrologController extends Controller
 
 	public function actionDetails()
 	{
-		// return $this->render('details', ['id' => Yii::$app->request->get('id'), 'eq' => $eq]);
 		return $this->render('details');
 	}
 
@@ -106,7 +105,6 @@ class MetrologController extends Controller
 							'number' => $kit->number
 						);
 				}
-			// $chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'status' => $check->status, 'equipment' => $kt);
 			$chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'equipment' => $kt);
 			unset($kt);
 			}
@@ -122,9 +120,7 @@ class MetrologController extends Controller
 			if($data['type'] === 4)
 				$plan = equipment_list_works_plan::find()->where(['between', 'date_maintenance', $data['start'], $data['end']])->all();
 			else
-				$plan = equipment_total_check::find()->where(['id_type' => $data['type']])->andWhere(['between', 'date_next_check', date_format(date_create($data['start']), 'd.m.Y'), date_format(date_create($data['end']), 'd.m.Y')])->all();
-			// if(!$plan)
-			// 	$plan = equipment_total_check::find()->where(['id_type' => $data['type']])->andWhere(['between', 'date_certification', $data['start'], $data['end']])->all();
+				$plan = equipment_total_check::find()->where(['id_type' => $data['type']])->andWhere(['between', 'date_next_check', $data['start'], $data['end']])->all();
 			return $this->asJson($plan);
 		}	
 	}
@@ -153,8 +149,6 @@ class MetrologController extends Controller
 			];
 			$jasper = new PHPJasper;
 			return $this->asJson($jasper->process($input, $output, $options)->execute());
-			// $x = $jasper->process($input, $output, $options)->output();
-			// return $x;
 		}
 	}
 
@@ -168,10 +162,8 @@ class MetrologController extends Controller
 			$eqs = array();
 			foreach ($checks as $check)
 				array_push($eqs, $check->id_equipment);
-			// foreach ($eqs as $eq)
 				equipment_equipment::updateAll(['is_check' => true], ['id' => $eqs]);
 			return Yii::$app->response->statusCode = 200;
-			// return $this->asJson($eqs);
 		}
 	}
 
@@ -180,9 +172,7 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			// return $this->asJson($data);
 			$kit = equipment_kit_equipment::updateAll(['is_received_before' => true], ['id' => $data['id_kit']]);
-			// $checks = equipment_kit_equipment::find()->where(['id_kit' => $data['id_kit']])->all();
 			return Yii::$app->response->statusCode = 200;
 		}
 	}
@@ -194,12 +184,10 @@ class MetrologController extends Controller
 			$data = Yii::$app->request->post();
 			$kit = equipment_kit_equipment::updateAll(['is_received_after' => true], ['id' => $data['id_kit']]);
 			$kit = equipment_kit_equipment::find()->where(['id' => $data['id_kit']])->all();
-			// return $this->asJson($kit);
 			$ch = equipment_checks::find()->where(['id' => $kit[0]->id_checks])->all();
 			if($ch->id_status_check != 3)
 				equipment_checks::updateAll(['id_status_check' => 3], ['id' => $kit[0]->id_checks]);
 			equipment_equipment::updateAll(['is_check' => false], ['id' => $kit[0]->id_equipment]);
-			// $checks = equipment_kit_equipment::find()->where(['id_kit' => $data['id_kit']])->all();
 			return Yii::$app->response->statusCode = 200;
 		}
 	}
@@ -394,6 +382,7 @@ class MetrologController extends Controller
 		}
 	}
 
+	//ПЕРЕДЕЛАТЬ
 	public function actionChangeCheck()
 	{
 		if(Yii::$app->request->isPost)
@@ -404,11 +393,9 @@ class MetrologController extends Controller
 			{
 				$eq_check = equipment_date_check::findByEqId($data['id_equipment']);
 				$eq = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
-			// return $this->asJson($eq_check);
 				if($eq_check && $model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
 				{
 					$eq_check->date_current_check = $data['date_current_check'];
-					// $eq_check->date_next_check = $data['date_current_check'];
 					$eq_check->id_upload_document_type = 11;
 					$eq_check->number_document = $data['number_document'];
 					$eq_check->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
@@ -452,7 +439,6 @@ class MetrologController extends Controller
 			{
 				$eq_check = equipment_date_check::findByEqId($data['id_equipment']);
 				$eq = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
-			// return $this->asJson($eq);
 				if($eq_check && $model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
 				{
 					$eq_check->date_current_check = $data['date_current_check'];
@@ -478,7 +464,6 @@ class MetrologController extends Controller
 					$eq_check = new equipment_date_check();
 					$eq_check->id_equipment = $data['id_equipment'];
 					$eq_check->date_current_check = $data['date_current_check'];
-					// $eq_check->date_next_check = $data['date_current_check'];
 					$eq_check->id_upload_document_type = 10;
 					$eq_check->number_document = $data['number_document'];
 					$eq_check->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
@@ -499,6 +484,7 @@ class MetrologController extends Controller
 			if($model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
 			{
 				$eq = equipment_date_check::findByEqId($data['id_equipment']);
+				$eq_eq = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
 				if($eq)
 				{
 					$eq->date_current_check = $data['date_current_check'];
@@ -507,7 +493,9 @@ class MetrologController extends Controller
 					$eq->number_document = $data['number_document'];
 					$eq->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
 					if($eq->save())
-						if ($model->upload()) return Yii::$app->response->statusCode = 200;
+						$eq_eq->is_check = false;
+						if($eq_eq->save())
+							if ($model->upload()) return Yii::$app->response->statusCode = 200;
 						else return Yii::$app->response->statusCode = 400;
 				}
 				else
@@ -547,9 +535,7 @@ class MetrologController extends Controller
 			$eq = equipment_equipment::updateAll(['id_department' => $data['id_department_to'], 'id_location' => $data['id_location']], ['id' => $data['id_equipment']]);
 			if($eq)
 			{
-				// $eqs = equipment_equipment::updateAll(['id_location' => $data['id_location']], ['id' => $data['id_equipment']]);
-				// if($eqs)
-					return Yii::$app->response->statusCode = 200;
+				return Yii::$app->response->statusCode = 200;
 			}
 		}
 	}
@@ -623,10 +609,8 @@ class MetrologController extends Controller
 			}
 			$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/sticker.jasper';
 			$output = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/';
-			// $jdbc_dir = 'D:/OSPanel/vendor/geekcom/phpjasper/bin/jaspertarter/jdbc';
 			$options = [
 				'format' => ['pdf'],
-				// 'locale' => 'ru',
 				'params' => ['id_eq' => 'id_equipment IN ('. $ids .')'],
 				'db_connection' => [
 				'driver' => 'generic',
@@ -637,7 +621,6 @@ class MetrologController extends Controller
 				'password' => 'K7D4uotKzWersAc3',
 				'jdbc_driver' => 'com.mysql.jdbc.Driver',
 				'jdbc_url' => 'jdbc:mysql://192.168.0.55/nolims',
-				// 'jdbc_dir' => $jdbc_dir
 				]
 			];
 			$jasper = new PHPJasper;
@@ -647,213 +630,7 @@ class MetrologController extends Controller
 
 	public function actionCreateCard()
 	{
-		if(Yii::$app->request->isPost)
-		{
-			$data = Yii::$app->request->post();
-			$tmp_card = view_equipment_metrolog_card::findAll(['id_equipment' => $data['id']]);
-			$maintenance = view_equipment_metrolog_list_work_for_equipment::findAll(['id_equipment' => $data['id']]);
-			$history_check = equipment_history_date_check::findAll(['id_equipment' => $data['id']]);
-			$current_check = equipment_date_check::findOne(['id_equipment' => $data['id']]);
-			foreach ($tmp_card as $card)
-			{
-				switch ($card['type'])
-				{
-					case 'ВО':
-						$type = 'Протокол №';
-						$type_check = 'о ПТС';
-						break;
-					case 'ИО':
-						$type = 'Протокол №';
-						$type_check = 'об аттестации';
-						break;
-					case 'СИ':
-						$type = 'Свид-во №';
-						$type_check = 'о поверках';
-						break;
-				}
-				$ht = '<head>
-					<style>
-						* {
-							font-size: 12px;
-						}
-						table, th, td { 
-							padding: 10px;
-							border: 1px solid black;
-							border-collapse: collapse;
-							padding: 6px;
-							margin: 0px;
-							font-size: 12px;
-						}
-						b {
-							font-weight: bold;
-							font-size: 12px;
-						}
-						.center {
-							text-align: center;
-						}
-						.header {
-							font-size: 14px;
-						}
-					</style>
-				</head>
-				<body>
-						<table>
-						<tbody>
-							<tr>
-								<td class="center">ДФ.04.31.2017</td>
-								<td colspan="7" class="center">
-									<div>Бюджетное учреждение Удмуртской Республики "Удмуртский ветеринарно-диагностический центр"</div>
-									<div>СИСТЕМА МЕНЕДЖМЕНТА КАЧЕСТВА ИЦ</div>
-									<div>Документированная форма</div>
-									<div><b>Регистрационная карточка оборудования</b></div>
-								</td>
-								<td class="center">лицевая сторона регистрационной карточки</td>
-							</tr>
-							<tr>
-								<td colspan="8" class="center"><b class="header">Регистрационная карточка оборудования '. $card['type'] .'</b></td>
-								<td class="center">кабинет '. $card['cabinet_number'] .'</td>
-							</tr>
-							<tr class="center">
-								<td class="center" rowspan="2"><b>Регистрационный №</b></td>
-								<td class="center" rowspan="2"><b>Наименование определяемых (измеряемых) характеристик (параметров), функциональное назначение</b></td>
-								<td class="center" rowspan="2"><b>Наименование оборудования,  тип (марка)</b></td>
-								<td class="center" rowspan="2"><b>Зав.№</b></td>
-								<td class="center" rowspan="2"><b>Изготовитель (страна, город,  наименование организации)</b></td>
-								<td class="center" rowspan="2"><b>Год выпуска/ ввода в эксплуатацию</b></td>
-								<td class="center" rowspan="2"><b>Инвентарный №</b></td>
-								<td class="center" colspan="2"><b>Метрологические характеристики</b></td>
-							</tr>
-							<tr>
-								<td class="center"><b>Диапазон измерений</b></td>
-								<td class="center"><b>Погрешность измерений</b></td>
-							</tr>
-							<tr>
-								<td>Отдел</td>
-								<td colspan="8"><b>'. $card['department'] .'</b></td>
-							</tr>
-							<tr>
-								<td class="center">'. $card['number'] . '/' . $card['id_department'] . '-' . $card['type'] .'</td>
-								<td class="center">'. $card['function_of_use'] .'</td>
-								<td class="center">'. $card['equipment'] .'</td>
-								<td class="center">'. $card['serial_number'] .'</td>
-								<td class="center">'. $card['manufacturer'] .'</td>
-								<td class="center">'. $card['date_create'] .'</td>
-								<td class="center">'. $card['inventory_number'] .'</td>
-								<td class="center">'. $card['measuring_range'] .'</td>
-								<td class="center">'. $card['class_accuracy'] .'</td>
-							</tr>
-							<tr>
-								<td colspan="9">
-									Эксплуатационный документ: рп, св-во <br>
-									Состояние на момент приёмки: соответствует <br>
-									<b>Данные '. $type_check .':</b> периодичность 1 раз в год
-								</td>
-							</tr>';
-							if ($history_check != null)
-							{
-								foreach ($history_check as $check)
-									$ht .= '<tr><td colspan="3"> '. $type . ' ' . $check['number_document'] . ' от ' . date_format(date_create($check['date_current_check']), 'd.m.Y') .'</td>
-										<td colspan="3">'. $type.'</td>
-										<td colspan="3">'. $type.'</td>
-										</tr>';
-								if ($current_check != null)
-									$ht .= '<tr><td colspan="3">'. $type . ' ' .$current_check['number_document'] . ' от ' . date_format(date_create($current_check['date_current_check']), 'd.m.Y') .'</td>
-								<td colspan="3">'. $type.'</td>
-								<td colspan="3">'. $type.'</td></tr>';
-							}
-							$ht .= '
-							<tr>
-								<td colspan="1"><b>Вид ТО:</b></td>
-								<td class="center" colspan="1">Сроки выполнения</td>
-								<td class="center" colspan="6">Проводимые работы</td>
-								<td class="center" colspan="1">Ответственный</td>
-							</tr>';
-							if($maintenance != null)
-								foreach ($maintenance as $main)
-								{
-									if ($card['id_equipment'] == $main['id_equipment'])
-										$ht .= '<tr>
-									<td class="center">'. $main['maintenance'] .'</td>
-									<td class="center">'. $main['periodicity'] .'</td>
-									<td class="center" colspan="6">'. $main['description'] .'</td>
-									<td class="center">'. $main['executor'] .'</td>
-									</tr>';
-								}
-							else
-								$ht .= '<tr><td class="center" colspan="9">Техническое обслуживание не требуется</td></tr>';
 
-							$ht .='
-							<tr>
-								<td colspan="9"><b>Данные о ремонте и ТО:</b></td>
-							</tr>
-							<tr>
-								<td class="center" colspan="1">Номер п/п</td>
-								<td class="center" colspan="1">Дата</td>
-								<td class="center" colspan="3">Характер неисправности и вид производимой работы</td>
-								<td colspan="4" class="center">Наименование организации, Ф.И.О.,<br>должность выполнившего работу<br>(подпись внесшего запись с расшифровкой Ф.И.О.)</td>
-							</tr>
-						</tbody>
-					</table>
-				</body>';
-			}
-			include_once 'D:/OpenServer/OSPanel/vendor/autoload.php';
-			$mpdf = new \Mpdf\Mpdf();
-			$mpdf->SetDisplayMode('fullpage');
-			$mpdf->AddPage('L','','','','',5,5,5,0,0,0);
-			$mpdf->WriteHTML($ht);
-			$ht = '
-				<head>
-					<style>
-						* {
-							font-size: 14px;
-						}
-						table, th, td { 
-							padding: 10px;
-							border: 1px solid black;
-							border-collapse: collapse;
-							padding: 6px;
-							margin: 0px;
-						}
-						b {
-							font-weight: bold;
-						}
-						.center {
-							text-align: center;
-						}
-						.header {
-							font-size: 22px;
-						}
-					</style>
-				</head>
-				<body>
-				<table>
-					<tbody>
-						<tr>
-							<td class="center">ДФ.04.31.2017</td>
-							<td colspan="7" class="center">
-								<div>Бюджетное учреждение Удмуртской Республики "Удмуртский ветеринарно-диагностический центр"</div>
-								<div>СИСТЕМА МЕНЕДЖМЕНТА КАЧЕСТВА ИЦ</div>
-								<div>Документированная форма</div>
-								<div><b>Регистрационная карточка оборудования</b></div>
-							</td>
-							<td class="center">оборотная сторона регистрационной карточки</td>
-						</tr>
-						<tr>
-							<td colspan="9"><b>Данные о ремонте и ТО:</b></td>
-						</tr>
-						<tr>
-							<td class="center" colspan="1">Номер п/п</td>
-							<td class="center" colspan="1">Дата</td>
-							<td class="center" colspan="3">Характер неисправности и вид производимой работы</td>
-							<td colspan="4" class="center">Наименование организации, Ф.И.О.,<br>должность выполнившего работу<br>(подпись внесшего запись с расшифровкой Ф.И.О.)</td>
-						</tr>
-					</tbody>
-				</table>		';
-			$mpdf->AddPage('L','','','','',3,3,3,0,0,0);
-			$mpdf->WriteHTML($ht);
-			$mpdf->Output('assets/template/card.pdf', \Mpdf\Output\Destination::FILE);
-			return $this->asJson('/assets/template/card.pdf');
-		}
 	}
 
 	public function actionCreateRequest()
@@ -861,7 +638,6 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			// return $this->asJson($data);
 			$kits = equipment_kit_equipment::find()->select(['id_equipment'])->where(['id_checks' => $data['id_check']])->andWhere(['is_received_before' => 1])->all();
 			foreach ($kits as $kit)
 			{

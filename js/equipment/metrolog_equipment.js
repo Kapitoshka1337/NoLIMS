@@ -6,6 +6,7 @@ Vue.component('equipment-grid', {
 		columns: Array,
 		filters: Array,
 		filtersCheck: Object,
+		filterDate: Object,
 		countPost: Number,
 		checkEq: Object,
 		handoff: Object
@@ -68,6 +69,7 @@ Vue.component('equipment-grid', {
 			$('#modal' + modalName).modal('show');
 		},
 		clearFilter(){
+			this.$emit('clear');
 			$('.dropdown').dropdown('clear');
 		},
 		select() {
@@ -127,8 +129,10 @@ Vue.component('equipment-grid', {
 				axios.post("/equipment/set-tag", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(demo1.getEquipments(), this.selectedEquipments = [])).catch(error => (this.listError = error));
 			}
 		},
-		test(){
-			console.log(1);
+		today(date){
+			if(date === null) return;
+			let today = new Date(date);
+			return today.toLocaleString().split(',')[0];
 		}
 	},
 	watch: {
@@ -169,6 +173,11 @@ Vue.component('equipment-grid', {
 						return row[f] === 1;
 					})
 			})
+			if(this.filterDate['start'] != null && this.filterDate['end'] != null)
+				rows = rows.filter(row => {
+					return row['date_next_check'] >= this.filterDate['start'] && row['date_next_check'] <= this.filterDate['end'];
+				})
+			// else return rows;
 			return rows.filter(r =>
 			{
 				return Object.keys(this.filters).every(f =>
@@ -220,15 +229,7 @@ let demo1 = new Vue({
 				{'number':'Номер'},
 				{'department':'Отдел'},
 				{'type':'Вид'},
-				{'equipment':'Оборудование'},
-				{'serial_number':'S/N'},
-				{'date_current_check':'Текущая проверка'},
-				{'date_next_check':'Следующая проверка'},
-				// {'is_archive':'Архив'},
-				// {'is_conservation':'Консервация'},
-				// {'is_check':'Проверка'},
-				// {'is_repair':'Ремонт'},
-				// {'is_working':'В работе'}
+				{'equipment':'Оборудование'}
 			]
 		},
 		gridData: [],
@@ -237,13 +238,6 @@ let demo1 = new Vue({
 			department: [],
 			type: [],
 			equipment: [],
-			date_current_check: [],
-			date_next_check: [],
-			// is_archive: [],
-			// is_conservation: [],
-			// is_check: [],
-			// is_repair: [],
-			// is_working: []
 		},
 		countPost: 100,
 		check: {
@@ -262,6 +256,10 @@ let demo1 = new Vue({
 			is_check: false,
 			is_repair: false,
 			is_working: false
+		},
+		dateFilter: {
+			start: null,
+			end: null
 		},
 		handoff: {
 			id_equipment: null,
@@ -334,11 +332,12 @@ let demo1 = new Vue({
 					id_equipment: this.selectedEquipments[i].id_equipment
 				});
 			}
-			// console.log(this.selectedEquipments);
-			// this.SelectedEquipments.forEach(function(row){});
 			axios.post("/equipment/send-request", JSON.stringify(request), {headers: {'Content-Type': 'application/json'}})
 			.then(response => (console.log(1)));
 		},
+		clearDate(){
+			this.dateFilter = {};
+		}
 	},
 	watch: {
 		gridData(){
