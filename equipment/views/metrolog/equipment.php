@@ -319,7 +319,7 @@
 					<div class="ui left floated label">
 						Страница {{ currentPage }} из {{ listPages.length }}
 					</div>
-					<div class="ui left floated label">Всего строк {{paginateRows.length}}</div>
+					<!-- <div class="ui left floated label">Cтрок {{lenghtPaginated}} из {{filteredRows.length}}</div> -->
 					<div class="ui icon basic right floated small buttons">
 						<button class="ui button" v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></button>
 						<button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></button>
