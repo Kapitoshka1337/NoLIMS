@@ -133,12 +133,33 @@ Vue.component('equipment-grid', {
 			if(date === null) return;
 			let today = new Date(date);
 			return today.toLocaleString().split(',')[0];
+		},
+		returnUniq(column){
+			let result = [];
+			for (let str of this.gridData)
+				if (!result.includes(str[column]))
+					result.push(str[column]);
+				result = result.slice().sort(function (a, b){
+					if(a === b) return 0 ;
+					else if (a > b) return 1;
+					else return - 1;
+				})
+			return result;
+		},
+		test(){
+			console.log($('.dropdown').dropdown({fullTextSearch: true}));
 		}
 	},
 	watch: {
 		filteredRows() {
 			this.listPages = [];
 			this.setPages();
+			let interval = setInterval(function()
+			{ 
+				if($('.dropdown').dropdown({fullTextSearch: true}).length <= 0)
+					$('.dropdown').dropdown({fullTextSearch: true});
+				else clearInterval(interval);
+			}, 0.5);
 		}
 	},
 	computed: {
@@ -339,16 +360,16 @@ let demo1 = new Vue({
 			this.dateFilter = {};
 		}
 	},
-	watch: {
-		gridData(){
-			let interval = setInterval(function()
-			{ 
-				if($('.dropdown').dropdown({fullTextSearch: true}).length <= 0)
-					$('.dropdown').dropdown({fullTextSearch: true});
-				else clearInterval(interval);
-			}, 1000);
-		}
-	},
+	// watch: {
+	// 	gridData(){
+	// 		let interval = setInterval(function()
+	// 		{ 
+	// 			if($('.dropdown').dropdown({fullTextSearch: true}).length <= 0)
+	// 				$('.dropdown').dropdown({fullTextSearch: true});
+	// 			else clearInterval(interval);
+	// 		}, 0.5);
+	// 	}
+	// },
 	computed: {
 		filteredLocation(){
 			let rows = this.listDepartment;

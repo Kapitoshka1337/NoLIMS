@@ -261,16 +261,6 @@
 						<input type="checkbox" v-model="filtersCheck.is_check">
 						<label>ЦСМ</label>
 					</div>
-<!-- 					<div class="ui form">
-						<div class="two fields">
-							<div class="field">
-								<input type="date" v-model="filterDate[0]">
-							</div>
-							<div class="field">
-								<input type="date" v-model="filterDate[1]">
-							</div>
-						</div>
-					</div> -->
 				</th>
 			</tr>
 			<tr>
@@ -298,7 +288,7 @@
 						<label></label>
 					</div>
 				</td>
-				<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.number_department }} - {{ equipment.type }}</td>
+				<td class="collapsing right aligned">{{ equipment.number_card }}</td>
 				<td>{{ equipment.equipment }}</td>
 				<td class="collapsing right aligned">{{ equipment.serial_number }}</td>
 				<td class="collapsing">{{ today(equipment.date_current_check) }}</td>

@@ -32,7 +32,7 @@ use app\modules\equipment\models\equipment_list_maintenances;
 use app\modules\equipment\models\equipment_list_works_plan;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-require 'D:/OpenServer/OSPanel/vendor/autoload.php';
+require 'D:/OSPanel/vendor/autoload.php';
 use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
@@ -435,7 +435,7 @@ class MetrologController extends Controller
 						}
 				}
 			}
-			if($data['is_conservation'] === 'true')
+			else if($data['is_conservation'] === 'true')
 			{
 				$eq_check = equipment_date_check::findByEqId($data['id_equipment']);
 				$eq = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
@@ -459,7 +459,7 @@ class MetrologController extends Controller
 								else return Yii::$app->response->statusCode = 400;
 						}
 				}
-				else if (!$eq_check && $model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
+				if (!$eq_check && $model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
 				{
 					$eq_check = new equipment_date_check();
 					$eq_check->id_equipment = $data['id_equipment'];
@@ -481,8 +481,8 @@ class MetrologController extends Controller
 						}
 				}
 			}
-			if($model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
-			{
+			// else
+			// {
 				$eq = equipment_date_check::findByEqId($data['id_equipment']);
 				$eq_eq = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
 				if($eq)
@@ -491,12 +491,19 @@ class MetrologController extends Controller
 					$eq->date_next_check = $data['date_next_check'];
 					$eq->id_upload_document_type = $data['id_upload_document_type'];
 					$eq->number_document = $data['number_document'];
-					$eq->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
+					if($model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
+						$eq->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
 					if($eq->save())
 						$eq_eq->is_check = false;
 						if($eq_eq->save())
-							if ($model->upload()) return Yii::$app->response->statusCode = 200;
-						else return Yii::$app->response->statusCode = 400;
+						{
+							if ($model->upload_file_name)
+							{
+								if($model->upload())
+									return Yii::$app->response->statusCode = 200;
+							}
+							else return Yii::$app->response->statusCode = 200;
+						}
 				}
 				else
 				{
@@ -506,13 +513,16 @@ class MetrologController extends Controller
 					$eq->date_next_check = $data['date_next_check'];
 					$eq->id_upload_document_type = $data['id_upload_document_type'];
 					$eq->number_document = $data['number_document'];
-					$eq->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
+					if($model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
+						$eq->upload_file_name = $model->upload_file_name->baseName . '.' . $model->upload_file_name->extension;
 					if($eq->save())
-						if ($model->upload()) return Yii::$app->response->statusCode = 200;
-						else return Yii::$app->response->statusCode = 400;
+						if ($model->upload_file_name)
+						{
+							if($model->upload())
+								return Yii::$app->response->statusCode = 200;
+						}
+						else return Yii::$app->response->statusCode = 200;
 				}
-			}
-			else return Yii::$app->response->statusCode = 400;
 		}
 	}
 
