@@ -42,13 +42,15 @@
                     <tr>
                         <th>Номер</th>
                         <th>Оборудование</th>
+                        <th>Модель</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(eq, k) in equipment.equipment">
                         <td class="collapsing">{{ eq.number }}</td>
-                        <td class="collapsing">{{ eq.equipment }}, {{ eq.model }}</td>
+                        <td class="collapsing">{{ eq.equipment }}</td>
+                        <td class="collapsing">{{ eq.model }}</td>
                         <!-- <td class="collapsing">{{ eq.is_received }}</td> -->
                         <td class="one wide">
                             <div class="ui green label" v-if="eq.is_received_before">Получено</div>
@@ -71,13 +73,15 @@
                     <tr>
                         <th>Номер</th>
                         <th>Оборудование</th>
+                        <th>Модель</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(eq, k) in equipment.equipment">
                         <td class="collapsing">{{ eq.number }}</td>
-                        <td class="collapsing">{{ eq.equipment }}, {{ eq.model }}</td>
+                        <td class="collapsing">{{ eq.equipment }}</td>
+                        <td class="collapsing">{{ eq.model }}</td>
                         <td class="collapsing">
                             <div class="ui orange label" v-if="!eq.is_received_before">Не принесли</div>
                             <div class="ui green label" v-if="eq.is_received_after">Получено</div>
@@ -88,59 +92,6 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
-    </div>
-    <div id="modalBeforeRequest" class="ui large card modal">
-        <div class="content">
-            <div class="content header">Добавляемое оборудование в заявку</div>
-        </div>
-        <div class="scrolling content">
-            <table class="ui compact selectable table">
-                <thead>
-                    <tr>
-                        <th>Номер</th>
-                        <th>Оборудование</th>
-<!--                         <th>Комплектность</th>
-                        <th>Вид поверки</th> -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(eq, k) in filteredEqBeforeAfter">
-                        <td class="collapsing">{{ eq.number }}</td>
-                        <td class="collapsing">{{ eq.equipment }}, {{ eq.model }}</td>
-<!--                         <td class="collapsing">
-                            <div class="ui form">
-                                <div class="field">
-                                    <input type="text" v-model="eq.compl">
-                                </div>
-                            </div>
-                        </td>
-                        <td class="collapsing">
-                            <div class="ui form">
-                                <div class="field">
-                                    <input type="text" v-model="eq.pover">
-                                </div>
-                            </div>
-                        </td> -->
-                    </tr>
-                </tbody>
-            </table>
-            <div class="ui form">
-                <div class="ui two fields">
-                    <div class="field">
-                        <label>Приложение к договору</label>
-                        <input type="text" v-model="forRequest.dogovor">
-                    </div>
-                    <div class="field">
-                        <label>Контактый номер</label>
-                        <input type="text" v-model="forRequest.telephone">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="actions">
-            <button class="ui approve green button" v-on:click="getRequest(filteredEqBeforeAfter[0].id_checks)">Печать</button>
-            <!-- <button class="ui deny orange button">Отмена</button> -->
         </div>
     </div>
 </div>

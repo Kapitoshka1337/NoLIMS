@@ -243,8 +243,9 @@ let verification = new Vue({
         tableColumn: [
           {'card_number':'Номер'},
           {'equipment':'Оборудование'},
+          {'model':'Модель'},
           {'date_next_check':'Дата проверки'},
-          {'cabinet_number':'Кабинет'},
+          {'cabinet_number':'Кабинет'}
         ],
         filterColumn: [
           {'equipment':'Оборудование'}
@@ -260,6 +261,7 @@ let verification = new Vue({
         tableColumn: [
           {'card_number':'Номер'},
           {'equipment':'Оборудование'},
+          {'model':'Модель'},
           {'date_next_check':'Дата проверки'},
           {'cabinet_number':'Кабинет'},
         ],
@@ -277,6 +279,7 @@ let verification = new Vue({
         tableColumn: [
           {'card_number':'Номер'},
           {'equipment':'Оборудование'},
+          {'model':'Модель'},
           {'date_next_check':'Дата проверки'}
         ],
         filterColumn: [
@@ -292,6 +295,7 @@ let verification = new Vue({
       gridColumns: {
         tableColumn: [
           {'equipment':'Оборудование'},
+          {'model':'Модель'},
           {'maintenance':'ТО'},
           {'periodicity':'Периодичность'},
           {'date_next_check':'Дата проверки'},
