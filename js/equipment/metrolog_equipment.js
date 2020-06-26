@@ -89,7 +89,8 @@ Vue.component('equipment-grid', {
 						date_current_check: this.paginateRows[i].date_current_check,
 						date_next_check: this.paginateRows[i].date_next_check,
 						equipment: this.paginateRows[i].equipment,
-						number_department: this.paginateRows[i].number_department
+						number_department: this.paginateRows[i].number_department,
+						model: this.paginateRows[i].model
 					});
 		},
 		Details(id_equipment)
@@ -145,9 +146,6 @@ Vue.component('equipment-grid', {
 					else return - 1;
 				})
 			return result;
-		},
-		test(){
-			console.log($('.dropdown').dropdown({fullTextSearch: true}));
 		}
 	},
 	watch: {
@@ -358,6 +356,11 @@ let demo1 = new Vue({
 		},
 		clearDate(){
 			this.dateFilter = {};
+		},
+		today(date){
+			if(date === null) return;
+			let today = new Date(date);
+			return today.toLocaleString().split(',')[0];
 		}
 	},
 	// watch: {
