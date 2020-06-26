@@ -48,7 +48,7 @@
                 <tbody>
                     <tr v-for="(eq, k) in equipment.equipment">
                         <td class="collapsing">{{ eq.number }}</td>
-                        <td class="collapsing">{{ eq.equipment }}</td>
+                        <td class="collapsing">{{ eq.equipment }}, {{ eq.model }}</td>
                         <!-- <td class="collapsing">{{ eq.is_received }}</td> -->
                         <td class="one wide">
                             <div class="ui green label" v-if="eq.is_received_before">Получено</div>
@@ -77,7 +77,7 @@
                 <tbody>
                     <tr v-for="(eq, k) in equipment.equipment">
                         <td class="collapsing">{{ eq.number }}</td>
-                        <td class="collapsing">{{ eq.equipment }}</td>
+                        <td class="collapsing">{{ eq.equipment }}, {{ eq.model }}</td>
                         <td class="collapsing">
                             <div class="ui orange label" v-if="!eq.is_received_before">Не принесли</div>
                             <div class="ui green label" v-if="eq.is_received_after">Получено</div>
@@ -107,7 +107,7 @@
                 <tbody>
                     <tr v-for="(eq, k) in filteredEqBeforeAfter">
                         <td class="collapsing">{{ eq.number }}</td>
-                        <td class="collapsing">{{ eq.equipment }}</td>
+                        <td class="collapsing">{{ eq.equipment }}, {{ eq.model }}</td>
 <!--                         <td class="collapsing">
                             <div class="ui form">
                                 <div class="field">

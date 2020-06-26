@@ -289,7 +289,7 @@
 					</div>
 				</td>
 				<td class="collapsing right aligned">{{ equipment.number_card }}</td>
-				<td>{{ equipment.equipment }}</td>
+				<td>{{ equipment.equipment }}, {{ equipment.model }}</td>
 				<td class="collapsing right aligned">{{ equipment.serial_number }}</td>
 				<td class="collapsing">{{ today(equipment.date_current_check) }}</td>
 				<td class="collapsing">{{ today(equipment.date_next_check) }}</td>

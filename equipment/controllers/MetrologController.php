@@ -32,7 +32,7 @@ use app\modules\equipment\models\equipment_list_maintenances;
 use app\modules\equipment\models\equipment_list_works_plan;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-require 'D:/OSPanel/vendor/autoload.php';
+require 'D:/OpenServer/OSPanel/vendor/autoload.php';
 use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
@@ -102,6 +102,7 @@ class MetrologController extends Controller
 							'equipment' => $kit->equipment,
 							'is_received_before' => $kit->is_received_before,
 							'is_received_after' => $kit->is_received_after,
+							'model' => $kit->model,
 							'number' => $kit->number
 						);
 				}
