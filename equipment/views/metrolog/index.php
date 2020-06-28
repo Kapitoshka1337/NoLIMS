@@ -36,11 +36,11 @@
 				<td class="collapsing">{{ eq.card_number }}</td>
 				<td>{{ eq.equipment }}</td>
 				<td v-bind:class="{
-					'center aligned success': colorShelfLife(eq.date_next_check) > 3,
-					'center aligned caution': colorShelfLife(eq.date_next_check) <= 10 && colorShelfLife(eq.date_next_check) >= 16,
-					'center aligned danger': colorShelfLife(eq.date_next_check) <= 6
+					'collapsing center aligned success': colorShelfLife(eq.date_next_check) > 3,
+					'collapsing center aligned caution': colorShelfLife(eq.date_next_check) <= 10 && colorShelfLife(eq.date_next_check) >= 16,
+					'collapsing center aligned danger': colorShelfLife(eq.date_next_check) <= 6
 				}">{{ today(eq.date_next_check) }}</td>
-				<td class="right aligned">{{colorShelfLife(eq.date_next_check)}}</td>
+				<td class="collapsing right aligned">{{colorShelfLife(eq.date_next_check)}}</td>
 			</tr>
 		</tbody>
 		<tfoot>
