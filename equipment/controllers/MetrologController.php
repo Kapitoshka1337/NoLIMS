@@ -32,7 +32,7 @@ use app\modules\equipment\models\equipment_list_maintenances;
 use app\modules\equipment\models\equipment_list_works_plan;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-require 'D:/OpenServer/OSPanel/vendor/autoload.php';
+require 'D:/OSPanel/vendor/autoload.php';
 use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
@@ -84,6 +84,14 @@ class MetrologController extends Controller
 		return $this->render('details');
 	}
 
+	public function actionGetToday()
+	{
+		$start = date('Y-m-01');
+		$end = date('Y-m-t');
+		$total = equipment_total_check::find()->select(['id_type', 'card_number', 'equipment', 'date_next_check'])->where(['between', 'date_next_check', $start, $end])->all();
+		return $this->asJson($total);
+	}
+
 	public function actionGetVerification()
 	{
 		if(Yii::$app->request->isGet)
@@ -128,6 +136,7 @@ class MetrologController extends Controller
 
 	public function actionPrintTable()
 	{
+		//ПЕРЕДЕЛАТЬ
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
