@@ -14,7 +14,7 @@
 			<table class="ui compact table">
 				<thead>
 					<tr>
-						<th colspan="3">
+						<th colspan="4">
 							{{ row.title }}
 							<a class="ui blue right floated mini icon button" v-on:click="printTable(row.content[0].id_type)"><i class="icon print"></i></a>
 							<a class="ui red right floated mini icon button">{{row.content.length}}</a>
@@ -25,6 +25,7 @@
 						<th>Номер</th>
 						<th>Оборудование</th>
 						<th>Проверка</th>
+						<th>Дни</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -32,10 +33,11 @@
 						<td class="collapsing">{{ eq.card_number }}</td>
 						<td>{{ eq.equipment }}</td>
 						<td v-bind:class="{
-							success: colorShelfLife(eq.date_next_check) > 30,
-							caution: colorShelfLife(eq.date_next_check) <= 15 && colorShelfLife(eq.date_next_check) >= 15,
-							danger: colorShelfLife(eq.date_next_check) <= 2
+							success: colorShelfLife(eq.date_next_check) > 3,
+							caution: colorShelfLife(eq.date_next_check) <= 10 && colorShelfLife(eq.date_next_check) >= 16,
+							danger: colorShelfLife(eq.date_next_check) <= 6
 						}">{{ today(eq.date_next_check) }}</td>
+						<td class="right aligned">{{colorShelfLife(eq.date_next_check)}}</td>
 					</tr>
 				</tbody>
 			</table>
