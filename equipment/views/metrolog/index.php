@@ -31,18 +31,18 @@
 				<th v-for="key in rows.gridColumns.tableColumn">{{ Object.values(key)[0] }}</th>
 			</tr>
 		</thead>
-	<tbody>
-		<tr v-for="eq in filteredRows">
-			<td class="collapsing">{{ eq.card_number }}</td>
-			<td>{{ eq.equipment }}</td>
-			<td v-bind:class="{
-				success: colorShelfLife(eq.date_next_check) > 3,
-				caution: colorShelfLife(eq.date_next_check) <= 10 && colorShelfLife(eq.date_next_check) >= 16,
-				danger: colorShelfLife(eq.date_next_check) <= 6
-			}">{{ today(eq.date_next_check) }}</td>
-			<td class="right aligned">{{colorShelfLife(eq.date_next_check)}}</td>
-		</tr>
-	</tbody>
+		<tbody>
+			<tr v-for="eq in filteredRows">
+				<td class="collapsing">{{ eq.card_number }}</td>
+				<td>{{ eq.equipment }}</td>
+				<td v-bind:class="{
+					success: colorShelfLife(eq.date_next_check) > 3,
+					caution: colorShelfLife(eq.date_next_check) <= 10 && colorShelfLife(eq.date_next_check) >= 16,
+					danger: colorShelfLife(eq.date_next_check) <= 6
+				}">{{ today(eq.date_next_check) }}</td>
+				<td class="right aligned">{{colorShelfLife(eq.date_next_check)}}</td>
+			</tr>
+		</tbody>
 		<tfoot>
 			<tr>
 				<th v-bind:colspan="rows.gridColumns.tableColumn.length + 1">
@@ -63,34 +63,4 @@
 		</tfoot>
 	</table>
 </div>
-<!-- 			<table class="ui compact table">
-				<thead>
-					<tr>
-						<th colspan="4">
-							<a class="ui blue right floated mini icon button" v-on:click="printTable(rows[0].id_type)"><i class="icon print"></i></a>
-							<a class="ui red right floated mini icon button">{{rows.length}}</a>
-							<a class="ui orange right floated mini icon button">Всего</a>
-						</th>
-					</tr>
-					<tr>
-						<th>Номер</th>
-						<th>Оборудование</th>
-						<th>Проверка</th>
-						<th>Дни</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="eq in rows">
-						<td class="collapsing">{{ eq.card_number }}</td>
-						<td>{{ eq.equipment }}</td>
-						<td v-bind:class="{
-							success: colorShelfLife(eq.date_next_check) > 3,
-							caution: colorShelfLife(eq.date_next_check) <= 10 && colorShelfLife(eq.date_next_check) >= 16,
-							danger: colorShelfLife(eq.date_next_check) <= 6
-						}">{{ today(eq.date_next_check) }}</td>
-						<td class="right aligned">{{colorShelfLife(eq.date_next_check)}}</td>
-					</tr>
-				</tbody>
-			</table> -->
-
 </template>
