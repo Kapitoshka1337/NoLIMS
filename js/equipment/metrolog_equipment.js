@@ -238,6 +238,7 @@ let demo1 = new Vue({
 			tableColumn: [
 				{'number':'Номер'},
 				{'equipment':'Оборудование'},
+				{'model':'Модель'},
 				{'serial_number':'С/Н'},
 				{'date_current_check':'Текущая'},
 				{'date_next_check':'Следующая'},
@@ -393,6 +394,9 @@ let demo1 = new Vue({
 				return locs;
 			}
 			else return null;
+		},
+		checkEquipment(){
+			return this.gridData.find(x => x.id === this.check.id_equipment);
 		}
 	},
 	mounted: function() {

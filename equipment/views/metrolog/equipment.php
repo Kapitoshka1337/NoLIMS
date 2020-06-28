@@ -19,17 +19,6 @@
 			@clear="clearDate">
 		</equipment-grid>
 	</div>
-	<div id="modalPrint" class="ui tiny card modal">
-		<div class="content">
-			<div class="content header">Регистрационная карта | Этикетка</div>
-		</div>
-		<div class="content">
-		</div>
-		<div class="actions">
-			<button class="ui approve green button">Сформировать</button>
-			<button class="ui deny orange button">Отмена</button>
-		</div>
-	</div>
 	<div id="modalFilter" class="ui tiny card modal">
 		<div class="content">
 			<div class="content header">Поиск</div>
@@ -83,7 +72,10 @@
 	</div>
 	<div id="modalCheck" class="ui tiny card modal">
 		<div class="content">
-			<div class="content header">Добавление пройденой проверки</div>
+			<div class="header">Добавление пройденой проверки <span v-if="checkEquipment">({{ checkEquipment.number_card }})</span></div>
+			<div v-if="checkEquipment" class="meta">
+				{{ checkEquipment.equipment }}, {{ checkEquipment.model }}
+			</div>
 		</div>
 		<div class="content">
 			<div class="ui form">
@@ -290,8 +282,9 @@
 						<label></label>
 					</div>
 				</td>
-				<td class="collapsing right aligned">{{ equipment.number_card }}</td>
-				<td>{{ equipment.equipment }}, {{ equipment.model }}</td>
+				<td class="collapsing">{{ equipment.number_card }}</td>
+				<td>{{ equipment.equipment }}</td>
+				<td class="collapsing">{{ equipment.model }}</td>
 				<td class="collapsing right aligned">{{ equipment.serial_number }}</td>
 				<td class="collapsing">{{ today(equipment.date_current_check) }}</td>
 				<td class="collapsing">{{ today(equipment.date_next_check) }}</td>

@@ -245,7 +245,7 @@
 							</div>
 						</div>
 						<div class="field">
-							<label>Характеристики</label>
+							<label>Дополнительные характеристики</label>
 							<textarea cols="30" rows="2" v-model="listDetails.equipment.characteristics"></textarea>
 						</div>
 					</div>

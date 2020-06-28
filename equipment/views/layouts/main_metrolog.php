@@ -11,17 +11,6 @@
 					<a href="<?php echo Url::toRoute(['plan-graph/']) ?>" class="item">План-график</a>
 					<a href="<?php echo Url::toRoute(['certification/']) ?>" class="item">Аттестация</a>
 					<a href="<?php echo Url::toRoute(['fgis/']) ?>" class="item">ФГИС</a>
-<!-- 	                <div class="ui simple dropdown item">
-	                    <span>Передача</span>
-	                    <i class="dropdown icon"></i>
-	                    <div class="menu">
-	                        <a href="<?php echo Url::toRoute(['request-handoff/']) ?>" class="item">Запрос</a>
-	                        <a href="<?php echo Url::toRoute(['history-handoff/']) ?>" class="item">История</a>
-	                    </div>
-	                </div> -->
-				</div>
-				<div class="right menu">
-					<!-- <a href="<?php echo Url::toRoute(['equipments/']) ?>" class="item">Оборудование</a> -->
 				</div>
 			</div>
 		</div>
