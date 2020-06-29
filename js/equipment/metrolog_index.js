@@ -66,7 +66,6 @@ let index = new Vue({
 						{'card_number':'Номер'},
 						{'equipment':'Оборудование'},
 						{'date_next_check':'Проверка'},
-						{'action': ''},
 						{'action': ''}
 					]
 				},
@@ -79,7 +78,6 @@ let index = new Vue({
 						{'card_number':'Номер'},
 						{'equipment':'Оборудование'},
 						{'date_next_check':'Проверка'},
-						{'action': ''},
 						{'action': ''}
 					]
 				},
@@ -92,7 +90,6 @@ let index = new Vue({
 						{'card_number':'Номер'},
 						{'equipment':'Оборудование'},
 						{'date_next_check':'Проверка'},
-						{'action': ''},
 						{'action': ''}
 					]
 				},
@@ -105,7 +102,6 @@ let index = new Vue({
 						{'card_number':'Номер'},
 						{'equipment':'Оборудование'},
 						{'date_next_check':'Проверка'},
-						{'action': ''},
 						{'action': ''}
 					]
 				},

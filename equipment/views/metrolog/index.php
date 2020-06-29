@@ -35,8 +35,7 @@
 					'collapsing center aligned caution': colorShelfLife(eq.date_next_check) <= 10 && colorShelfLife(eq.date_next_check) >= 16,
 					'collapsing center aligned danger': colorShelfLife(eq.date_next_check) <= 6
 				}">{{ today(eq.date_next_check) }}</td>
-				<td class="collapsing right aligned">{{colorShelfLife(eq.date_next_check)}}</td>
-				<td class="collapsing"><a><span class="ui violet small circular label" v-show="eq.is_check">Ц</span></a></td>
+				<td class="collapsing"><span class="ui violet small circular label" v-show="eq.is_check">Ц</span></td>
 			</tr>
 		</tbody>
 		<tfoot>
