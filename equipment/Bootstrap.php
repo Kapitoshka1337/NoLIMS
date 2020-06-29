@@ -34,15 +34,17 @@ class Bootstrap implements BootstrapInterface
             'equipments' => 'metrolog/equipments',
             'save-equipment' => 'metrolog/save-equipment',
             'change-check' => 'metrolog/change-check',
+            'save-check' => 'metrolog/save-check',
             'set-tag' => 'metrolog/set-tag',
             'set-handoff' => 'metrolog/set-handoff',
             'send-request' => 'metrolog/send-request',
-            'details/<id:\d+>'=>'metrolog/details',
+            'edit/<id:\d+>'=>'metrolog/details',
             'get-details'=>'metrolog/get-details',
-            'certification' => 'metrolog/certification',
+            'repair' => 'metrolog/repair',
             'verification' => 'metrolog/verification',
             'plan-graph' => 'metrolog/plan',
             'fgis' => 'metrolog/fgis',
+            'details/<id:\d+>'=>'equipment/details'
         ],
     ];
 

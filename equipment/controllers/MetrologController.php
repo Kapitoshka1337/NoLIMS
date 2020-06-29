@@ -32,7 +32,7 @@ use app\modules\equipment\models\equipment_list_maintenances;
 use app\modules\equipment\models\equipment_list_works_plan;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-require 'D:/OpenServer/OSPanel/vendor/autoload.php';
+require 'D:/OSPanel/vendor/autoload.php';
 use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
@@ -42,7 +42,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance' || $action->id === 'save-check')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -54,9 +54,9 @@ class MetrologController extends Controller
 		return $this->render('index');
 	}
 
-	public function actionCertification()
+	public function actionRepair()
 	{
-		return $this->render('certification');
+		return $this->render('repair');
 	}
 
 	public function actionVerification()
@@ -541,6 +541,24 @@ class MetrologController extends Controller
 						}
 						else return Yii::$app->response->statusCode = 200;
 				}
+		}
+	}
+
+	public function actionSaveCheck()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$eq = equipment_date_check::find()->where(['id_equipment' => $data['id_equipment']])->one();
+			// return $this->asJson($eq);
+			// if($eq)
+			foreach ($data as $key => $item)
+			{
+				if($key != 'id_equipment' || $key != 'id');
+					$eq[$key] = $item;
+			}
+			if($eq->save());
+				return Yii::$app->response->statusCode = 200;
 		}
 	}
 

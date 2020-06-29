@@ -2,17 +2,11 @@
 	use yii\helpers\Url;
 	$this->registerJsFile('@web/assets/vendor/vue/vue.min.js'); 
 	$this->registerJsFile('@web/assets/vendor/vue/axios.min.js');
-	$this->registerJsFile('@web/assets/js/equipment/metrolog_equipment_details.js');
+	$this->registerJsFile('@web/assets/js/equipment/user_equipment_details.js');
 ?>
 <div class="row" id="details">
 	<div class="sixteen wide column">
 		<div class="ui form">
-			<div class="ui fluid card">
-				<div class="content">
-					<a href="<?php echo Url::toRoute(['equipments/']) ?>" class="ui right floated orange button">Отмена</a>
-					<a class="ui right floated green button" v-on:click="Submit()">Сохранить</a>
-				</div>
-			</div>
 			<div class="ui fluid card">
 				<div class="content">
 					<div class="header">Идентификационные данные</div>
@@ -22,48 +16,48 @@
 						<div class="two fields">
 							<div class="field">
 								<label>Наименование</label>
-								<textarea cols="30" rows="2" v-model="listDetails.equipment.title"></textarea>
+								<textarea cols="30" rows="2" v-model="listDetails.equipment.title" readonly></textarea>
 							</div>
 							<div class="field">
 								<label>Производитель</label>
-								<textarea cols="30" rows="2" v-model="listDetails.equipment.manufacturer"></textarea>
+								<textarea cols="30" rows="2" v-model="listDetails.equipment.manufacturer" readonly></textarea>
 							</div>
 						</div>
 						<div class="four fields">
 							<div class="field">
 								<label>Инвентарный номер</label>
-								<input type="text" v-model="listDetails.equipment.inventory_number">
+								<input type="text" v-model="listDetails.equipment.inventory_number" readonly>
 							</div>
 							<div class="field">
 								<label>Серийный номер</label>
-								<input type="text" v-model="listDetails.equipment.serial_number">
+								<input type="text" v-model="listDetails.equipment.serial_number" readonly>
 							</div>
 							<div class="field">
 								<label>Модель</label>
-								<input type="text" v-model="listDetails.equipment.model">
+								<input type="text" v-model="listDetails.equipment.model" readonly>
 							</div>
 							<div class="field">
 								<label>Дата изготовления</label>
-								<input type="date" v-model="listDetails.equipment.date_create">
+								<input type="date" v-model="listDetails.equipment.date_create" readonly>
 							</div>
 						</div>
 						<div class="two fields">
 							<div class="field">
 								<label>Номер</label>
-								<input type="text" v-model="listDetails.equipment.number">
+								<input type="text" v-model="listDetails.equipment.number" readonly>
 							</div>
 							<div class="field">
 								<label>ФИФ</label>
-								<input type="text" v-model="listDetails.equipment.fif_number">
+								<input type="text" v-model="listDetails.equipment.fif_number" readonly>
 							</div>
 						</div>
 						<div class="field">
 							<label>Дата ввода в эксплуатацию</label>
-							<input type="date" v-model="listDetails.equipment.date_commissioning">
+							<input type="date" v-model="listDetails.equipment.date_commissioning" readonly>
 						</div>
 						<div class="field">
 							<label>Примечание</label>
-							<textarea cols="30" rows="2" v-model="listDetails.equipment.description"></textarea>
+							<textarea cols="30" rows="2" v-model="listDetails.equipment.description" readonly></textarea>
 						</div>
 					</div>
 				</div>
@@ -77,31 +71,31 @@
 						<div class="inline fields">
 							<div class="field">
 								<div class="ui checkbox">
-									<input type="checkbox" v-model="listDetails.equipment.is_archive">
+									<input type="checkbox" v-model="listDetails.equipment.is_archive" disabled>
 									<label>Архив</label>
 								</div>
 							</div>
 							<div class="field">
 								<div class="ui checkbox">
-									<input type="checkbox" v-model="listDetails.equipment.is_working">
+									<input type="checkbox" v-model="listDetails.equipment.is_working" disabled>
 									<label>Используется</label>
 								</div>
 							</div>
 							<div class="field">
 								<div class="ui checkbox">
-									<input type="checkbox" v-model="listDetails.equipment.is_conservation">
+									<input type="checkbox" v-model="listDetails.equipment.is_conservation" disabled>
 									<label>Консервация</label>
 								</div>
 							</div>
 							<div class="field">
 								<div class="ui checkbox">
-									<input type="checkbox" v-model="listDetails.equipment.is_repair">
+									<input type="checkbox" v-model="listDetails.equipment.is_repair" disabled>
 									<label>Ремонт</label>
 								</div>
 							</div>
 							<div class="field">
 								<div class="ui checkbox">
-									<input type="checkbox" v-model="listDetails.equipment.is_check">
+									<input type="checkbox" v-model="listDetails.equipment.is_check" disabled>
 									<label>ЦСМ</label>
 								</div>
 							</div>
@@ -118,13 +112,13 @@
 						<div class="two fields">
 							<div class="field">
 								<label>Отдел</label>
-								<select class="ui search dropdown disabled" v-model="listDetails.equipment.id_department">
+								<select class="ui search dropdown disabled" v-model="listDetails.equipment.id_department" disabled>
 									<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
 								</select>
 							</div>
 							<div class="field">
 								<label>Кабинет</label>
-								<select class="ui search dropdown" v-model="listDetails.equipment.id_location">
+								<select class="ui search dropdown" v-model="listDetails.equipment.id_location" disabled>
 									<option v-for="location in filteredLocation" v-bind:value="location.id">{{ location.cabinet_number }}</option>
 								</select>
 							</div>
@@ -144,7 +138,6 @@
 								<th>Следующая</th>
 								<th>Вид документа</th>
 								<th>Документ</th>
-								<th></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -156,9 +149,6 @@
 									<a v-if="check.upload_file_name" v-bind:href="'/assets/uploads/' + check.upload_file_name" target="_blank">Открыть</a>
 									<span v-if="!check.upload_file_name">Не загружен</span>
 								</td>
-								<td class="collapsing">
-									<button class="ui blue mini icon button" v-on:click="showModal('CheckEdit', check)"><i class="icon edit"></i></button>
-								</td>
 							</tr>
 							<tr>
 								<td>{{ today(listDetails.current_check.date_current_check) }}</td>
@@ -168,9 +158,6 @@
 									<a v-if="listDetails.current_check.upload_file_name" v-bind:href="'/assets/uploads/' + listDetails.current_check.upload_file_name" target="_blank">Открыть</a>
 									<span v-if="!listDetails.current_check.upload_file_name">Не загружен</span>
 								</td>
-								<td class="collapsing">
-									<button class="ui blue mini icon button" v-on:click="showModal('CheckEdit', listDetails.current_check)"><i class="icon edit"></i></button>
-								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -178,7 +165,7 @@
 			</div>
 			<div class="ui fluid card">
 				<div class="content">
-					<div class="header">Перемещения <span class="right floated"><button class="ui green right floated mini icon button" v-on:click="showModal('Handoff')"><i class="icon exchange"></i></button></span></div>						
+					<div class="header">Перемещения</div>						
 				</div>
 				<div class="content">
 					<table class="ui compact table" v-if="listDetails.history_moving">
@@ -209,51 +196,51 @@
 					<div class="ui form">
 						<div class="field">
 							<label>Вид</label>
-							<select class="ui search dropdown" v-model="listDetails.equipment.id_equipment_type">
+							<select class="ui search dropdown" v-model="listDetails.equipment.id_equipment_type" disabled>
 								<option v-for="type in listDetails.types.type" v-bind:value="type.id">{{ type.title }}</option>
 							</select>
 						</div>
 						<div class="two fields">
 							<div class="field">
 								<label>Диапазон измерений</label>
-								<input type="text" v-model="listDetails.equipment.measuring_range">
+								<input type="text" v-model="listDetails.equipment.measuring_range" readonly>
 							</div>
 							<div class="field">
 								<label>Диапазон работы</label>
-								<input type="text" v-model="listDetails.equipment.measuring_work">
+								<input type="text" v-model="listDetails.equipment.measuring_work" readonly>
 							</div>
 						</div>
 						<div class="two fields">
 							<div class="field">
 								<label>Точность <span>(<span v-on:click="addPlus()">±</span> / <span v-on:click="addTemp()">°</span>)</span></label>
-								<input type="text" v-model="listDetails.equipment.accuracy">
+								<input type="text" v-model="listDetails.equipment.accuracy" readonly>
 							</div>
 							<div class="field">
 								<label>Класс точности</label>
-								<input type="text" v-model="listDetails.equipment.class_accuracy">
+								<input type="text" v-model="listDetails.equipment.class_accuracy" readonly>
 							</div>
 						</div>
 						<div class="three fields">
 							<div class="field">
 								<label>Цель использования</label>
-								<input type="text" v-model="listDetails.equipment.purpose_of_use">
+								<input type="text" v-model="listDetails.equipment.purpose_of_use" readonly>
 							</div>
 							<div class="field">
 								<label>Объект исследования</label>
-								<select class="ui search dropdown" v-model="listDetails.equipment.id_object_study">
+								<select class="ui search dropdown" v-model="listDetails.equipment.id_object_study" disabled>
 									<option v-for="object in listObjectStudy" v-bind:value="object.id">{{ object.title }}</option>
 								</select>
 							</div>
 							<div class="field">
 								<label>Функциональное значение</label>
-								<select class="ui search dropdown" v-model="listDetails.equipment.id_function_of_use">
+								<select class="ui search dropdown" v-model="listDetails.equipment.id_function_of_use" disabled>
 									<option v-for="location in filteredFunctionOfUse" v-bind:value="location.id">{{ location.title }}</option>
 								</select>
 							</div>
 						</div>
 						<div class="field">
 							<label>Дополнительные характеристики</label>
-							<textarea cols="30" rows="2" v-model="listDetails.equipment.characteristics"></textarea>
+							<textarea cols="30" rows="2" v-model="listDetails.equipment.characteristics" readonly></textarea>
 						</div>
 					</div>
 				</div>
@@ -267,34 +254,31 @@
 						<div class="three fields">
 							<div class="field">
 								<label>Влажность</label>
-								<input type="text" v-model="listDetails.condition_working.humidity">
+								<input type="text" v-model="listDetails.condition_working.humidity" readonly>
 							</div>
 							<div class="field">
 								<label>Давление</label>
-								<input type="text" v-model="listDetails.condition_working.pressure">
+								<input type="text" v-model="listDetails.condition_working.pressure" readonly>
 							</div>
 							<div class="field">
 								<label>Температура</label>
-								<input type="text" v-model="listDetails.condition_working.temperature">
+								<input type="text" v-model="listDetails.condition_working.temperature" readonly>
 							</div>
 						</div>
 						<div class="two fields">
 							<div class="field">
 								<label>Напряжение</label>
-								<input type="number" v-model="listDetails.condition_working.voltage">
+								<input type="number" v-model="listDetails.condition_working.voltage" readonly>
 							</div>
 							<div class="field">
 								<label>Ток</label>
-								<input type="number" v-model="listDetails.condition_working.amperage">
+								<input type="number" v-model="listDetails.condition_working.amperage" readonly>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="ui fluid card">
-				<div class="content">
-					<div class="header">Требуемое техническое обслуживание <span class="right floated"><button class="ui yellow right floated mini icon button" v-on:click="showModal('Maintenance')"><i class="icon plus"></i></button></span></div>
-				</div>
 				<div class="content">
 					<table class="ui compact table" v-if="listDetails.maintenance">
 						<thead>
@@ -316,110 +300,6 @@
 					</table>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div id="modalHandoff" class="ui tiny card modal">
-		<div class="content">
-			<div class="header">Перемещение</div>
-			<!-- <div class="meta">{{ handoff.department }}</div> -->
-		</div>
-		<div class="content">
-			<div class="ui form">
-				<div class="two fields">
-					<div class="field">
-						<label>Переместить в отдел</label>
-						<select class="ui search dropdown" v-model="listDetails.equipment.id_department">
-							<option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
-						</select>
-					</div>
-					<div class="field">
-						<label>Кабинет</label>
-						<select class="ui search dropdown" v-model="listDetails.equipment.id_location">
-							<option v-for="location in filteredLocation" v-bind:value="location.id">{{ location.cabinet_number }}</option>
-						</select>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="actions">
-			<button class="ui approve green button" v-on:click="setHandoff()">Сохранить</button>
-			<button class="ui deny orange button">Отмена</button>
-		</div>
-	</div>
-	<div id="modalMaintenance" class="ui small card modal">
-		<div class="content">
-			<div class="header">Техническое обслуживание</div>
-			<!-- <div class="meta">{{ handoff.department }}</div> -->
-		</div>
-		<div class="content">
-			<div class="ui form">
-				<div class="two fields">
-					<div class="field">
-						<label>Вид ТО</label>
-						<select class="ui search dropdown" v-model="maintenance.id_type_maintenance">
-							<option v-for="maintenance in listMaintenance.type_maintenance" v-bind:value="maintenance.id">{{ maintenance.title }}</option>
-						</select>
-					</div>
-					<div class="field">
-						<label>Исполнитель</label>
-						<select class="ui search dropdown" v-model="maintenance.id_executor">
-							<option v-for="executor in listMaintenance.executor" v-bind:value="executor.id">{{ executor.title }}</option>
-						</select>
-					</div>
-				</div>
-				<div class="two fields">
-					<div class="field">
-						<label>Периодичность</label>
-						<input type="text" v-model="maintenance.periodicity">
-					</div>
-					<div class="field">
-						<label>Тех. обслуживание</label>
-						<select class="ui search dropdown" v-model="maintenance.id_maintenance">
-							<option v-for="maintenance in listMaintenance.list_maintenance" v-bind:value="maintenance.id">{{ maintenance.description }}</option>
-						</select>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="actions">
-			<button class="ui approve green button" v-on:click="appendMaintenance()">Сохранить</button>
-			<button class="ui deny orange button">Отмена</button>
-		</div>
-	</div>
-	<div id="modalCheckEdit" class="ui tiny card modal">
-		<div class="content">
-			<div class="header">Изменения проверки</div>
-		</div>
-		<div class="content">
-			<div class="ui form">
-				<div class="two fields">
-					<div class="field">
-						<label>Текущая (пройденная)</label>
-						<input type="date" v-model="dateCheck.date_current_check">
-					</div>
-					<div class="field">
-						<label>Cледующая (предстоящая)</label>
-						<input type="date" v-model="dateCheck.date_next_check">
-					</div>
-				</div>
-				<div class="field">
-					<label>Загружамый файл</label>
-					<select class="ui search dropdown" v-model="dateCheck.id_upload_document_type">
-						<option v-for="doc in listDocType" v-bind:value="doc.id">{{ doc.title }}</option>
-					</select>
-				</div>
-				<div class="field">
-					<label>Номер документа</label>
-					<input type="text" v-model="dateCheck.number_document">
-				</div>
-				<div class="field">
-					<input type="file" ref="upload_file_name" v-on:change="handleFileUpload()">
-				</div>
-			</div>
-		</div>
-		<div class="actions">
-			<button class="ui approve green button" v-on:click="saveCheck()">Сохранить</button>
-			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
 </div>

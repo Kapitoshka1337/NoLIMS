@@ -16,7 +16,9 @@ let details = new Vue({
 			id_maintenance: null,
 			id_executor: null,
 			periodicity: null,
-		}
+		},
+		listDocType: [],
+		dateCheck: {}
 	},
 	methods: {
 		getIdEquipmnent(){
@@ -63,7 +65,9 @@ let details = new Vue({
 		clearDropdown(){
 			$('.dropdown').dropdown('clear');
 		},
-		showModal(modalName){
+		showModal(modalName, obj = null){
+			if(obj)
+				this.dateCheck = obj;
 			$('#modal' + modalName).modal('show');
 		},
 		setHandoff(){
@@ -94,19 +98,17 @@ let details = new Vue({
 				this.listDetails.equipment.accuracy = '' + String.fromCharCode(176);
 			else
 				this.listDetails.equipment.accuracy += String.fromCharCode(176);
+		},
+		getDocType(){
+			axios.get("/equipment/get-doc-type").then( response => (this.listDocType = response.data));
+		},
+		handleFileUpload(){
+			this.dateCheck.upload_file_name[0] = this.$refs.upload_file_name.files[0];
+		},
+		saveCheck(){
+			delete this.dateCheck['document_type']
+			axios.post("/equipment/save-check", JSON.stringify(this.dateCheck), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getDetails())).catch(error => (this.listError = error));
 		}
-		// returnUniq(column){
-		// 	let result = [];
-		// 	for (let str of this.gridData)
-		// 		if (!result.includes(str[column]))
-		// 			result.push(str[column]);
-		// 		result = result.slice().sort(function (a, b){
-		// 			if(a === b) return 0 ;
-		// 			else if (a > b) return 1;
-		// 			else return - 1;
-		// 		})
-		// 	return result;
-		// }
 	},
 	computed: {
 		filteredLocation(){
@@ -157,5 +159,6 @@ let details = new Vue({
 		this.getDepartment();
 		this.getObjectStudy();
 		this.getMaintenance();
+		this.getDocType();
 	}
 })

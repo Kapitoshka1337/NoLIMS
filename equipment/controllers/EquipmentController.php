@@ -12,4 +12,9 @@ class EquipmentController extends Controller
 	{
 		return $this->render('index');
 	}
+
+	public function actionDetails()
+	{
+		return $this->render('details');
+	}
 }
