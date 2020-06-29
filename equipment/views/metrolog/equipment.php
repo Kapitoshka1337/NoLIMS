@@ -221,6 +221,7 @@
 						<div class="menu">
 							<div class="item" v-on:click="GetSticker()">Этикетка</div>
 							<div class="item" v-on:click="GetCard()">Регистрационная карта</div>
+							<div class="item" v-on:click="printTable()">Таблица проверок</div>
 						</div>
 					</div>
 					<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>

@@ -58,7 +58,8 @@ Vue.component('equipment-dashboard', {
 let index = new Vue({
 	el: "#index",
 	data: {
-		helpEq:{
+		cards: [
+			{
 				title: 'Вспомогательное оборудование',
 				gridColumns: {
 					tableColumn: [
@@ -70,7 +71,7 @@ let index = new Vue({
 				},
 				content: []
 			},
-		testEq:{
+			{
 				title: 'Испытательное оборудование',
 				gridColumns: {
 					tableColumn: [
@@ -82,7 +83,7 @@ let index = new Vue({
 				},
 				content: []
 			},
-		measuringEq:{
+			{
 				title: 'Средство измерений',
 				gridColumns: {
 					tableColumn: [
@@ -94,7 +95,7 @@ let index = new Vue({
 				},
 				content: []
 			},
-		maintenanceEq:{
+			{
 				title: 'Техническое обслуживание',
 				gridColumns: {
 					tableColumn: [
@@ -106,21 +107,13 @@ let index = new Vue({
 				},
 				content: []
 			},
+		],
 		gridData: [],
 		countPost: 10
 	},
 	watch: {
 		gridData(){
-			this.gridData.filter(f => {
-				if(f.id_type === 1)
-					this.helpEq.content.push(f);
-				if(f.id_type === 2)
-					this.testEq.content.push(f);
-				if(f.id_type === 3)
-					this.measuringEq.content.push(f);
-				if(f.id_type === 4)
-					this.maintenanceEq.content.push(f);
-			})
+			this.gridData.filter(f => {this.cards[f.id_type - 1].content.push(f);})
 		}
 	},
 	methods:{

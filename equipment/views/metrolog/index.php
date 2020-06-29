@@ -6,12 +6,7 @@
 <div class="row" id="index">
 	<div class="sixteen column">
 	<div class="ui two column grid">
-		<!-- <div class="column" v-for="row in cards"> -->
-			<equipment-dashboard :rows="helpEq" :count-post="countPost"></equipment-dashboard>
-			<equipment-dashboard :rows="testEq" :count-post="countPost"></equipment-dashboard>
-			<equipment-dashboard :rows="measuringEq" :count-post="countPost"></equipment-dashboard>
-			<equipment-dashboard :rows="maintenanceEq" :count-post="countPost"></equipment-dashboard>
-		<!-- </div> -->
+		<equipment-dashboard v-for="card in cards" :rows="card" :count-post="countPost"></equipment-dashboard>
 	</div>
 	</div>
 </div>

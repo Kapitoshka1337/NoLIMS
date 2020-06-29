@@ -32,7 +32,7 @@ use app\modules\equipment\models\equipment_list_maintenances;
 use app\modules\equipment\models\equipment_list_works_plan;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-require 'D:/OSPanel/vendor/autoload.php';
+require 'D:/OpenServer/OSPanel/vendor/autoload.php';
 use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
@@ -142,7 +142,10 @@ class MetrologController extends Controller
 			$data = Yii::$app->request->post();
 			$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/plan.jasper';
 			$output = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/';
-			$sql = "id_type = ". $data['type'] ." AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
+			if(!$data['type'])
+				$sql = "date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
+			else
+				$sql = "id_type = ". $data['type'] ." AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
 			$options = [
 				'format' => ['pdf'],
 				'params' => ['filter' => $sql],

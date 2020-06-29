@@ -146,6 +146,10 @@ Vue.component('equipment-grid', {
 					else return - 1;
 				})
 			return result;
+		},
+		printTable(){
+			let objs = {start: this.filterDate.start, end: this.filterDate.end, type: null};
+			axios.post("/equipment/print-table", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
 		}
 	},
 	watch: {
