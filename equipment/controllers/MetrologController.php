@@ -88,7 +88,7 @@ class MetrologController extends Controller
 	{
 		$start = date('Y-m-01');
 		$end = date('Y-m-t');
-		$total = equipment_total_check::find()->select(['id_type', 'card_number', 'equipment', 'date_next_check'])->where(['between', 'date_next_check', $start, $end])->all();
+		$total = equipment_total_check::find()->select(['id_type', 'card_number', 'equipment', 'date_next_check', 'is_check'])->where(['between', 'date_next_check', $start, $end])->all();
 		return $this->asJson($total);
 	}
 

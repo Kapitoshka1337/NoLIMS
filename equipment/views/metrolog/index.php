@@ -18,8 +18,8 @@
 				<th v-bind:colspan="rows.gridColumns.tableColumn.length + 1">
 					{{ rows.title }}
 					<a class="ui blue right floated mini icon button" v-on:click="printTable(rows.content[0].id_type)"><i class="icon print"></i></a>
-					<a class="ui red right floated mini icon button">{{rows.content.length}}</a>
-					<a class="ui orange right floated mini icon button">Всего</a>
+<!-- 					<a class="ui red right floated mini icon button">{{rows.content.length}}</a>
+					<a class="ui orange right floated mini icon button">Всего</a> -->
 				</th>
 			</tr>
 			<tr>
@@ -36,6 +36,7 @@
 					'collapsing center aligned danger': colorShelfLife(eq.date_next_check) <= 6
 				}">{{ today(eq.date_next_check) }}</td>
 				<td class="collapsing right aligned">{{colorShelfLife(eq.date_next_check)}}</td>
+				<td class="collapsing"><a><span class="ui violet small circular label" v-show="eq.is_check">Ц</span></a></td>
 			</tr>
 		</tbody>
 		<tfoot>
