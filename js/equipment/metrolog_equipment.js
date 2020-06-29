@@ -33,7 +33,12 @@ Vue.component('equipment-grid', {
 				is_check: 'ЦСМ',
 				is_working: 'Используется'
 			},
-			filterKey: ''
+			filterKey: '',
+			types: {
+				'ВО': 1,
+				'ИО': 2,
+				'СИ': 3
+			}
 		}
 	},
 	methods: {
@@ -148,7 +153,11 @@ Vue.component('equipment-grid', {
 			return result;
 		},
 		printTable(){
-			let objs = {start: this.filterDate.start, end: this.filterDate.end, type: null};
+			// console.log(this.types['ИО']);
+			let obj = [];
+			for(let i = 0; i <= this.filters.type.length -1; i++)
+				obj.push(this.types[this.filters.type[i]]);
+			let objs = {start: this.filterDate.start, end: this.filterDate.end, type: obj};
 			axios.post("/equipment/print-table", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
 		}
 	},

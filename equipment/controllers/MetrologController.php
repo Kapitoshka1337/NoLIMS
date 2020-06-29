@@ -142,10 +142,15 @@ class MetrologController extends Controller
 			$data = Yii::$app->request->post();
 			$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/plan.jasper';
 			$output = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/';
-			if(!$data['type'])
-				$sql = "date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
-			else
-				$sql = "id_type = ". $data['type'] ." AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
+			// if(!$data['type'])
+				// $sql = "date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
+			// else
+			foreach ($data['type'] as $val)
+			{
+				if(end($data['type']) === $val) $ids .= $val;
+				else $ids .= $val . ',';
+			}
+				$sql = "id_type IN (". $ids .") AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
 			$options = [
 				'format' => ['pdf'],
 				'params' => ['filter' => $sql],
