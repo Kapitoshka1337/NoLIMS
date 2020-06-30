@@ -12,7 +12,7 @@
 			:filters-check="checks"
 			:filter-date="dateFilter"
 			:count-post="countPost"
-			@request="setSelectedEquipments"
+			@repair="setSelectedEquipments"
 			@clear="clearDate">
 		</equipment-grid>
 	</div>
@@ -47,7 +47,7 @@
 			<div class="ui form">
 				<div class="field">
 					<label>Описание проблемы</label>
-					<textarea cols="30" rows="2"></textarea>
+					<textarea cols="30" rows="2" v-model="repair.description"></textarea>
 				</div>
 				<div class="field">
 					<label>Дата заявки</label>
@@ -56,7 +56,7 @@
 			</div>
 		</div>
 		<div class="actions">
-			<button class="ui approve green button">Отправить</button>
+			<button class="ui approve green button" v-on:click="appendRepair()">Отправить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
@@ -126,9 +126,7 @@
 				<td class="collapsing">
 					<div class="ui checkbox">
 						<input type="checkbox"
-						v-bind:value="{id_equipment: equipment.id,is_archive: equipment.is_archive,is_conservation: equipment.is_conservation,is_repair: equipment.is_repair,is_check: equipment.is_check,is_working: equipment.is_working,
-						number: equipment.number, number_department: equipment.number_department, id_department: equipment.id_department, type: equipment.type, model: equipment.model,
-						date_current_check: equipment.date_current_check, date_next_check: equipment.date_next_check, equipment: equipment.equipment}" 
+						v-bind:value="{id_equipment: equipment.id}" 
 						v-model="selectedEquipments">
 						<label></label>
 					</div>
@@ -152,7 +150,7 @@
 						<div class="menu">
 							<!-- КОСТЫЛЬ v-bind:href="'details/' + equipment.id" --> 
 							<a v-bind:href="'equipment/details/' + equipment.id" class="item">Подробнее</a>
-							<div class="item" v-on:click="showModal('Repair')">Ремонт</div>
+							<div class="item" v-on:click="showModal('Repair', equipment.id)">Ремонт</div>
 						</div>
 					</div>
 					<!-- <button class="ui orange right floated mini icon button" v-on:click="showModal('Repair')"><i class="icon wrench"></i></button> -->

@@ -44,7 +44,9 @@ class Bootstrap implements BootstrapInterface
             'verification' => 'metrolog/verification',
             'plan-graph' => 'metrolog/plan',
             'fgis' => 'metrolog/fgis',
-            'details/<id:\d+>'=>'equipment/details'
+            'details/<id:\d+>'=>'equipment/details',
+            'append-repair'=>'equipment/append-repair',
+            'get-repair'=>'equipment/get-repair'
         ],
     ];
 

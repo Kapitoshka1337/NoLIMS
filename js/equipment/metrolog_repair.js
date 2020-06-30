@@ -1,11 +1,10 @@
 Vue.config.devtools = true;
-Vue.component('equipment-grid', {
-	template: '#equipment-grid',
+Vue.component('repair-grid', {
+	template: '#repair-grid',
 	props: {
 		rows: Array,
 		columns: Array,
 		filters: Array,
-		filtersCheck: Object,
 		filterDate: Object,
 		countPost: Number
 	},
@@ -22,8 +21,6 @@ Vue.component('equipment-grid', {
 			sortColumns: sortColumns,
 			currentPage: 1,
 			listPages: [],
-			selectAllMaterials: false,
-			selectedEquipments: [],
 			filterKey: ''
 		}
 	},
@@ -45,40 +42,16 @@ Vue.component('equipment-grid', {
 			let to = ((page * curPost));
 			return rows.slice(from, to);
 		},
-		showModal(modalName, id_eq){
-			this.$emit('repair', id_eq);
+		showModal(modalName, id = null, department = null){
+			this.checkEq.id_equipment = id;
+			this.handoff.department = department;
+			if(modalName === 'CheckReq')
+				this.$emit('request', this.selectedEquipments);
 			$('#modal' + modalName).modal('show');
 		},
 		clearFilter(){
 			this.$emit('clear');
 			$('.dropdown').dropdown('clear');
-		},
-		select() {
-			this.selectedEquipments = [];
-			if (!this.selectAllMaterials)
-				for (let i in this.paginateRows)
-					this.selectedEquipments.push({id_equipment: this.paginateRows[i].id});
-		},
-		GetSticker() {
-			if(this.selectedEquipments.length > 0)
-			{
-				let obj = [];
-				for (let item in this.selectedEquipments)
-					obj.push(this.selectedEquipments[item].id_equipment);
-				axios.post("/equipment/create-sticker", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/sticker.pdf'))).catch(error => (this.listError = error));
-			}
-		},
-		GetCard() {
-			if(this.selectedEquipments.length > 0)
-			{
-				let obj;
-				let obj1 = [];
-				for (let item in this.selectedEquipments)
-					obj1.push(this.selectedEquipments[item].id_equipment);
-				obj = {id: obj1};
-				axios.post("/equipment/create-card", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>
-				(window.open(response.data))).catch(error => (this.listError = error));
-			}
 		},
 		today(date){
 			if(date === null) return;
@@ -96,7 +69,10 @@ Vue.component('equipment-grid', {
 					else return - 1;
 				})
 			return result;
-		}
+		},
+		showModal(modalName){
+			$('#modal' + modalName).modal('show');
+		},
 	},
 	watch: {
 		filteredRows() {
@@ -135,13 +111,6 @@ Vue.component('equipment-grid', {
 						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);});
 				});
 			}
-			Object.keys(this.filtersCheck).forEach(f =>
-			{
-				if(this.filtersCheck[f])
-					rows = rows.filter(row => {
-						return row[f] === 1;
-					})
-			})
 			if(this.filterDate['start'] != null && this.filterDate['end'] != null)
 				rows = rows.filter(row => {
 					return row['date_next_check'] >= this.filterDate['start'] && row['date_next_check'] <= this.filterDate['end'];
@@ -165,54 +134,26 @@ let demo1 = new Vue({
 	data: {
 		gridColumns: {
 			tableColumn: [
-				{'number':'Номер'},
+				{'status':'Статус'},
+				{'date_request':'Дата'},
 				{'equipment':'Оборудование'},
-				{'model':'Модель'},
-				{'serial_number':'С/Н'},
-				// {'date_current_check':'Текущая'},
-				// {'date_next_check':'Следующая'},
-				{'Tag': ''},
+				{'cabinet_number':'Кабинет'},
+				{'user':'Инициатор'},
 				{'action': ''}
 			],
-			filterColumn: [
-				{'number':'Номер'},
-				{'department':'Отдел'},
-				{'type':'Вид'},
-				{'equipment':'Оборудование'}
-			]
+			filterColumn: []
 		},
 		gridData: [],
-		filters: {
-			number: [],
-			department: [],
-			type: [],
-			equipment: [],
-		},
+		filters: {},
 		countPost: 100,
-		checks: {
-			is_archive: false,
-			is_conservation: false,
-			is_check: false,
-			is_repair: false,
-			is_working: false
-		},
 		dateFilter: {
 			start: null,
 			end: null
-		},
-		selectedEquipments: [],
-		repair: {
-			description: null,
-			date: null,
-			id_equipment: null
 		}
 	},
 	methods: {
-		getEquipments(){
-			axios.get("/equipment/get-equipments").then( response => (this.gridData = response.data));
-		},
-		setDropdown(){
-			$('.dropdown').dropdown({fullTextSearch: true});
+		getRepair(){
+			axios.get("/equipment/get-repair").then( response => (this.gridData = response.data));
 		},
 		returnUniq(column){
 			let result = [];
@@ -226,21 +167,6 @@ let demo1 = new Vue({
 				})
 			return result;
 		},
-		setSelectedEquipments(info){
-			this.repair.id_equipment = info;
-		},
-		sendRequest(){
-			let request = [];
-			for(let i in this.selectedEquipments)
-			{
-				request.push({
-					id_department: this.selectedEquipments[i].id_department,
-					id_equipment: this.selectedEquipments[i].id_equipment
-				});
-			}
-			axios.post("/equipment/send-request", JSON.stringify(request), {headers: {'Content-Type': 'application/json'}})
-			.then(response => (console.log(1)));
-		},
 		clearDate(){
 			this.dateFilter = {};
 		},
@@ -248,17 +174,9 @@ let demo1 = new Vue({
 			if(date === null) return;
 			let today = new Date(date);
 			return today.toLocaleString().split(',')[0];
-		},
-		getToday () {
-			let today = new Date();
-			this.repair.date = today.toISOString().split('T')[0];
-		},
-		appendRepair(){
-			axios.post("/equipment/append-repair", JSON.stringify(this.repair), {headers: {'Content-Type': 'application/json'}}).then(response => (console.log(1)));
 		}
 	},
 	mounted: function() {
-		this.getEquipments();
-		this.getToday();
+		this.getRepair();
 	}
 });
