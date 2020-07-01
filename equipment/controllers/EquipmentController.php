@@ -42,7 +42,7 @@ class EquipmentController extends Controller
 			$repair = new equipment_repair_request();
 			$repair->id_equipment = $data['id_equipment'];
 			$repair->id_user = Yii::$app->user->identity['id'];
-			$repair->description = $data['description'];
+			$repair->problem = $data['description'];
 			$repair->id_status = 1;
 			$repair->date_request = $data['date'];
 			if($repair->save())

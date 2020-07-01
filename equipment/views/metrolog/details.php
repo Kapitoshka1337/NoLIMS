@@ -143,6 +143,7 @@
 								<th>Текущая</th>
 								<th>Следующая</th>
 								<th>Вид документа</th>
+								<th>№ документа</th>
 								<th>Документ</th>
 								<th></th>
 							</tr>
@@ -152,6 +153,7 @@
 								<td>{{ today(check.date_current_check) }}</td>
 								<td>{{ today(check.date_next_check) }}</td>
 								<td>{{ check.document_type }}</td>
+								<td>{{ check.number_document }}</td>
 								<td>
 									<a v-if="check.upload_file_name" v-bind:href="'/assets/uploads/' + check.upload_file_name" target="_blank">Открыть</a>
 									<span v-if="!check.upload_file_name">Не загружен</span>
@@ -164,6 +166,7 @@
 								<td>{{ today(listDetails.current_check.date_current_check) }}</td>
 								<td>{{ today(listDetails.current_check.date_next_check) }}</td>
 								<td>{{ listDetails.current_check.document_type }}</td>
+								<td>{{ listDetails.current_check.number_document }}</td>
 								<td>
 									<a v-if="listDetails.current_check.upload_file_name" v-bind:href="'/assets/uploads/' + listDetails.current_check.upload_file_name" target="_blank">Открыть</a>
 									<span v-if="!listDetails.current_check.upload_file_name">Не загружен</span>

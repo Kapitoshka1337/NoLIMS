@@ -6,7 +6,8 @@ Vue.component('repair-grid', {
 		columns: Array,
 		filters: Array,
 		filterDate: Object,
-		countPost: Number
+		countPost: Number,
+		equipment: Object
 	},
 	data: function () {
 		let sortColumns = {};
@@ -42,13 +43,6 @@ Vue.component('repair-grid', {
 			let to = ((page * curPost));
 			return rows.slice(from, to);
 		},
-		showModal(modalName, id = null, department = null){
-			this.checkEq.id_equipment = id;
-			this.handoff.department = department;
-			if(modalName === 'CheckReq')
-				this.$emit('request', this.selectedEquipments);
-			$('#modal' + modalName).modal('show');
-		},
 		clearFilter(){
 			this.$emit('clear');
 			$('.dropdown').dropdown('clear');
@@ -70,7 +64,8 @@ Vue.component('repair-grid', {
 				})
 			return result;
 		},
-		showModal(modalName){
+		showModal(modalName, equipment){
+			this.$emit('eq', equipment);
 			$('#modal' + modalName).modal('show');
 		},
 	},
@@ -134,21 +129,43 @@ let demo1 = new Vue({
 	data: {
 		gridColumns: {
 			tableColumn: [
+				{'id':'№'},
 				{'status':'Статус'},
 				{'date_request':'Дата'},
+				{'date_start':'Принято'},
+				{'date_end':'Завершено'},
 				{'equipment':'Оборудование'},
 				{'cabinet_number':'Кабинет'},
 				{'user':'Инициатор'},
+				{'executor':'Исполнитель'},
 				{'action': ''}
 			],
-			filterColumn: []
+			filterColumn: [
+				{'status':'Статус'},
+				{'user':'Инициатор'}
+			]
 		},
 		gridData: [],
-		filters: {},
+		filters: {
+			status: [],
+			user: []
+		},
 		countPost: 100,
 		dateFilter: {
 			start: null,
 			end: null
+		},
+		repair: {},
+		selectedEq: {
+			id: null,
+			equipment: null,
+			model: null,
+			cabinet_number: null,
+			user: null,
+			problem: null,
+			id_status: null,
+			status: null,
+			date_request: null
 		}
 	},
 	methods: {
@@ -174,6 +191,12 @@ let demo1 = new Vue({
 			if(date === null) return;
 			let today = new Date(date);
 			return today.toLocaleString().split(',')[0];
+		},
+		showModal(modalName){
+			$('#modal' + modalName).modal('show');
+		},
+		setSelectedEquipment(info){
+			this.selectedEq = info;
 		}
 	},
 	mounted: function() {

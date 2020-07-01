@@ -5,55 +5,94 @@
 	$this->registerJsFile('@web/assets/js/equipment/metrolog_repair.js');
 ?>
 <div class="row" id="demo1">
-	<div class="sixteen column">
+	<div class="sixteen wide column">
 		<repair-grid
 		:rows="gridData"
 		:columns="gridColumns.tableColumn"
 		:filters="filters"
 		:filter-date="dateFilter"
-		:count-post="countPost">
+		:count-post="countPost"
+        @eq="setSelectedEquipment">
 		</repair-grid>	
 	</div>
-</div>
-<div id="modalDecliningRepair" class="ui tiny card modal">
-	<div class="content">
-		<div class="content header">Отказ от ремонта</div>
-	</div>
-	<div class="content">
-		<div class="ui form">
-			<div class="field">
-				<label>Причина отказа</label>
-				<textarea cols="30" rows="2" v-model="repair.description"></textarea>
-			</div>
-		</div>
-	</div>
-	<div class="actions">
-		<button class="ui approve green button">Отправить</button>
-		<button class="ui deny orange button">Отмена</button>
-	</div>
-</div>
-<div id="modalToCompleteRepair" class="ui tiny card modal">
-	<div class="content">
-		<div class="content header">Завершение ремонта</div>
-	</div>
-	<div class="content">
-		<div class="ui form">
-			<div class="field">
-				<label>Выполненая работа</label>
-				<textarea cols="30" rows="2" v-model="repair.description"></textarea>
-			</div>
-		</div>
-	</div>
-	<div class="actions">
-		<button class="ui approve green button">Отправить</button>
-		<button class="ui deny orange button">Отмена</button>
-	</div>
+    <div id="modalFilter" class="ui tiny card modal">
+        <div class="content">
+            <div class="content header">Поиск</div>
+        </div>
+        <div class="content">
+            <div class="ui form">
+                <div class="field" v-for="key in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))">
+                    <label>{{ Object.values(key)[0] }}</label>
+                    <select multiple class="ui search dropdown" v-model="filters[Object.keys(key)]">
+                        <option v-for="col in returnUniq(Object.keys(key))" v-bind:value="col">{{ col }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modalDecliningRepair" class="ui tiny card modal">
+    	<div class="content">
+    		<div class="content header">Отказ от ремонта</div>
+    	</div>
+    	<div class="content">
+    		<div class="ui form">
+    			<div class="field">
+    				<label>Причина отказа</label>
+    				<textarea cols="30" rows="2" v-model="repair.description"></textarea>
+    			</div>
+    		</div>
+    	</div>
+    	<div class="actions">
+    		<button class="ui approve green button">Отправить</button>
+    		<button class="ui deny orange button">Отмена</button>
+    	</div>
+    </div>
+    <div id="modalToCompleteRepair" class="ui tiny card modal">
+    	<div class="content">
+    		<div class="content header">Завершение ремонта</div>
+    	</div>
+    	<div class="content">
+    		<div class="ui form">
+    			<div class="field">
+    				<label>Выполненая работа</label>
+    				<textarea cols="30" rows="2" v-model="repair.description"></textarea>
+    			</div>
+    		</div>
+    	</div>
+    	<div class="actions">
+    		<button class="ui approve green button">Отправить</button>
+    		<button class="ui deny orange button">Отмена</button>
+    	</div>
+    </div>
+    <div id="modaldetailProblem" class="ui small card modal">
+        <div class="content">
+            <div class="content header">Заявка на ремонт № {{ selectedEq.id }}</div>
+        </div>
+        <div class="content">
+            <div class="ui form">
+                <div class="field">
+                    <label>ОБОРУДОВАНИЕ: {{ selectedEq.equipment }}</label>
+                    <label>МОДЕЛЬ: {{ selectedEq.model }}</label>
+                    <label>КАБИНЕТ: {{ selectedEq.cabinet }}</label>
+                    <label>Проблема: {{ selectedEq.problem }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="actions" v-if="selectedEq.id_status === 1 || selectedEq.id_status === 2">
+            <button class="ui approve green button" v-show="selectedEq.id_status === 1">Принять</button>
+            <button class="ui approve green button" v-on:click="showModal('ToCompleteRepair')" v-show="selectedEq.id_status === 2">Завершить</button>
+            <button class="ui deny orange button" v-on:click="showModal('DecliningRepair')">Отказать</button>
+        </div>
+    </div>
 </div>
 <template id="repair-grid">
 	<table class="ui compact selectable table">
 		<thead>
 			<tr>
-				<th v-bind:colspan="columns.length + 1">Заявки на ремонт</th>
+				<th v-bind:colspan="columns.length + 1">
+                    Заявки на ремонт
+                    <button class="ui teal right floated mini icon button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
+                </th>
 			</tr>
 			<tr>
 				<th v-bind:colspan="columns.length + 1">
@@ -69,22 +108,18 @@
 		</thead>
 		<tbody>
 			<tr v-for="equipment in paginateRows">
-				<td class="collapsing">{{ equipment.status }}</td>
-				<td class="collapsing">{{ today(equipment.date_request) }}</td>
+                <td class="collapsing">{{equipment.id}}</td>
+				<td v-bind:class="{ 'collapsing danger': equipment.id_status === 1, 'collapsing caution': equipment.id_status === 2, 'collapsing success': equipment.id_status === 3, 'collapsing working': equipment.id_status === 4}">{{ equipment.status }}</td>
+                <td class="collapsing">{{ today(equipment.date_request) }}</td>
+                <td class="collapsing">{{ today(equipment.date_start) }}</td>
+				<td class="collapsing">{{ today(equipment.date_end) }}</td>
 				<td>{{ equipment.equipment }}</td>
 				<td class="collapsing">{{ equipment.cabinet_number }}</td>
-				<td class="collapsing">{{ equipment.user }}</td>
-				<td class="collapsing">
-					<div class="ui icon left pointing dropdown mini button">
-						<i class="settings icon"></i>
-						<div class="menu">
-							<div class="item" v-on:click="showModal('ToCompleteRepair')">Выполнено</div>
-							<div class="item">Принять</div>
-							<div class="item" v-on:click="showModal('DecliningRepair')">Отказать</div>
-						</div>
-					</div>
-					<!-- <a class="ui orange mini icon button"><i class="icon print"></i></a> -->
-				</td>
+                <td class="collapsing">{{ equipment.user }}</td>
+				<td class="collapsing">{{ equipment.executor }}</td>
+                <td class="collapsing">
+                    <a class="ui mini icon yellow button" type="button" v-on:click="showModal('detailProblem', equipment)"><i class="icon eye"></i></a>
+                </td>
 			</tr>
 		</tbody>
 		<tfoot>
