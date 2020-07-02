@@ -5,13 +5,14 @@ use yii\web\Controller;
 use app\modules\equipment\models\location;
 use app\modules\equipment\models\equipment_repair_request;
 use app\modules\equipment\models\equipment_repair_requests;
+use app\modules\equipment\models\equipment_equipment;
 
 class EquipmentController extends Controller
 {
 
 	public function beforeAction($action)
 	{
-		if ($action->id == 'append-repair')
+		if ($action->id == 'append-repair' || $action->id == 'approve-repair' || $action->id == 'declining-repair' || $action->id == 'finish-repair')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -47,6 +48,68 @@ class EquipmentController extends Controller
 			$repair->date_request = $data['date'];
 			if($repair->save())
 				return Yii::$app->response->statusCode = 200;
+		}
+	}
+
+	public function actionApproveRepair()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$repair = equipment_repair_request::find()->where(['id' => $data['id']])->one();
+			$equipment = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
+			if($repair)
+			{
+				$repair->date_start = date('Y-m-d');//ТЕКУЩАЯ ДАТА
+				$repair->id_status = 2;
+				$repair->executor = Yii::$app->user->identity['id'];
+				if($repair->save())
+					$equipment->is_repair = true;
+					if($equipment->save())
+						return Yii::$app->response->statusCode = 200;
+			}
+		}
+	}
+
+	public function actionDecliningRepair()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$repair = equipment_repair_request::find()->where(['id' => $data['id']])->one();
+			if($repair)
+			{
+				$repair->date_start = date('Y-m-d');//ТЕКУЩАЯ ДАТА
+				$repair->date_end = date('Y-m-d');//ТЕКУЩАЯ ДАТА
+				$repair->id_status = 4;
+				$repair->executor = Yii::$app->user->identity['id'];
+				$repair->request_report = $data['request_report'];
+				if($repair->save())
+					return Yii::$app->response->statusCode = 200;
+			}
+		}
+	}
+
+	public function actionFinishRepair()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$repair = equipment_repair_request::find()->where(['id' => $data['id']])->one();
+			$equipment = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
+			if($repair)
+			{
+				$repair->date_start = date('Y-m-d');//ТЕКУЩАЯ ДАТА
+				$repair->date_end = date('Y-m-d');//ТЕКУЩАЯ ДАТА
+				$repair->id_status = 3;
+				$repair->executor = Yii::$app->user->identity['id'];
+				$repair->request_report = $data['request_report'];
+				if($repair->save())
+					$equipment->is_repair = false;
+					if($equipment->save())
+						return Yii::$app->response->statusCode = 200;
+					return Yii::$app->response->statusCode = 200;
+			}
 		}
 	}
 }

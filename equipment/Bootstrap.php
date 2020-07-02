@@ -46,7 +46,10 @@ class Bootstrap implements BootstrapInterface
             'fgis' => 'metrolog/fgis',
             'details/<id:\d+>'=>'equipment/details',
             'append-repair'=>'equipment/append-repair',
-            'get-repair'=>'equipment/get-repair'
+            'get-repair'=>'equipment/get-repair',
+            'declining-repair'=>'equipment/declining-repair',
+            'approve-repair'=>'equipment/approve-repair',
+            'finish-repair'=>'equipment/finish-repair',
         ],
     ];
 

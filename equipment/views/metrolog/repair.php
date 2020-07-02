@@ -11,6 +11,7 @@
 		:columns="gridColumns.tableColumn"
 		:filters="filters"
 		:filter-date="dateFilter"
+		:filters-status="status"
 		:count-post="countPost"
         @eq="setSelectedEquipment">
 		</repair-grid>	
@@ -38,12 +39,12 @@
     		<div class="ui form">
     			<div class="field">
     				<label>Причина отказа</label>
-    				<textarea cols="30" rows="2" v-model="repair.description"></textarea>
+    				<textarea cols="30" rows="2" v-model="selectedEq.request_report"></textarea>
     			</div>
     		</div>
     	</div>
     	<div class="actions">
-    		<button class="ui approve green button">Отправить</button>
+    		<button class="ui approve green button" v-on:click="decliningRepair()">Отправить</button>
     		<button class="ui deny orange button">Отмена</button>
     	</div>
     </div>
@@ -55,12 +56,12 @@
     		<div class="ui form">
     			<div class="field">
     				<label>Выполненая работа</label>
-    				<textarea cols="30" rows="2" v-model="repair.description"></textarea>
+    				<textarea cols="30" rows="2" v-model="selectedEq.request_report"></textarea>
     			</div>
     		</div>
     	</div>
     	<div class="actions">
-    		<button class="ui approve green button">Отправить</button>
+    		<button class="ui approve green button" v-on:click="finishRepair()">Отправить</button>
     		<button class="ui deny orange button">Отмена</button>
     	</div>
     </div>
@@ -78,8 +79,14 @@
                 </div>
             </div>
         </div>
+		<div class="content" v-if="selectedEq.request_report">
+			<div class="header">Отчет по заявке</div>
+			<div class="content">
+				{{ selectedEq.request_report }}
+			</div>
+		</div>
         <div class="actions" v-if="selectedEq.id_status === 1 || selectedEq.id_status === 2">
-            <button class="ui approve green button" v-show="selectedEq.id_status === 1">Принять</button>
+            <button class="ui approve green button" v-show="selectedEq.id_status === 1" v-on:click="approveRepair()">Принять</button>
             <button class="ui approve green button" v-on:click="showModal('ToCompleteRepair')" v-show="selectedEq.id_status === 2">Завершить</button>
             <button class="ui deny orange button" v-on:click="showModal('DecliningRepair')">Отказать</button>
         </div>
@@ -99,6 +106,26 @@
 					<div class="ui form"><div class="field"><input type="text" placeholder="Поиск" v-model="filterKey"></div></div>
 				</th>
 			</tr>
+<!-- 			<tr>
+				<th v-bind:colspan="columns.length + 1">
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="filtersStatus.1">
+						<label>Открыта</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="filtersStatus.2">
+						<label>Принята</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="filtersStatus.3">
+						<label>Выполнена</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="filtersStatus.3">
+						<label>Отменена</label>
+					</div>
+				</th>
+			</tr> -->
 			<tr>
 				<th v-for="key in columns" @click="sortBy(Object.keys(key)[0])">
 					{{ Object.values(key)[0] }}

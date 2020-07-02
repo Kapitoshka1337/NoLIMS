@@ -6,6 +6,7 @@ Vue.component('repair-grid', {
 		columns: Array,
 		filters: Array,
 		filterDate: Object,
+		filtersStatus: Object,
 		countPost: Number,
 		equipment: Object
 	},
@@ -106,6 +107,13 @@ Vue.component('repair-grid', {
 						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);});
 				});
 			}
+			// Object.keys(this.filtersStatus).forEach(f =>
+			// {
+			// 	if(this.filtersStatus[f])
+			// 		rows = rows.filter(row => {
+			// 			return row[f] === 1;
+			// 		})
+			// })
 			if(this.filterDate['start'] != null && this.filterDate['end'] != null)
 				rows = rows.filter(row => {
 					return row['date_next_check'] >= this.filterDate['start'] && row['date_next_check'] <= this.filterDate['end'];
@@ -165,8 +173,15 @@ let demo1 = new Vue({
 			problem: null,
 			id_status: null,
 			status: null,
-			date_request: null
-		}
+			date_request: null,
+			request_report: null
+		},
+		status: {
+			1: false,
+			2: false,
+			3: false,
+			4: false
+		},
 	},
 	methods: {
 		getRepair(){
@@ -197,6 +212,18 @@ let demo1 = new Vue({
 		},
 		setSelectedEquipment(info){
 			this.selectedEq = info;
+		},
+		decliningRepair(){
+			let obj = {id: this.selectedEq.id, request_report: this.selectedEq.request_report};
+			axios.post("/equipment/declining-repair", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getRepair()));
+		},
+		approveRepair(){
+			let obj = {id: this.selectedEq.id, id_equipment: this.selectedEq.id_equipment };
+			axios.post("/equipment/approve-repair", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getRepair()));
+		},
+		finishRepair(){
+			let obj = {id: this.selectedEq.id, id_equipment: this.selectedEq.id_equipment, request_report: this.selectedEq.request_report};
+			axios.post("/equipment/finish-repair", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getRepair()));
 		}
 	},
 	mounted: function() {

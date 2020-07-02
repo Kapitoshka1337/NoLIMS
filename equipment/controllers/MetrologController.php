@@ -145,12 +145,17 @@ class MetrologController extends Controller
 			// if(!$data['type'])
 				// $sql = "date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
 			// else
-			foreach ($data['type'] as $val)
+			if(is_array($data['type']))
 			{
-				if(end($data['type']) === $val) $ids .= $val;
-				else $ids .= $val . ',';
-			}
+				foreach ($data['type'] as $val)
+				{
+					if(end($data['type']) === $val) $ids .= $val;
+					else $ids .= $val . ',';
+				}
 				$sql = "id_type IN (". $ids .") AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
+			}
+			else
+				$sql = "id_type IN (". $data['type'] .") AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
 			$options = [
 				'format' => ['pdf'],
 				'params' => ['filter' => $sql],
