@@ -88,7 +88,7 @@
         <div class="actions" v-if="selectedEq.id_status === 1 || selectedEq.id_status === 2">
             <button class="ui approve green button" v-show="selectedEq.id_status === 1" v-on:click="approveRepair()">Принять</button>
             <button class="ui approve green button" v-on:click="showModal('ToCompleteRepair')" v-show="selectedEq.id_status === 2">Завершить</button>
-            <button class="ui deny orange button" v-on:click="showModal('DecliningRepair')">Отказать</button>
+            <button class="ui deny orange button" v-on:click="showModal('DecliningRepair')" v-show="selectedEq.id_status === 1">Отказать</button>
         </div>
     </div>
 </div>
