@@ -147,12 +147,17 @@ class MetrologController extends Controller
 			// else
 			if(is_array($data['type']))
 			{
-				foreach ($data['type'] as $val)
+				if(count($data['type']) === 1)
+					$sql = "id_type IN (". $data['type'][0] .") AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
+				else
 				{
-					if(end($data['type']) === $val) $ids .= $val;
-					else $ids .= $val . ',';
+					foreach ($data['type'] as $val)
+					{
+						if(end($data['type']) === $val) $ids .= $val;
+						else $ids .= $val . ',';
+					}
+					$sql = "id_type IN (". $ids .") AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
 				}
-				$sql = "id_type IN (". $ids .") AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
 			}
 			else
 				$sql = "id_type IN (". $data['type'] .") AND date_next_check BETWEEN '". $data['start'] ."' AND '" . $data['end'] . "'";
@@ -172,6 +177,8 @@ class MetrologController extends Controller
 			];
 			$jasper = new PHPJasper;
 			return $this->asJson($jasper->process($input, $output, $options)->execute());
+			// $x = $jasper->process($input, $output, $options)->output();
+			// return $x;
 		}
 	}
 

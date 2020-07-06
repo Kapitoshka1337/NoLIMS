@@ -135,8 +135,8 @@
 				<td>{{ equipment.equipment }}</td>
 				<td class="collapsing">{{ equipment.model }}</td>
 				<td class="collapsing right aligned">{{ equipment.serial_number }}</td>
-<!-- 				<td class="collapsing">{{ today(equipment.date_current_check) }}</td>
-				<td class="collapsing">{{ today(equipment.date_next_check) }}</td> -->
+				<td class="collapsing">{{ today(equipment.date_current_check) }}</td>
+				<td class="collapsing">{{ today(equipment.date_next_check) }}</td>
 				<td class="collapsing">
 					<a><span class="ui teal small circular label" v-show="equipment.is_archive">А</span></a>
 					<a><span class="ui green small circular label" v-show="equipment.is_working">И</span></a>
