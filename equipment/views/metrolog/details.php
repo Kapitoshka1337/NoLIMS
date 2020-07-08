@@ -397,7 +397,7 @@
 		<div class="content">
 			<div class="header">Изменения проверки</div>
 		</div>
-		<div class="content">
+		<div class="content" v-if="dateCheck">
 			<div class="ui form">
 				<div class="two fields">
 					<div class="field">
@@ -433,7 +433,7 @@
 		<div class="content">
 			<div class="header">Изменения ТО</div>
 		</div>
-		<div class="content">
+		<div class="content" v-if="maintenanceEdit">
 			<div class="ui form">
 				<div class="field">
 					<label>Вид ТО</label>
@@ -463,7 +463,7 @@
 			</div>
 		</div>
 		<div class="actions">
-			<button class="ui approve green button" v-on:click="saveCheck()">Сохранить</button>
+			<button class="ui approve green button" v-on:click="saveMaintenances()">Сохранить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>

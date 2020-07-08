@@ -32,7 +32,7 @@ use app\modules\equipment\models\equipment_list_maintenances;
 use app\modules\equipment\models\equipment_list_works_plan;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-require 'D:/OpenServer/OSPanel/vendor/autoload.php';
+require 'D:/OSPanel/vendor/autoload.php';
 use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
@@ -42,7 +42,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance' || $action->id === 'save-check' || $action->id === 'print-protocol')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance' || $action->id === 'save-maintenances' || $action->id === 'save-check' || $action->id === 'print-protocol')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -309,6 +309,33 @@ class MetrologController extends Controller
 				$plan->save();
 			}
 			return Yii::$app->response->statusCode = 200;
+		}
+	}
+
+	public function actionSaveMaintenances()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$eq = equipment_list_work_maintenance::find()->where(['id' => $data['id_list_work']])->one();
+			// return $this->asJson($eq);
+			if($eq)
+				foreach ($data as $key => $item)
+				{
+					if($key != 'id_list_work')
+						$eq[$key] = $item;
+				}
+			if($eq->save());
+				return Yii::$app->response->statusCode = 200;
+			// foreach ($data as $dts)
+			// {
+			// 	$plan = new equipment_list_works_plan();
+			// 	$plan->id_equipment = $dts['id_equipment'];
+			// 	$plan->date_maintenance = $dts['date_maintenance'];
+			// 	$plan->id_work_maintenance = $dts['id_work'];
+			// 	$plan->save();
+			// }
+			// return Yii::$app->response->statusCode = 200;
 		}
 	}
 

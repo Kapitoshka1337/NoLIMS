@@ -19,16 +19,18 @@ let details = new Vue({
 		},
 		listDocType: [],
 		dateCheck: {},
-		maintenanceEdit: {
-			description: '',
-			executor: '',
-			id_equipment: '',
-			id_executor: '',
-			id_maintenance: '',
-			id_type_maintenance: '',
-			periodicity: '',
-			type_maintenance: ''
-		}
+		maintenanceEdit: null,
+		maintenanceEditCopy: null
+		// maintenanceEdit: {
+		// 	description: '',
+		// 	executor: '',
+		// 	id_equipment: '',
+		// 	id_executor: '',
+		// 	id_maintenance: '',
+		// 	id_type_maintenance: '',
+		// 	periodicity: '',
+		// 	type_maintenance: ''
+		// }
 	},
 	methods: {
 		getIdEquipmnent(){
@@ -119,6 +121,17 @@ let details = new Vue({
 		saveCheck(){
 			delete this.dateCheck['document_type']
 			axios.post("/equipment/save-check", JSON.stringify(this.dateCheck), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getDetails())).catch(error => (this.listError = error));
+		},
+		saveMaintenances(){
+			let mainEdit = this.maintenanceEdit;
+			let mainEditCopy = this.maintenanceEditCopy;
+			let main = {};
+			Object.keys(mainEdit).forEach(function(row){
+				if(mainEditCopy[row] != mainEdit[row])
+					main[row] = mainEdit[row];
+			});
+			main['id_list_work'] = mainEditCopy.id_list_work;
+			axios.post("/equipment/save-maintenances", JSON.stringify(main), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getDetails())).catch(error => (this.listError = error));
 		}
 	},
 	computed: {
@@ -162,6 +175,9 @@ let details = new Vue({
 					$('.dropdown').dropdown({fullTextSearch: true});
 				else clearInterval(interval);
 			}, 1000);
+		},
+		maintenanceEdit(){
+			this.maintenanceEditCopy = JSON.parse(JSON.stringify(this.maintenanceEdit));
 		}
 	},
 	mounted: function(){
