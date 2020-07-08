@@ -62,7 +62,7 @@ Vue.component('equipment-grid', {
 		showModal(modalName, id = null, department = null){
 			this.checkEq.id_equipment = id;
 			this.handoff.department = department;
-			if(modalName === 'CheckReq')
+			if(modalName === 'CheckReq' || modalName === 'Protocol')
 				this.$emit('request', this.selectedEquipments);
 			$('#modal' + modalName).modal('show');
 		},
@@ -302,7 +302,8 @@ let demo1 = new Vue({
 		},
 		listDocType: [],
 		listDepartment: [],
-		selectedEquipments: []
+		selectedEquipments: [],
+		dateProtocol: null
 	},
 	methods: {
 		getEquipments(){
@@ -375,6 +376,22 @@ let demo1 = new Vue({
 			if(date === null) return;
 			let today = new Date(date);
 			return today.toLocaleString().split(',')[0];
+		},
+		today(date){
+			if(date === null) return;
+			let today = new Date(date);
+			return today.toLocaleString().split(',')[0];
+		},
+		printProtocol(){
+			if(this.selectedEquipments.length > 0)
+			{
+				let obj = [];
+				for (let item in this.selectedEquipments)
+					obj.push(this.selectedEquipments[item].id_equipment);
+				// start: this.dateFilter.start, end: this.dateFilter.end, 
+				let objs = {eq: obj, date: this.today(this.dateProtocol)};
+				axios.post("/equipment/print-protocol", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/protocol.pdf')));		
+			}
 		}
 	},
 	// watch: {

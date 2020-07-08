@@ -161,6 +161,22 @@
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
+	<div id="modalProtocol" class="ui tiny card modal">
+		<div class="content">
+			<div class="content header">ПТС</div>
+		</div>
+		<div class="content">
+			<div class="ui form">
+				<div class="field">
+					<label>Дата проведения</label>
+					<input type="date" v-model="dateProtocol">
+				</div>
+			</div>
+		</div>
+		<div class="actions">
+			<button class="ui approve green button" v-on:click="printProtocol()">Печать</button>
+		</div>
+	</div>
 </div>
 <template id="equipment-grid">
 	<table class="ui compact selectable table">
@@ -220,6 +236,7 @@
 							<div class="item" v-on:click="GetSticker()">Этикетка</div>
 							<div class="item" v-on:click="GetCard()">Регистрационная карта</div>
 							<div class="item" v-on:click="printTable()">Таблица проверок</div>
+							<div class="item" v-on:click="showModal('Protocol')">ПТС</div>
 						</div>
 					</div>
 					<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>

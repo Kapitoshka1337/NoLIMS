@@ -169,8 +169,8 @@ let demo1 = new Vue({
 				{'equipment':'Оборудование'},
 				{'model':'Модель'},
 				{'serial_number':'С/Н'},
-				// {'date_current_check':'Текущая'},
-				// {'date_next_check':'Следующая'},
+				{'date_current_check':'Текущая'},
+				{'date_next_check':'Следующая'},
 				{'Tag': ''},
 				{'action': ''}
 			],

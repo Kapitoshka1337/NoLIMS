@@ -18,7 +18,17 @@ let details = new Vue({
 			periodicity: null,
 		},
 		listDocType: [],
-		dateCheck: {}
+		dateCheck: {},
+		maintenanceEdit: {
+			description: '',
+			executor: '',
+			id_equipment: '',
+			id_executor: '',
+			id_maintenance: '',
+			id_type_maintenance: '',
+			periodicity: '',
+			type_maintenance: ''
+		}
 	},
 	methods: {
 		getIdEquipmnent(){
@@ -66,8 +76,9 @@ let details = new Vue({
 			$('.dropdown').dropdown('clear');
 		},
 		showModal(modalName, obj = null){
-			if(obj)
+			if(modalName === 'CheckEdit')
 				this.dateCheck = obj;
+			else this.maintenanceEdit = obj;
 			$('#modal' + modalName).modal('show');
 		},
 		setHandoff(){

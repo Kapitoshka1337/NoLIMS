@@ -33,7 +33,7 @@ Vue.component('equipment-dashboard', {
 		printTable(id_type){
 			let date = new Date();
 			let objs = {start: new Date(date.getFullYear(), date.getMonth(), 2).toISOString().split('T')[0], end: new Date(date.getFullYear(), date.getMonth() + 1, 1).toISOString().split('T')[0], type: id_type};
-			axios.post("/equipment/print-table?today", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
+			axios.post("/equipment/print-table", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
 		},
 		colorShelfLife(date){
 			let today = new Date();

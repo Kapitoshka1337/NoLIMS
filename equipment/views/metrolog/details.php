@@ -306,6 +306,7 @@
 								<th>Исполнитель</th>
 								<th>Периодичность</th>
 								<th>ТО</th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -314,6 +315,9 @@
 								<td>{{ maintenance.executor }}</td>
 								<td>{{ maintenance.periodicity }}</td>
 								<td>{{ maintenance.description }}</td>
+								<td class="collapsingl">
+									<button class="ui blue mini icon button" v-on:click="showModal('MaintenanceEdit', maintenance)"><i class="icon edit"></i></button>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -385,7 +389,7 @@
 			</div>
 		</div>
 		<div class="actions">
-			<button class="ui approve green button" v-on:click="appendMaintenance()">Сохранить</button>
+			<button class="ui approve green button" v-on:click="appendMaintenance()">Добавить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
@@ -417,6 +421,44 @@
 				</div>
 				<div class="field">
 					<input type="file" ref="upload_file_name" v-on:change="handleFileUpload()">
+				</div>
+			</div>
+		</div>
+		<div class="actions">
+			<button class="ui approve green button" v-on:click="saveCheck()">Сохранить</button>
+			<button class="ui deny orange button">Отмена</button>
+		</div>
+	</div>
+	<div id="modalMaintenanceEdit" class="ui tiny card modal">
+		<div class="content">
+			<div class="header">Изменения ТО</div>
+		</div>
+		<div class="content">
+			<div class="ui form">
+				<div class="field">
+					<label>Вид ТО</label>
+					<!-- <input type="text" v-model="maintenanceEdit.id_type_maintenance"> -->
+					<select class="ui search dropdown" v-model="maintenanceEdit.id_type_maintenance">
+						<option v-for="maintenance in listMaintenance.type_maintenance" v-bind:value="maintenance.id">{{ maintenance.title }}</option>
+					</select>
+				</div>
+				<div class="field">
+					<label>Исполнитель</label>
+					<!-- <input type="text" v-model="maintenanceEdit.id_executor"> -->
+					<select class="ui search dropdown" v-model="maintenanceEdit.id_executor">
+						<option v-for="executor in listMaintenance.executor" v-bind:value="executor.id">{{ executor.title }}</option>
+					</select>
+				</div>
+				<div class="field">
+					<label>Периодичность</label>
+					<input type="text" v-model="maintenanceEdit.periodicity">
+				</div>
+				<div class="field">
+					<label>Тех. обслуживание</label>
+					<!-- <input type="text" v-model="maintenanceEdit.description"> -->
+					<select class="ui search dropdown" v-model="maintenanceEdit.id_maintenance">
+						<option v-for="maintenance in listMaintenance.list_maintenance" v-bind:value="maintenance.id">{{ maintenance.description }}</option>
+					</select>
 				</div>
 			</div>
 		</div>

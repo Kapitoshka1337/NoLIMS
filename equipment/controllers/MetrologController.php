@@ -42,7 +42,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance' || $action->id === 'save-check')
+			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance' || $action->id === 'save-check' || $action->id === 'print-protocol')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -164,6 +164,41 @@ class MetrologController extends Controller
 			$options = [
 				'format' => ['pdf'],
 				'params' => ['filter' => $sql],
+				'db_connection' => [
+				'driver' => 'generic',
+				'host' => '192.168.0.55',
+				'port' => '3306',
+				'database' => 'nolims',
+				'username' => 'root',
+				'password' => 'K7D4uotKzWersAc3',
+				'jdbc_driver' => 'com.mysql.jdbc.Driver',
+				'jdbc_url' => 'jdbc:mysql://192.168.0.55/nolims',
+				]
+			];
+			$jasper = new PHPJasper;
+			return $this->asJson($jasper->process($input, $output, $options)->execute());
+			// $x = $jasper->process($input, $output, $options)->output();
+			// return $x;
+		}
+	}
+
+	public function actionPrintProtocol()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			// return $this->asJson(Yii::$app->request->post());
+			$data = Yii::$app->request->post();
+			$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/protocol.jasper';
+			$output = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/';
+			foreach ($data['eq'] as $val)
+			{
+				if(end($data['eq']) === $val) $ids .= $val;
+				else $ids .= $val . ',';
+			}
+			$sql = "id_equipment IN (" . $ids . ")";
+			$options = [
+				'format' => ['pdf'],
+				'params' => ['id_eq' => $sql, 'DataName' => $data['date']],
 				'db_connection' => [
 				'driver' => 'generic',
 				'host' => '192.168.0.55',
