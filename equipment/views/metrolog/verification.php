@@ -113,6 +113,8 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="content">
             <div class="ui form">
                 <div class="ui two fields">
                     <div class="field">
