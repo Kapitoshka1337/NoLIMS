@@ -2,6 +2,7 @@
 namespace app\modules\equipment\controllers;
 use Yii;
 use yii\web\Controller;
+use PHPJasper\PHPJasper;
 use app\modules\equipment\models\location;
 use app\modules\equipment\models\department;
 use app\modules\equipment\models\view_metrolog_equipment;
@@ -32,8 +33,6 @@ use app\modules\equipment\models\equipment_list_maintenances;
 use app\modules\equipment\models\equipment_list_works_plan;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
-require 'D:/OSPanel/vendor/autoload.php';
-use PHPJasper\PHPJasper;
 
 class MetrologController extends Controller
 {
