@@ -48,6 +48,8 @@ class Bootstrap implements BootstrapInterface
             'declining-repair'=>'equipment/declining-repair',
             'approve-repair'=>'equipment/approve-repair',
             'finish-repair'=>'equipment/finish-repair',
+            'get-instructions'=>'metrolog/get-instructions',
+            'save-instructions'=>'metrolog/save-instructions',
             //
             'plan-graph' => 'metrolog/plan',
             'fgis' => 'metrolog/fgis',

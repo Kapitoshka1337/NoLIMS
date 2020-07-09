@@ -18,9 +18,11 @@ let details = new Vue({
 			periodicity: null,
 		},
 		listDocType: [],
+		listInstructions: [],
 		dateCheck: {},
 		maintenanceEdit: null,
-		maintenanceEditCopy: null
+		maintenanceEditCopy: null,
+		id_instruction: null
 		// maintenanceEdit: {
 		// 	description: '',
 		// 	executor: '',
@@ -71,6 +73,9 @@ let details = new Vue({
 		getObjectStudy(){
 			axios.get("/equipment/get-object-study").then( response => (this.listObjectStudy = response.data));
 		},
+		getInstructions(){
+			axios.get("/equipment/get-instructions").then( response => (this.listInstructions = response.data));
+		},
 		setDropdown(){
 			$('.dropdown').dropdown({fullTextSearch: true});
 		},
@@ -119,7 +124,7 @@ let details = new Vue({
 			this.dateCheck.upload_file_name[0] = this.$refs.upload_file_name.files[0];
 		},
 		saveCheck(){
-			delete this.dateCheck['document_type']
+			delete this.dateCheck['document_type'];
 			axios.post("/equipment/save-check", JSON.stringify(this.dateCheck), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getDetails())).catch(error => (this.listError = error));
 		},
 		saveMaintenances(){
@@ -132,6 +137,10 @@ let details = new Vue({
 			});
 			main['id_list_work'] = mainEditCopy.id_list_work;
 			axios.post("/equipment/save-maintenances", JSON.stringify(main), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getDetails())).catch(error => (this.listError = error));
+		},
+		saveInstructions(){
+			let obj = {id_equipment: this.id_eq, id_instruction: this.id_instruction};
+			axios.post("/equipment/save-instructions", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response => (this.getDetails())).catch(error => (this.listError = error));
 		}
 	},
 	computed: {
@@ -187,5 +196,6 @@ let details = new Vue({
 		this.getObjectStudy();
 		this.getMaintenance();
 		this.getDocType();
+		this.getInstructions();
 	}
 })

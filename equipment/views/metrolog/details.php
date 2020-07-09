@@ -263,8 +263,8 @@
 								<div class="ui green label">Инструкция по эксплуатации</div>
 							</div>
 							<div class="field">
-								<button class="ui right floated red mini button">Изменить</button>
-								<button class="ui right floated yellow mini button">Открыть</button>
+								<a class="ui right floated red mini button" v-on:click="showModal('EditInstruction')">Изменить</a>
+								<a v-if="listDetails.instruction" v-bind:href="'/assets/uploads/' + listDetails.instruction.upload_file" class="ui right floated yellow mini button" target="_blank">Открыть</a>
 							</div>
 						</div>
 					</div>
@@ -473,6 +473,25 @@
 		</div>
 		<div class="actions">
 			<button class="ui approve green button" v-on:click="saveMaintenances()">Сохранить</button>
+			<button class="ui deny orange button">Отмена</button>
+		</div>
+	</div>
+	<div id="modalEditInstruction" class="ui tiny card modal">
+		<div class="content">
+			<div class="header">Изменение инструкции</div>
+		</div>
+		<div class="content">
+			<div class="ui form">
+				<div class="field">
+					<label>Номер инструкции</label>
+					<select class="ui search dropdown" v-model="id_instruction">
+						<option v-for="instruction in listInstructions" v-bind:value="instruction.id">{{ instruction.id }}</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="actions">
+			<button class="ui approve green button" v-on:click="saveInstructions()">Сохранить</button>
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>

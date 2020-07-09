@@ -35,6 +35,8 @@ class module extends \yii\base\Module
                             'get-object-study',
                             'get-maintenance',
                             'save-equipment',
+                            'get-instructions',
+                            'save-instructions',
                             //APPEND
                             'append-maintenance',
                             'get-type',

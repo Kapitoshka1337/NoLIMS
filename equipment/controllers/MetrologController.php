@@ -2,7 +2,7 @@
 namespace app\modules\equipment\controllers;
 use Yii;
 use yii\web\Controller;
-use PHPJasper\PHPJasper;
+// use PHPJasper\PHPJasper;
 use app\modules\equipment\models\location;
 use app\modules\equipment\models\department;
 use app\modules\equipment\models\view_metrolog_equipment;
@@ -31,6 +31,7 @@ use app\modules\equipment\models\view_equipment_check;
 use app\modules\equipment\models\equipment_total_check;
 use app\modules\equipment\models\equipment_list_maintenances;
 use app\modules\equipment\models\equipment_list_works_plan;
+use app\modules\equipment\models\equipment_instructions;
 use app\modules\equipment\models\UploadForm;
 use yii\web\UploadedFile;
 
@@ -41,7 +42,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'print-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'print-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'print-csm' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance' || $action->id === 'save-maintenances' || $action->id === 'save-check' || $action->id === 'print-protocol')
+			|| $action->id == 'print-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'print-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'print-csm' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance' || $action->id === 'save-maintenances' || $action->id === 'save-check' || $action->id === 'print-protocol' || $action->id === 'save-instructions')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -348,6 +349,7 @@ class MetrologController extends Controller
 			$current_check = equipment_details_date_check::findOne(['id_equipment' => Yii::$app->request->get('id')]);
 			$type = equipment_type::find()->all();
 			$of_use = equipment_function_of_use::find()->all();
+			$instruction = equipment_instructions::find()->where(['id' => $eq->id_instruction])->one();
 			$condition_working = equipment_condition_working::find()->where(['id_equipment' => Yii::$app->request->get('id')])->one();
 			$history_moving = equipment_moving_history::find()->where(['id_equipment' => Yii::$app->request->get('id')])->all();
 			//КОСТЫЛЬ
@@ -358,7 +360,7 @@ class MetrologController extends Controller
 			//КОСТЫЛЬ
 			if(!$history_check) $history_check = null;
 			$types = array('type' => $type, 'function_of_use' => $of_use);
-			$main = array('equipment' => $eq, 'history_check' => $history_check, 'current_check' => $current_check, 'history_moving' => $history_moving, 'types' => $types, 'condition_working' => $condition_working, 'maintenance' => $maintenance);
+			$main = array('equipment' => $eq, 'history_check' => $history_check, 'current_check' => $current_check, 'history_moving' => $history_moving, 'types' => $types, 'condition_working' => $condition_working, 'maintenance' => $maintenance, 'instruction' => $instruction);
 			return $this->asJson($main);
 		}
 	}
@@ -470,6 +472,30 @@ class MetrologController extends Controller
 				unset($location);
 			}
 			return $this->asJson($arr);
+		}
+	}
+
+	public function actionGetInstructions()
+	{
+		$instructions = equipment_instructions::find()->all();
+		return $this->asJson($instructions);
+		// if(Yii::$app->request->isPost)
+		// {
+		// 	$model = new UploadForm();
+		// 	$data = Yii::$app->request->post();
+		// 	if($model->upload_file_name = UploadedFile::getInstanceByName('upload_file_name'))
+		// 		if ($model->upload()) return Yii::$app->response->statusCode = 200;
+		// }
+	}
+
+	public function actionSaveInstructions()
+	{
+		if(Yii::$app->request->isPost)
+		{
+			$data = Yii::$app->request->post();
+			$inst = equipment_equipment::find()->where(['id' => $data['id_equipment']])->one();
+			$inst->id_instruction = $data['id_instruction'];
+			if($inst->save()) return Yii::$app->response->statusCode = 200;
 		}
 	}
 
@@ -623,8 +649,6 @@ class MetrologController extends Controller
 		{
 			$data = Yii::$app->request->post();
 			$eq = equipment_date_check::find()->where(['id_equipment' => $data['id_equipment']])->one();
-			// return $this->asJson($eq);
-			// if($eq)
 			foreach ($data as $key => $item)
 			{
 				if($key != 'id_equipment' || $key != 'id');
