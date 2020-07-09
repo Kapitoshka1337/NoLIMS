@@ -258,6 +258,15 @@
 							<label>Дополнительные характеристики</label>
 							<textarea cols="30" rows="2" v-model="listDetails.equipment.characteristics"></textarea>
 						</div>
+						<div class="two fields">
+							<div class="field">
+								<div class="ui green label">Инструкция по эксплуатации</div>
+							</div>
+							<div class="field">
+								<button class="ui right floated red mini button">Изменить</button>
+								<button class="ui right floated yellow mini button">Открыть</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

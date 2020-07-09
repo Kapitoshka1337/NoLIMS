@@ -41,7 +41,7 @@ class MetrologController extends Controller
 	public function beforeAction($action)
 	{
 		if ($action->id == 'append-equipment' || $action->id == 'upload-file' || $action->id == 'change-check'
-			|| $action->id == 'create-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'create-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'create-request' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance' || $action->id === 'save-maintenances' || $action->id === 'save-check' || $action->id === 'print-protocol')
+			|| $action->id == 'print-sticker' || $action->id == 'set-tag' || $action->id == 'set-handoff' || $action->id == 'print-card' || $action->id == 'save-equipment' || $action->id == 'append-maintenance' || $action->id == 'send-request' || $action->id === 'submit-verification' || $action->id == 'recieved-eq-before' || $action->id == 'recieved-eq-after' || $action->id === 'print-csm' || $action->id === 'get-plan-verification' || $action->id === 'print-table' || $action->id === 'save-maintenance' || $action->id === 'save-maintenances' || $action->id === 'save-check' || $action->id === 'print-protocol')
 		{
 			$this->enableCsrfValidation = false;
 		}
@@ -716,7 +716,7 @@ class MetrologController extends Controller
 		// }
 	}
 
-	public function actionCreateSticker()
+	public function actionPrintSticker()
 	{
 		if(Yii::$app->request->isPost)
 		{
@@ -752,7 +752,7 @@ class MetrologController extends Controller
 
 	}
 
-	public function actionCreateRequest()
+	public function actionPrintCsm()
 	{
 		if(Yii::$app->request->isPost)
 		{

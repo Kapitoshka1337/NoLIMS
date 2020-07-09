@@ -7,25 +7,72 @@ class module extends \yii\base\Module
 {
     public $controllerNamespace = 'app\modules\equipment\controllers';
 
-    // public function behaviors()
-    // {
-    //     return [
-    //         'access' => [
-    //             'class' => AccessControl::className(),
-    //             'rules' => [
-    //                 [
-    //                     'allow' => true,
-    //                     'actions' => ['logout', 'index', 'certification', 'verification', 'plan', 'fgis', 'equipments', 'get-equipments', 'get-type', 'append', 'change-check'
-    //                     , 'details'
-    //                     ],
-    //                     'matchCallback' => function ($rule, $action) {
-    //                         return Yii::$app->user->identity['role'] === 'corporal-third';
-    //                     }
-    //                 ],
-    //             ],
-    //         ],
-    //     ];
-    // }
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            'logout',
+                            //INDEX
+                            'index',
+                            'details',
+                            'get-today',
+                            //EQUIPMENTS
+                            'equipments',
+                            'get-equipments',
+                            'get-department',
+                            'get-doc-type',
+                            'append-equipment',
+                            'change-check',
+                            'upload-file',
+                            //EDIT
+                            'edit',
+                            'get-details',
+                            'get-object-study',
+                            'get-maintenance',
+                            'save-equipment',
+                            //APPEND
+                            'append-maintenance',
+                            'get-type',
+                            //
+                            'save-check',
+                            'save-maintenances',
+                            //
+                            'print-sticker',
+                            'print-card',
+                            'print-table',
+                            'print-protocol',
+                            'set-tag',
+                            'set-handoff',
+                            'send-request',
+                            //VERIFICATION
+                            'verification',
+                            'get-verification',
+                            'submit-verification',
+                            'recieved-eq-before',
+                            'recieved-eq-after',
+                            'print-csm',
+                            //REPAIR
+                            'repair',
+                            'get-repair',
+                            'approve-repair',
+                            'declining-repair',
+                            'finish-repair',
+                            'append-repair',
+                            'plan'
+                        ],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity['role'] === 'corporal-five';
+                        }
+                    ],
+                ],
+            ],
+        ];
+    }
 
     public function init()
     {

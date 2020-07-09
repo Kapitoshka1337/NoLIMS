@@ -158,7 +158,7 @@ let demo1 = new Vue({
 		},
 		getRequest(id_check){
 			// let obj = {id_check: id_check, pril: forRequest};
-			axios.post("/equipment/create-request", JSON.stringify({id_check: id_check, dogovor: this.forRequest.dogovor}), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/csm.pdf')));
+			axios.post("/equipment/print-csm", JSON.stringify({id_check: id_check, dogovor: this.forRequest.dogovor}), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/csm.pdf')));
 		}
 	},
 	computed: {

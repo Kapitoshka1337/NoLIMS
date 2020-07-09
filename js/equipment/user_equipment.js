@@ -65,7 +65,7 @@ Vue.component('equipment-grid', {
 				let obj = [];
 				for (let item in this.selectedEquipments)
 					obj.push(this.selectedEquipments[item].id_equipment);
-				axios.post("/equipment/create-sticker", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/sticker.pdf'))).catch(error => (this.listError = error));
+				axios.post("/equipment/print-sticker", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/sticker.pdf'))).catch(error => (this.listError = error));
 			}
 		},
 		GetCard() {
@@ -76,7 +76,7 @@ Vue.component('equipment-grid', {
 				for (let item in this.selectedEquipments)
 					obj1.push(this.selectedEquipments[item].id_equipment);
 				obj = {id: obj1};
-				axios.post("/equipment/create-card", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>
+				axios.post("/equipment/print-card", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>
 				(window.open(response.data))).catch(error => (this.listError = error));
 			}
 		},
