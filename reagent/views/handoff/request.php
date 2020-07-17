@@ -24,6 +24,7 @@
             <table class="ui compact selectable table">
                 <thead>
                     <tr>
+                    	<th>Отдел</th>
                         <th>Тип</th>
                         <th>Материал</th>
                         <th>Ед.изм.</th>
@@ -34,6 +35,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="material in selectedMaterials">
+                        <td class="collapsing">{{ material.department }}</td>
                         <td class="collapsing">{{ material.type }}</td>
                         <td>{{ material.material }}</td>
                         <td class="collapsing">{{ material.measure }}</td>
@@ -114,13 +116,15 @@
 							measure: material.measure,
 							total: material.total,
 							amount: '',
-							location: ''
+							location: '',
+							department: material.department
 							<!-- id_department_to: filters.department_id[0],
 							<!-- date_request: getToday() -->
 							}" v-model="selectedMaterials">
 							<label></label>
 					</div>
 				</td>
+				<td class="collapsing">{{ material.department }}</td>
 				<td class="collapsing">{{ material.type }}</td>
 				<td >{{ material.material }}</td>
 				<td class="collapsing">{{ material.measure }}</td>

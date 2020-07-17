@@ -105,7 +105,7 @@ let demo1 = new Vue({
 		gridColumns: {
 			tableColumn: [
 				{'material_id':'Код'},
-				{'date_create':'Дата изг.'},
+				{'date_create':'Дата пост.'},
 				{'location':'Местоположение'},
 				{'material':'Материал'},
 				{'measure':'Ед.изм'},

@@ -84,7 +84,7 @@ let demo = new Vue({
 			tableColumn: [
 				{'cabinet_number':'Кабинет'},
 				{'place':'Место (мебель)'},
-				{'notation':'Примечание'},
+				{'notation':'Полка (номер)'},
 				{'action':''}
 			],
 			filterColumn: [

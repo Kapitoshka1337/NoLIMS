@@ -65,7 +65,8 @@ Vue.component('handoff-grid', {
 						measure: this.filteredRows[i].measure,
 						total: this.filteredRows[i].total,
 						amount: '',
-						location: ''
+						location: '',
+						department: this.filteredRows[i].department
 					});
 				}
 			}
@@ -112,6 +113,7 @@ let demo1 = new Vue({
 	data: {
 		gridColumns: {
 			tableColumn: [
+				{'department': 'Отдел'},
 				{'type':'Тип'},
 				{'material':'Материал'},
 				{'measure':'Ед.изм'},

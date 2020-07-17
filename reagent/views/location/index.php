@@ -24,7 +24,7 @@
 							<input type="number" v-model="locations.cabinet_number">
 						<label>Место (мебель)</label>
 							<input type="text" v-model="locations.place">
-						<label>Примечание</label>
+						<label>Полка (номер)</label>
 							<textarea v-model="locations.notation"></textarea>
 					</div>
 				</div>
@@ -47,7 +47,7 @@
 							<input type="text" v-model="locations.cabinet_number">
 						<label>Место (мебель)</label>
 							<input type="text" v-model="locations.place">
-						<label>Примечание</label>
+						<label>Полка (номер)</label>
 							<textarea v-model="locations.notation"></textarea>
 					</div>
 				</div>

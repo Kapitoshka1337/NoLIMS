@@ -104,7 +104,7 @@
 		<tbody>
 			<tr v-for="material in paginateRows">
 				<td class="collapsing">{{ material.material_id }}</td>
-				<td class="one wide">{{ material.date_create }}</td>
+				<td class="one wide">{{ material.date_order }}</td>
 				<td class="collapsing">{{ material.location }}</td>
 				<!-- <td class="two wide">{{ material.type }}</td> -->
 				<td>{{ material.material }}</td>
