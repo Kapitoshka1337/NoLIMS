@@ -134,6 +134,7 @@
 						<th>Номер</th>
 						<th>Оборудование</th>
 						<th>Модель</th>
+						<th>С/Н</th>
 						<th>Текущая</th>
 						<th>Следующая</th>
 						<th></th>
@@ -144,6 +145,7 @@
 							<td class="collapsing right aligned">{{ equipment.number }} / {{ equipment.number_department }} - {{ equipment.type }}</td>
 							<td>{{ equipment.equipment }}</td>
 							<td>{{ equipment.model }}</td>
+							<td>{{ equipment.serial_number }}</td>
 							<td class="collapsing">{{ today(equipment.date_current_check) }}</td>
 							<td class="collapsing">{{ today(equipment.date_next_check) }}</td>
 							<td>
@@ -292,8 +294,8 @@
 					<div class="ui checkbox">
 						<input type="checkbox"
 						v-bind:value="{id_equipment: equipment.id,is_archive: equipment.is_archive,is_conservation: equipment.is_conservation,is_repair: equipment.is_repair,is_check: equipment.is_check,is_working: equipment.is_working,
-						number: equipment.number, number_department: equipment.number_department, id_department: equipment.id_department, type: equipment.type, model: equipment.model,
-						date_current_check: equipment.date_current_check, date_next_check: equipment.date_next_check, equipment: equipment.equipment}" 
+						number: equipment.number, number_department: equipment.number_department, id_department: equipment.id_department, type: equipment.type, model: equipment.model, date_current_check: equipment.date_current_check, date_next_check: equipment.date_next_check, equipment: equipment.equipment,
+						serial_number: equipment.serial_number}"
 						v-model="selectedEquipments">
 						<label></label>
 					</div>

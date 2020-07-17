@@ -43,6 +43,7 @@
                         <th>Номер</th>
                         <th>Оборудование</th>
                         <th>Модель</th>
+                        <th>С/Н</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -51,6 +52,7 @@
                         <td class="collapsing">{{ eq.number }}</td>
                         <td class="collapsing">{{ eq.equipment }}</td>
                         <td class="collapsing">{{ eq.model }}</td>
+                        <td class="collapsing">{{ eq.serial_number }}</td>
                         <!-- <td class="collapsing">{{ eq.is_received }}</td> -->
                         <td class="one wide">
                             <div class="ui green label" v-if="eq.is_received_before">Получено</div>
@@ -74,6 +76,7 @@
                         <th>Номер</th>
                         <th>Оборудование</th>
                         <th>Модель</th>
+                        <th>С/Н</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -82,6 +85,7 @@
                         <td class="collapsing">{{ eq.number }}</td>
                         <td class="collapsing">{{ eq.equipment }}</td>
                         <td class="collapsing">{{ eq.model }}</td>
+                        <td class="collapsing">{{ eq.serial_number }}</td>
                         <td class="collapsing">
                             <div class="ui orange label" v-if="!eq.is_received_before">Не принесли</div>
                             <div class="ui green label" v-if="eq.is_received_after">Получено</div>

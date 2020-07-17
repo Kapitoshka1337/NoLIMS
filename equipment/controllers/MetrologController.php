@@ -2,7 +2,7 @@
 namespace app\modules\equipment\controllers;
 use Yii;
 use yii\web\Controller;
-// use PHPJasper\PHPJasper;
+use PHPJasper\PHPJasper;
 use app\modules\equipment\models\location;
 use app\modules\equipment\models\department;
 use app\modules\equipment\models\view_metrolog_equipment;
@@ -111,7 +111,8 @@ class MetrologController extends Controller
 							'is_received_before' => $kit->is_received_before,
 							'is_received_after' => $kit->is_received_after,
 							'model' => $kit->model,
-							'number' => $kit->number
+							'number' => $kit->number,
+							'serial_number' => $kit->serial_number
 						);
 				}
 			$chk[] = array('date_create' => $check->date_create, 'date_submit' => $check->date_submit, 'equipment' => $kt);

@@ -137,6 +137,7 @@
 								<th>Текущая</th>
 								<th>Следующая</th>
 								<th>Вид документа</th>
+								<th>№ документа</th>
 								<th>Документ</th>
 							</tr>
 						</thead>
@@ -145,6 +146,7 @@
 								<td>{{ today(check.date_current_check) }}</td>
 								<td>{{ today(check.date_next_check) }}</td>
 								<td>{{ check.document_type }}</td>
+								<td>{{ check.number_document }}</td>
 								<td>
 									<a v-if="check.upload_file_name" v-bind:href="'/assets/uploads/' + check.upload_file_name" target="_blank">Открыть</a>
 									<span v-if="!check.upload_file_name">Не загружен</span>
@@ -154,6 +156,7 @@
 								<td>{{ today(listDetails.current_check.date_current_check) }}</td>
 								<td>{{ today(listDetails.current_check.date_next_check) }}</td>
 								<td>{{ listDetails.current_check.document_type }}</td>
+								<td>{{ listDetails.current_check.number_document }}</td>
 								<td>
 									<a v-if="listDetails.current_check.upload_file_name" v-bind:href="'/assets/uploads/' + listDetails.current_check.upload_file_name" target="_blank">Открыть</a>
 									<span v-if="!listDetails.current_check.upload_file_name">Не загружен</span>
@@ -241,6 +244,14 @@
 						<div class="field">
 							<label>Дополнительные характеристики</label>
 							<textarea cols="30" rows="2" v-model="listDetails.equipment.characteristics" readonly></textarea>
+						</div>
+						<div class="two fields">
+							<div class="field">
+								<div class="ui green label">Инструкция по эксплуатации</div>
+							</div>
+							<div class="field">
+								<a v-if="listDetails.instruction" v-bind:href="'/assets/uploads/' + listDetails.instruction.upload_file" class="ui right floated yellow mini button" target="_blank">Открыть</a>
+							</div>
 						</div>
 					</div>
 				</div>

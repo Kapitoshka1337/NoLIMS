@@ -95,7 +95,8 @@ Vue.component('equipment-grid', {
 						date_next_check: this.paginateRows[i].date_next_check,
 						equipment: this.paginateRows[i].equipment,
 						number_department: this.paginateRows[i].number_department,
-						model: this.paginateRows[i].model
+						model: this.paginateRows[i].model,
+						serial_number: this.paginateRows[i].serial_number
 					});
 		},
 		Details(id_equipment)
