@@ -104,13 +104,14 @@ Vue.component('equipment-grid', {
 			// "'details/' + equipment.id" КОСТЫЛЬ
 			document.location.href = '/equipment/details/' + id_equipment;
 		},
-		GetSticker() {
+		GetSticker(size) {
 			if(this.selectedEquipments.length > 0)
 			{
 				let obj = [];
 				for (let item in this.selectedEquipments)
 					obj.push(this.selectedEquipments[item].id_equipment);
-				axios.post("/equipment/print-sticker", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/sticker.pdf'))).catch(error => (this.listError = error));
+				let objs = {size: size, eq: obj};
+				axios.post("/equipment/print-sticker", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/sticker_' + size + '.pdf'))).catch(error => (this.listError = error));
 			}
 		},
 		GetCard() {

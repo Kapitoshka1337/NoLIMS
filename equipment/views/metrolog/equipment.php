@@ -235,7 +235,14 @@
 						<i class="icon print"></i>
 						<i class="icon dropdown"></i>
 						<div class="menu">
-							<div class="item" v-on:click="GetSticker()">Этикетка</div>
+							<div class="item">
+								Этикетка
+								<div class="menu">
+									<div class="item" v-on:click="GetSticker('large')">Большая</div>
+									<div class="item" v-on:click="GetSticker('middle')">Средняя</div>
+									<div class="item" v-on:click="GetSticker('tiny')">Маленькая</div>
+								</div>
+							</div>
 							<div class="item" v-on:click="GetCard()">Регистрационная карта</div>
 							<div class="item" v-on:click="printTable()">Таблица проверок</div>
 							<div class="item" v-on:click="showModal('Protocol')">ПТС</div>

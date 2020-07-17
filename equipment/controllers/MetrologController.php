@@ -746,12 +746,16 @@ class MetrologController extends Controller
 		if(Yii::$app->request->isPost)
 		{
 			$data = Yii::$app->request->post();
-			foreach ($data as $val)
+			foreach ($data['eq'] as $val)
 			{
-				if(end($data) === $val) $ids .= $val;
+				if(end($data['eq']) === $val) $ids .= $val;
 				else $ids .= $val . ',';
 			}
-			$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/sticker.jasper';
+			if($data['size'] === 'large')
+				$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/sticker_large.jasper';
+			else if ($data['size'] === 'middle')
+				$input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/sticker_middle.jasper';
+			else $input = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/sticker_tiny.jasper';
 			$output = 'D:/OpenServer/OSPanel/domains/nolims/frontend/web/assets/template/';
 			$options = [
 				'format' => ['pdf'],
