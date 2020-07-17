@@ -31,7 +31,7 @@
 				</sui-table-body>
 				<sui-table-footer>
 					<sui-table-header-cell v-bind:colspan="gridColumns.tableColumn.length + 1">
-						СУКА
+						GJLDFK
 					</sui-table-header-cell>
 				</sui-table-footer>
 			</sui-table>
