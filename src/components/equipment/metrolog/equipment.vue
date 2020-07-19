@@ -5,7 +5,7 @@
 			<sui-table selectable compact v-if="gridData.length > 0">
 				<sui-table-header>
 					<sui-table-row>
-
+						
 					</sui-table-row>
 					<sui-table-row>
 						<sui-table-header-cell>
@@ -31,7 +31,7 @@
 				</sui-table-body>
 				<sui-table-footer>
 					<sui-table-header-cell v-bind:colspan="gridColumns.tableColumn.length + 1">
-						GJLDFK
+						СУКА
 					</sui-table-header-cell>
 				</sui-table-footer>
 			</sui-table>

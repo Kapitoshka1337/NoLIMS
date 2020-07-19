@@ -47,8 +47,21 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: true,
-    overlay: true
+    proxy: {
+      '/api': {
+          target: 'http://laravel/api',
+          pathRewrite: {'^/api' : ''},
+          secure: false,
+          changeOrigin: true,
+      },
+    },
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "*",
+      "Access-Control-Allow-Headers": "*"
+    }
+    //noInfo: true,
+    //overlay: true
   },
   performance: {
     hints: false
