@@ -8,12 +8,10 @@ import SuiVue from 'semantic-ui-vue';
 //COMPONENTS
 import Hub from "./components/hub.vue";
 
-import Equipment from "./components/equipment/main.vue";
-import Metrolog from "./components/equipment/metrolog/index.vue";
-import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
-
 import Reagent from "./components/reagent/main.vue";
 import Storage from "./components/reagent/storage/index.vue";
+import Arrivals from "./components/reagent/arrivals/index.vue";
+import Expenses from "./components/reagent/expenses/index.vue";
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
@@ -25,19 +23,11 @@ var router = new VueRouter({
     { path: '/', component: Hub},
     { path: '/reagent', component: Reagent,
       children: [
-        { path: 'storage', component: Storage }
+        { path: 'storage', component: Storage },
+        { path: 'arrivals', component: Arrivals },
+        { path: 'expenses', component: Expenses }
       ]
-    },
-    { path: '/equipment', component: Equipment,
-      children: [
-        {
-          path: 'metrolog', component: Metrolog,
-          children: [
-            { path: 'equipments', component: MetrologEquipment}
-          ]
-        }
-      ]
-    },
+    }
   ]
 })
 

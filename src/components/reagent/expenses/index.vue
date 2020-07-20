@@ -1,5 +1,5 @@
 <template>
-	<div class="padded" is="sui-grid">
+<div class="padded" is="sui-grid">
 		<sui-grid-row>
 			<sui-grid-column>
 				<!-- <menu></menu> -->
@@ -23,7 +23,7 @@
 					<sui-table-header>
 						<sui-table-row>
 							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-									Склад
+									История потребления
 									<sui-button class="ui right floated mini icon green button" v-on:click="clearFilter()"><i class="icon undo"></i></sui-button>
 									<button class="ui right floated mini icon teal button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
 							</sui-table-header-cell>
@@ -47,24 +47,19 @@
 					</sui-table-header>
 					<sui-table-body>
 						<sui-table-row v-for="(material, index) in paginateRows" :key="index">
-							<!--<sui-table-cell collapsing><sui-checkbox label="" /></sui-table-cell>-->
-							<sui-table-cell collapsing>{{ material.material_id }}</sui-table-cell>
-							<sui-table-cell :width="1">{{ today(material.date_order) }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.location }}</sui-table-cell>
-							<sui-table-cell >{{ material.material }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.measure }}</sui-table-cell>
-							<sui-table-cell collapsing
-							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
-							>{{ material.total }} / {{ material.amount }}</sui-table-cell>
-							<sui-table-cell collapsing
-							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
-							>{{ material.shelf_life  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
-							<sui-table-cell collapsing>
-								<button class="ui icon mini blue button" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 1" v-on:click="moveToArchive(index)"><i class="icon archive"></i></button>
-								<button class="ui icon mini green button" v-if="material.passport != null" v-on:click="showPassport(material.arrival_material_id)"><i class="icon eye"></i></button>
-								<!-- <button class="ui icon mini yellow button" v-if="material.passport === null" v-on:click="showModal('AppendPassport', material.arrival_material_id)"><i class="icon plus"></i></button> -->
-								<button class="ui icon mini red button" v-on:click="showModal(index)"><i class="icon tint"></i></button>
-							</sui-table-cell>
+							<td class="collapsing">{{ material.material_id }}</td>
+							<td class="collapsing">{{ material.date_order }}</td>
+							<!-- <td class="two wide">{{ material.type }}</td> -->
+							<td>{{ material.material }}</td>
+							<td class="collapsing">{{ material.measure }}</td>
+							<td class="collapsing">{{ material.amount_outgo }}</td>
+							<td class="collapsing">{{ material.user }}</td>
+							<td class="one wide">{{ material.date_usage }}</td>
+							<td class="one wide">{{ material.date_record }}</td>
+							<td class="collapsing">{{ material.moving_type }}</td>
+							<td class="collapsing">
+								<button class="ui red icon mini button" v-if="material.moving_type === 'Потребление'" v-on:click="showModal(index)"><i class="icon exclamation"></i></button>
+							</td>
 						</sui-table-row>
 					</sui-table-body>
 					<sui-table-footer>
@@ -86,51 +81,55 @@
 						</sui-table-header-cell>
 					</sui-table-footer>
 				</sui-table>
-				<expenses-modal :open="isShowModal" @close="hideModal" @success="successExpenses" :material="paginateRows[materialIndex]"></expenses-modal>
+				<correction-modal :open="isShowModal" @close="hideModal" @success="successExpenses" :material="paginateRows[materialIndex]"></correction-modal>
 			</sui-grid-column>
 		</sui-grid-row>
 	</div>
 </template>
 
 <script>
-import ExpensesModal from '../modals/expenses.vue';
-import Menu from '../menu.vue';
+import CorrectionModal from '../modals/correction.vue'
 import axios from 'axios';
 
 export default {
 	components: {
-		'expenses-modal': ExpensesModal,
-		'menu': Menu
+		'correction-modal': CorrectionModal
 	},
 	data () {
 		return {
-			gridColumns: {
-				tableColumn: [
-					{'material_id':'Код'},
-					{'date_order':'Дата пост.'},
-					{'location':'Местоположение'},
-					{'material':'Материал'},
-					{'measure':'Ед.изм'},
-					{'total':'Количество'},
-					{'shelf_life':'Годен до'},
-					{'action':''}
-				],
-				filterColumn: [
-					{'material_id':'Код'},
-					{'type':'Тип'},
-					{'material':'Материал'},
-					{'date_order':'Дата поступления'},
-					{'shelf_life':'Годен до'},
-					{'location':'Местоположение'},
-				]
-			},
-			filters: {
-				number: [],
-				department: [],
-				type: [],
-				equipment: [],
-			},
-			gridData: [],
+            gridColumns: {
+                tableColumn: [
+                    {'material_id':'Код'},
+                    {'date_order':'Дата пост.'},
+                    {'material':'Материал'},
+                    {'measure':'Ед.изм'},
+                    {'amount_outgo':'Кол.'},
+                    {'user':'Сотрудник'},
+                    {'date_usage':'Потрачено'},
+                    {'date_record':'Добавлено'},
+                    {'moving_type':'Операция'},
+                    {'action':''}
+                ],
+                filterColumn: [
+                    {'material_id':'Код материала'},
+                    {'date_create':'Дата изготовления'},
+                    {'type':'Тип'},
+                    {'material':'Материал'},
+                    {'date_usage':'Дата потребления'},
+                    {'user':'Сотрудник'},
+                    {'moving_type':'Операция'},
+                ]
+            },
+            gridData: [],
+            filters: {
+                material_id: [],
+                type: [],
+                material: [],
+                date_create: [],
+                date_usage: [],
+                user: [],
+                moving_type: []
+            },
 			sortKey: '',
 			sortColumns: Object,
 			currentPage: 1,
@@ -153,10 +152,10 @@ export default {
 		},
 		successExpenses(expenseAmount){
 			this.isShowModal = false;
-			this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].total - expenseAmount;
+			// this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].total - expenseAmount;
 		},
-		getStorage(){
-			axios.get('/api/reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error)));
+		getExpenses(){
+			axios.get('/api/reagent/expenses').then(response => (this.gridData = response.data)).catch(error => (alert(error)));
 			//fetch("/api/reagent/storage").then(response => (
 				//response.json().then(data => (this.gridData = data))
 			//)).catch(function(data){alert(data)});
@@ -192,19 +191,7 @@ export default {
 				});
 			});
 			this.sortColumns = sortColumns;
-		},
-		colorShelfLife(date){
-			let today = new Date();
-			let shelf_life = new Date(date.split(".").reverse().join("-"));
-			return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
-		},
-		//showPassport(id){
-		//	axios.get("/reagent/get-passport?id=" + id).then( response => (window.open(response.data)));
-		//},
-		moveToArchive(index){
-			axios.post("/api/reagent/storage/archive", JSON.stringify({id: this.gridData[index].arrival_material_id}), {
-				headers: {'Content-Type': 'application/json'}}).then( response => (this.gridData[index].archive = 1));
-		},
+		}
 	},
 	watch: {
 		gridData(){
@@ -244,8 +231,6 @@ export default {
 			{
 				return Object.keys(this.filters).every(f =>
 				{
-					if(r.archive === 1) return;
-					if(r.total === null) r.total = r.amount;
 						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				})
 			})
@@ -255,19 +240,7 @@ export default {
 		}
 	},
 	mounted: function(){
-		this.getStorage();
+		this.getExpenses();
 	}
   }
 </script>
-
-<style scoped>
-	.success {
-		background-color: #ddffdd;
-	}
-	.caution {
-		background-color: #ffffcc;
-	}
-	.danger {
-		background-color: #ffdddd;
-	}
-</style>
