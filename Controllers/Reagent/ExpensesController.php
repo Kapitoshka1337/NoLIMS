@@ -5,10 +5,17 @@ namespace App\Http\Controllers\Reagent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Models\reagent\expenses;
+use App\Models\Reagent\expenses;
+use App\Models\Reagent\expenses_view;
 
 class ExpensesController extends Controller
 {
+
+    public function view()
+    {
+        return response()->json(expenses_view::get(), 200);
+    }
+
     public function create(Request $req)
     {
         $expenses = new expenses();
@@ -21,5 +28,10 @@ class ExpensesController extends Controller
         $expenses->id_moving_type = 2;
         if($expenses->save())
             return response()->json($expenses, 200);
+    }
+
+    public function correct(Request $req)
+    {
+        return response()->json("hell0", 200);
     }
 }

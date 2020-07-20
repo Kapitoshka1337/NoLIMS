@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Reagent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Models\reagent\storage;
-use App\Models\reagent\arrival_material;
+use App\Models\Reagent\storage;
+use App\Models\Reagent\arrival_material;
 
 class StorageController extends Controller
 {
@@ -15,9 +15,11 @@ class StorageController extends Controller
         return response()->json(storage::get(), 200);
     }
 
-    public function toArchive(Request $req, arrival_material $arrival)
+    public function toArchive(Request $req)
     {
-        $arrival->update($req->all());
-        return response()->json($arrival, 200);
+        $arrival_mat = arrival_material::find($req->input('id'));
+        $arrival_mat->archive = 1;
+        if($arrival_mat->save())
+        	return response()->json($arrival_mat, 200);
     }
 }
