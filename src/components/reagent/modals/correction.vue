@@ -8,16 +8,16 @@
 			<sui-form>
 				<sui-form-field>
 					<label>Количество</label>
-					<sui-input type="number" v-model="amountCorrect" min="0"></sui-input>
+					<sui-input type="number" v-model="correctAmount" min="0"></sui-input>
 				</sui-form-field>
 				<sui-form-field>
 					<label>Причина исправления</label>
-                    <textarea cols="30" rows="10" v-model="reasonCorrect"></textarea>
+                    <textarea cols="30" rows="10" v-model="correctReason"></textarea>
 				</sui-form-field>
 			</sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<button class="ui approve green button" v-on:click="saveCorrect">Отравить</button>
+			<button class="ui approve green button" v-on:click="saveCorrect" v-bind:disabled="correctReason === ''">Отравить</button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
 		</sui-modal-actions>
 	</sui-modal>
@@ -33,13 +33,13 @@ export default {
 	},
 	data(){
 		return {
-            amountCorrect: 0,
-            reasonCorrect: null
+			correctAmount: 0,
+			correctReason: ''
 		}
 	},
 	computed:{
 		show(){
-			return this.open
+			return this.open;
 		}
 	},
 	methods: {
@@ -47,12 +47,21 @@ export default {
 			this.$emit('close');
 		},
 		saveCorrect(){
-			if (this.amountCorrect != 0 && this.reasonCorrect != null)
+			if (this.correctReason != '')
 			{
-				// let obj = { id_arrival: this.material.arrival_material_id, amount: this.expensesAmount, date: this.expensesDate};
-				axios.post("/api/reagent/expenses/correct", {
+				let	correct = {
+				id_outgo: this.material.id,
+				corrected_amount: this.correctAmount,
+				reason_correct: this.correctReason,
+				created_at: this.getToday(),
+				id_status: 1};
+				axios.post("/api/reagent/expenses/correct", JSON.stringify(correct), {
 					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'))).catch(error => (alert(error)));
 			}
+		},
+		getToday () {
+			let today = new Date();
+			return today.toISOString().split('T')[0];
 		},
 	}
 }
