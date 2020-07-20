@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Reagent\expenses;
 use App\Models\Reagent\expenses_view;
+use App\Models\Reagent\correction;
 
 class ExpensesController extends Controller
 {
@@ -30,8 +31,9 @@ class ExpensesController extends Controller
             return response()->json($expenses, 200);
     }
 
-    public function correct(Request $req)
+    public function create_correct(Request $req)
     {
-        return response()->json("hell0", 200);
+        $correction = correction::create($req->all());
+        return response()->json($correction, 200);
     }
 }

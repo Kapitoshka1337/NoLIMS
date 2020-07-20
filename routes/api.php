@@ -25,10 +25,11 @@ Route::prefix('reagent')->group(function () {
 		Route::post('archive', 'Reagent\StorageController@toArchive');
 	});
 	Route::prefix('arrivals')->group(function(){
-	Route::get('', 'Reagent\ArrivalsController@view');
+		Route::get('', 'Reagent\ArrivalsController@view');
+		Route::get('materials', 'Reagent\ArrivalsController@materials');
 	});
     Route::prefix('expenses')->group(function(){
     	Route::get('', 'Reagent\ExpensesController@view');
-    	Route::post('correct', 'Reagent\ExpensesController@correct');
+    	Route::post('correct', 'Reagent\ExpensesController@create_correct');
     });
 });
