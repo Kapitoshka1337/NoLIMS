@@ -1,124 +1,124 @@
 <template>
-<sui-grid class="padded">
-    <sui-grid-row>
-        <sui-grid-column>
-            <sui-menu>
-                <router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
-                <router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
-                <router-link to="#" is="sui-menu-item">Списание</router-link>
-                <router-link to="#" is="sui-menu-item">
-                    <sui-dropdown text="Передача">
-                        <sui-dropdown-menu>
-                            <sui-dropdown-item>Запрос</sui-dropdown-item>
-                            <sui-dropdown-item>История</sui-dropdown-item>
-                        </sui-dropdown-menu>
-                    </sui-dropdown>
-                </router-link>
-                <router-link to="#" is="sui-menu-item" floated="right">Местоположение</router-link>
-            </sui-menu>
-        </sui-grid-column>
-    </sui-grid-row>
-    <sui-grid-row>
-        <sui-grid-column :width="3">
-		<div class="ui fluid card">
-			<div class="content">
-				<div class="ui bottom attached buttons">
-                    <router-link to="#" class="ui yellow button">Новое</router-link>
-				</div>
-			</div>
-		</div>
-		<div class="ui fluid card">
-			<div class="content">
-				<div class="center aligned header">
-					<h2>Поиск</h2>
-				</div>
-			</div>
-			<div class="content">
-				<div class="ui form">
-					<div class="field" v-for="(key, index) in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))" :key="index">
-						<label>{{ Object.values(key)[0] }}</label>
-                        <sui-dropdown fluid multiple search selection v-model="filters[Object.keys(key)]"></sui-dropdown>
+	<sui-grid class="padded">
+		<sui-grid-row>
+			<sui-grid-column>
+				<sui-menu>
+					<router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
+					<router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
+					<router-link to="#" is="sui-menu-item">Списание</router-link>
+					<router-link to="#" is="sui-menu-item">
+						<sui-dropdown text="Передача">
+							<sui-dropdown-menu>
+								<sui-dropdown-item>Запрос</sui-dropdown-item>
+								<sui-dropdown-item>История</sui-dropdown-item>
+							</sui-dropdown-menu>
+						</sui-dropdown>
+					</router-link>
+					<router-link to="#" is="sui-menu-item" floated="right">Местоположение</router-link>
+				</sui-menu>
+			</sui-grid-column>
+		</sui-grid-row>
+		<sui-grid-row>
+			<sui-grid-column :width="3">
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="ui bottom attached buttons">
+						<router-link to="/reagent/arrivals/create" class="ui yellow button">Новое</router-link>
 					</div>
 				</div>
 			</div>
-		</div>
-        </sui-grid-column>
-        <sui-grid-column :width="13">
-            <sui-loader centered v-bind:active="gridData.length <= 0" inline/>
-				<!--<sui-table selectable compact v-if="gridData.length > 0">
-					<sui-table-header>
-						<sui-table-row>
+			<div class="ui fluid card">
+				<div class="content">
+					<div class="center aligned header">
+						<h2>Поиск</h2>
+					</div>
+				</div>
+				<div class="content">
+					<div class="ui form">
+						<div class="field" v-for="(key, index) in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))" :key="index">
+							<label>{{ Object.values(key)[0] }}</label>
+							<sui-dropdown fluid multiple search selection v-model="filters[Object.keys(key)]"></sui-dropdown>
+						</div>
+					</div>
+				</div>
+			</div>
+			</sui-grid-column>
+			<sui-grid-column :width="13">
+				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
+					<!--<sui-table selectable compact v-if="gridData.length > 0">
+						<sui-table-header>
+							<sui-table-row>
+								<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+										Поступления
+										<sui-button class="ui right floated mini icon green button" v-on:click="clearFilter()"><i class="icon undo"></i></sui-button>
+										<button class="ui right floated mini icon teal button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
+								</sui-table-header-cell>
+							</sui-table-row>
+							<sui-table-row>
+								<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+									<sui-form>
+										<sui-form-field>
+											<sui-input type="text" placeholder="Поиск" v-model="filterKey"></sui-input>
+										</sui-form-field>
+									</sui-form>
+								</sui-table-header-cell>
+							</sui-table-row>
+							<sui-table-row>
+								<sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell>
+								<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
+									{{ Object.values(column)[0] }}
+									<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
+								</sui-table-header-cell>
+							</sui-table-row>
+						</sui-table-header>
+						<sui-table-body>
+							<sui-table-row v-for="(order, index) in paginateRows" :key="index">
+								<sui-table-cell :width="2" class="center aligned">{{ order.num_order }}</sui-table-cell>
+								<sui-table-cell :width="2">{{ today(order.date_order) }}</sui-table-cell>
+								<sui-table-cell :width="2">{{ order.moving_type }}</sui-table-cell>
+								<sui-table-cell>BTN</sui-table-cell>
+							</sui-table-row>
+						</sui-table-body>
+						<sui-table-footer>
 							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-									Поступления
-									<sui-button class="ui right floated mini icon green button" v-on:click="clearFilter()"><i class="icon undo"></i></sui-button>
-									<button class="ui right floated mini icon teal button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
+								<sui-label >
+									Страница {{ currentPage }} из {{ listPages.length }}
+								</sui-label>
+								<div class="ui icon basic right floated small buttons">
+									<sui-button v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></sui-button>
+									<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
+									<sui-form>
+										<sui-form-field>
+											<input is="sui-input" type="text" :value="currentPage">
+										</sui-form-field>
+									</sui-form>
+									<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
+									<sui-button class="ui button" v-on:click="currentPage = listPages.length"><i class="icon angle double right"></i></sui-button>
+								</div>
 							</sui-table-header-cell>
-						</sui-table-row>
-						<sui-table-row>
-							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-								<sui-form>
-									<sui-form-field>
-										<sui-input type="text" placeholder="Поиск" v-model="filterKey"></sui-input>
-									</sui-form-field>
-								</sui-form>
-							</sui-table-header-cell>
-						</sui-table-row>
-						<sui-table-row>
-							<sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell>
-							<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
-								{{ Object.values(column)[0] }}
-								<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
-							</sui-table-header-cell>
-						</sui-table-row>
-					</sui-table-header>
-					<sui-table-body>
-						<sui-table-row v-for="(order, index) in paginateRows" :key="index">
-                            <sui-table-cell :width="2" class="center aligned">{{ order.num_order }}</sui-table-cell>
-                            <sui-table-cell :width="2">{{ today(order.date_order) }}</sui-table-cell>
-                            <sui-table-cell :width="2">{{ order.moving_type }}</sui-table-cell>
-                            <sui-table-cell>BTN</sui-table-cell>
-						</sui-table-row>
-					</sui-table-body>
-					<sui-table-footer>
-						<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-							<sui-label >
-								Страница {{ currentPage }} из {{ listPages.length }}
-							</sui-label>
-							<div class="ui icon basic right floated small buttons">
-								<sui-button v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></sui-button>
-								<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
-								<sui-form>
-									<sui-form-field>
-										<input is="sui-input" type="text" :value="currentPage">
-									</sui-form-field>
-								</sui-form>
-								<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
-								<sui-button class="ui button" v-on:click="currentPage = listPages.length"><i class="icon angle double right"></i></sui-button>
+						</sui-table-footer>
+					</sui-table>-->
+				<div class="ui cards" v-if="gridData.length > 0">
+					<div class="ui fluid card" v-for="(order, index) in filteredRows" :key="index">
+						<div class="content">
+							<span v-bind:class="{
+							'ui top attached green right label': order.moving_type === 'Поступление',
+							'ui top attached blue right label': order.moving_type === 'Перевод'
+							}">{{ order.moving_type }}</span>
+							<div class="header">Заказ № {{ order.num_order }} от {{ today(order.date_order) }}</div>
+							<div class="meta">
+								<span class="category">Отдел: {{ order.department }}</span>
 							</div>
-						</sui-table-header-cell>
-					</sui-table-footer>
-				</sui-table>-->
-            <div class="ui cards" v-if="gridData.length > 0">
-                <div class="ui fluid card" v-for="(order, index) in filteredRows" :key="index">
-                    <div class="content">
-                        <span v-bind:class="{
-                        'ui top attached green right label': order.moving_type === 'Поступление',
-                        'ui top attached blue right label': order.moving_type === 'Перевод'
-                        }">{{ order.moving_type }}</span>
-                        <div class="header">Заказ № {{ order.num_order }} от {{ today(order.date_order) }}</div>
-                        <div class="meta">
-                            <span class="category">Отдел: {{ order.department }}</span>
-                        </div>
-                    </div>
-                    <div class="content">
-                        <sui-button size="mini" content="Поступившие материалы" color="orange" floated="right" v-on:click="showModal(index)"></sui-button>
-                    </div>
-                </div>
-            </div>
-            <arrival-modal :open="isShowModal" @close="hideModal" :order="gridData[orderIndex]"></arrival-modal>
-        </sui-grid-column>
-    </sui-grid-row>
-</sui-grid>
+						</div>
+						<div class="content">
+							<sui-button size="mini" content="Поступившие материалы" color="orange" floated="right" v-on:click="showModal(index)"></sui-button>
+						</div>
+					</div>
+				</div>
+				<arrival-modal :open="isShowModal" @close="hideModal" :order="order"></arrival-modal>
+			</sui-grid-column>
+		</sui-grid-row>
+	</sui-grid>
 </template>
 
 <script>
@@ -156,8 +156,11 @@ export default {
 			//listPages: [],
 			//countPost: 100,
 			isShowModal: false,
-            orderIndex: null,
-            materialForOrder: []
+            // orderIndex: null,
+            order: {
+                order: this.or,
+                materials: []
+            }
 			//filterKey: ''
 			//selectAllMaterials: false,
 			//selectedEquipments: [],
@@ -165,8 +168,9 @@ export default {
 	},
 	methods: {
 		showModal(index = null){
-            this.orderIndex = index;
-            axios.get('/api/reagent/arrivals').then(response => (this.materialForOrder = response.data, this.isShowModal = true)).catch(error => (alert(error)));
+            // this.orderIndex = index;
+            this.order.order = this.gridData[index];
+            axios.get('/api/reagent/arrivals/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
             //this.isShowModal = true;
         },
 		hideModal(){
@@ -275,7 +279,7 @@ export default {
 						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				})
 			})
-		},
+        },
 		//paginateRows(){
 		//	return this.paginate(this.filteredRows);
 		//}

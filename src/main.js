@@ -11,6 +11,7 @@ import Hub from "./components/hub.vue";
 import Reagent from "./components/reagent/main.vue";
 import Storage from "./components/reagent/storage/index.vue";
 import Arrivals from "./components/reagent/arrivals/index.vue";
+import AppendArrivals from "./components/reagent/arrivals/create.vue";
 import Expenses from "./components/reagent/expenses/index.vue";
 
 Vue.use(SuiVue);
@@ -25,6 +26,7 @@ var router = new VueRouter({
       children: [
         { path: 'storage', component: Storage },
         { path: 'arrivals', component: Arrivals },
+        { path: 'arrivals/create', component: AppendArrivals }, //ПЕРЕДЕЛАТЬ
         { path: 'expenses', component: Expenses }
       ]
     }
