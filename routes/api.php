@@ -26,10 +26,13 @@ Route::prefix('reagent')->group(function () {
 	});
 	Route::prefix('arrivals')->group(function(){
 		Route::get('', 'Reagent\ArrivalsController@view');
-		Route::get('materials', 'Reagent\ArrivalsController@materials');
+		Route::get('/{id}/materials', 'Reagent\ArrivalsController@materials');
 	});
-    Route::prefix('expenses')->group(function(){
-    	Route::get('', 'Reagent\ExpensesController@view');
-    	Route::post('correct', 'Reagent\ExpensesController@create_correct');
-    });
+	Route::prefix('expenses')->group(function(){
+		Route::get('', 'Reagent\ExpensesController@view');
+		Route::post('correct', 'Reagent\ExpensesController@create_correct');
+	});
+	Route::prefix('material')->group(function(){
+		Route::get('', 'Reagent\MaterialController@view');
+	});
 });
