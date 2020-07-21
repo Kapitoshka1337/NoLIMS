@@ -25,10 +25,10 @@
                         <sui-form>
                             <sui-form-fields fields="three" inline>
                                 <sui-form-field>
-                                    <label>Заказ №</label>
+                                    <label>№ заказа</label>
                                     <sui-input type="text"></sui-input>
                                 </sui-form-field>
-                                <sui-form-field>
+                                <sui-form-field width="three">
                                     <label>от</label>
                                     <sui-input type="date"></sui-input>
                                 </sui-form-field>
@@ -41,10 +41,10 @@
                     </sui-card-content>
                     <sui-card-content>
                         <sui-card-group :items-per-row="4">
-                            <sui-card>
+                            <sui-card v-for="material in selectedMaterials" :key="material.id">
                                 <sui-card-content>
-                                    <sui-card-header>h</sui-card-header>
-                                    <sui-card-meta>m</sui-card-meta>
+                                    <sui-card-header>{{ material.material }}</sui-card-header>
+                                    <sui-card-meta>{{ material.type }} ({{ material.measure }})</sui-card-meta>
                                 </sui-card-content>
                                 <sui-card-content>            
                                     <sui-form>
@@ -99,15 +99,20 @@ export default {
     data(){
         return {
             isShowModal: false,
-            materials: []
+            materials: [],
+            selectedMaterials: []
         }
     },
     methods: {
-		hideModal(){
+		hideModal(data){
+            for(let material in data)
+                this.selectedMaterials.push(data[material]);
 			this.isShowModal = false;
         },
 		showModal(){
-            axios.get('/api/reagent/material').then(response => (this.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
+            if(this.materials.length > 0) this.isShowModal = true;
+            else
+                axios.get('/api/reagent/material').then(response => (this.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
         }
     }
 }
