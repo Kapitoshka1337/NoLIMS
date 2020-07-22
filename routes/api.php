@@ -26,6 +26,7 @@ Route::prefix('reagent')->group(function () {
 	});
 	Route::prefix('arrivals')->group(function(){
 		Route::get('', 'Reagent\ArrivalsController@view');
+		Route::post('', 'Reagent\ArrivalsController@create');
 		Route::get('/{id}/materials', 'Reagent\ArrivalsController@materials');
 	});
 	Route::prefix('expenses')->group(function(){
