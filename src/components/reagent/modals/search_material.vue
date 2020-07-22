@@ -9,9 +9,9 @@
 						</sui-table-header-cell>
                     </sui-table-row>
                     <sui-table-row>
-						<sui-table-header-cell>
+						<!-- <sui-table-header-cell>
 							<sui-checkbox v-model="selectAll"/>
-						</sui-table-header-cell>
+						</sui-table-header-cell> -->
                         <sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
                             <sui-form>
                                 <sui-form-field>
@@ -55,7 +55,8 @@
             </sui-table>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<sui-button color='green' v-on:click="hide">ОК</sui-button>
+			<sui-button color='green' v-on:click="save">ОК</sui-button>
+			<sui-button color='orange' v-on:click="hide">Отмена</sui-button>
 		</sui-modal-actions>
 	</sui-modal>
 </template>
@@ -90,8 +91,11 @@ export default {
 		}
 	},
 	methods: {
-		hide(){
-			this.$emit('close', this.selectedMaterials);
+		save(){
+			this.$emit('save', this.selectedMaterials);
+        },
+        hide(){
+            this.$emit('close');
         },
 		setPages () {
 			let numOfPage = Math.ceil(this.filteredRows.length / this.countPost);
