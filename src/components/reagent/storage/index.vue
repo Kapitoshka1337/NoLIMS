@@ -24,15 +24,15 @@
 						<sui-table-row>
 							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
 									Склад
-									<sui-button class="ui right floated mini icon green button" v-on:click="clearFilter()"><i class="icon undo"></i></sui-button>
-									<button class="ui right floated mini icon teal button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
+									<!--<sui-button class="ui right floated mini icon green button" v-on:click="clearFilter()"><i class="icon undo"></i></sui-button>-->
+									<!--<button class="ui right floated mini icon teal button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>-->
 							</sui-table-header-cell>
 						</sui-table-row>
 						<sui-table-row>
 							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
 								<sui-form>
 									<sui-form-field>
-										<sui-input type="text" placeholder="Поиск" v-model="filterKey"></sui-input>
+										<sui-input type="text" placeholder="Поиск по КОДУ и МАТЕРИАЛУ" v-model="filterKey"></sui-input>
 									</sui-form-field>
 								</sui-form>
 							</sui-table-header-cell>
@@ -130,6 +130,9 @@ export default {
 				type: [],
 				equipment: [],
 			},
+			seartColumn: [
+				{'material_id': 'material_id'}
+			],
 			gridData: [],
 			sortKey: '',
 			sortColumns: Object,
@@ -218,7 +221,8 @@ export default {
 	computed: {
 		filteredRows: function () {
 			let sortKey = this.sortKey;
-			let filterKey = this.filterKey && this.filterKey.toLowerCase();
+			//let filterKey = this.filterKey && this.filterKey.toLowerCase();
+			let filterKey = this.filterKey;
 			let order = this.sortColumns[sortKey] || 1;
 			let rows = this.gridData;
 			if (sortKey)
@@ -235,9 +239,11 @@ export default {
 			{
 				rows = rows.filter(function(row)
 				{
-					return Object.keys(row).some(function(key)
-					{
-						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);});
+					return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
+					//return Object.keys(row).some(function(key)
+					//{
+						//return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);
+					//});
 				});
 			}
 			return rows.filter(r =>

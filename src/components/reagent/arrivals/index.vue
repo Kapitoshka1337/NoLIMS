@@ -37,7 +37,7 @@
 					<div class="ui form">
 						<div class="field" v-for="(key, index) in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))" :key="index">
 							<label>{{ Object.values(key)[0] }}</label>
-							<sui-dropdown fluid multiple search selection v-model="filters[Object.keys(key)]"></sui-dropdown>
+							<sui-dropdown fluid multiple search selection v-model="filters[Object.keys(key)]" :options="returnUniq(Object.keys(key))"></sui-dropdown>
 						</div>
 					</div>
 				</div>
@@ -217,7 +217,8 @@ export default {
 		//		});
 		//	});
 		//	this.sortColumns = sortColumns;
-        //},
+		//},
+		//ПЕРЕДЕЛАТЬ
 		returnUniq(column){
             let result = [];
             let resa = [];

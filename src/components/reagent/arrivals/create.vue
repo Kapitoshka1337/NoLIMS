@@ -25,7 +25,7 @@
                         <sui-form>
                             <sui-form-fields fields="three" inline>
                                 <sui-form-field width="five">
-                                    <label>Заказ №</label width="two">
+                                    <label>Заказ №</label>
                                     <sui-input type="text" v-model="order.number"></sui-input>
                                 </sui-form-field>
                                 <sui-form-field width="three">
@@ -50,7 +50,7 @@
                                     <sui-form>
                                         <sui-form-field>
                                             <label>Количество</label>
-                                            <input type="number" v-model="material.amount"></input>
+                                            <input type="number" v-model="material.amount">
                                         </sui-form-field>
                                         <sui-form-field>
                                             <label>Местоположение</label>
@@ -67,11 +67,11 @@
                                         </sui-form-field>
                                         <sui-form-field>
                                             <label>Дата изготовления</label>
-                                            <input type="date" v-model="material.date_create"></input>
+                                            <input type="date" v-model="material.date_create">
                                         </sui-form-field>
                                         <sui-form-field>
                                             <label>Годен до</label>
-                                            <input type="date" v-model="material.shelf_life"></input>
+                                            <input type="date" v-model="material.shelf_life">
                                         </sui-form-field>
                                     </sui-form>
                                 </sui-card-content>
@@ -139,7 +139,7 @@ export default {
         },
         submitOrder(){
             this.order.materials = this.selectedMaterials;
-            axios.post('/api/reagent/arrival', JSON.stringify(this.order)).then(response => (console.log(response.data))).catch(error => (alert(error)));            
+            axios.post('/api/reagent/arrivals', this.order).then(response => (this.$router.push({path: '/reagent/storage'}))).catch(error => (alert(error.response.data.message)));            
         }
     }
 }

@@ -224,7 +224,8 @@ export default {
 				{
 					return Object.keys(row).some(function(key)
 					{
-						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);});
+						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);
+					});
 				});
 			}
 			return rows.filter(r =>
