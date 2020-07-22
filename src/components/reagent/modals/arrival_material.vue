@@ -26,7 +26,7 @@
             </sui-table>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
+			<sui-button color="green" v-on:click="hide">ОК</sui-button>
 		</sui-modal-actions>
 	</sui-modal>
 </template>
