@@ -58,7 +58,14 @@
 							<td class="one wide">{{ material.date_record }}</td>
 							<td class="collapsing">{{ material.moving_type }}</td>
 							<td class="collapsing">
-								<button class="ui red icon mini button" v-if="material.moving_type === 'Потребление'" v-on:click="showModal(index)"><i class="icon exclamation"></i></button>
+								<sui-icon v-on:click="showModal(index)" v-if="material.moving_type === 'Потребление'" color="green" name="exclamation circle" size="large"></sui-icon>
+								<sui-icon v-if="material.moving_type === 'Продление'" color="yellow" name="exclamation triangle" size="large"></sui-icon>
+								<sui-icon v-if="material.moving_type === 'Перевод'" color="blue" name="info" size="large"></sui-icon>
+								<!-- <sui-label circular color="yellow" v-if="material.moving_type === 'Продление'"><sui-icon name="exclamation triangle"></sui-icon></sui-label> -->
+								<!-- <sui-label color="blue" v-if="material.moving_type === 'Перевод'"><sui-icon name="info"></sui-icon></sui-label> -->
+								<!-- <sui-label circular color="green" v-if="material.moving_type === 'Потребление'"><sui-icon name="exclamation circle"></sui-icon></sui-label> -->
+								<!-- <button class="ui green icon mini button" v-if="material.moving_type === 'Потребление'" v-on:click="showModal(index)"><i class="icon exclamation"></i></button> -->
+								<!-- <a class="ui yellow icon mini button" v-if="material.moving_type === 'Продление'"><i class="icon warning"></i></a> -->
 							</td>
 						</sui-table-row>
 					</sui-table-body>

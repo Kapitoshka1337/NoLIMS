@@ -24,11 +24,11 @@ export default {
           description: 'Описание',
           link: '/assignment'
         },
-        {
-          header: 'Виварий',
-          description: 'Описание',
-          link: '/vivarium'
-        },
+        // {
+        //   header: 'Виварий',
+        //   description: 'Описание',
+        //   link: '/vivarium'
+        // },
         {
           header: 'Реактив',
           description: 'Описание',

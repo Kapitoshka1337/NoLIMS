@@ -58,7 +58,7 @@
 							>{{ material.total }} / {{ material.amount }}</sui-table-cell>
 							<sui-table-cell collapsing
 							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
-							>{{ material.shelf_life  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
+							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
 								<button class="ui icon mini blue button" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 1" v-on:click="moveToArchive(index)"><i class="icon archive"></i></button>
 								<button class="ui icon mini green button" v-if="material.passport != null" v-on:click="showPassport(material.arrival_material_id)"><i class="icon eye"></i></button>
@@ -154,9 +154,11 @@ export default {
 		hideModal(){
 			this.isShowModal = false;
 		},
-		successExpenses(expenseAmount){
+		successExpenses(expenseAmount, renewaDate){
 			this.isShowModal = false;
 			this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].total - expenseAmount;
+			if(renewaDate)
+				this.gridData[this.materialIndex].shelf_life = renewaDate;
 		},
 		getStorage(){
 			axios.get('/api/reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error)));

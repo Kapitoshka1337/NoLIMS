@@ -4,11 +4,21 @@
 			{{ material.material }} ({{ material.measure }})
 			<div class="meta">{{ material.material_id }} / {{ dateFormat(material.date_order) }}</div>
 		</div>
-		<sui-modal-content v-if="validationExpense">
-			<div class="ui bottom warning message">
+		<sui-modal-content v-if="warning.length">
+			<div class="ui bottom warning message" v-for="warn in warning" :key="warn">
 				<i class="icon warning"></i>
-				{{ validationExpense }}
+				{{ warn }}
 			</div>
+		</sui-modal-content>
+		<sui-modal-content v-if="dangerShelfLife">
+			<sui-form>
+				<sui-form-field>
+					<sui-checkbox label="Продлить срок годности" v-model="renewalShelfLife"/>
+				</sui-form-field>
+				<sui-form-field>
+					<sui-input type="date" v-if="renewalShelfLife" v-model="renewalDate"></sui-input>
+				</sui-form-field>
+			</sui-form>
 		</sui-modal-content>
 		<sui-modal-content>
 			<sui-form>
@@ -23,8 +33,9 @@
 			</sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<button class="ui approve green button" v-bind:disabled="validationExpense" v-on:click="saveExpenses">Потратить</button>
+			<button class="ui approve green button" v-bind:disabled="warning.length = 0 && !renewalShelfLife" v-on:click="saveExpenses">Потратить</button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
+			<!-- validationExpense && !renewalShelfLife -->
 		</sui-modal-actions>
 	</sui-modal>
 </template>
@@ -40,32 +51,50 @@ export default {
 	data(){
 		return {
 			expensesAmount: 0,
-			expensesDate: null
+			expensesDate: null,
+			dangerShelfLife: false,
+			renewalShelfLife: false,
+			renewalDate: null,
+			url: 'storage/expenses',
+			warning: []
 		}
 	},
 	watch: {
 		material(){
 			let today = new Date();
 			this.expensesDate = today.toISOString().split('T')[0];
+		},
+		renewalShelfLife(newVal, oldVal){
+			if(newVal === true)
+				this.url = 'expenses/' + this.material.arrival_material_id + "/renewal";
+			else this.url = 'storage/expenses';
 		}
 	},
 	computed:{
 		show(){
 			return this.open
 		},
-		validationExpense(){
-			if ((this.material.total - this.expensesAmount) < 0)
-				return 'Нельзя потратить больше ' + this.material.total;
-			if(this.expensesAmount <= 0)
-				return 'Введите протраченное количество ';
-		},
 		today(){
 			let today = new Date();
 			this.expensesDate = today.toISOString().split('T')[0];
 		},
+		validationExpense(){
+			this.warning = [];
+			if(this.timeShelfLife(this.material.shelf_life) <= 0){
+				this.dangerShelfLife = true;
+				this.warning.push('Расход материала по истечение установленного срока годности (' + this.dateFormat(this.material.shelf_life) + ') запрещается');
+			}
+			if(this.expensesAmount <= 0)
+				this.warning.push('Введите протраченное количество ');
+			if ((this.material.total - this.expensesAmount) < 0)
+				this.warning.push('Нельзя потратить больше ' + this.material.total);
+		}
 	},
 	methods: {
 		hide(){
+			this.dangerShelfLife = false;
+			this.renewalShelfLife = false;
+			this.warning.length = 0;
 			this.$emit('close');
 		},
 		dateFormat(date){
@@ -76,19 +105,16 @@ export default {
 		saveExpenses(){
 			if ((this.material.total - this.expensesAmount) >= 0)
 			{
-				let obj = { id_arrival: this.material.arrival_material_id, amount: this.expensesAmount, date: this.expensesDate};
-				axios.post("/api/reagent/storage/expenses", JSON.stringify(obj), {
-					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', this.expensesAmount), this.expensesAmount = 0)).catch(error => (alert(error)));
-				//fetch('/api/reagent/storage/expenses', {
-				//	method: 'post',
-				//	//mode: 'no-cors',
-				//	headers: {
-				//		'Content-Type': 'application/json'
-				//	},
-				//	body: JSON.stringify(obj)
-				//}).then(response => (response.json().then(this.$emit('success', this.expensesAmount)))).then(error => (alert(error.data)));
+				let obj = { id_arrival: this.material.arrival_material_id, amount: this.expensesAmount, date: this.expensesDate, renewal: {status: this.renewalShelfLife, date: this.renewalDate}};
+				axios.post("/api/reagent/" + this.url, JSON.stringify(obj), {
+					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', this.expensesAmount, this.renewalDate), this.expensesAmount = 0)).catch(error => (alert(error.response.data.message)));
 			}
 		},
+		timeShelfLife(date){
+			let today = new Date();
+			let shelf_life = new Date(date.split(".").reverse().join("-"));
+			return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
+		}
 	}
 }
 </script>
