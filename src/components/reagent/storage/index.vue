@@ -94,13 +94,13 @@
 
 <script>
 import ExpensesModal from '../modals/expenses.vue';
-import Menu from '../menu.vue';
+//import Menu from '../menu.vue';
 import axios from 'axios';
 
 export default {
 	components: {
 		'expenses-modal': ExpensesModal,
-		'menu': Menu
+		//'menu': Menu
 	},
 	data () {
 		return {

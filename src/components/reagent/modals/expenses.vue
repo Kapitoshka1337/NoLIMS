@@ -4,10 +4,18 @@
 			{{ material.material }} ({{ material.measure }})
 			<div class="meta">{{ material.material_id }} / {{ dateFormat(material.date_order) }}</div>
 		</div>
-		<sui-modal-content v-if="warning.length">
-			<div class="ui bottom warning message" v-for="warn in warning" :key="warn">
+		<sui-modal-content>
+			<div class="ui bottom warning message" v-if="isTime">
 				<i class="icon warning"></i>
-				{{ warn }}
+				{{ isTime }}
+			</div>
+			<div class="ui bottom warning message" v-if="isAmount">
+				<i class="icon warning"></i>
+				{{ isAmount }}
+			</div>
+			<div class="ui bottom warning message" v-if="isTotal">
+				<i class="icon warning"></i>
+				{{ isTotal }}
 			</div>
 		</sui-modal-content>
 		<sui-modal-content v-if="dangerShelfLife">
@@ -33,9 +41,8 @@
 			</sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<button class="ui approve green button" v-bind:disabled="warning.length = 0 && !renewalShelfLife" v-on:click="saveExpenses">Потратить</button>
+			<button class="ui approve green button" v-on:click="saveExpenses" v-bind:disabled="isAmount || isTotal && (isAmount || !renewalShelfLife)">Потратить</button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
-			<!-- validationExpense && !renewalShelfLife -->
 		</sui-modal-actions>
 	</sui-modal>
 </template>
@@ -55,8 +62,7 @@ export default {
 			dangerShelfLife: false,
 			renewalShelfLife: false,
 			renewalDate: null,
-			url: 'storage/expenses',
-			warning: []
+			url: 'storage/expenses'
 		}
 	},
 	watch: {
@@ -68,33 +74,34 @@ export default {
 			if(newVal === true)
 				this.url = 'expenses/' + this.material.arrival_material_id + "/renewal";
 			else this.url = 'storage/expenses';
-		}
+		},
 	},
 	computed:{
 		show(){
 			return this.open
 		},
-		today(){
-			let today = new Date();
-			this.expensesDate = today.toISOString().split('T')[0];
-		},
-		validationExpense(){
-			this.warning = [];
+		isTime(){
 			if(this.timeShelfLife(this.material.shelf_life) <= 0){
 				this.dangerShelfLife = true;
-				this.warning.push('Расход материала по истечение установленного срока годности (' + this.dateFormat(this.material.shelf_life) + ') запрещается');
+				return 'Расход материала по истечение установленного срока годности (' + this.dateFormat(this.material.shelf_life) + ') запрещается';
 			}
+		},
+		isAmount(){
+			if(this.expensesAmount < 0)
+				this.expensesAmount = 0;
 			if(this.expensesAmount <= 0)
-				this.warning.push('Введите протраченное количество ');
+				return 'Введите протраченное количество';
+		},
+		isTotal(){
 			if ((this.material.total - this.expensesAmount) < 0)
-				this.warning.push('Нельзя потратить больше ' + this.material.total);
+				return 'Невозможно потратить больше ' + this.material.total;
 		}
 	},
 	methods: {
 		hide(){
 			this.dangerShelfLife = false;
 			this.renewalShelfLife = false;
-			this.warning.length = 0;
+			this.expensesAmount = 0;
 			this.$emit('close');
 		},
 		dateFormat(date){
