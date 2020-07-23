@@ -42,9 +42,7 @@ class ArrivalsController extends Controller
 				);
 			}
 			$order_material = reagent_arrival_material::create($arr);
-
 		});
-	// return response()->json($req,200);
 	}
 
 	public function materials($id)
