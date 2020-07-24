@@ -9,6 +9,8 @@ import SuiVue from 'semantic-ui-vue';
 import Hub from "./components/hub.vue";
 
 import Reagent from "./components/reagent/main.vue";
+import Errors from "./components/reagent/error/index.vue";
+
 import Storage from "./components/reagent/storage/index.vue";
 import Arrivals from "./components/reagent/arrivals/index.vue";
 import AppendArrivals from "./components/reagent/arrivals/create.vue";
@@ -29,7 +31,8 @@ var router = new VueRouter({
         { path: 'arrivals', component: Arrivals },
         { path: 'arrivals/create', component: AppendArrivals }, //ПЕРЕДЕЛАТЬ
         { path: 'expenses', component: Expenses },
-        { path: 'location', component: Location }
+        { path: 'location', component: Location },
+        { path: 'errors', component: Errors }
       ]
     }
   ]
