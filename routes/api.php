@@ -37,4 +37,9 @@ Route::prefix('reagent')->group(function () {
 	Route::prefix('material')->group(function(){
 		Route::get('', 'Reagent\MaterialController@view');
 	});
+	Route::prefix('locations')->group(function(){
+		Route::get('', 'Reagent\LocationController@view');
+		Route::post('', 'Reagent\LocationController@create');
+		Route::put('{id}/update', 'Reagent\LocationController@update');
+	});
 });
