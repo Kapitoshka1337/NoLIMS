@@ -42,4 +42,7 @@ Route::prefix('reagent')->group(function () {
 		Route::post('', 'Reagent\LocationController@create');
 		Route::put('{id}/update', 'Reagent\LocationController@update');
 	});
+	Route::prefix('errors')->group(function(){
+		Route::get('', 'Reagent\ErrorController@view');
+	});
 });
