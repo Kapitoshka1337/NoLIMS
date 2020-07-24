@@ -32,7 +32,7 @@
 			<sui-form>
 				<sui-form-field>
 					<label for="">Потраченное количество</label>
-					<sui-input type="number" v-model="expensesAmount" min="0"></sui-input>
+					<sui-input type="number" v-model="expensesAmount"></sui-input>
 				</sui-form-field>
 				<sui-form-field>
 					<label for="">Дата потребления</label>
@@ -41,7 +41,7 @@
 			</sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<button class="ui approve green button" v-on:click="saveExpenses" v-bind:disabled="isAmount || isTotal && (isAmount || !renewalShelfLife)">Потратить</button>
+			<button class="ui approve green button" v-on:click="saveExpenses" v-bind:disabled="(isAmount || isTotal) && (isAmount || !renewalShelfLife || isTotal)">Потратить</button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
 		</sui-modal-actions>
 	</sui-modal>
@@ -57,7 +57,7 @@ export default {
 	},
 	data(){
 		return {
-			expensesAmount: 0,
+			expensesAmount: null,
 			expensesDate: null,
 			dangerShelfLife: false,
 			renewalShelfLife: false,
@@ -74,11 +74,20 @@ export default {
 			if(newVal === true)
 				this.url = 'expenses/' + this.material.arrival_material_id + "/renewal";
 			else this.url = 'storage/expenses';
-		},
+		}
 	},
 	computed:{
 		show(){
 			return this.open
+		},
+		afterHide(){
+			if(!this.open)
+			{
+				this.dangerShelfLife = false;
+				this.renewalShelfLife = false;
+				this.expensesAmount = null;
+				this.material = null;
+			}
 		},
 		isTime(){
 			if(this.timeShelfLife(this.material.shelf_life) <= 0){
@@ -88,7 +97,7 @@ export default {
 		},
 		isAmount(){
 			if(this.expensesAmount < 0)
-				this.expensesAmount = 0;
+				this.expensesAmount = this.expensesAmount * -1;
 			if(this.expensesAmount <= 0)
 				return 'Введите протраченное количество';
 		},
@@ -99,9 +108,6 @@ export default {
 	},
 	methods: {
 		hide(){
-			this.dangerShelfLife = false;
-			this.renewalShelfLife = false;
-			this.expensesAmount = 0;
 			this.$emit('close');
 		},
 		dateFormat(date){

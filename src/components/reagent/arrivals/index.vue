@@ -14,7 +14,7 @@
 							</sui-dropdown-menu>
 						</sui-dropdown>
 					</router-link>
-					<router-link to="#" is="sui-menu-item" floated="right">Местоположение</router-link>
+					<router-link to="/reagent/location" is="sui-menu-item" floated="right">Местоположение</router-link>
 				</sui-menu>
 			</sui-grid-column>
 		</sui-grid-row>

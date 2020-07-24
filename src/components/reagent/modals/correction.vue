@@ -8,7 +8,7 @@
 			<sui-form>
 				<sui-form-field>
 					<label>Количество</label>
-					<sui-input type="number" v-model="correctAmount" min="0"></sui-input>
+					<sui-input type="number" v-model="correctAmount"></sui-input>
 				</sui-form-field>
 				<sui-form-field>
 					<label>Причина исправления</label>
@@ -33,17 +33,22 @@ export default {
 	},
 	data(){
 		return {
-			correctAmount: 0,
+			correctAmount: null,
 			correctReason: ''
 		}
 	},
 	computed:{
 		show(){
 			return this.open;
+		},
+		isNull(){
+			if(this.correctAmount < 0) this.correctAmount = this.correctAmount * -1;
 		}
 	},
 	methods: {
 		hide(){
+			this.correctAmount = null;
+			this.correctReason = '';
 			this.$emit('close');
 		},
 		saveCorrect(){

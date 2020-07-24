@@ -15,7 +15,7 @@
 							</sui-dropdown-menu>
 						</sui-dropdown>
 					</router-link>
-					<router-link to="#" is="sui-menu-item" floated="right">Местоположение</router-link>
+					<router-link to="/reagent/location" is="sui-menu-item">Местоположение</router-link>
 				</sui-menu>
 				<!-- <router-view></router-view> -->
 				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
@@ -77,7 +77,7 @@
 								<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
 								<sui-form>
 									<sui-form-field>
-										<input is="sui-input" type="text" :value="currentPage">
+										<input type="text" v-bind:value="currentPage">
 									</sui-form-field>
 								</sui-form>
 								<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
@@ -162,9 +162,6 @@ export default {
 		},
 		getStorage(){
 			axios.get('/api/reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error)));
-			//fetch("/api/reagent/storage").then(response => (
-				//response.json().then(data => (this.gridData = data))
-			//)).catch(function(data){alert(data)});
 		},
 		sortBy: function (key) {
 			if(key === 'action') return;

@@ -14,7 +14,7 @@
                             </sui-dropdown-menu>
                         </sui-dropdown>
                     </router-link>
-                    <router-link to="#" is="sui-menu-item" floated="right">Местоположение</router-link>
+                    <router-link to="/reagent/location" is="sui-menu-item" floated="right">Местоположение</router-link>
                 </sui-menu>
             </sui-grid-column>
         </sui-grid-row>
@@ -54,12 +54,7 @@
                                         </sui-form-field>
                                         <sui-form-field>
                                             <label>Местоположение</label>
-                                            <!-- <select is="sui-dropdown" v-model="material.id_location" class="ui search dropdown">
-                                                <option v-for="location in countries" v-bind:value="location.key">
-                                                    {{ location.text }}
-                                                </option>
-                                            </select> -->
-                                            <sui-dropdown :options="countries" search selection v-model="material.id_location"></sui-dropdown>
+                                            <sui-dropdown :options="forDropdown" search selection v-model="material.id_location"></sui-dropdown>
                                         </sui-form-field>
                                         <sui-form-field>
                                             <label>Наименование в накладной</label>
@@ -84,7 +79,7 @@
                     <sui-card-content>
                         <sui-button icon="search" floated="left" color="yellow" v-on:click="showModal"></sui-button>
                         <router-link to="/reagent/arrivals" is="sui-button" class="ui right floated orange" content="Отмена"></router-link>
-                        <sui-button content="Добавить" floated="right" color="green" v-bind:disabled="selectedMaterials <= 0" v-on:click="submitOrder"></sui-button>
+                        <sui-button content="Добавить" floated="right" color="green" v-bind:disabled="!selectedMaterials.length || !order.number || !order.date" v-on:click="submitOrder"></sui-button>
                     </sui-card-content>
                 </sui-card>
                 <search-material-modal :open="isShowModal" @save="hideModal" @close="closeModal" :material="materials"></search-material-modal>
@@ -106,11 +101,7 @@ export default {
             isShowModal: false,
             materials: [],
             selectedMaterials: [],
-            countries: [
-                { value: '1', text: 'Шкаф' },
-                { value: '2', text: 'Холодильник' },
-                { value: '3', text: 'Сумка' }
-            ],
+            listLocations: [],
             order: {
                 number: '',
                 date: '',
@@ -118,11 +109,31 @@ export default {
             }
         }
     },
+    computed:{
+        isNotNullLocations(){
+            if(!this.listLocations.length)
+                axios.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
+        },
+        forDropdown(){
+            if(this.listLocations.length)
+            {
+                let rows = [];
+                for(let item in this.listLocations){
+                    rows.push({
+                        key: this.listLocations[item].id,
+                        value: this.listLocations[item].id,
+                        text: this.listLocations[item].cabinet_number + " " + this.listLocations[item].place + " " + this.listLocations[item].notation
+                    });
+                }
+                return rows;
+            }
+        }
+    },
     methods: {
         hideModal(data){
             this.selectedMaterials = [];
             for(let material in data)
-            this.selectedMaterials.push(data[material]);
+                this.selectedMaterials.push(data[material]);
             this.isShowModal = false;
         },
         closeModal(){

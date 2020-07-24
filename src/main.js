@@ -13,6 +13,7 @@ import Storage from "./components/reagent/storage/index.vue";
 import Arrivals from "./components/reagent/arrivals/index.vue";
 import AppendArrivals from "./components/reagent/arrivals/create.vue";
 import Expenses from "./components/reagent/expenses/index.vue";
+import Location from "./components/reagent/location/index.vue";
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
@@ -27,7 +28,8 @@ var router = new VueRouter({
         { path: 'storage', component: Storage },
         { path: 'arrivals', component: Arrivals },
         { path: 'arrivals/create', component: AppendArrivals }, //ПЕРЕДЕЛАТЬ
-        { path: 'expenses', component: Expenses }
+        { path: 'expenses', component: Expenses },
+        { path: 'location', component: Location }
       ]
     }
   ]
