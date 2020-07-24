@@ -4,13 +4,6 @@
 			<sui-grid-column :width="3">
 			<div class="ui fluid card">
 				<div class="content">
-					<div class="ui bottom attached buttons">
-						<router-link to="/reagent/arrivals/create" class="ui yellow button">Новое</router-link>
-					</div>
-				</div>
-			</div>
-			<div class="ui fluid card">
-				<div class="content">
 					<div class="center aligned header">
 						<h2>Поиск</h2>
 					</div>
@@ -28,24 +21,24 @@
 			<sui-grid-column :width="13">
 				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
 				<div class="ui cards" v-if="gridData.length > 0">
-					<div class="ui fluid card" v-for="(order, index) in filteredRows" :key="index">
+					<div class="ui fluid card" v-for="(correct, index) in filteredRows" :key="index">
 						<div class="content">
 							<span v-bind:class="{
-							'ui top attached green right label': order.moving_type === 'Поступление',
-							'ui top attached blue right label': order.moving_type === 'Перевод'
-							}">{{ order.moving_type }}</span>
-							<div class="header">Заказ № {{ order.num_order }} от {{ today(order.date_order) }}</div>
+							'ui top attached yellow right label': correct.status === 'Рассмотрение',
+							'ui top attached green right label': correct.status === 'Потдвержден',
+							'ui top attached red right label': correct.status === 'Не потдтвержден'
+							}">{{ correct.status }}</span>
+							<div class="header">{{ correct.user }}</div>
 							<div class="meta">
-								<span class="category">Отдел: {{ order.department }}</span>
+								<span class="category">{{ today(correct.created_at) }}</span>
 							</div>
 						</div>
 						<div class="content">
-							<sui-button size="mini" icon="ban" color="red" floated="right"></sui-button>
-							<sui-button size="mini" icon="check"  color="green" floated="right"></sui-button>
+							<sui-button size="mini" content="Отклонить"  color="teal" floated="right"></sui-button>
+                            <sui-button size="mini" content="Принять" color="orange" floated="right"></sui-button>
 						</div>
 					</div>
 				</div>
-				<arrival-modal :open="isShowModal" @close="hideModal" :order="order"></arrival-modal>
 			</sui-grid-column>
 		</sui-grid-row>
 	</sui-grid>
@@ -87,10 +80,10 @@ export default {
 			//countPost: 100,
 			isShowModal: false,
             // orderIndex: null,
-            order: {
-                order: this.or,
-                materials: []
-            }
+            // order: {
+            //     order: this.or,
+            //     materials: []
+            // }
 			//filterKey: ''
 			//selectAllMaterials: false,
 			//selectedEquipments: [],
@@ -100,14 +93,14 @@ export default {
 		showModal(index = null){
             // this.orderIndex = index;
             this.order.order = this.gridData[index];
-            axios.get('/api/reagent/arrivals/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
+            axios.get('/api/reagent/corrections/').then(response => (this.order.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
 
         },
 		hideModal(){
 			this.isShowModal = false;
 		},
-		getArrivals(){
-			axios.get('/api/reagent/arrivals').then(response => (this.gridData = response.data)).catch(error => (alert(error)));
+		getCorrections(){
+			axios.get('/api/reagent/corrections').then(response => (this.gridData = response.data)).catch(error => (alert(error)));
 			//fetch("/api/reagent/storage").then(response => (
 				//response.json().then(data => (this.gridData = data))
 			//)).catch(function(data){alert(data)});
@@ -201,7 +194,7 @@ export default {
 		//}
 	},
 	mounted: function(){
-		this.getArrivals();
+		this.getCorrections();
 	}
   }
 </script>
