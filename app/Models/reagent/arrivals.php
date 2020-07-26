@@ -12,7 +12,8 @@ class arrivals extends Model
         'num_order',
         'date_order',
         'department',
-        'moving_type'
+        'moving_type',
+        'id_department'
         // 'id',
         // 'id_material',
         // 'id_department',

@@ -8,11 +8,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Reagent\storage;
 use App\Models\Reagent\arrival_material;
 
+// use Illuminate\Support\Facades\Auth;
+
 class StorageController extends Controller
 {
     public function view()
     {
-        return response()->json(storage::get(), 200);
+        // try {
+        //     $user = auth()->userOrFail();
+        // } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+        //     return response()->json($e->getMessage(), 401);
+        // }
+        return response()->json(storage::where('id_department', auth()->user()->getIdDepartment())->get(), 200);
     }
 
     public function toArchive(Request $req)

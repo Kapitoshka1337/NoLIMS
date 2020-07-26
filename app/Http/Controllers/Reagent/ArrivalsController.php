@@ -15,7 +15,7 @@ class ArrivalsController extends Controller
 {
 	public function view()
 	{
-		return response()->json(arrivals::get(), 200);
+		return response()->json(arrivals::where('id_department', auth()->user()->getIdDepartment())->get(), 200);
 	}
 
 	public function create(Request $req)
@@ -24,12 +24,12 @@ class ArrivalsController extends Controller
 			$new_order = new reagent_arrivals();
 			$new_order->num_order = $req->input("number");
 			$new_order->date_order = $req->input("date");
-			$new_order->id_department = 14;
+			$new_order->id_department = auth()->user()->getIdDepartment();
 			$new_order->id_moving_type = 1;
 			$new_order->save();
 			foreach ($req->input('materials') as $material)
 			{
-				$arr = array(
+				$arr[] = array(
 					'id_arrival' => $new_order->id,
 					'id_material' => $material['id'],
 					'packing_name' => $material['post_name'],
@@ -37,11 +37,9 @@ class ArrivalsController extends Controller
 					'id_location' => $material['id_location'],
 					'shelf_life' => $material['shelf_life'],
 					'date_create' => $material['date_create']
-					// 'id_passport' => ,
-					// 'archive' => 
 				);
 			}
-			$order_material = reagent_arrival_material::create($arr);
+			$order_material = reagent_arrival_material::insert($arr);
 		});
 	}
 

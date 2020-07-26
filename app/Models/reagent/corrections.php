@@ -15,6 +15,8 @@ class corrections extends Model
         'reason_correct',
         'spent_amount',
         'corrected_amount',
-        'id_outgo'
+        'id_outgo',
+        'id_material',
+        'date_response'
     ];
 }

@@ -12,13 +12,13 @@ class LocationController extends Controller
 {
     public function view()
     {
-        return response()->json(location::get(), 200);
+        return response()->json(location::where('id_department', auth()->user()->getIdDepartment())->get(), 200);
     }
 
     public function create(Request $req)
     {
         $location = new location();
-        $location->id_department = 14;
+        $location->id_department = auth()->user()->getIdDepartment();
         $location->cabinet_number = $req->input('cabinet_number');
         $location->place = $req->input('place');
         $location->notation = $req->input('notation');
@@ -28,7 +28,6 @@ class LocationController extends Controller
 
     public function update($id, Request $req)
     {
-        // return response()->json($req, 200);
         DB::transaction(function() use ($req, $id){
             location::where('id', $id)->update([
                 'cabinet_number' => $req->input('cabinet_number'),

@@ -14,35 +14,47 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-	return $request->user();
+Route::prefix('auth')->group(function (){
+	Route::post('login', 'AuthController@login');
+	Route::post('logout', 'AuthController@logout');
+	Route::post('singup', 'AuthController@singup');
+	Route::post('refresh', 'AuthController@refresh');
 });
 
-Route::prefix('reagent')->group(function () {
-	Route::prefix('storage')->group(function(){
-		Route::get('', 'Reagent\StorageController@view');
-		Route::post('expenses', 'Reagent\ExpensesController@create');
-		Route::post('archive', 'Reagent\StorageController@toArchive');
-	});
-	Route::prefix('arrivals')->group(function(){
-		Route::get('', 'Reagent\ArrivalsController@view');
-		Route::post('', 'Reagent\ArrivalsController@create');
-		Route::get('/{id}/materials', 'Reagent\ArrivalsController@materials');
-	});
-	Route::prefix('expenses')->group(function(){
-		Route::get('', 'Reagent\ExpensesController@view');
-		Route::post('correct', 'Reagent\ExpensesController@create_correct');
-		Route::post('/{id}/renewal', 'Reagent\ExpensesController@renewal');
-	});
-	Route::prefix('material')->group(function(){
-		Route::get('', 'Reagent\MaterialController@view');
-	});
-	Route::prefix('locations')->group(function(){
-		Route::get('', 'Reagent\LocationController@view');
-		Route::post('', 'Reagent\LocationController@create');
-		Route::put('{id}/update', 'Reagent\LocationController@update');
-	});
-	Route::prefix('errors')->group(function(){
-		Route::get('', 'Reagent\ErrorController@view');
+Route::prefix('structure')->group(function(){
+	Route::get('', 'Structure\StructureController@structure');
+	Route::get('users', 'Structure\StructureController@users');
+});
+
+Route::group(['middleware' => ['jwt.verify']], function() {
+	Route::prefix('reagent')->group(function () {
+		Route::prefix('storage')->group(function(){
+			Route::get('', 'Reagent\StorageController@view');
+			Route::post('expenses', 'Reagent\ExpensesController@create');
+			Route::post('archive', 'Reagent\StorageController@toArchive');
+		});
+		Route::prefix('arrivals')->group(function(){
+			Route::get('', 'Reagent\ArrivalsController@view');
+			Route::post('', 'Reagent\ArrivalsController@create');
+			Route::get('/{id}/materials', 'Reagent\ArrivalsController@materials');
+		});
+		Route::prefix('expenses')->group(function(){
+			Route::get('', 'Reagent\ExpensesController@view');
+			Route::post('correct', 'Reagent\ExpensesController@create_correct');
+			Route::post('/{id}/renewal', 'Reagent\ExpensesController@renewal');
+		});
+		Route::prefix('material')->group(function(){
+			Route::get('', 'Reagent\MaterialController@view');
+		});
+		Route::prefix('locations')->group(function(){
+			Route::get('', 'Reagent\LocationController@view');
+			Route::post('', 'Reagent\LocationController@create');
+			Route::put('{id}', 'Reagent\LocationController@update');
+		});
+		Route::prefix('corrections')->group(function(){
+			Route::get('', 'Reagent\CorrectionController@view');
+			Route::put('allow/{id}', 'Reagent\CorrectionController@allowUpdate');
+			Route::put('deny/{id}', 'Reagent\CorrectionController@denyUpdate');
+		});
 	});
 });

@@ -11,10 +11,13 @@ class correction extends Model
     protected $fillable = [
         'id',
         'id_user',
+        'id_department',
         'id_outgo',
         'corrected_amount',
         'reason_correct',
+        'spent_amount',
         'created_at',
-        'id_status'
+        'id_status',
+        'date_response'
     ];
 }
