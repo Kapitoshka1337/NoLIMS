@@ -6,15 +6,13 @@
 					<router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
 					<router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
 					<router-link to="#" is="sui-menu-item">Списание</router-link>
-					<router-link to="#" is="sui-menu-item">
-						<sui-dropdown text="Передача">
-							<sui-dropdown-menu>
-								<sui-dropdown-item>Запрос</sui-dropdown-item>
-								<sui-dropdown-item>История</sui-dropdown-item>
-							</sui-dropdown-menu>
-						</sui-dropdown>
+					<router-link to="#" is="sui-dropdown" item simple text="Передача">
+						<sui-dropdown-menu>
+							<sui-dropdown-item>Запрос</sui-dropdown-item>
+							<sui-dropdown-item>История</sui-dropdown-item>
+						</sui-dropdown-menu>
 					</router-link>
-					<router-link to="/reagent/location" is="sui-menu-item" floated="right">Местоположение</router-link>
+					<router-link to="/reagent/locations" is="sui-menu-item" floated="right">Местоположение</router-link>
 				</sui-menu>
 			</sui-grid-column>
 		</sui-grid-row>
@@ -43,8 +41,8 @@
 				</div>
 			</div>
 			</sui-grid-column>
-			<sui-grid-column :width="13">
-				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
+			<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
+			<sui-grid-column :width="13" v-if="gridData.length > 0">
 					<!--<sui-table selectable compact v-if="gridData.length > 0">
 						<sui-table-header>
 							<sui-table-row>
@@ -98,7 +96,7 @@
 							</sui-table-header-cell>
 						</sui-table-footer>
 					</sui-table>-->
-				<div class="ui cards" v-if="gridData.length > 0">
+				<div class="ui cards">
 					<div class="ui fluid card" v-for="(order, index) in filteredRows" :key="index">
 						<div class="content">
 							<span v-bind:class="{
@@ -122,7 +120,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 import ArrivalModal from '../modals/arrival_material.vue'
 
 export default {
@@ -170,7 +168,7 @@ export default {
 		showModal(index = null){
             // this.orderIndex = index;
             this.order.order = this.gridData[index];
-            axios.get('/api/reagent/arrivals/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
+            this.$http.get('/api/reagent/arrivals/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
             //this.isShowModal = true;
         },
 		hideModal(){
@@ -181,7 +179,7 @@ export default {
 		//	this.gridData[this.orderIndex].total = this.gridData[this.orderIndex].total - expenseAmount;
 		//},
 		getArrivals(){
-			axios.get('/api/reagent/arrivals').then(response => (this.gridData = response.data)).catch(error => (alert(error)));
+			this.$http.get('/api/reagent/arrivals').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 			//fetch("/api/reagent/storage").then(response => (
 				//response.json().then(data => (this.gridData = data))
 			//)).catch(function(data){alert(data)});
@@ -285,7 +283,7 @@ export default {
 		//	return this.paginate(this.filteredRows);
 		//}
 	},
-	mounted: function(){
+	created(){
 		this.getArrivals();
 	}
   }

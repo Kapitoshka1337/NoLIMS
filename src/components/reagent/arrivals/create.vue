@@ -6,15 +6,13 @@
                     <router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
                     <router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
                     <router-link to="#" is="sui-menu-item">Списание</router-link>
-                    <router-link to="#" is="sui-menu-item">
-                        <sui-dropdown text="Передача">
-                            <sui-dropdown-menu>
-                                <sui-dropdown-item>Запрос</sui-dropdown-item>
-                                <sui-dropdown-item>История</sui-dropdown-item>
-                            </sui-dropdown-menu>
-                        </sui-dropdown>
-                    </router-link>
-                    <router-link to="/reagent/location" is="sui-menu-item" floated="right">Местоположение</router-link>
+					<router-link to="#" is="sui-dropdown" item simple text="Передача">
+						<sui-dropdown-menu>
+							<sui-dropdown-item>Запрос</sui-dropdown-item>
+							<sui-dropdown-item>История</sui-dropdown-item>
+						</sui-dropdown-menu>
+					</router-link>
+                    <router-link to="/reagent/locations" is="sui-menu-item" floated="right">Местоположение</router-link>
                 </sui-menu>
             </sui-grid-column>
         </sui-grid-row>
@@ -32,10 +30,10 @@
                                     <label>от</label>
                                     <sui-input type="date" v-model="order.date"></sui-input>
                                 </sui-form-field>
-                                <sui-form-field width="eight">
+                                <!--<sui-form-field width="eight">
                                     <label>Отдел</label>
                                     <sui-input readonly></sui-input>
-                                </sui-form-field>
+                                </sui-form-field>-->
                             </sui-form-fields>
                         </sui-form>
                     </sui-card-content>

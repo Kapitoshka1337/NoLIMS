@@ -2,22 +2,18 @@
 <div class="padded" is="sui-grid">
 		<sui-grid-row>
 			<sui-grid-column>
-				<!-- <menu></menu> -->
 				<sui-menu :width="3">
 					<router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
 					<router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
 					<router-link to="#" is="sui-menu-item">Списание</router-link>
-					<router-link to="#" is="sui-menu-item">
-						<sui-dropdown text="Передача">
-							<sui-dropdown-menu>
-								<sui-dropdown-item>Запрос</sui-dropdown-item>
-								<sui-dropdown-item>История</sui-dropdown-item>
-							</sui-dropdown-menu>
-						</sui-dropdown>
+					<router-link to="#" is="sui-dropdown" item simple text="Передача">
+						<sui-dropdown-menu>
+							<sui-dropdown-item>Запрос</sui-dropdown-item>
+							<sui-dropdown-item>История</sui-dropdown-item>
+						</sui-dropdown-menu>
 					</router-link>
-					<router-link to="/reagent/location" is="sui-menu-item" floated="right">Местоположение</router-link>
+					<router-link to="/reagent/locations" is="sui-menu-item" floated="right">Местоположение</router-link>
 				</sui-menu>
-				<!-- <router-view></router-view> -->
 				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
 				<sui-table selectable compact v-if="gridData.length > 0">
 					<sui-table-header>
@@ -32,13 +28,12 @@
 							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
 								<sui-form>
 									<sui-form-field>
-										<sui-input type="text" placeholder="Поиск" v-model="filterKey"></sui-input>
+										<sui-input type="text" placeholder="Поиск по КОД / МАТЕРИАЛ / ПОТРАЧЕНО" v-model="filterKey"></sui-input>
 									</sui-form-field>
 								</sui-form>
 							</sui-table-header-cell>
 						</sui-table-row>
 						<sui-table-row>
-							<!--<sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell>-->
 							<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
 								{{ Object.values(column)[0] }}
 								<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
@@ -49,7 +44,6 @@
 						<sui-table-row v-for="(material, index) in paginateRows" :key="index">
 							<td class="collapsing">{{ material.material_id }}</td>
 							<td class="collapsing">{{ material.date_order }}</td>
-							<!-- <td class="two wide">{{ material.type }}</td> -->
 							<td>{{ material.material }}</td>
 							<td class="collapsing">{{ material.measure }}</td>
 							<td class="collapsing">{{ material.amount_outgo }}</td>
@@ -60,13 +54,7 @@
 							<td class="collapsing">
 								<sui-icon v-on:click="showModal(index)" v-if="material.moving_type === 'Потребление'" color="green" name="exclamation circle" size="large"></sui-icon>
 								<sui-icon v-if="material.moving_type === 'Продление'" color="yellow" name="exclamation triangle" size="large"></sui-icon>
-								<sui-icon v-if="material.moving_type === 'Перевод'" color="blue" name="info" size="large"></sui-icon>
-								<!-- <sui-label circular color="yellow" v-if="material.moving_type === 'Продление'"><sui-icon name="exclamation triangle"></sui-icon></sui-label> -->
-								<!-- <sui-label color="blue" v-if="material.moving_type === 'Перевод'"><sui-icon name="info"></sui-icon></sui-label> -->
-								<!-- <sui-label circular color="green" v-if="material.moving_type === 'Потребление'"><sui-icon name="exclamation circle"></sui-icon></sui-label> -->
-								<!-- <button class="ui green icon mini button" v-if="material.moving_type === 'Потребление'" v-on:click="showModal(index)"><i class="icon exclamation"></i></button> -->
-								<!-- <a class="ui yellow icon mini button" v-if="material.moving_type === 'Продление'"><i class="icon warning"></i></a> -->
-							</td>
+								<sui-icon v-if="material.moving_type === 'Перевод'" color="blue" name="info" size="large"></sui-icon>							</td>
 						</sui-table-row>
 					</sui-table-body>
 					<sui-table-footer>
@@ -96,7 +84,7 @@
 
 <script>
 import CorrectionModal from '../modals/correction.vue'
-import axios from 'axios';
+//import axios from 'axios';
 
 export default {
 	components: {
@@ -145,8 +133,6 @@ export default {
 			isShowModal: false,
 			materialIndex: null,
 			filterKey: ''
-			//selectAllMaterials: false,
-			//selectedEquipments: [],
 		}
 	},
 	methods: {
@@ -159,13 +145,9 @@ export default {
 		},
 		successExpenses(expenseAmount){
 			this.isShowModal = false;
-			// this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].total - expenseAmount;
 		},
 		getExpenses(){
-			axios.get('/api/reagent/expenses').then(response => (this.gridData = response.data)).catch(error => (alert(error)));
-			//fetch("/api/reagent/storage").then(response => (
-				//response.json().then(data => (this.gridData = data))
-			//)).catch(function(data){alert(data)});
+			this.$http.get('/api/reagent/expenses').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		sortBy: function (key) {
 			if(key === 'action') return;
@@ -229,11 +211,24 @@ export default {
 			{
 				rows = rows.filter(function(row)
 				{
-					return Object.keys(row).some(function(key)
-					{
-						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);
-					});
+					return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1
+					|| String(row['material']).toLowerCase().indexOf(filterKey) > -1
+					|| String(row['date_usage']).toLowerCase().indexOf(filterKey) > -1;
 				});
+//var app = new Vue({
+//  el: '#app',
+//  data: {
+//    keyword: '',
+//    samsungList: []
+//  },
+//  computed: {
+//    samsungFilteredList() {
+//      return this.samsungList.filter((samsung) => {
+//        return this.keyword.toLowerCase().split(' ').every(v => samsung.title.toLowerCase().includes(v));
+//      });
+//    }
+//  }
+//});
 			}
 			return rows.filter(r =>
 			{
@@ -247,7 +242,7 @@ export default {
 			return this.paginate(this.filteredRows);
 		}
 	},
-	mounted: function(){
+	created(){
 		this.getExpenses();
 	}
   }

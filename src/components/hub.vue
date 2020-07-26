@@ -1,17 +1,30 @@
 <template>
-    <sui-card-group :items-per-row="4">
-      <sui-card v-for="(card, index) in cards" :key="index">
-        <sui-card-content>
-          <sui-card-header>{{ card.header }}</sui-card-header>
-        </sui-card-content>
-        <sui-card-content>
-          <sui-card-description>{{ card.description }}</sui-card-description>
-        </sui-card-content>
-        <sui-card-content extra>
-          <router-link v-bind:to="card.link" is="sui-button" color="green" fluid>Открыть</router-link>
-        </sui-card-content>
-      </sui-card>
-    </sui-card-group>
+<div>
+  <sui-menu>
+    <sui-menu-item header>НеЛИС</sui-menu-item>
+    <!--<sui-menu-item position="right">{{ user.name }}</sui-menu-item>-->
+    <sui-menu-item position="right" v-on:click="logout()"><sui-icon name="sign out"/></sui-menu-item>
+  </sui-menu>
+  <sui-grid class="padded">
+    <sui-grid-row>
+      <sui-grid-column>
+        <sui-card-group :items-per-row="4">
+          <sui-card v-for="(card, index) in cards" :key="index">
+            <sui-card-content>
+              <sui-card-header>{{ card.header }}</sui-card-header>
+            </sui-card-content>
+            <sui-card-content>
+              <sui-card-description>{{ card.description }}</sui-card-description>
+            </sui-card-content>
+            <sui-card-content extra>
+              <router-link v-bind:to="card.link" is="sui-button" color="green" fluid>Открыть</router-link>
+            </sui-card-content>
+          </sui-card>
+        </sui-card-group>
+      </sui-grid-column>
+    </sui-grid-row>
+  </sui-grid>
+</div>
 </template>
 
 <script>
@@ -41,6 +54,17 @@ export default {
         }
       ]
     }
+  },
+  //computed:{
+  //  user(){
+  //    return this.$store.getters.user;      
+  //  }
+  //},
+  methods:{
+    logout(){
+        this.$store.dispatch('logout').then(() => {
+          this.$router.push('/login')});
+      }
   }
 }
 </script>

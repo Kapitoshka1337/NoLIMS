@@ -6,15 +6,13 @@
                     <router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
                     <router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
                     <router-link to="#" is="sui-menu-item">Списание</router-link>
-                    <router-link to="#" is="sui-menu-item">
-                        <sui-dropdown text="Передача">
-                            <sui-dropdown-menu>
-                                <sui-dropdown-item>Запрос</sui-dropdown-item>
-                                <sui-dropdown-item>История</sui-dropdown-item>
-                            </sui-dropdown-menu>
-                        </sui-dropdown>
-                    </router-link>
-                    <router-link to="/reagent/location" is="sui-menu-item" floated="right">Местоположение</router-link>
+					<router-link to="#" is="sui-dropdown" item simple text="Передача">
+						<sui-dropdown-menu>
+							<sui-dropdown-item>Запрос</sui-dropdown-item>
+							<sui-dropdown-item>История</sui-dropdown-item>
+						</sui-dropdown-menu>
+					</router-link>
+                    <router-link to="/reagent/locations" is="sui-menu-item" floated="right">Местоположение</router-link>
                 </sui-menu>
 				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
 				<sui-container>
@@ -71,7 +69,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 import LocationModalEdit from '../modals/location_edit.vue';
 import LocationModalCreate from '../modals/location_create.vue';
 
@@ -124,7 +122,7 @@ export default {
             this.gridData.push(data);
         },
 		getLocation(){
-			axios.get('/api/reagent/locations').then(response => (this.gridData = response.data)).catch(error => (alert(error)));
+			this.$http.get('/api/reagent/locations').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		sortBy: function (key) {
 			if(key === 'action') return;
@@ -191,7 +189,7 @@ export default {
             return rows;
         }
 	},
-	mounted: function(){
+	created(){
 		this.getLocation();
 	}
   }

@@ -24,8 +24,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-
+//import axios from 'axios';
 export default {
 	props: {
 		open: Boolean,
@@ -55,19 +54,15 @@ export default {
 			if (this.correctReason != '')
 			{
 				let	correct = {
-				id_outgo: this.material.id,
-				corrected_amount: this.correctAmount,
-				reason_correct: this.correctReason,
-				created_at: this.getToday(),
-				id_status: 1};
-				axios.post("/api/reagent/expenses/correct", JSON.stringify(correct), {
+					id_outgo: this.material.id,
+					corrected_amount: this.correctAmount,
+					spent_amount: this.material.amount_outgo,
+					reason_correct: this.correctReason
+				};
+				this.$http.post("/api/reagent/expenses/correct", JSON.stringify(correct), {
 					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'))).catch(error => (alert(error)));
 			}
-		},
-		getToday () {
-			let today = new Date();
-			return today.toISOString().split('T')[0];
-		},
+		}
 	}
 }
 </script>

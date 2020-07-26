@@ -18,7 +18,7 @@
 				{{ isTotal }}
 			</div>
 		</sui-modal-content>
-		<sui-modal-content v-if="dangerShelfLife">
+		<sui-modal-content v-if="isTime">
 			<sui-form>
 				<sui-form-field>
 					<sui-checkbox label="Продлить срок годности" v-model="renewalShelfLife"/>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 
 export default {
 	props: {
@@ -59,11 +59,17 @@ export default {
 		return {
 			expensesAmount: null,
 			expensesDate: null,
-			dangerShelfLife: false,
+			//dangerShelfLife: false,
 			renewalShelfLife: false,
 			renewalDate: null,
 			url: 'storage/expenses'
 		}
+	},
+	beforeDestroy(){
+		//this.dangerShelfLife = !this.dangerShelfLife;
+		this.renewalShelfLife = !this.renewalShelfLife;
+		this.expensesAmount = null;
+		this.material = null;
 	},
 	watch: {
 		material(){
@@ -74,24 +80,33 @@ export default {
 			if(newVal === true)
 				this.url = 'expenses/' + this.material.arrival_material_id + "/renewal";
 			else this.url = 'storage/expenses';
-		}
+		},
+		//open(newVal){
+		//	if(newVal === false)
+		//	{
+		//		this.dangerShelfLife = false;
+		//		this.renewalShelfLife = false;
+		//		this.expensesAmount = null;
+		//		this.material = null;
+		//	}
+		//}
 	},
 	computed:{
 		show(){
 			return this.open
 		},
-		afterHide(){
-			if(!this.open)
-			{
-				this.dangerShelfLife = false;
-				this.renewalShelfLife = false;
-				this.expensesAmount = null;
-				this.material = null;
-			}
-		},
+		//afterHide(){
+		//	if(!this.open)
+		//	{
+		//		this.dangerShelfLife = false;
+		//		this.renewalShelfLife = false;
+		//		this.expensesAmount = null;
+		//		this.material = null;
+		//	}
+		//},
 		isTime(){
 			if(this.timeShelfLife(this.material.shelf_life) <= 0){
-				this.dangerShelfLife = true;
+				//this.dangerShelfLife = true;
 				return 'Расход материала по истечение установленного срока годности (' + this.dateFormat(this.material.shelf_life) + ') запрещается';
 			}
 		},
@@ -119,8 +134,8 @@ export default {
 			if ((this.material.total - this.expensesAmount) >= 0)
 			{
 				let obj = { id_arrival: this.material.arrival_material_id, amount: this.expensesAmount, date: this.expensesDate, renewal: {status: this.renewalShelfLife, date: this.renewalDate}};
-				axios.post("/api/reagent/" + this.url, JSON.stringify(obj), {
-					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', this.expensesAmount, this.renewalDate), this.expensesAmount = 0)).catch(error => (alert(error.response.data.message)));
+				this.$http.post("/api/reagent/" + this.url, JSON.stringify(obj), {
+					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', this.expensesAmount, this.renewalDate))).catch(error => (alert(error.response.data.message)));
 			}
 		},
 		timeShelfLife(date){

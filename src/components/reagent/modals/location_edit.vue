@@ -7,15 +7,15 @@
                 <sui-form-field>
                     <label>Кабинет</label>
                     <!-- <sui-input type="text" v-model="material.cabinet_number"></sui-input> -->
-                    <sui-dropdown :options="materials" search selection v-model="material.cabinet_number"></sui-dropdown>
+                    <sui-dropdown :options="materials" search selection v-model="isMaterial.cabinet_number"></sui-dropdown>
                 </sui-form-field>
                 <sui-form-field>
                     <label>Место (мебель)</label>
-                    <sui-input type="text" v-model="material.place"></sui-input>
+                    <sui-input type="text" v-model="isMaterial.place"></sui-input>
                 </sui-form-field>
                 <sui-form-field>
                     <label>Полка (номер)</label>
-                    <sui-input type="text" v-model="material.notation"></sui-input>
+                    <sui-input type="text" v-model="isMaterial.notation"></sui-input>
                 </sui-form-field>
             </sui-form>
 		</sui-modal-content>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 
 export default {
 	props: {
@@ -42,6 +42,9 @@ export default {
 	computed:{
 		show(){
 			return this.open
+		},
+		isMaterial(){
+			return this.material;
 		}
 	},
 	methods: {
@@ -49,7 +52,7 @@ export default {
 			this.$emit('close');
 		},
 		saveExpenses(){
-            axios.put("/api/reagent/locations/" + this.material.id + "/update", JSON.stringify(this.material), {
+            this.$http.put("/api/reagent/locations/" + this.isMaterial.id, JSON.stringify(this.isMaterial), {
 					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'))).catch(error => (alert(error.response.data.message)));
 		},
 	}

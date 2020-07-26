@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 
 export default {
 	props: {
@@ -52,7 +52,7 @@ export default {
 			this.$emit('close');
 		},
 		createLocation(){
-            axios.post("/api/reagent/locations", JSON.stringify(this.material), {headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', response.data))).catch(error => (alert(error.response.data.message)));
+            this.$http.post("/api/reagent/locations", JSON.stringify(this.material), {headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', response.data))).catch(error => (alert(error.response.data.message)));
 		},
 	}
 }
