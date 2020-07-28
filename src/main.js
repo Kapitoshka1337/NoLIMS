@@ -12,6 +12,7 @@ import Axios from 'axios';
 import Login from "./components/auth/login.vue";
 import Singup from "./components/auth/singup.vue";
 import Hub from "./components/hub.vue";
+import MenuNav from './components/reagent/menu.vue';
 
 import Reagent from "./components/reagent/main.vue";
 import Corrections from "./components/reagent/correction/index.vue";
@@ -33,6 +34,7 @@ if(token){
 Vue.use(SuiVue);
 Vue.use(VueRouter);
 Vue.component('Hub', Hub);
+Vue.component('menu-nav', MenuNav);
 
 var router = new VueRouter({
   mode: 'history',

@@ -1,21 +1,12 @@
 <template>
-	<div class="padded" is="sui-grid">
+	<sui-grid class="padded">
 		<sui-grid-row>
 			<sui-grid-column>
-				<!-- <menu></menu> -->
-				<sui-menu :width="3">
-					<router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
-					<router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
-					<router-link to="#" is="sui-menu-item">Списание</router-link>
-					<router-link to="#" is="sui-dropdown" item simple text="Передача">
-						<sui-dropdown-menu>
-							<router-link to="/reagent/moving" is="sui-dropdown-item" item>Запрос</router-link>
-							<router-link to="/reagent/moving/history" is="sui-dropdown-item" item>История</router-link>
-						</sui-dropdown-menu>
-					</router-link>
-					<router-link to="/reagent/locations" is="sui-menu-item">Местоположение</router-link>
-				</sui-menu>
-				<!-- <router-view></router-view> -->
+				<menu-nav></menu-nav>
+			</sui-grid-column>
+		</sui-grid-row>
+		<sui-grid-row>
+			<sui-grid-column>
 				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
 				<sui-table selectable compact v-if="gridData.length > 0">
 					<sui-table-header>
@@ -87,18 +78,17 @@
 				<expenses-modal :open="isShowModal" @close="hideModal" @success="successExpenses" :material="paginateRows[materialIndex]"></expenses-modal>
 			</sui-grid-column>
 		</sui-grid-row>
-	</div>
+	</sui-grid>
 </template>
 
 <script>
 import ExpensesModal from '../modals/expenses.vue';
-//import Menu from '../menu.vue';
-//import axios from 'axios';
+//import MenuNav from '../menu.vue';
 
 export default {
 	components: {
 		'expenses-modal': ExpensesModal,
-		//'menu': Menu
+		//'menu-nav': MenuNav
 	},
 	data () {
 		return {

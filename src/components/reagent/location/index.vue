@@ -1,8 +1,13 @@
 <template>
     <sui-grid class="padded">
+		<sui-grid-row>
+			<sui-grid-column>
+				<menu-nav></menu-nav>
+			</sui-grid-column>
+		</sui-grid-row>
         <sui-grid-row>
             <sui-grid-column>
-                <sui-menu :width="3">
+                <!--<sui-menu :width="3">
                     <router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
                     <router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
                     <router-link to="#" is="sui-menu-item">Списание</router-link>
@@ -13,7 +18,7 @@
 						</sui-dropdown-menu>
 					</router-link>
                     <router-link to="/reagent/locations" is="sui-menu-item" floated="right">Местоположение</router-link>
-                </sui-menu>
+                </sui-menu>-->
 				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
 				<sui-container>
                     <sui-table selectable compact v-if="gridData.length > 0">
@@ -69,9 +74,9 @@
 </template>
 
 <script>
-//import axios from 'axios';
 import LocationModalEdit from '../modals/location_edit.vue';
 import LocationModalCreate from '../modals/location_create.vue';
+//import MenuNav from '../menu.vue';
 
 export default {
 	components: {

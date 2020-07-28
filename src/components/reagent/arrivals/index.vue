@@ -2,18 +2,7 @@
 	<sui-grid class="padded">
 		<sui-grid-row>
 			<sui-grid-column>
-				<sui-menu>
-					<router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
-					<router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
-					<router-link to="#" is="sui-menu-item">Списание</router-link>
-					<router-link to="#" is="sui-dropdown" item simple text="Передача">
-						<sui-dropdown-menu>
-							<router-link to="/reagent/moving" is="sui-dropdown-item" item>Запрос</router-link>
-							<router-link to="/reagent/moving/history" is="sui-dropdown-item" item>История</router-link>
-						</sui-dropdown-menu>
-					</router-link>
-					<router-link to="/reagent/locations" is="sui-menu-item" floated="right">Местоположение</router-link>
-				</sui-menu>
+				<menu-nav></menu-nav>
 			</sui-grid-column>
 		</sui-grid-row>
 		<sui-grid-row>
