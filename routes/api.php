@@ -30,6 +30,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::prefix('reagent')->group(function () {
 		Route::prefix('storage')->group(function(){
 			Route::get('', 'Reagent\StorageController@view');
+			Route::get('all', 'Reagent\StorageController@viewAll');
 			Route::post('expenses', 'Reagent\ExpensesController@create');
 			Route::post('archive', 'Reagent\StorageController@toArchive');
 		});
@@ -45,6 +46,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		});
 		Route::prefix('material')->group(function(){
 			Route::get('', 'Reagent\MaterialController@view');
+		});
+		Route::prefix('moving')->group(function(){
+			Route::get('', 'Reagent\MovingController@view');
+			Route::post('', 'Reagent\MovingController@create');
 		});
 		Route::prefix('locations')->group(function(){
 			Route::get('', 'Reagent\LocationController@view');
