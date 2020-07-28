@@ -22,6 +22,11 @@ class StorageController extends Controller
         return response()->json(storage::where('id_department', auth()->user()->getIdDepartment())->get(), 200);
     }
 
+    public function viewAll()
+    {
+        return response()->json(storage::get(), 200);
+    }
+
     public function toArchive(Request $req)
     {
         $arrival_mat = arrival_material::find($req->input('id'));
