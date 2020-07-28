@@ -37,12 +37,12 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('arrivals')->group(function(){
 			Route::get('', 'Reagent\ArrivalsController@view');
 			Route::post('', 'Reagent\ArrivalsController@create');
-			Route::get('/{id}/materials', 'Reagent\ArrivalsController@materials');
+			Route::get('{id}/materials', 'Reagent\ArrivalsController@materials');
 		});
 		Route::prefix('expenses')->group(function(){
 			Route::get('', 'Reagent\ExpensesController@view');
 			Route::post('correct', 'Reagent\ExpensesController@create_correct');
-			Route::post('/{id}/renewal', 'Reagent\ExpensesController@renewal');
+			Route::post('{id}/renewal', 'Reagent\ExpensesController@renewal');
 		});
 		Route::prefix('material')->group(function(){
 			Route::get('', 'Reagent\MaterialController@view');
@@ -50,6 +50,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('moving')->group(function(){
 			Route::get('', 'Reagent\MovingController@view');
 			Route::post('', 'Reagent\MovingController@create');
+			Route::put('allow/{id}', 'Reagent\MovingController@allowUpdate');
+			Route::put('deny/{id}', 'Reagent\MovingController@denyUpdate');
 		});
 		Route::prefix('locations')->group(function(){
 			Route::get('', 'Reagent\LocationController@view');
