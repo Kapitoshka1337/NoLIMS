@@ -32,11 +32,11 @@ export default {
   data () {
     return {
       cards: [
-        {
-          header: 'Госзадание',
-          description: 'Описание',
-          link: '/assignment'
-        },
+        // {
+        //   header: 'Госзадание',
+        //   description: 'Описание',
+        //   link: '/assignment'
+        // },
         // {
         //   header: 'Виварий',
         //   description: 'Описание',
@@ -47,11 +47,11 @@ export default {
           description: 'Описание',
           link: '/reagent'
         },
-        {
-          header: 'Оборудование',
-          description: 'Описание',
-          link: '/equipment'
-        }
+        // {
+        //   header: 'Оборудование',
+        //   description: 'Описание',
+        //   link: '/equipment'
+        // }
       ]
     }
   },

@@ -1,0 +1,329 @@
+<template>
+	<div class="padded" is="sui-grid">
+		<sui-grid-row>
+			<sui-grid-column>
+				<sui-menu :width="3">
+					<router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
+					<router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
+					<router-link to="#" is="sui-menu-item">Списание</router-link>
+					<router-link to="#" is="sui-dropdown" item simple text="Передача">
+						<sui-dropdown-menu>
+							<router-link to="/reagent/moving" is="sui-dropdown-item" item>Запрос</router-link>
+							<sui-dropdown-item>История</sui-dropdown-item>
+						</sui-dropdown-menu>
+					</router-link>
+					<router-link to="/reagent/locations" is="sui-menu-item">Местоположение</router-link>
+				</sui-menu>
+				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
+				<sui-table selectable compact v-if="gridData.length > 0">
+					<sui-table-header>
+						<sui-table-row>
+							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+                                Формирование запроса на передачу
+                                <sui-button color="yellow" floated="right" content="Сформировать" size="mini" @click.native="toggle"></sui-button>
+                                </sui-table-header-cell>
+						</sui-table-row>
+						<sui-table-row>
+							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+								<sui-form>
+									<sui-form-fields fields="two">
+                                        <sui-form-field width="fifteen">
+                                            <sui-input type="text" placeholder="Поиск по МАТЕРИАЛ" v-model="filterKey"></sui-input>
+                                        </sui-form-field>
+                                        <sui-form-field>
+                                            <sui-dropdown :options="returnUniq()" placeholder="Отдел" search selection v-model="filters['department']"></sui-dropdown>
+                                        </sui-form-field>
+                                    </sui-form-fields>
+								</sui-form>
+							</sui-table-header-cell>
+						</sui-table-row>
+						<sui-table-row>
+							<!-- <sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell> -->
+							<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
+								{{ Object.values(column)[0] }}
+								<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
+							</sui-table-header-cell>
+						</sui-table-row>
+					</sui-table-header>
+					<sui-table-body>
+						<sui-table-row v-for="(material, index) in paginateRows" :key="index">
+							<sui-table-cell collapsing>
+                                <sui-checkbox v-model="selectedMaterials" v-bind:value="{
+                                    arrival_id: material.arrival_material_id,
+                                    material_id: material.material_id,
+                                    type: material.type,
+                                    material: material.material,
+                                    measure: material.measure,
+                                    total: material.total
+                                    }"/>
+                            </sui-table-cell>
+							<sui-table-cell collapsing>{{ material.department }}</sui-table-cell>
+                            <sui-table-cell collapsing>{{ today(material.date_order) }}</sui-table-cell>
+							<sui-table-cell :width="1">{{ material.type }}</sui-table-cell>
+							<sui-table-cell >{{ material.material }}</sui-table-cell>
+							<sui-table-cell collapsing>{{ material.measure }}</sui-table-cell>
+							<sui-table-cell collapsing
+							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
+							>{{ material.total }} / {{ material.amount }}
+                            </sui-table-cell>
+							<sui-table-cell collapsing
+							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
+							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong>
+                            </sui-table-cell>
+						</sui-table-row>
+					</sui-table-body>
+					<sui-table-footer>
+						<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+							<sui-label >
+								Страница {{ currentPage }} из {{ listPages.length }}
+							</sui-label>
+							<div class="ui icon basic right floated small buttons">
+								<sui-button v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></sui-button>
+								<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
+								<sui-form>
+									<sui-form-field>
+										<input type="text" v-bind:value="currentPage">
+									</sui-form-field>
+								</sui-form>
+								<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
+								<sui-button class="ui button" v-on:click="currentPage = listPages.length"><i class="icon angle double right"></i></sui-button>
+							</div>
+						</sui-table-header-cell>
+					</sui-table-footer>
+				</sui-table>
+			</sui-grid-column>
+		</sui-grid-row>
+        <sui-modal v-model="open">
+            <sui-modal-header>Запрашиваемые материалы из {{ filters.department }}</sui-modal-header>
+            <sui-modal-content>
+                <sui-table>
+                    <sui-table-header>
+                        <sui-table-row>
+                            <sui-table-header-cell>Тип</sui-table-header-cell>
+                            <sui-table-header-cell>Материал</sui-table-header-cell>
+                            <sui-table-header-cell>Ед.изм.</sui-table-header-cell>
+                            <sui-table-header-cell>Остаток</sui-table-header-cell>
+                            <sui-table-header-cell>Запр. кол.</sui-table-header-cell>
+                            <sui-table-header-cell>Местоположение</sui-table-header-cell>
+                            <sui-table-header-cell></sui-table-header-cell>
+                        </sui-table-row>
+                    </sui-table-header>
+                    <sui-table-body>
+                        <sui-table-row v-for="material in selectedMaterials" :key="material.material_id">
+                            <sui-table-cell>{{ material.type }}</sui-table-cell>
+                            <sui-table-cell>{{ material.material }}</sui-table-cell>
+                            <sui-table-cell>{{ material.measure }}</sui-table-cell>
+                            <sui-table-cell>{{ material.total }}</sui-table-cell>
+                            <sui-table-cell collapsing><sui-input type="number" v-model="material.moving_amount"></sui-input></sui-table-cell>
+                            <sui-table-cell collapsing>
+                                <sui-dropdown :options="forDropdown" search selection v-model="material.id_location"></sui-dropdown>
+                            </sui-input></sui-table-cell>
+                        </sui-table-row>
+                    </sui-table-body>
+                </sui-table>
+            </sui-modal-content>
+            <sui-modal-actions>
+                <sui-button positive @click.native="toggle" content="Отправить"></sui-button>
+            </sui-modal-actions>
+        </sui-modal>
+	</div>
+</template>
+
+<script>
+import ExpensesModal from '../modals/expenses.vue';
+
+export default {
+	components: {
+        'expenses-modal': ExpensesModal,
+    },
+	data () {
+		return {
+            open: false,
+            gridColumns: {
+                tableColumn: [
+                    {'action': ''},
+                    {'department': 'Отдел'},
+                    // {'material_id': 'Код'},
+                    {'date_create':'Дата пост.'},
+                    {'type':'Тип'},
+                    {'material':'Материал'},
+                    {'measure':'Ед.изм'},
+                    {'amount':'Количество'},
+                    {'shelf_life':'Годен до'}
+                ],
+                filterColumn: [
+                    {'id_department':'Отдел'},
+                ]
+            },
+			filters: {
+				department: []
+			},
+			gridData: [],
+			sortKey: '',
+			sortColumns: Object,
+			currentPage: 1,
+			listPages: [],
+			countPost: 100,
+			isShowModal: false,
+			materialIndex: null,
+            filterKey: '',
+			//selectAllMaterials: false,
+            selectedMaterials: [],
+            listLocations: []
+		}
+	},
+	methods: {
+        toggle() {
+            this.open = !this.open;
+        },
+		// showModal(index = null){
+		// 	this.materialIndex = index;
+		// 	this.isShowModal = true;
+		// },
+		// hideModal(){
+		// 	this.isShowModal = false;
+		// },
+		getStorageAll(){
+			this.$http.get('/api/reagent/storage/all').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+		},
+		sortBy: function (key) {
+			if(key === 'action') return;
+			this.sortKey = key;
+			this.sortColumns[key] = this.sortColumns[key] * -1;
+		},
+		setPages () {
+			let numOfPage = Math.ceil(this.filteredRows.length / this.countPost);
+			for (let i = 1; i <= numOfPage; i++)
+				this.listPages.push(i);
+		},
+		paginate (rows) {
+			let page = this.currentPage;
+			let curPost = this.countPost;
+			let from = (page * curPost) - curPost;
+			let to = ((page * curPost));
+			return rows.slice(from, to);
+		},
+		today(date){
+			if(date === null) return;
+			let today = new Date(date);
+			return today.toLocaleString().split(',')[0];
+		},
+		setSortColumn(){
+			let sortColumns = {};
+			this.gridColumns.tableColumn.forEach(function (key){
+				Object.keys(key).some(function(row){
+					if (row !== 'action')
+						sortColumns[row] = 1;
+				});
+			});
+			this.sortColumns = sortColumns;
+        },
+		colorShelfLife(date){
+			let today = new Date();
+			let shelf_life = new Date(date.split(".").reverse().join("-"));
+			return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
+        },
+		returnUniq(){
+            let result = [];
+            let resa = [];
+			for (let str of this.gridData)
+				if (!result.includes(str['department']))
+					result.push(str['department']);
+				result = result.slice().sort(function (a, b){
+					if(a === b) return 0 ;
+					else if (a > b) return 1;
+					else return - 1;
+                })
+            for (let res of result)
+            {
+                resa.push({key: res, value: res, text: res});
+            }
+			return resa;
+        },
+	},
+	watch: {
+		gridData(){
+			this.setSortColumn();
+		},
+		filteredRows() {
+			this.listPages = [];
+			this.setPages();
+        },
+        selectedMaterials(){
+            if(!this.listLocations.length)
+                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
+        },
+        "filters.department":function(newVal, oldVal){
+            if(newVal != oldVal)
+                this.selectedMaterials = [];
+        }
+	},
+	computed: {
+		filteredRows: function () {
+			let sortKey = this.sortKey;
+			//let filterKey = this.filterKey && this.filterKey.toLowerCase();
+			let filterKey = this.filterKey;
+			let order = this.sortColumns[sortKey] || 1;
+			let rows = this.gridData;
+			if (sortKey)
+			{
+				rows = rows.slice().sort(function (a, b) {
+					a = a[sortKey];
+					b = b[sortKey];
+					if(a === b) return 0 * order;
+					else if (a > b) return 1 * order;
+					else return - 1 * order;
+				})
+			}
+			if (filterKey)
+			{
+				rows = rows.filter(function(row)
+				{
+					return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
+				});
+			}
+			return rows.filter(r =>
+			{
+				return Object.keys(this.filters).every(f =>
+				{
+					if(r.archive === 1) return;
+					if(r.total === null) r.total = r.amount;
+						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
+				})
+			})
+		},
+		paginateRows(){
+			return this.paginate(this.filteredRows);
+        },
+        forDropdown(){
+            if(this.listLocations.length)
+            {
+                let rows = [];
+                for(let item in this.listLocations){
+                    rows.push({
+                        key: this.listLocations[item].id,
+                        value: this.listLocations[item].id,
+                        text: this.listLocations[item].cabinet_number + " " + this.listLocations[item].place + " " + this.listLocations[item].notation
+                    });
+                }
+                return rows;
+            }
+        }
+	},
+	created(){
+		this.getStorageAll();
+	}
+  }
+</script>
+
+<style scoped>
+	.success {
+		background-color: #ddffdd;
+	}
+	.caution {
+		background-color: #ffffcc;
+	}
+	.danger {
+		background-color: #ffdddd;
+	}
+</style>

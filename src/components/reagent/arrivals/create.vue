@@ -8,7 +8,7 @@
                     <router-link to="#" is="sui-menu-item">Списание</router-link>
 					<router-link to="#" is="sui-dropdown" item simple text="Передача">
 						<sui-dropdown-menu>
-							<sui-dropdown-item>Запрос</sui-dropdown-item>
+							<router-link to="/reagent/moving" is="sui-dropdown-item" item>Запрос</router-link>
 							<sui-dropdown-item>История</sui-dropdown-item>
 						</sui-dropdown-menu>
 					</router-link>
@@ -87,8 +87,7 @@
 </template>
 
 <script>
-import SearchMaterialModal from '../modals/search_material.vue'
-import axios from 'axios';
+import SearchMaterialModal from '../modals/search_material.vue';
 
 export default {
     components: {
@@ -107,11 +106,13 @@ export default {
             }
         }
     },
-    computed:{
-        isNotNullLocations(){
+    watch:{
+        selectedMaterials(){
             if(!this.listLocations.length)
-                axios.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
-        },
+                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
+        }
+    },
+    computed:{
         forDropdown(){
             if(this.listLocations.length)
             {

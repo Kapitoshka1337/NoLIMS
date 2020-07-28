@@ -73,7 +73,7 @@ export default {
 				}
 				return;
 			})
-			this.$store.dispatch('register', this.user).then(() => this.$router.push('/')).catch(error => alert(error));
+			this.$store.dispatch('register', this.user).then(() => this.$router.push('/')).catch(error => alert(error.response.data.message));
 			//axios.post('/api/auth/singup', this.user).then(response => (alert(response.data))).catch(error => (alert(error)));
 			//e.preventDefault();
 		}

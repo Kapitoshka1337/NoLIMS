@@ -20,6 +20,7 @@ import Storage from "./components/reagent/storage/index.vue";
 import Arrivals from "./components/reagent/arrivals/index.vue";
 import AppendArrivals from "./components/reagent/arrivals/create.vue";
 import Expenses from "./components/reagent/expenses/index.vue";
+import MovingReq from "./components/reagent/moving/request.vue";
 import Location from "./components/reagent/location/index.vue";
 
 Vue.prototype.$http = Axios;
@@ -38,11 +39,12 @@ var router = new VueRouter({
     { path: '/', component: Hub, meta: { requiresAuth: true } },
     { path: '/login', component: Login },
     { path: '/singup', component: Singup },
-    { path: '/reagent', component: Reagent, meta: { requiresAuth: true, role: 'Admin' },
+    { path: '/reagent', component: Reagent, meta: { requiresAuth: true, active: true },
       children: [
         { path: 'storage', component: Storage },
         { path: 'arrivals', component: Arrivals },
         { path: 'arrivals/create', component: AppendArrivals }, //ПЕРЕДЕЛАТЬ
+        { path: 'moving', component: MovingReq },
         { path: 'expenses', component: Expenses },
         { path: 'locations', component: Location },
         { path: 'corrections', component: Corrections }
@@ -52,8 +54,10 @@ var router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.requiresAuth)) {
-    if(store.getters.isLoggedIn) {
+  if(to.matched.some(record => record.meta.requiresAuth))
+  {
+    if(store.getters.isLoggedIn)
+    {
       next();
       return;
     }
