@@ -21,6 +21,7 @@ import Arrivals from "./components/reagent/arrivals/index.vue";
 import AppendArrivals from "./components/reagent/arrivals/create.vue";
 import Expenses from "./components/reagent/expenses/index.vue";
 import MovingReq from "./components/reagent/moving/request.vue";
+import MovingHistory from "./components/reagent/moving/history.vue";
 import Location from "./components/reagent/location/index.vue";
 
 Vue.prototype.$http = Axios;
@@ -45,6 +46,7 @@ var router = new VueRouter({
         { path: 'arrivals', component: Arrivals },
         { path: 'arrivals/create', component: AppendArrivals }, //ПЕРЕДЕЛАТЬ
         { path: 'moving', component: MovingReq },
+        { path: 'moving/history', component: MovingHistory },
         { path: 'expenses', component: Expenses },
         { path: 'locations', component: Location },
         { path: 'corrections', component: Corrections }

@@ -9,8 +9,7 @@
 					<router-link to="#" is="sui-dropdown" item simple text="Передача">
 						<sui-dropdown-menu>
 							<router-link to="/reagent/moving" is="sui-dropdown-item" item>Запрос</router-link>
-							<sui-dropdown-item>История</sui-dropdown-item>
-						</sui-dropdown-menu>
+							<router-link to="/reagent/moving/history" is="sui-dropdown-item" item>История</router-link>						</sui-dropdown-menu>
 					</router-link>
 					<router-link to="/reagent/locations" is="sui-menu-item" floated="right">Местоположение</router-link>
 				</sui-menu>

@@ -9,7 +9,7 @@
 					<router-link to="#" is="sui-dropdown" item simple text="Передача">
 						<sui-dropdown-menu>
 							<router-link to="/reagent/moving" is="sui-dropdown-item" item>Запрос</router-link>
-							<sui-dropdown-item>История</sui-dropdown-item>
+							<router-link to="/reagent/moving/history" is="sui-dropdown-item" item>История</router-link>
 						</sui-dropdown-menu>
 					</router-link>
 					<router-link to="/reagent/locations" is="sui-menu-item">Местоположение</router-link>
@@ -20,7 +20,7 @@
 						<sui-table-row>
 							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
                                 Формирование запроса на передачу
-                                <sui-button color="yellow" floated="right" content="Сформировать" size="mini" @click.native="toggle"></sui-button>
+                                <sui-button  v-bind:disabled="filters.department === '' || !selectedMaterials.length" color="yellow" floated="right" content="Сформировать" size="mini" @click.native="toggle"></sui-button>
                                 </sui-table-header-cell>
 						</sui-table-row>
 						<sui-table-row>
@@ -48,14 +48,7 @@
 					<sui-table-body>
 						<sui-table-row v-for="(material, index) in paginateRows" :key="index">
 							<sui-table-cell collapsing>
-                                <sui-checkbox v-model="selectedMaterials" v-bind:value="{
-                                    arrival_id: material.arrival_material_id,
-                                    material_id: material.material_id,
-                                    type: material.type,
-                                    material: material.material,
-                                    measure: material.measure,
-                                    total: material.total
-                                    }"/>
+                                <sui-checkbox v-model="selectedMaterials" v-bind:value="material"/>
                             </sui-table-cell>
 							<sui-table-cell collapsing>{{ material.department }}</sui-table-cell>
                             <sui-table-cell collapsing>{{ today(material.date_order) }}</sui-table-cell>
@@ -114,16 +107,16 @@
                             <sui-table-cell>{{ material.material }}</sui-table-cell>
                             <sui-table-cell>{{ material.measure }}</sui-table-cell>
                             <sui-table-cell>{{ material.total }}</sui-table-cell>
-                            <sui-table-cell collapsing><sui-input type="number" v-model="material.moving_amount"></sui-input></sui-table-cell>
+                            <sui-table-cell collapsing><sui-input type="number" min="0" v-model="material.moving_amount"></sui-input></sui-table-cell>
                             <sui-table-cell collapsing>
                                 <sui-dropdown :options="forDropdown" search selection v-model="material.id_location"></sui-dropdown>
-                            </sui-input></sui-table-cell>
+                            </sui-table-cell>
                         </sui-table-row>
                     </sui-table-body>
                 </sui-table>
             </sui-modal-content>
             <sui-modal-actions>
-                <sui-button positive @click.native="toggle" content="Отправить"></sui-button>
+                <sui-button positive @click.native="submutMoving()" content="Отправить"></sui-button>
             </sui-modal-actions>
         </sui-modal>
 	</div>
@@ -156,7 +149,7 @@ export default {
                 ]
             },
 			filters: {
-				department: []
+				department: ''
 			},
 			gridData: [],
 			sortKey: '',
@@ -175,7 +168,21 @@ export default {
 	methods: {
         toggle() {
             this.open = !this.open;
-        },
+		},
+		submutMoving(){
+			let obb = [];
+			for(let item in this.selectedMaterials)
+				obb.push({
+					id_arrival_material: this.selectedMaterials[item].arrival_material_id,
+					id_location: this.selectedMaterials[item].id_location,
+					amount: this.selectedMaterials[item].moving_amount
+				});
+			let obj = {
+				id_department_to: this.selectedMaterials[0].id_department,
+				materials: obb
+			};
+			this.$http.post('/api/reagent/moving', obj).then(response => (this.open = false)).catch(error => (alert(error.response.data.message)));
+		},
 		// showModal(index = null){
 		// 	this.materialIndex = index;
 		// 	this.isShowModal = true;
@@ -279,7 +286,7 @@ export default {
 			{
 				rows = rows.filter(function(row)
 				{
-					return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
+					return String(row['material']).toLowerCase().indexOf(filterKey) > -1;
 				});
 			}
 			return rows.filter(r =>
