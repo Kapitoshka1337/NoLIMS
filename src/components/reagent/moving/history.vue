@@ -40,10 +40,13 @@
 						</div>
 						<div class="content">
 							<sui-button size="mini" content="Запрашиваемые материалы" color="purple" floated="left" v-on:click="showModal(index)"></sui-button>
-							<div v-if="moving.id_status === 1">
-								<sui-button size="mini" content="Отклонить" color="red" floated="right" v-on:click="deny(index)"></sui-button>
-								<sui-button size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
+							<div v-if="moving.id_department_from != idDep && moving.id_status === 1">
+								<!--<div v-if="moving.id_status === 1">-->
+									<sui-button size="mini" content="Отклонить" color="red" floated="right" v-on:click="deny(index)"></sui-button>
+									<sui-button size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
+								<!--</div>-->
 							</div>
+							<!--moving.id_department_from != idDep || moving.id_department_to === idDep && moving.id_status === 1-->
 						</div>
 					</div>
 				</div>
@@ -157,13 +160,19 @@ export default {
 		},
 		allow(index = null){
 			// let obj = { id_outgo: this.gridData[index].id_outgo, amount: this.gridData[index].corrected_amount};
-			this.$http.put("/api/reagent/moving/allow/" + this.gridData[index].id,{
+			this.$http.put("/api/reagent/moving/allow/" + this.gridData[index].id + "/" + this.gridData[index].id_department_from,{
 				headers: {'Content-Type': 'application/json'}})
-				.then(response => (alert(1))).catch(error => (alert(error.response.data.message)));
+				.then(response => ( this.gridData[index].status = 'Подтвержден', this.gridData[index].date_moving = this.dateToday())).catch(error => (alert(error.response.data.message)));
 		},
 		deny(index = null){
-
-		}
+			this.$http.put("/api/reagent/moving/deny/" + this.gridData[index].id,{
+				headers: {'Content-Type': 'application/json'}})
+				.then(response => ( this.gridData[index].status = 'Отклонен', this.gridData[index].date_moving = this.dateToday() )).catch(error => (alert(error.response.data.message)));
+		},
+		dateToday(){
+			let today = new Date();
+			return today;
+		},
 	},
 	//watch: {
 	//	gridData(){
@@ -175,6 +184,9 @@ export default {
 	//	}
 	//},
 	computed: {
+		idDep(){
+			return this.$store.getters.idDepartment;
+		},
 		filteredRows: function () {
 			//let sortKey = this.sortKey;
 			//let filterKey = this.filterKey && this.filterKey.toLowerCase();

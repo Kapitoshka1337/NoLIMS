@@ -2,7 +2,7 @@
 <div>
   <sui-menu>
     <sui-menu-item header>НеЛИС</sui-menu-item>
-    <!--<sui-menu-item position="right">{{ user.name }}</sui-menu-item>-->
+    <!--<sui-menu-item>{{ user }}</sui-menu-item>-->
     <sui-menu-item position="right" v-on:click="logout()"><sui-icon name="sign out"/></sui-menu-item>
   </sui-menu>
   <sui-grid class="padded">
@@ -55,11 +55,11 @@ export default {
       ]
     }
   },
-  //computed:{
-  //  user(){
-  //    return this.$store.getters.user;      
-  //  }
-  //},
+  computed:{
+    user(){
+      return this.$store.getters.name;
+    }
+  },
   methods:{
     logout(){
         this.$store.dispatch('logout').then(() => {

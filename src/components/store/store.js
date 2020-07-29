@@ -6,15 +6,19 @@ export default new Vuex.Store({
 	state: {
 		status: '',
 		token: localStorage.getItem('token') || '',
+		id_department: localStorage.getItem('id_department') || '',
+		name: localStorage.getItem('name') || '',
 		user : null
 	},
 	mutations:{
 		auth_request(state){
 			state.status = 'loading';
 		},
-		auth_success(state, {tkn, usr}){
+		auth_success(state, {tkn, usr, id_dep, nm}){
 			state.status = 'success';
 			state.token = tkn;
+			state.id_department = id_dep;
+			state.name = nm;
 			state.user = usr;
 		},
 		auth_error(state){
@@ -33,10 +37,13 @@ export default new Vuex.Store({
 			  .then(response => {
 				const tkn = response.data.token;
 				const usr = response.data.user;
+				const id_dep = response.data.user.id_department;
+				const nm = response.data.user.name;
 				localStorage.setItem('token', tkn);
-				// localStorage.setItem('id_department', usr.);
+				localStorage.setItem('id_department', usr.id_department);
+				localStorage.setItem('name', usr.name);
 				axios.defaults.headers.common['Authorization'] = 'Bearer ' + tkn;
-				commit('auth_success', {tkn, usr});
+				commit('auth_success', {tkn, usr, id_dep, nm});
 				resolve(response);
 			  })
 			  .catch(error => {
@@ -54,6 +61,8 @@ export default new Vuex.Store({
 				const tkn = response.data.token;
 				const usr = response.data.user;
 				localStorage.setItem('token', tkn);
+				localStorage.setItem('id_department', usr.id_department);
+				localStorage.setItem('name', usr.name);
 				axios.defaults.headers.common['Authorization'] = 'Bearer ' + tkn;
 				commit('auth_success', {tkn, usr});
 				resolve(response);
@@ -69,6 +78,8 @@ export default new Vuex.Store({
 			return new Promise((resolve, reject) => {
 			  commit('logout');
 			  localStorage.removeItem('token');
+			  localStorage.removeItem('id_department');
+			  localStorage.removeItem('name');
 			  delete axios.defaults.headers.common['Authorization'];
 			  resolve();
 			})
@@ -84,6 +95,12 @@ export default new Vuex.Store({
 		},
 		user(state){
 			return state.user;
+		},
+		idDepartment(state){
+			return state.id_department;
+		},
+		name(state){
+			return state.name;
 		}
 	}
 })
