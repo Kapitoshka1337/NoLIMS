@@ -39,7 +39,7 @@
 							</div>
 						</div>
 						<div class="content">
-							<sui-button size="mini" content="Запрашиваемые материалы" color="blue" floated="left" v-on:click="showModal(index)"></sui-button>
+							<sui-button size="mini" content="Запрашиваемые материалы" color="purple" floated="left" v-on:click="showModal(index)"></sui-button>
 							<div v-if="moving.id_status === 1">
 								<sui-button size="mini" content="Отклонить" color="red" floated="right" v-on:click="deny(index)"></sui-button>
 								<sui-button size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
