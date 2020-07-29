@@ -24,7 +24,12 @@ Vue.component('equipment-grid', {
 			listPages: [],
 			selectAllMaterials: false,
 			selectedEquipments: [],
-			filterKey: ''
+			filterKey: '',
+			types: {
+				'ВО': 1,
+				'ИО': 2,
+				'СИ': 3
+			}
 		}
 	},
 	methods: {
@@ -47,6 +52,8 @@ Vue.component('equipment-grid', {
 		},
 		showModal(modalName, id_eq){
 			this.$emit('repair', id_eq);
+			if(modalName === 'Protocol')
+				this.$emit('request', this.selectedEquipments);
 			$('#modal' + modalName).modal('show');
 		},
 		clearFilter(){
@@ -59,13 +66,14 @@ Vue.component('equipment-grid', {
 				for (let i in this.paginateRows)
 					this.selectedEquipments.push({id_equipment: this.paginateRows[i].id});
 		},
-		GetSticker() {
+		GetSticker(size) {
 			if(this.selectedEquipments.length > 0)
 			{
 				let obj = [];
 				for (let item in this.selectedEquipments)
 					obj.push(this.selectedEquipments[item].id_equipment);
-				axios.post("/equipment/print-sticker", JSON.stringify(obj), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/sticker.pdf'))).catch(error => (this.listError = error));
+				let objs = {size: size, eq: obj};
+				axios.post("/equipment/print-sticker", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then(response =>(window.open('/assets/template/sticker_' + size + '.pdf'))).catch(error => (this.listError = error));
 			}
 		},
 		GetCard() {
@@ -96,6 +104,13 @@ Vue.component('equipment-grid', {
 					else return - 1;
 				})
 			return result;
+		},
+		printTable(){
+			let obj = [];
+			for(let i = 0; i <= this.filters.type.length -1; i++)
+				obj.push(this.types[this.filters.type[i]]);
+			let objs = {start: this.filterDate.start, end: this.filterDate.end, type: obj};
+			axios.post("/equipment/print-table", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/plan.pdf')));
 		}
 	},
 	watch: {
@@ -205,7 +220,8 @@ let demo1 = new Vue({
 			description: null,
 			date: null,
 			id_equipment: null
-		}
+		},
+		dateProtocol: ''
 	},
 	methods: {
 		getEquipments(){
@@ -255,7 +271,21 @@ let demo1 = new Vue({
 		},
 		appendRepair(){
 			axios.post("/equipment/append-repair", JSON.stringify(this.repair), {headers: {'Content-Type': 'application/json'}}).then(response => (console.log(1)));
-		}
+		},
+		printProtocol(){
+			if(this.selectedEquipments.length > 0)
+			{
+				let obj = [];
+				for (let item in this.selectedEquipments)
+					obj.push(this.selectedEquipments[item].id_equipment);
+				// start: this.dateFilter.start, end: this.dateFilter.end, 
+				let objs = {eq: obj, date: this.today(this.dateProtocol)};
+				axios.post("/equipment/print-protocol", JSON.stringify(objs), {headers: {'Content-Type': 'application/json'}}).then( response => (window.open('/assets/template/protocol.pdf')));		
+			}
+		},
+		setSelectedEquipment(info){
+			this.selectedEquipments = info;
+		},
 	},
 	mounted: function() {
 		this.getEquipments();

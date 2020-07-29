@@ -19,6 +19,7 @@ class module extends \yii\base\Module
                             'logout',
                             //INDEX
                             'index',
+                            'equipment',
                             'details',
                             'get-today',
                             //EQUIPMENTS
@@ -69,6 +70,47 @@ class module extends \yii\base\Module
                         ],
                         'matchCallback' => function ($rule, $action) {
                             return Yii::$app->user->identity['role'] === 'corporal-five';
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            'logout',
+                            //INDEX
+                            'equipment',
+                            'details',
+                            //EQUIPMENTS
+                            'equipments',
+                            'get-equipments',
+                            'get-department',
+                            'get-doc-type',
+                            //EDIT
+                            'edit',
+                            'get-details',
+                            'get-object-study',
+                            'get-maintenance',
+                            'print-sticker',
+                            'print-card',
+                            'print-table',
+                            'print-protocol',
+                            //REPAIR
+                            'repair',
+                            'get-repair',
+                            'approve-repair',
+                            'declining-repair',
+                            'finish-repair',
+                            'append-repair',
+                            'plan'
+                        ],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity['role'] === 'corporal-six';
+                        }
+                    ],
+                    [
+                        'allow' => false,
+                        'actions' => ['equipments'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity['role'] === 'corporal-six';
                         }
                     ],
                 ],

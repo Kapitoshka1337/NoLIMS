@@ -133,7 +133,7 @@
             </div>
         </div>
         <div class="actions">
-            <button class="ui approve green button" v-on:click="getRequest(filteredEqBeforeAfter[0].id_checks)">Печать</button>
+            <button class="ui approve green button" v-on:click="getRequest(filteredEqBeforeAfter[0].id_checks)">Сформировать</button>
         </div>
     </div>
 </div>

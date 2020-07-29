@@ -9,7 +9,7 @@ class Bootstrap implements BootstrapInterface
     public $urlRules = [
         'prefix' => 'equipment',
         'rules' => [
-            '' => 'equipment/',
+            'equipment' => 'equipment/equipment',
             'get-equipments' => 'metrolog/get-equipments',
             'get-today' => 'metrolog/get-today',
             'print-sticker' => 'metrolog/print-sticker',
@@ -42,6 +42,7 @@ class Bootstrap implements BootstrapInterface
             'get-details'=>'metrolog/get-details',
             'repair' => 'metrolog/repair',
             'verification' => 'metrolog/verification',
+            // 'eq'=>'equipment/index',
             'details/<id:\d+>'=>'equipment/details',
             'append-repair'=>'equipment/append-repair',
             'get-repair'=>'equipment/get-repair',

@@ -125,7 +125,7 @@
 	</div>
 	<div id="modalCheckReq" class="ui large card modal">
 		<div class="content">
-			<div class="content header">Подготавливаемое оборудования на проверку</div>
+			<div class="content header">Подготавливаемое оборудование на проверку</div>
 		</div>
 		<div class="scrolling content">
 			<table class="ui compact selectable table">
@@ -176,7 +176,7 @@
 			</div>
 		</div>
 		<div class="actions">
-			<button class="ui approve green button" v-on:click="printProtocol()">Печать</button>
+			<button class="ui approve green button" v-on:click="printProtocol()">Сформировать</button>
 		</div>
 	</div>
 </div>

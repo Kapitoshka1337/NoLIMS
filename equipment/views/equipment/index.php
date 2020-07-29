@@ -13,7 +13,8 @@
 			:filter-date="dateFilter"
 			:count-post="countPost"
 			@repair="setSelectedEquipments"
-			@clear="clearDate">
+			@clear="clearDate"
+			@request="setSelectedEquipment">
 		</equipment-grid>
 	</div>
 	<div id="modalFilter" class="ui tiny card modal">
@@ -60,6 +61,22 @@
 			<button class="ui deny orange button">Отмена</button>
 		</div>
 	</div>
+	<div id="modalProtocol" class="ui tiny card modal">
+		<div class="content">
+			<div class="content header">ПТС</div>
+		</div>
+		<div class="content">
+			<div class="ui form">
+				<div class="field">
+					<label>Дата проведения</label>
+					<input type="date" v-model="dateProtocol">
+				</div>
+			</div>
+		</div>
+		<div class="actions">
+			<button class="ui approve green button" v-on:click="printProtocol()">Сформировать</button>
+		</div>
+	</div>
 </div>
 <template id="equipment-grid">
 	<table class="ui compact selectable table">
@@ -71,8 +88,17 @@
 						<i class="icon print"></i>
 						<i class="icon dropdown"></i>
 						<div class="menu">
-							<div class="item" v-on:click="GetSticker()">Этикетка</div>
+							<div class="item">
+								Этикетка
+								<div class="menu">
+									<div class="item" v-on:click="GetSticker('large')">Большая</div>
+									<div class="item" v-on:click="GetSticker('middle')">Средняя</div>
+									<div class="item" v-on:click="GetSticker('tiny')">Маленькая</div>
+								</div>
+							</div>
 							<div class="item" v-on:click="GetCard()">Регистрационная карта</div>
+							<div class="item" v-on:click="printTable()">Таблица проверок</div>
+							<div class="item" v-on:click="showModal('Protocol')">ПТС</div>
 						</div>
 					</div>
 					<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>
@@ -149,7 +175,7 @@
 						<i class="settings icon"></i>
 						<div class="menu">
 							<!-- КОСТЫЛЬ v-bind:href="'details/' + equipment.id" --> 
-							<a v-bind:href="'equipment/details/' + equipment.id" class="item">Подробнее</a>
+							<a v-bind:href="'/equipment/details/' + equipment.id" class="item">Подробнее</a>
 							<div class="item" v-on:click="showModal('Repair', equipment.id)">Ремонт</div>
 						</div>
 					</div>

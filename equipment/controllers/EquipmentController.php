@@ -19,7 +19,7 @@ class EquipmentController extends Controller
 		return parent::beforeAction($action);
 	}
 
-	public function actionIndex()
+	public function actionEquipment()
 	{
 		return $this->render('index');
 	}
