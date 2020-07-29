@@ -9,7 +9,8 @@ class movings extends Model
     protected $table = "reagent_movings";
     protected $fillable = [
         'id',
-        'id_department',
+        'id_department_from',
+        'id_department_to',
         'dep_from',
         'dep_to',
         'user',

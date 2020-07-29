@@ -9,7 +9,7 @@ class moving extends Model
     protected $table = "reagent_moving";
     public $timestamps = false;
     protected $fillable = [
-        // 'id',
+        'id',
         'id_department_from',
         'id_department_to',
         'id_user',

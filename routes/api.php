@@ -50,6 +50,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('moving')->group(function(){
 			Route::get('', 'Reagent\MovingController@view');
 			Route::post('', 'Reagent\MovingController@create');
+			Route::get('{id}/materials', 'Reagent\MovingController@materials');
 			Route::put('allow/{id}', 'Reagent\MovingController@allowUpdate');
 			Route::put('deny/{id}', 'Reagent\MovingController@denyUpdate');
 		});

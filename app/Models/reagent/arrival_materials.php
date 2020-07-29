@@ -16,7 +16,6 @@ class arrival_materials extends Model
         'measure',
         'amount',
         'shelf_life',
-        'date_create',
-        'moving_type'
+        'date_create'
     ];
 }
