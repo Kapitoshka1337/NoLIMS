@@ -130,7 +130,7 @@ export default {
 		showModal(){
             if(this.materials.length > 0) this.isShowModal = true;
             else
-                axios.get('/api/reagent/material').then(response => (this.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
+                this.$http.get('/api/reagent/material').then(response => (this.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
         },
 		deleteMaterial(index, material) {
 			var idx = this.selectedMaterials.indexOf(material);
@@ -138,7 +138,7 @@ export default {
         },
         submitOrder(){
             this.order.materials = this.selectedMaterials;
-            axios.post('/api/reagent/arrivals', this.order).then(response => (this.$router.push({path: '/reagent/storage'}))).catch(error => (alert(error.response.data.message)));            
+            this.$http.post('/api/reagent/arrivals', this.order).then(response => (this.$router.push({path: '/reagent/storage'}))).catch(error => (alert(error.response.data.message)));            
         }
     }
 }

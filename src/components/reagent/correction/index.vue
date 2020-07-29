@@ -53,8 +53,8 @@
 						<div class="content">
 							<span class="left floated header">{{ today(correct.date_response) }}</span>
 							<div v-if="correct.id_status === 1">
-								<sui-button size="mini" content="Отклонить"  color="teal" floated="right" v-on:click="deny(index)"></sui-button>
-	                            <sui-button size="mini" content="Принять" color="orange" floated="right" v-on:click="allow(index)"></sui-button>
+								<sui-button size="mini" content="Отклонить"  color="red" floated="right" v-on:click="deny(index)"></sui-button>
+								<sui-button size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
 							</div>
 						</div>
 					</div>

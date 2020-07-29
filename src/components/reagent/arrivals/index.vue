@@ -98,7 +98,7 @@
 							</div>
 						</div>
 						<div class="content">
-							<sui-button size="mini" content="Поступившие материалы" color="yellow" floated="right" v-on:click="showModal(index)"></sui-button>
+							<sui-button size="mini" content="Поступившие материалы" color="blue" floated="right" v-on:click="showModal(index)"></sui-button>
 						</div>
 					</div>
 				</div>
@@ -145,7 +145,7 @@ export default {
 			isShowModal: false,
             // orderIndex: null,
             order: {
-                order: this.or,
+                order: null,
                 materials: []
             }
 			//filterKey: ''

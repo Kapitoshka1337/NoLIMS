@@ -29,9 +29,9 @@
 					<div class="ui fluid card" v-for="(moving, index) in filteredRows" :key="index">
 						<div class="content">
 							<span v-bind:class="{
-							'ui top attached yellow right label': moving.status === 'Рассмотрение',
-							'ui top attached green right label': moving.status === 'Подтверждена',
-							'ui top attached red right label': moving.status === 'Отклонена'
+							'ui top attached yellow right label': moving.id_status === 1,
+							'ui top attached green right label': moving.id_status === 2,
+							'ui top attached red right label': moving.id_status === 3
 							}">{{ moving.status }}</span>
 							<div class="header">{{ moving.dep_from }} ({{ moving.user }}) -> {{ moving.dep_to }}</div>
 							<div class="meta">
@@ -39,24 +39,26 @@
 							</div>
 						</div>
 						<div class="content">
-							<sui-button size="mini" content="Запрашиваемые материалы" color="yellow" floated="right" v-on:click="showModal(index)"></sui-button>
+							<sui-button size="mini" content="Запрашиваемые материалы" color="blue" floated="left" v-on:click="showModal(index)"></sui-button>
+							<div v-if="moving.id_status === 1">
+								<sui-button size="mini" content="Отклонить" color="red" floated="right" v-on:click="deny(index)"></sui-button>
+								<sui-button size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
+							</div>
 						</div>
 					</div>
 				</div>
-				<arrival-modal :open="isShowModal" @close="hideModal" :order="order"></arrival-modal>
+				<moving-modal :open="isShowModal" @close="hideModal" :order="order"></moving-modal>
 			</sui-grid-column>
 		</sui-grid-row>
 	</sui-grid>
 </template>
 
 <script>
-import ArrivalModal from '../modals/arrival_material.vue'
-//import MenuNav from '../menu.vue';
+import MovingModal from '../modals/moving_materials.vue';
 
 export default {
 	components: {
-		'arrival-modal': ArrivalModal,
-		//'menu-nav': MenuNav
+		'moving-modal': MovingModal
 	},
 	data () {
 		return {
@@ -75,7 +77,7 @@ export default {
 			isShowModal: false,
             // orderIndex: null,
             order: {
-                order: this.or,
+                order: null,
                 materials: []
             }
 			//filterKey: ''
@@ -152,7 +154,16 @@ export default {
                 resa.push({key: res, value: res, text: res});
             }
 			return resa;
-        },
+		},
+		allow(index = null){
+			// let obj = { id_outgo: this.gridData[index].id_outgo, amount: this.gridData[index].corrected_amount};
+			this.$http.put("/api/reagent/moving/allow/" + this.gridData[index].id,{
+				headers: {'Content-Type': 'application/json'}})
+				.then(response => (alert(1))).catch(error => (alert(error.response.data.message)));
+		},
+		deny(index = null){
+
+		}
 	},
 	//watch: {
 	//	gridData(){

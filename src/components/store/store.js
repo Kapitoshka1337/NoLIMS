@@ -13,7 +13,6 @@ export default new Vuex.Store({
 			state.status = 'loading';
 		},
 		auth_success(state, {tkn, usr}){
-			//alert(user)
 			state.status = 'success';
 			state.token = tkn;
 			state.user = usr;
@@ -34,8 +33,8 @@ export default new Vuex.Store({
 			  .then(response => {
 				const tkn = response.data.token;
 				const usr = response.data.user;
-				//alert(response.data.user.name);
 				localStorage.setItem('token', tkn);
+				// localStorage.setItem('id_department', usr.);
 				axios.defaults.headers.common['Authorization'] = 'Bearer ' + tkn;
 				commit('auth_success', {tkn, usr});
 				resolve(response);

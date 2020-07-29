@@ -310,7 +310,7 @@ export default {
                 }
                 return rows;
             }
-        }
+		}
 	},
 	created(){
 		this.getStorageAll();
