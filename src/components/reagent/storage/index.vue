@@ -49,8 +49,8 @@
 							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
-								<button class="ui icon mini blue button" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 1" v-on:click="moveToArchive(index)"><i class="icon archive"></i></button>
-								<button class="ui icon mini green button" v-if="material.passport != null" v-on:click="showPassport(material.arrival_material_id)"><i class="icon eye"></i></button>
+								<button class="ui icon mini blue button" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"><i class="icon archive"></i></button>
+								<!--<button class="ui icon mini green button" v-if="material.passport != null" v-on:click="showPassport(material.arrival_material_id)"><i class="icon eye"></i></button>-->
 								<!-- <button class="ui icon mini yellow button" v-if="material.passport === null" v-on:click="showModal('AppendPassport', material.arrival_material_id)"><i class="icon plus"></i></button> -->
 								<button class="ui icon mini red button" v-on:click="showModal(index)"><i class="icon tint"></i></button>
 							</sui-table-cell>
