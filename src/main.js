@@ -18,6 +18,7 @@ import Reagent from "./components/reagent/main.vue";
 import Corrections from "./components/reagent/correction/index.vue";
 
 import Storage from "./components/reagent/storage/index.vue";
+import Archive from "./components/reagent/archive/index.vue";
 import Arrivals from "./components/reagent/arrivals/index.vue";
 import AppendArrivals from "./components/reagent/arrivals/create.vue";
 import Expenses from "./components/reagent/expenses/index.vue";
@@ -33,7 +34,7 @@ if(token){
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
-Vue.component('Hub', Hub);
+// Vue.component('Hub', Hub);
 Vue.component('menu-nav', MenuNav);
 
 var router = new VueRouter({
@@ -45,6 +46,7 @@ var router = new VueRouter({
     { path: '/reagent', component: Reagent, meta: { requiresAuth: true, active: true },
       children: [
         { path: 'storage', component: Storage },
+        { path: 'archive', component: Archive },
         { path: 'arrivals', component: Arrivals },
         { path: 'arrivals/create', component: AppendArrivals }, //ПЕРЕДЕЛАТЬ
         { path: 'moving', component: MovingReq },

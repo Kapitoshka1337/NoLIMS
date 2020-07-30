@@ -8,13 +8,14 @@ export default new Vuex.Store({
 		token: localStorage.getItem('token') || '',
 		id_department: localStorage.getItem('id_department') || '',
 		name: localStorage.getItem('name') || '',
+		active: localStorage.getItem('active') || 0,
 		user : null
 	},
 	mutations:{
 		auth_request(state){
 			state.status = 'loading';
 		},
-		auth_success(state, {tkn, usr, id_dep, nm}){
+		auth_success(state, {tkn, usr, id_dep, nm, act}){
 			state.status = 'success';
 			state.token = tkn;
 			state.id_department = id_dep;
@@ -39,11 +40,13 @@ export default new Vuex.Store({
 				const usr = response.data.user;
 				const id_dep = response.data.user.id_department;
 				const nm = response.data.user.name;
+				const act = response.data.user.active;
 				localStorage.setItem('token', tkn);
 				localStorage.setItem('id_department', usr.id_department);
 				localStorage.setItem('name', usr.name);
+				localStorage.setItem('active', usr.active);
 				axios.defaults.headers.common['Authorization'] = 'Bearer ' + tkn;
-				commit('auth_success', {tkn, usr, id_dep, nm});
+				commit('auth_success', {tkn, usr, id_dep, nm, act});
 				resolve(response);
 			  })
 			  .catch(error => {
@@ -63,6 +66,7 @@ export default new Vuex.Store({
 				localStorage.setItem('token', tkn);
 				localStorage.setItem('id_department', usr.id_department);
 				localStorage.setItem('name', usr.name);
+				localStorage.setItem('active', usr.active);
 				axios.defaults.headers.common['Authorization'] = 'Bearer ' + tkn;
 				commit('auth_success', {tkn, usr});
 				resolve(response);
@@ -80,6 +84,7 @@ export default new Vuex.Store({
 			  localStorage.removeItem('token');
 			  localStorage.removeItem('id_department');
 			  localStorage.removeItem('name');
+			  localStorage.removeItem('active');
 			  delete axios.defaults.headers.common['Authorization'];
 			  resolve();
 			})
@@ -101,6 +106,9 @@ export default new Vuex.Store({
 		},
 		name(state){
 			return state.name;
+		},
+		isActive(state){
+			return state.active;
 		}
 	}
 })

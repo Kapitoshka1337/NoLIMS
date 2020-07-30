@@ -48,10 +48,7 @@ export default {
 			axios.get('/api/structure/users').then(response => (this.users = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		login(){
-			//axios.post('/api/auth/singin', this.user).then(response => (alert(response.data))).catch(error => (alert(error)));
-			this.$store.dispatch('login', this.user)
-			.then(() => this.$router.push('/')).catch(error => alert(error.response.data.message));
-			//e.preventDefault();
+			this.$store.dispatch('login', this.user).then(() => this.$router.push('/')).catch(error => alert(error.response.data.message));
 		}
 	},
 	computed: {

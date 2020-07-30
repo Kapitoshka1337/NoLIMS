@@ -1,10 +1,14 @@
 <template>
 <div>
-  <sui-menu>
-    <sui-menu-item header>НеЛИС</sui-menu-item>
-    <!--<sui-menu-item>{{ user }}</sui-menu-item>-->
-    <sui-menu-item position="right" v-on:click="logout()"><sui-icon name="sign out"/></sui-menu-item>
-  </sui-menu>
+  <div class="ui pointing menu">
+    <div class="left menu">
+    <div class="item header">НеЛИС</div>
+    </div>
+    <div class="right menu">
+      <div class="item">{{ user }}</div>
+      <a class="item" v-on:click="logout"><i class="icon sign out"></i></a>
+    </div>
+  </div>
   <sui-grid class="padded">
     <sui-grid-row>
       <sui-grid-column>

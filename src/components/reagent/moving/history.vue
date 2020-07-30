@@ -162,12 +162,12 @@ export default {
 			// let obj = { id_outgo: this.gridData[index].id_outgo, amount: this.gridData[index].corrected_amount};
 			this.$http.put("/api/reagent/moving/allow/" + this.gridData[index].id + "/" + this.gridData[index].id_department_from,{
 				headers: {'Content-Type': 'application/json'}})
-				.then(response => ( this.gridData[index].status = 'Подтвержден', this.gridData[index].date_moving = this.dateToday())).catch(error => (alert(error.response.data.message)));
+				.then((response) => ( this.gridData[index].status = 'Подтвержден', this.gridData[index].id_status = 2, this.gridData[index].date_moving = this.dateToday())).catch(error => (alert(error.response.data.message)));
 		},
 		deny(index = null){
 			this.$http.put("/api/reagent/moving/deny/" + this.gridData[index].id,{
 				headers: {'Content-Type': 'application/json'}})
-				.then(response => ( this.gridData[index].status = 'Отклонен', this.gridData[index].date_moving = this.dateToday() )).catch(error => (alert(error.response.data.message)));
+				.then(response => ( this.gridData[index].status = 'Отклонен', this.gridData[index].id_status = 3, this.gridData[index].date_moving = this.dateToday() )).catch(error => (alert(error.response.data.message)));
 		},
 		dateToday(){
 			let today = new Date();
