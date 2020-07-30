@@ -17,7 +17,7 @@
 			</sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<button class="ui approve green button" v-on:click="saveCorrect" v-bind:disabled="correctReason === ''">Отравить</button>
+			<sui-button color="green" v-bind:loading="loading" v-on:click="saveCorrect" v-bind:disabled="correctReason === ''">Отравить</sui-button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
 		</sui-modal-actions>
 	</sui-modal>
@@ -33,7 +33,8 @@ export default {
 	data(){
 		return {
 			correctAmount: null,
-			correctReason: ''
+			correctReason: '',
+			loading: false
 		}
 	},
 	computed:{
@@ -59,8 +60,9 @@ export default {
 					spent_amount: this.material.amount_outgo,
 					reason_correct: this.correctReason
 				};
+				this.loading = !this.loading;
 				this.$http.post("/api/reagent/expenses/correct", JSON.stringify(correct), {
-					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'))).catch(error => (alert(error)));
+					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 			}
 		}
 	}

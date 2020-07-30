@@ -109,7 +109,7 @@
                 </sui-table>
             </sui-modal-content>
             <sui-modal-actions>
-                <sui-button positive @click.native="submutMoving()" content="Отправить"></sui-button>
+                <sui-button v-bind:loading="loading" positive @click.native="submutMoving()" content="Отправить"></sui-button>
             </sui-modal-actions>
         </sui-modal>
 	</div>
@@ -157,7 +157,8 @@ export default {
             filterKey: '',
 			//selectAllMaterials: false,
             selectedMaterials: [],
-            listLocations: []
+			listLocations: [],
+			loading: false
 		}
 	},
 	methods: {
@@ -176,7 +177,8 @@ export default {
 				id_department_to: this.selectedMaterials[0].id_department,
 				materials: obb
 			};
-			this.$http.post('/api/reagent/moving', obj).then(response => (this.open = false)).catch(error => (alert(error.response.data.message)));
+			this.loading = !this.loading;
+			this.$http.post('/api/reagent/moving', obj).then(response => (this.open = false, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 		},
 		// showModal(index = null){
 		// 	this.materialIndex = index;

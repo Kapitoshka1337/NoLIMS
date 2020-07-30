@@ -6,8 +6,7 @@
             <sui-form>
                 <sui-form-field>
                     <label>Кабинет</label>
-                    <!-- <sui-input type="text" v-model="material.cabinet_number"></sui-input> -->
-                    <sui-dropdown :options="materials" search selection v-model="isMaterial.cabinet_number"></sui-dropdown>
+                    <sui-input type="text" v-model="isMaterial.cabinet_number"></sui-input>
                 </sui-form-field>
                 <sui-form-field>
                     <label>Место (мебель)</label>
@@ -27,8 +26,6 @@
 </template>
 
 <script>
-//import axios from 'axios';
-
 export default {
 	props: {
 		open: Boolean,

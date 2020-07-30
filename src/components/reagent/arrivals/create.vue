@@ -19,10 +19,6 @@
                                     <label>от</label>
                                     <sui-input type="date" v-model="order.date"></sui-input>
                                 </sui-form-field>
-                                <!--<sui-form-field width="eight">
-                                    <label>Отдел</label>
-                                    <sui-input readonly></sui-input>
-                                </sui-form-field>-->
                             </sui-form-fields>
                         </sui-form>
                     </sui-card-content>
@@ -66,7 +62,7 @@
                     <sui-card-content>
                         <sui-button icon="search" floated="left" color="yellow" v-on:click="showModal"></sui-button>
                         <router-link to="/reagent/arrivals" is="sui-button" class="ui right floated orange" content="Отмена"></router-link>
-                        <sui-button content="Добавить" floated="right" color="green" v-bind:disabled="!selectedMaterials.length || !order.number || !order.date" v-on:click="submitOrder"></sui-button>
+                        <sui-button v-bind:loading="loading" content="Добавить" floated="right" color="green" v-bind:disabled="!selectedMaterials.length || !order.number || !order.date" v-on:click="submitOrder"></sui-button>
                     </sui-card-content>
                 </sui-card>
                 <search-material-modal :open="isShowModal" @save="hideModal" @close="closeModal" :material="materials"></search-material-modal>
@@ -92,7 +88,8 @@ export default {
                 number: '',
                 date: '',
                 materials: null
-            }
+            },
+            loading: false
         }
     },
     watch:{
@@ -138,7 +135,8 @@ export default {
         },
         submitOrder(){
             this.order.materials = this.selectedMaterials;
-            this.$http.post('/api/reagent/arrivals', this.order).then(response => (this.$router.push({path: '/reagent/storage'}))).catch(error => (alert(error.response.data.message)));            
+            this.loading = !this.loading;
+            this.$http.post('/api/reagent/arrivals', this.order).then(response => (this.$router.push({path: '/reagent/storage'}), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));            
         }
     }
 }

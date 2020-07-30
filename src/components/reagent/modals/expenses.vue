@@ -41,7 +41,7 @@
 			</sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<button class="ui approve green button" v-on:click="saveExpenses" v-bind:disabled="(isAmount || isTotal) && (isAmount || !renewalShelfLife || isTotal)">Потратить</button>
+			<sui-button class="ui approve green button" v-bind:loading="loading" v-on:click="saveExpenses" v-bind:disabled="(isAmount || isTotal) && (isAmount || !renewalShelfLife || isTotal)">Потратить</sui-button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
 		</sui-modal-actions>
 	</sui-modal>
@@ -62,7 +62,8 @@ export default {
 			//dangerShelfLife: false,
 			renewalShelfLife: false,
 			renewalDate: null,
-			url: 'storage/expenses'
+			url: 'storage/expenses',
+			loading: false
 		}
 	},
 	beforeDestroy(){
@@ -134,8 +135,11 @@ export default {
 			if ((this.material.total - this.expensesAmount) >= 0)
 			{
 				let obj = { id_arrival: this.material.arrival_material_id, amount: this.expensesAmount, date: this.expensesDate, renewal: {status: this.renewalShelfLife, date: this.renewalDate}};
+				this.loading = true;
 				this.$http.post("/api/reagent/" + this.url, JSON.stringify(obj), {
-					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', this.expensesAmount, this.renewalDate))).catch(error => (alert(error.response.data.message)));
+					headers: {'Content-Type': 'application/json'}}).then(response => (
+						this.$emit('success', this.expensesAmount, this.renewalDate), this.loading = false)).catch(error => (
+							alert(error.response.data.message), this.loading = false));
 			}
 		},
 		timeShelfLife(date){

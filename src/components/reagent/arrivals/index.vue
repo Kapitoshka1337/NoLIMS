@@ -32,59 +32,6 @@
 			</sui-grid-column>
 			<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
 			<sui-grid-column :width="13" v-if="gridData.length > 0">
-					<!--<sui-table selectable compact v-if="gridData.length > 0">
-						<sui-table-header>
-							<sui-table-row>
-								<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-										Поступления
-										<sui-button class="ui right floated mini icon green button" v-on:click="clearFilter()"><i class="icon undo"></i></sui-button>
-										<button class="ui right floated mini icon teal button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
-								</sui-table-header-cell>
-							</sui-table-row>
-							<sui-table-row>
-								<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-									<sui-form>
-										<sui-form-field>
-											<sui-input type="text" placeholder="Поиск" v-model="filterKey"></sui-input>
-										</sui-form-field>
-									</sui-form>
-								</sui-table-header-cell>
-							</sui-table-row>
-							<sui-table-row>
-								<sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell>
-								<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
-									{{ Object.values(column)[0] }}
-									<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
-								</sui-table-header-cell>
-							</sui-table-row>
-						</sui-table-header>
-						<sui-table-body>
-							<sui-table-row v-for="(order, index) in paginateRows" :key="index">
-								<sui-table-cell :width="2" class="center aligned">{{ order.num_order }}</sui-table-cell>
-								<sui-table-cell :width="2">{{ today(order.date_order) }}</sui-table-cell>
-								<sui-table-cell :width="2">{{ order.moving_type }}</sui-table-cell>
-								<sui-table-cell>BTN</sui-table-cell>
-							</sui-table-row>
-						</sui-table-body>
-						<sui-table-footer>
-							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-								<sui-label >
-									Страница {{ currentPage }} из {{ listPages.length }}
-								</sui-label>
-								<div class="ui icon basic right floated small buttons">
-									<sui-button v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></sui-button>
-									<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
-									<sui-form>
-										<sui-form-field>
-											<input is="sui-input" type="text" :value="currentPage">
-										</sui-form-field>
-									</sui-form>
-									<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
-									<sui-button class="ui button" v-on:click="currentPage = listPages.length"><i class="icon angle double right"></i></sui-button>
-								</div>
-							</sui-table-header-cell>
-						</sui-table-footer>
-					</sui-table>-->
 				<div class="ui cards">
 					<div class="ui fluid card" v-for="(order, index) in filteredRows" :key="index">
 						<div class="content">
@@ -98,7 +45,7 @@
 							</div>
 						</div>
 						<div class="content">
-							<sui-button size="mini" content="Поступившие материалы" color="yellow" floated="right" v-on:click="showModal(index)"></sui-button>
+							<sui-button v-bind:loading="loading" size="mini" content="Поступившие материалы" color="yellow" floated="right" v-on:click="showModal(index)"></sui-button>
 						</div>
 					</div>
 				</div>
@@ -147,7 +94,8 @@ export default {
             order: {
                 order: null,
                 materials: []
-            }
+			},
+			loading: false
 			//filterKey: ''
 			//selectAllMaterials: false,
 			//selectedEquipments: [],
@@ -156,8 +104,9 @@ export default {
 	methods: {
 		showModal(index = null){
             // this.orderIndex = index;
-            this.order.order = this.gridData[index];
-            this.$http.get('/api/reagent/arrivals/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
+			this.order.order = this.gridData[index];
+			this.loading = !this.loading;
+            this.$http.get('/api/reagent/arrivals/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true, this.loading = !this.loading)).catch(error => (alert(error), this.loading = !this.loading));
             //this.isShowModal = true;
         },
 		hideModal(){

@@ -39,7 +39,7 @@
 							</div>
 						</div>
 						<div class="content">
-							<sui-button size="mini" content="Запрашиваемые материалы" color="purple" floated="left" v-on:click="showModal(index)"></sui-button>
+							<sui-button v-bind:loading="loading" size="mini" content="Запрашиваемые материалы" color="purple" floated="left" v-on:click="showModal(index)"></sui-button>
 							<div v-if="moving.id_department_from != idDep && moving.id_status === 1">
 								<!--<div v-if="moving.id_status === 1">-->
 									<sui-button size="mini" content="Отклонить" color="red" floated="right" v-on:click="deny(index)"></sui-button>
@@ -82,7 +82,8 @@ export default {
             order: {
                 order: null,
                 materials: []
-            }
+			},
+			loading: false
 			//filterKey: ''
 			//selectAllMaterials: false,
 			//selectedEquipments: [],
@@ -91,8 +92,9 @@ export default {
 	methods: {
 		showModal(index = null){
             // this.orderIndex = index;
-            this.order.order = this.gridData[index];
-            this.$http.get('/api/reagent/moving/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
+			this.order.order = this.gridData[index];
+			this.loading = !this.loading;
+            this.$http.get('/api/reagent/moving/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
             //this.isShowModal = true;
         },
 		hideModal(){

@@ -35,7 +35,7 @@ asdad
 							<label>Пароль</label>
 							<input type="password" v-model="user.password">
 						</sui-form-field>
-						<sui-button fluid color="green" content="Зарегистрироваться"></sui-button>
+						<sui-button fluid color="green" v-bind:loading="loading" v-bind:disabled="!Object.keys(data).length" content="Зарегистрироваться"></sui-button>
 					</sui-form>
 				</sui-card-content>
 			</sui-card>
@@ -57,12 +57,14 @@ export default {
 				password: null
 			},
 			data: Object,
-			warning: []
+			warning: [],
+			loading: false
 		}
 	},
 	methods: {
 		getInfo(){
-			axios.get('/api/structure').then(response => (this.data = response.data)).catch(error => (alert(error)));
+			this.loading = !this.loading;
+			axios.get('/api/structure').then(response => (this.data = response.data, this.loading = !this.loading)).catch(error => (alert(error), this.loading = !this.loading));
 		},
 		singup(){
 			Object.keys(this.user).some(us => {
