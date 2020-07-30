@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Reagent;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 use App\Models\Reagent\storage;
@@ -19,7 +20,7 @@ class StorageController extends Controller
         // } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
         //     return response()->json($e->getMessage(), 401);
         // }
-        return response()->json(storage::where('id_department', auth()->user()->getIdDepartment())->get(), 200);
+        return response()->json(storage::where('id_department', auth()->user()->getIdDepartment())->where('archive', 0)->get(), 200);
     }
 
     public function viewAll()
@@ -27,11 +28,15 @@ class StorageController extends Controller
         return response()->json(storage::where('id_department', '!=',auth()->user()->getIdDepartment())->get(), 200);
     }
 
+    public function viewArchive()
+    {
+        return response()->json(storage::where('id_department', auth()->user()->getIdDepartment())->where('archive', 1)->get(), 200);   
+    }
+
     public function toArchive(Request $req)
     {
-        $arrival_mat = arrival_material::find($req->input('id'));
-        $arrival_mat->archive = 1;
-        if($arrival_mat->save())
-        	return response()->json($arrival_mat, 200);
+        DB::transaction(function() use($req){
+            arrival_material::where('id', $req->input('id'))->update(['archive' => 1]);
+        });
     }
 }

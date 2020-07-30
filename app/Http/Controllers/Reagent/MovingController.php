@@ -54,13 +54,13 @@ class MovingController extends Controller
 		return response()->json($arr_mat, 200);
 	}
 
-	public function allowUpdate($id)
+	public function allowUpdate($id, $from)
 	{
-		DB::transaction(function() use($id){
+		DB::transaction(function() use($id, $from){
 			$order = reagent_arrivals::create([
 				'num_order' => 0,
 				'date_order' => date('Y-m-d'),
-				'id_department' => auth()->user()->getIdDepartment(),
+				'id_department' => $from,
 				'id_moving_type' => 3
 			]);
 			$materials = raegent_material_for_moving::where('id_moving', $id)->get();
@@ -90,7 +90,7 @@ class MovingController extends Controller
 				);
 			};
 			$expenses = expenses::insert($arr1);
-			moving::where('id', $id)->update(['id_moving_status' => 2]);
+			moving::where('id', $id)->update(['id_moving_status' => 2, 'date_moving' => date('Y-m-d')]);
 		});
 	}
 
