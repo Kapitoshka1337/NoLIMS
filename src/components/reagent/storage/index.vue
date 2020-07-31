@@ -51,7 +51,7 @@
 							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
-								<button class="ui icon mini blue button" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"><i class="icon archive"></i></button>
+								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"></sui-button>
 								<button class="ui icon mini red button" v-on:click="showModal(index)"><i class="icon tint"></i></button>
 							</sui-table-cell>
 						</sui-table-row>
@@ -130,7 +130,8 @@ export default {
 			materialIndex: null,
 			filterKey: '',
 			selectedIdLocation: null,
-			isPrint: false
+			isPrint: false,
+			isToArchive: false
 		}
 	},
 	methods: {
@@ -188,8 +189,10 @@ export default {
 			return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
 		},
 		moveToArchive(index){
+			this.isToArchive = !this.isToArchive;
 			this.$http.post("/api/reagent/storage/archive", JSON.stringify({id: this.gridData[index].arrival_material_id}), {
-				headers: {'Content-Type': 'application/json'}}).then( response => (this.gridData[index].archive = 1));
+				headers: {'Content-Type': 'application/json'}}).then( response => (this.gridData[index].archive = 1), this.isToArchive = !this.isToArchive)
+				.catch(error => (alert(error), this.isToArchive = !this.isToArchive));
 		},
 		printInventory(){
 			this.isPrint = !this.isPrint;
