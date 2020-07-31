@@ -13,21 +13,24 @@
 						<sui-table-row>
 							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
 									Склад
-									<!--<sui-button class="ui right floated mini icon green button" v-on:click="clearFilter()"><i class="icon undo"></i></sui-button>-->
-									<!--<button class="ui right floated mini icon teal button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>-->
+									<sui-button v-bind:loading="isPrint" color="blue" size="mini"  icon="print" floated="right" v-on:click="printInventory()" v-bind:disabled="!selectedIdLocation"></sui-button>
 							</sui-table-header-cell>
 						</sui-table-row>
 						<sui-table-row>
 							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
 								<sui-form>
-									<sui-form-field>
-										<sui-input type="text" placeholder="Поиск по КОД / МАТЕРИАЛ" v-model="filterKey"></sui-input>
-									</sui-form-field>
+									<sui-form-fields fields="two">
+										<sui-form-field width="fifteen">
+											<sui-input type="text" placeholder="Поиск по КОД / МАТЕРИАЛ" v-model="filterKey"></sui-input>
+										</sui-form-field>
+										<sui-form-field>
+											<sui-dropdown placeholder="Местоположение" search selection :options="dropdownLocations" v-model="selectedIdLocation"></sui-dropdown>
+										</sui-form-field>
+									</sui-form-fields>
 								</sui-form>
 							</sui-table-header-cell>
 						</sui-table-row>
 						<sui-table-row>
-							<!--<sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell>-->
 							<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
 								{{ Object.values(column)[0] }}
 								<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
@@ -36,7 +39,6 @@
 					</sui-table-header>
 					<sui-table-body>
 						<sui-table-row v-for="(material, index) in paginateRows" :key="index">
-							<!--<sui-table-cell collapsing><sui-checkbox label="" /></sui-table-cell>-->
 							<sui-table-cell collapsing>{{ material.material_id }}</sui-table-cell>
 							<sui-table-cell :width="1">{{ today(material.date_order) }}</sui-table-cell>
 							<sui-table-cell collapsing>{{ material.location }}</sui-table-cell>
@@ -50,8 +52,6 @@
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
 								<button class="ui icon mini blue button" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"><i class="icon archive"></i></button>
-								<!--<button class="ui icon mini green button" v-if="material.passport != null" v-on:click="showPassport(material.arrival_material_id)"><i class="icon eye"></i></button>-->
-								<!-- <button class="ui icon mini yellow button" v-if="material.passport === null" v-on:click="showModal('AppendPassport', material.arrival_material_id)"><i class="icon plus"></i></button> -->
 								<button class="ui icon mini red button" v-on:click="showModal(index)"><i class="icon tint"></i></button>
 							</sui-table-cell>
 						</sui-table-row>
@@ -83,12 +83,11 @@
 
 <script>
 import ExpensesModal from '../modals/expenses.vue';
-//import MenuNav from '../menu.vue';
+import fs from 'file-saver';
 
 export default {
 	components: {
-		'expenses-modal': ExpensesModal,
-		//'menu-nav': MenuNav
+		'expenses-modal': ExpensesModal
 	},
 	data () {
 		return {
@@ -129,9 +128,9 @@ export default {
 			countPost: 100,
 			isShowModal: false,
 			materialIndex: null,
-			filterKey: ''
-			//selectAllMaterials: false,
-			//selectedEquipments: [],
+			filterKey: '',
+			selectedIdLocation: null,
+			isPrint: false
 		}
 	},
 	methods: {
@@ -188,13 +187,22 @@ export default {
 			let shelf_life = new Date(date.split(".").reverse().join("-"));
 			return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
 		},
-		//showPassport(id){
-		//	axios.get("/reagent/get-passport?id=" + id).then( response => (window.open(response.data)));
-		//},
 		moveToArchive(index){
 			this.$http.post("/api/reagent/storage/archive", JSON.stringify({id: this.gridData[index].arrival_material_id}), {
 				headers: {'Content-Type': 'application/json'}}).then( response => (this.gridData[index].archive = 1));
 		},
+		printInventory(){
+			this.isPrint = !this.isPrint;
+			this.$http.get('/api/reagent/storage/print/' + this.selectedIdLocation, {responseType: 'blob'})
+			.then(response => {
+				const file = new Blob([response.data], {type: 'application/pdf'});
+				// const fileURL = URL.createObjectURL(file);
+				// console.log(fileURL);
+				fs.saveAs(file, 'Опись расходных материалов ' + this.todays + '.pdf');
+				this.isPrint = !this.isPrint;
+			})
+			.catch(error => (alert(error), this.isPrint = !this.isPrint));	
+		}
 	},
 	watch: {
 		gridData(){
@@ -206,9 +214,12 @@ export default {
 		}
 	},
 	computed: {
+		todays(){
+			let today = new Date();
+			return today.toLocaleString().split(',')[0];
+		},
 		filteredRows: function () {
 			let sortKey = this.sortKey;
-			//let filterKey = this.filterKey && this.filterKey.toLowerCase();
 			let filterKey = this.filterKey;
 			let order = this.sortColumns[sortKey] || 1;
 			let rows = this.gridData;
@@ -227,10 +238,6 @@ export default {
 				rows = rows.filter(function(row)
 				{
 					return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
-					//return Object.keys(row).some(function(key)
-					//{
-						//return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);
-					//});
 				});
 			}
 			return rows.filter(r =>
@@ -245,7 +252,23 @@ export default {
 		},
 		paginateRows(){
 			return this.paginate(this.filteredRows);
-		}
+		},
+		dropdownLocations(){
+			let result = [];
+			let resa = [];
+			for (let str of this.gridData)
+			{
+				let obj = {key: str['id_location'], value: str['id_location'], text: str['location']};
+				if (!result.includes(obj, 0))
+					result.push(obj);
+				result = result.slice().sort(function (a, b){
+					if(a === b) return 0 ;
+					else if (a > b) return 1;
+					else return - 1;
+				});
+			}
+			return result;
+		},
 	},
 	created(){
 		this.getStorage();

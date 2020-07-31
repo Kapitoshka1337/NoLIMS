@@ -138,8 +138,8 @@ export default {
 				this.loading = true;
 				this.$http.post("/api/reagent/" + this.url, JSON.stringify(obj), {
 					headers: {'Content-Type': 'application/json'}}).then(response => (
-						this.$emit('success', this.expensesAmount, this.renewalDate), this.loading = false)).catch(error => (
-							alert(error.response.data.message), this.loading = false));
+						this.$emit('success', this.expensesAmount, this.renewalDate), this.loading = false, this.expensesAmount = null)).catch(error => (
+							alert(error.response.data.message), this.loading = false, this.expensesAmount = null));
 			}
 		},
 		timeShelfLife(date){

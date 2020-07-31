@@ -19,7 +19,7 @@
             </sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<button class="ui approve green button" v-on:click="saveExpenses">Сохранить</button>
+			<sui-button color="green" v-on:click="saveExpenses" v-bind:loading="loading">Сохранить</sui-button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
 		</sui-modal-actions>
 	</sui-modal>
@@ -30,7 +30,8 @@ export default {
 	props: {
 		open: Boolean,
         material: Object,
-        materials: Array
+		materials: Array,
+		loading: false
 	},
 	data(){
 		return {
@@ -49,8 +50,9 @@ export default {
 			this.$emit('close');
 		},
 		saveExpenses(){
+			this.loading = !this.loading;
             this.$http.put("/api/reagent/locations/" + this.isMaterial.id, JSON.stringify(this.isMaterial), {
-					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'))).catch(error => (alert(error.response.data.message)));
+					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 		},
 	}
 }

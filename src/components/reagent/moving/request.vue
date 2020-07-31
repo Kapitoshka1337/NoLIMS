@@ -24,8 +24,8 @@
                                             <sui-input type="text" placeholder="Поиск по МАТЕРИАЛ" v-model="filterKey"></sui-input>
                                         </sui-form-field>
                                         <sui-form-field>
-                                            <sui-dropdown :options="returnUniq()" placeholder="Отдел" search selection v-model="filters['department']"></sui-dropdown>
-                                        </sui-form-field>
+											<sui-dropdown placeholder="Отдел" search selection :options="returnUniq" v-model="filters['department']"></sui-dropdown>
+										</sui-form-field>
                                     </sui-form-fields>
 								</sui-form>
 							</sui-table-header-cell>
@@ -226,24 +226,7 @@ export default {
 			let today = new Date();
 			let shelf_life = new Date(date.split(".").reverse().join("-"));
 			return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
-        },
-		returnUniq(){
-            let result = [];
-            let resa = [];
-			for (let str of this.gridData)
-				if (!result.includes(str['department']))
-					result.push(str['department']);
-				result = result.slice().sort(function (a, b){
-					if(a === b) return 0 ;
-					else if (a > b) return 1;
-					else return - 1;
-                })
-            for (let res of result)
-            {
-                resa.push({key: res, value: res, text: res});
-            }
-			return resa;
-        },
+        }
 	},
 	watch: {
 		gridData(){
@@ -312,6 +295,23 @@ export default {
                 }
                 return rows;
             }
+		},
+		returnUniq(){
+			let result = [];
+			let resa = [];
+			for (let str of this.gridData)
+				if (!result.includes(str['department']))
+					result.push(str['department']);
+				result = result.slice().sort(function (a, b){
+					if(a === b) return 0 ;
+					else if (a > b) return 1;
+					else return - 1;
+				});
+			for (let res of result)
+			{
+				resa.push({key: res, value: res, text: res});
+			}
+			return resa;
 		}
 	},
 	created(){

@@ -50,7 +50,8 @@ export default {
 			axios.get('/api/structure/users').then(response => (this.users = response.data, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 		},
 		login(){
-			this.$store.dispatch('login', this.user).then(() => this.$router.push('/')).catch(error => alert(error.response.data.message));
+			this.loading = !this.loading;
+			this.$store.dispatch('login', this.user).then(() => this.$router.push('/'), this.loading = !this.loading).catch(error => alert(error.response.data.message), this.loading = !this.loading);
 		}
 	},
 	computed: {

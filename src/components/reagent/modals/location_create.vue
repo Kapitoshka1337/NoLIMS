@@ -20,15 +20,13 @@
             </sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<button class="ui approve green button" v-on:click="createLocation">Сохранить</button>
+			<sui-button color="green" v-on:click="createLocation" v-bind:loading="loading">Сохранить</sui-button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
 		</sui-modal-actions>
 	</sui-modal>
 </template>
 
 <script>
-//import axios from 'axios';
-
 export default {
 	props: {
         open: Boolean
@@ -39,7 +37,8 @@ export default {
                 cabinet_number: null,
                 place: null,
                 notation: null
-            }
+			},
+			loading: false
 		}
 	},
 	computed:{
@@ -52,7 +51,8 @@ export default {
 			this.$emit('close');
 		},
 		createLocation(){
-            this.$http.post("/api/reagent/locations", JSON.stringify(this.material), {headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', response.data))).catch(error => (alert(error.response.data.message)));
+			this.loading = !this.loading;
+            this.$http.post("/api/reagent/locations", JSON.stringify(this.material), {headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', response.data), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 		},
 	}
 }
