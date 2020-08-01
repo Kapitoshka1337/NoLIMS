@@ -48,7 +48,7 @@
                                             <input type="date" v-model="material.date_create">
                                         </sui-form-field>
                                         <sui-form-field>
-                                            <label>Годен до</label>
+                                            <label>Срок хранения</label>
                                             <input type="date" v-model="material.shelf_life">
                                         </sui-form-field>
                                     </sui-form>
@@ -60,7 +60,7 @@
                         </sui-card-group>
                     </sui-card-content>
                     <sui-card-content>
-                        <sui-button icon="search" floated="left" color="yellow" v-on:click="showModal"></sui-button>
+                        <sui-button v-bind:loading="isLoadMaterial" icon="search" floated="left" color="yellow" v-on:click="showModal"></sui-button>
                         <router-link to="/reagent/arrivals" is="sui-button" class="ui right floated orange" content="Отмена"></router-link>
                         <sui-button v-bind:loading="loading" content="Добавить" floated="right" color="green" v-bind:disabled="!selectedMaterials.length || !order.number || !order.date" v-on:click="submitOrder"></sui-button>
                     </sui-card-content>
@@ -89,7 +89,8 @@ export default {
                 date: '',
                 materials: null
             },
-            loading: false
+            loading: false,
+            isLoadMaterial: false
         }
     },
     watch:{
@@ -127,7 +128,10 @@ export default {
 		showModal(){
             if(this.materials.length > 0) this.isShowModal = true;
             else
-                this.$http.get('/api/reagent/material').then(response => (this.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
+            {
+                this.isLoadMaterial = !this.isLoadMaterial;
+                this.$http.get('/api/reagent/material').then(response => (this.materials = response.data, this.isShowModal = true, this.isLoadMaterial = !this.isLoadMaterial)).catch(error => (alert(error), this.isLoadMaterial = !this.isLoadMaterial));
+            }
         },
 		deleteMaterial(index, material) {
 			var idx = this.selectedMaterials.indexOf(material);

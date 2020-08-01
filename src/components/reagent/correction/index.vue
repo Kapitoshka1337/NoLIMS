@@ -53,8 +53,8 @@
 						<div class="content">
 							<span class="left floated header">{{ today(correct.date_response) }}</span>
 							<div v-if="correct.id_status === 1">
-								<sui-button size="mini" content="Отклонить"  color="red" floated="right" v-on:click="deny(index)"></sui-button>
-								<sui-button size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
+								<sui-button v-bind:loading="isDenyLoading" size="mini" content="Отклонить"  color="red" floated="right" v-on:click="deny(index)"></sui-button>
+								<sui-button v-bind:loading="isAllowLoading" size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
 							</div>
 						</div>
 					</div>
@@ -91,6 +91,8 @@ export default {
                 date_usage: []
 			},
 			gridData: [],
+			isDenyLoading: false,
+			isAllowLoading: false
 			//sortKey: '',
 			//sortColumns: Object,
 			//currentPage: 1,
@@ -164,14 +166,22 @@ export default {
 		},
 		allow(index = null){
 			let obj = { id_outgo: this.gridData[index].id_outgo, amount: this.gridData[index].corrected_amount};
+			this.isAllowLoading = !this.isAllowLoading;
 			this.$http.put("/api/reagent/corrections/allow/" + this.gridData[index].id, obj,{
 				headers: {'Content-Type': 'application/json'}})
-				.then(response => (this.gridData[index].id_status = 2, this.gridData[index].status = 'Подтверждена', this.gridData[index].date_response = this.dateToday())).catch(error => (alert(error.response.data.message)));
+				.then(response => (this.gridData[index].id_status = 2,
+				this.gridData[index].status = 'Подтверждена',
+				this.gridData[index].date_response = this.dateToday(),
+				this.isAllowLoading = !this.isAllowLoading)).catch(error => (alert(error.response.data.message), this.isAllowLoading = !this.isAllowLoading));
 		},
 		deny(index = null){
+			this.isDenyLoading = !this.isDenyLoading;
 			this.$http.put("/api/reagent/corrections/deny/" + this.gridData[index].id, {
 				headers: {'Content-Type': 'application/json'}})
-				.then(response => (this.gridData[index].id_status = 3, this.gridData[index].status = 'Отклонена', this.gridData[index].date_response = this.dateToday())).catch(error => (alert(error.response.data.message)));
+				.then(response => (this.gridData[index].id_status = 3,
+				this.gridData[index].status = 'Отклонена',
+				this.gridData[index].date_response = this.dateToday(),
+				this.isDenyLoading = !this.isDenyLoading)).catch(error => (alert(error.response.data.message), this.isDenyLoading = !this.isDenyLoading));
 		},
 		dateToday(){
 			let today = new Date();

@@ -34,40 +34,50 @@ if(token){
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
-// Vue.component('Hub', Hub);
 Vue.component('menu-nav', MenuNav);
 
 var router = new VueRouter({
   mode: 'history',
   routes: [
-    { path: '/', component: Hub, meta: { requiresAuth: true } },
-    { path: '/login', component: Login },
-    { path: '/singup', component: Singup },
-    { path: '/reagent', component: Reagent, meta: { requiresAuth: true, active: true },
+    { path: '/login', component: Login, meta: { requiresAuth: false, roles: [] } },
+    { path: '/singup', component: Singup, meta: { requiresAuth: false, roles: [] } },
+    { path: '/', component: Hub, meta: { requiresAuth: true, roles: [0, 1, 2, 3] } },
+    { path: '/reagent', component: Reagent, meta: { requiresAuth: true, roles: [1, 2, 3] },
       children: [
-        { path: 'storage', component: Storage },
-        { path: 'archive', component: Archive },
-        { path: 'arrivals', component: Arrivals },
-        { path: 'arrivals/create', component: AppendArrivals }, //ПЕРЕДЕЛАТЬ
-        { path: 'moving', component: MovingReq },
-        { path: 'moving/history', component: MovingHistory },
-        { path: 'expenses', component: Expenses },
-        { path: 'locations', component: Location },
-        { path: 'corrections', component: Corrections }
+        { path: 'storage', component: Storage, meta: { roles: [1, 2, 3] } },
+        { path: 'archive', component: Archive,  meta: { roles: [1, 2, 3] } },
+        { path: 'arrivals', component: Arrivals,  meta: { roles: [1, 2, 3] } },
+        { path: 'arrivals/create', component: AppendArrivals,  meta: { roles: [1, 2, 3] } }, //ПЕРЕДЕЛАТЬ
+        { path: 'moving', component: MovingReq, meta: { roles: [2, 3] } },
+        { path: 'moving/history', component: MovingHistory, meta: { roles: [2, 3] } },
+        { path: 'expenses', component: Expenses,  meta: { roles: [1, 2, 3] } },
+        { path: 'locations', component: Location,  meta: { roles: [1, 2, 3] } },
+        { path: 'corrections', component: Corrections, meta: { roles: [2, 3] } }
       ]
+    },
+    {
+      path: '*',
+      redirect: '/login'
     }
   ]
 });
 
 router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.requiresAuth))
+  const isAuth = to.matched.some(record => record.meta.requiresAuth);
+  const isRoles = to.matched.some(record => record.meta.roles);
+  const roles = to.meta.roles;
+  if(isAuth && isRoles)
   {
-    if(store.getters.isLoggedIn)
+    if(!store.getters.isLoggedIn)
     {
-      next();
-      return;
+      next('/login');
     }
-    next('/login');
+
+    if(store.getters.isLoggedIn && roles.includes(store.getters.isRoles))
+    {
+      return next();
+    }
+    else alert('У вас нет доступа!');
   }
   else
   {

@@ -7,21 +7,21 @@
 		<sui-modal-content>
 			<div class="ui bottom warning message" v-if="isTime">
 				<i class="icon warning"></i>
-				{{ isTime }}
+				Расход материала по истечение установленного срока годности ({{dateFormat(material.shelf_life)}}) запрещается
 			</div>
 			<div class="ui bottom warning message" v-if="isAmount">
 				<i class="icon warning"></i>
-				{{ isAmount }}
+				Введите протраченное количество
 			</div>
 			<div class="ui bottom warning message" v-if="isTotal">
 				<i class="icon warning"></i>
-				{{ isTotal }}
+				Невозможно потратить больше {{material.total}}
 			</div>
 		</sui-modal-content>
-		<sui-modal-content v-if="isTime">
+		<sui-modal-content v-if="isTime && isHead">
 			<sui-form>
 				<sui-form-field>
-					<sui-checkbox label="Продлить срок годности" v-model="renewalShelfLife"/>
+					<sui-checkbox label="Продлить срок хранения" v-model="renewalShelfLife"/>
 				</sui-form-field>
 				<sui-form-field>
 					<sui-input type="date" v-if="renewalShelfLife" v-model="renewalDate"></sui-input>
@@ -41,15 +41,16 @@
 			</sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<sui-button class="ui approve green button" v-bind:loading="loading" v-on:click="saveExpenses" v-bind:disabled="(isAmount || isTotal) && (isAmount || !renewalShelfLife || isTotal)">Потратить</sui-button>
+			<sui-button class="ui approve green button"
+			v-bind:loading="loading"
+			v-on:click="saveExpenses"
+			v-bind:disabled="(isAmount || isTotal || isTime) && (isAmount || !renewalShelfLife || isTotal)">Потратить</sui-button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
 		</sui-modal-actions>
 	</sui-modal>
 </template>
 
 <script>
-//import axios from 'axios';
-
 export default {
 	props: {
 		open: Boolean,
@@ -59,7 +60,6 @@ export default {
 		return {
 			expensesAmount: null,
 			expensesDate: null,
-			//dangerShelfLife: false,
 			renewalShelfLife: false,
 			renewalDate: null,
 			url: 'storage/expenses',
@@ -67,7 +67,6 @@ export default {
 		}
 	},
 	beforeDestroy(){
-		//this.dangerShelfLife = !this.dangerShelfLife;
 		this.renewalShelfLife = !this.renewalShelfLife;
 		this.expensesAmount = null;
 		this.material = null;
@@ -81,45 +80,29 @@ export default {
 			if(newVal === true)
 				this.url = 'expenses/' + this.material.arrival_material_id + "/renewal";
 			else this.url = 'storage/expenses';
-		},
-		//open(newVal){
-		//	if(newVal === false)
-		//	{
-		//		this.dangerShelfLife = false;
-		//		this.renewalShelfLife = false;
-		//		this.expensesAmount = null;
-		//		this.material = null;
-		//	}
-		//}
+		}
 	},
 	computed:{
 		show(){
 			return this.open
 		},
-		//afterHide(){
-		//	if(!this.open)
-		//	{
-		//		this.dangerShelfLife = false;
-		//		this.renewalShelfLife = false;
-		//		this.expensesAmount = null;
-		//		this.material = null;
-		//	}
-		//},
 		isTime(){
 			if(this.timeShelfLife(this.material.shelf_life) <= 0){
-				//this.dangerShelfLife = true;
-				return 'Расход материала по истечение установленного срока годности (' + this.dateFormat(this.material.shelf_life) + ') запрещается';
+				return true;
 			}
 		},
 		isAmount(){
 			if(this.expensesAmount < 0)
 				this.expensesAmount = this.expensesAmount * -1;
 			if(this.expensesAmount <= 0)
-				return 'Введите протраченное количество';
+				return true;
 		},
 		isTotal(){
 			if ((this.material.total - this.expensesAmount) < 0)
-				return 'Невозможно потратить больше ' + this.material.total;
+				return true;
+		},
+		isHead(){
+			return this.$store.getters.isRoles === 2 ? true : false;
 		}
 	},
 	methods: {

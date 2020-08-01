@@ -42,8 +42,8 @@
 							<sui-button v-bind:loading="loading" size="mini" content="Запрашиваемые материалы" color="purple" floated="left" v-on:click="showModal(index)"></sui-button>
 							<div v-if="moving.id_department_from != idDep && moving.id_status === 1">
 								<!--<div v-if="moving.id_status === 1">-->
-									<sui-button size="mini" content="Отклонить" color="red" floated="right" v-on:click="deny(index)"></sui-button>
-									<sui-button size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
+									<sui-button v-bind:loading="isDenyLoading" size="mini" content="Отклонить" color="red" floated="right" v-on:click="deny(index)"></sui-button>
+									<sui-button v-bind:loading="isAllowLoading" size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
 								<!--</div>-->
 							</div>
 							<!--moving.id_department_from != idDep || moving.id_department_to === idDep && moving.id_status === 1-->
@@ -66,7 +66,7 @@ export default {
 	data () {
 		return {
 			gridColumns: {
-                tableColumn: [ ],
+                tableColumn: [],
                 filterColumn: []
 			},
 			filters: {
@@ -83,7 +83,9 @@ export default {
                 order: null,
                 materials: []
 			},
-			loading: false
+			loading: false,
+			isAllowLoading: false,
+			isDenyLoading: false
 			//filterKey: ''
 			//selectAllMaterials: false,
 			//selectedEquipments: [],
@@ -161,15 +163,22 @@ export default {
 			return resa;
 		},
 		allow(index = null){
-			// let obj = { id_outgo: this.gridData[index].id_outgo, amount: this.gridData[index].corrected_amount};
+			this.isAllowLoading = !this.isAllowLoading;
 			this.$http.put("/api/reagent/moving/allow/" + this.gridData[index].id + "/" + this.gridData[index].id_department_from,{
 				headers: {'Content-Type': 'application/json'}})
-				.then((response) => ( this.gridData[index].status = 'Подтвержден', this.gridData[index].id_status = 2, this.gridData[index].date_moving = this.dateToday())).catch(error => (alert(error.response.data.message)));
+				.then((response) => ( this.gridData[index].status = 'Подтвержден',
+				this.gridData[index].id_status = 2, 
+				this.gridData[index].date_moving = this.dateToday(), 
+				this.isAllowLoading = !this.isAllowLoading)).catch(error => (alert(error.response.data.message), this.isAllowLoading = !this.isAllowLoading));
 		},
 		deny(index = null){
+			this.isDenyLoading = !this.isDenyLoading;
 			this.$http.put("/api/reagent/moving/deny/" + this.gridData[index].id,{
 				headers: {'Content-Type': 'application/json'}})
-				.then(response => ( this.gridData[index].status = 'Отклонен', this.gridData[index].id_status = 3, this.gridData[index].date_moving = this.dateToday() )).catch(error => (alert(error.response.data.message)));
+				.then(response => ( this.gridData[index].status = 'Отклонен',
+				this.gridData[index].id_status = 3,
+				this.gridData[index].date_moving = this.dateToday(),
+				this.isDenyLoading = !this.isDenyLoading)).catch(error => (alert(error.response.data.message), this.isDenyLoading = !this.isDenyLoading));
 		},
 		dateToday(){
 			let today = new Date();

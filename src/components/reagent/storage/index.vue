@@ -47,12 +47,12 @@
 							<sui-table-cell collapsing
 							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
 							>{{ material.total }} / {{ material.amount }}</sui-table-cell>
-							<sui-table-cell collapsing
+							<sui-table-cell :width="2"
 							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
 								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"></sui-button>
-								<button class="ui icon mini red button" v-on:click="showModal(index)"><i class="icon tint"></i></button>
+								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)" v-if="!isWarehouse"></sui-button>
 							</sui-table-cell>
 						</sui-table-row>
 					</sui-table-body>
@@ -99,7 +99,7 @@ export default {
 					{'material':'Материал'},
 					{'measure':'Ед.изм'},
 					{'total':'Количество'},
-					{'shelf_life':'Годен до'},
+					{'shelf_life':'Срок хранения'},
 					{'action':''}
 				],
 				filterColumn: [
@@ -107,7 +107,7 @@ export default {
 					{'type':'Тип'},
 					{'material':'Материал'},
 					{'date_order':'Дата поступления'},
-					{'shelf_life':'Годен до'},
+					{'shelf_life':'Срок хранения'},
 					{'location':'Местоположение'},
 				]
 			},
@@ -217,6 +217,9 @@ export default {
 		}
 	},
 	computed: {
+		isWarehouse(){
+			return this.$store.getters.isRoles === 3 ? true : false
+		},
 		todays(){
 			let today = new Date();
 			return today.toLocaleString().split(',')[0];

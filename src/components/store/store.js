@@ -1,25 +1,28 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
+
 Vue.use(Vuex);
+
 export default new Vuex.Store({
 	state: {
 		status: '',
 		token: localStorage.getItem('token') || '',
 		id_department: localStorage.getItem('id_department') || '',
 		name: localStorage.getItem('name') || '',
-		active: localStorage.getItem('active') || 0,
+		roles: +localStorage.getItem('roles') || 0,
 		user : null
 	},
 	mutations:{
 		auth_request(state){
 			state.status = 'loading';
 		},
-		auth_success(state, {tkn, usr, id_dep, nm, act}){
+		auth_success(state, {tkn, usr, id_dep, nm, rls}){
 			state.status = 'success';
 			state.token = tkn;
 			state.id_department = id_dep;
 			state.name = nm;
+			state.roles = rls;
 			state.user = usr;
 		},
 		auth_error(state){
@@ -40,13 +43,13 @@ export default new Vuex.Store({
 				const usr = response.data.user;
 				const id_dep = response.data.user.id_department;
 				const nm = response.data.user.name;
-				const act = response.data.user.active;
+				const rls = response.data.user.roles[0];
 				localStorage.setItem('token', tkn);
 				localStorage.setItem('id_department', usr.id_department);
 				localStorage.setItem('name', usr.name);
-				localStorage.setItem('active', usr.active);
+				localStorage.setItem('roles', usr.roles[0]);
 				axios.defaults.headers.common['Authorization'] = 'Bearer ' + tkn;
-				commit('auth_success', {tkn, usr, id_dep, nm, act});
+				commit('auth_success', {tkn, usr, id_dep, nm, rls});
 				resolve(response);
 			  })
 			  .catch(error => {
@@ -63,12 +66,15 @@ export default new Vuex.Store({
 			  .then(response => {
 				const tkn = response.data.token;
 				const usr = response.data.user;
+				const id_dep = response.data.user.id_department;
+				const nm = response.data.user.name;
+				const rls = response.data.user.roles[0];
 				localStorage.setItem('token', tkn);
 				localStorage.setItem('id_department', usr.id_department);
 				localStorage.setItem('name', usr.name);
-				localStorage.setItem('active', usr.active);
+				localStorage.setItem('roles', usr.roles[0]);
 				axios.defaults.headers.common['Authorization'] = 'Bearer ' + tkn;
-				commit('auth_success', {tkn, usr});
+				commit('auth_success', {tkn, usr, id_dep, nm, rls});
 				resolve(response);
 			  })
 			  .catch(error => {
@@ -84,7 +90,7 @@ export default new Vuex.Store({
 			  localStorage.removeItem('token');
 			  localStorage.removeItem('id_department');
 			  localStorage.removeItem('name');
-			  localStorage.removeItem('active');
+			  localStorage.removeItem('roles');
 			  delete axios.defaults.headers.common['Authorization'];
 			  resolve();
 			})
@@ -107,8 +113,8 @@ export default new Vuex.Store({
 		name(state){
 			return state.name;
 		},
-		isActive(state){
-			return state.active;
+		isRoles(state){
+			return state.roles;
 		}
 	}
 })
