@@ -7,6 +7,8 @@ use Illuminate\Notifications\Notifiable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use App\Models\share\users_roles;
+
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
@@ -19,7 +21,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'password', 'role', 'id_department', 'id_rank', 'active'
+        'name', 'password', 'id_department', 'id_rank'
     ];
 
     /**
@@ -59,6 +61,11 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->id;
     }
+
+    public function getRoles()
+    {
+        return $this->hasMany(users_roles::class, 'id_user')->select('id_role')->get()->pluck('id_role');
+    }    
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
      *
@@ -66,6 +73,6 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return ['name' => $this->name, 'role' => $this->role, 'id_department' => $this->id_department, 'id_rank' => $this->id_rank, 'active' => $this->active];
+        return ['name' => $this->name, 'id_department' => $this->id_department, 'roles' => $this->getRoles()];
     }
 }

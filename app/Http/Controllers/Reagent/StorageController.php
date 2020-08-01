@@ -28,7 +28,7 @@ class StorageController extends Controller
 
     public function viewAll()
     {
-        return response()->json(storage::where('id_department', '!=',auth()->user()->getIdDepartment())->get(), 200);
+        return response()->json(storage::where('id_department', '!=',auth()->user()->getIdDepartment())->where('archive', 0)->get(), 200);
     }
 
     public function viewArchive()
