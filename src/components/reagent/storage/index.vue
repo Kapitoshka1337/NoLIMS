@@ -199,8 +199,6 @@ export default {
 			this.$http.get('/api/reagent/storage/print/' + this.selectedIdLocation, {responseType: 'blob'})
 			.then(response => {
 				const file = new Blob([response.data], {type: 'application/pdf'});
-				// const fileURL = URL.createObjectURL(file);
-				// console.log(fileURL);
 				fs.saveAs(file, 'Опись расходных материалов ' + this.todays + '.pdf');
 				this.isPrint = !this.isPrint;
 			})
@@ -261,7 +259,6 @@ export default {
 		},
 		dropdownLocations(){
 			let result = [];
-			let resa = [];
 			for (let str of this.gridData)
 			{
 				let obj = {key: str['id_location'], value: str['id_location'], text: str['location']};

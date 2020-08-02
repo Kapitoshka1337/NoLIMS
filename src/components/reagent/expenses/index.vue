@@ -71,7 +71,7 @@
 								<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
 								<sui-form>
 									<sui-form-field>
-										<input is="sui-input" type="text" :value="currentPage">
+										<input type="text" :value="currentPage">
 									</sui-form-field>
 								</sui-form>
 								<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
@@ -87,8 +87,7 @@
 </template>
 
 <script>
-import CorrectionModal from '../modals/correction.vue'
-//import axios from 'axios';
+import CorrectionModal from '../modals/correction.vue';
 
 export default {
 	components: {
@@ -142,6 +141,11 @@ export default {
 	methods: {
 		showModal(index = null){
 			this.materialIndex = index;
+			if(this.gridData[index].archive)
+			{
+				alert('Исправление архивного материала запрещено!');
+				return false;
+			}
 			this.isShowModal = true;
 		},
 		hideModal(){

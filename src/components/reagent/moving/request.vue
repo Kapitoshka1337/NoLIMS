@@ -117,12 +117,10 @@
 
 <script>
 import ExpensesModal from '../modals/expenses.vue';
-//import MenuNav from '../menu.vue';
 
 export default {
 	components: {
-		'expenses-modal': ExpensesModal,
-		//'menu-nav': MenuNav
+		'expenses-modal': ExpensesModal
 	},
 	data () {
 		return {
@@ -131,7 +129,6 @@ export default {
                 tableColumn: [
                     {'action': ''},
                     {'department': 'Отдел'},
-                    // {'material_id': 'Код'},
                     {'date_create':'Дата пост.'},
                     {'type':'Тип'},
                     {'material':'Материал'},
@@ -155,7 +152,6 @@ export default {
 			isShowModal: false,
 			materialIndex: null,
             filterKey: '',
-			//selectAllMaterials: false,
             selectedMaterials: [],
 			listLocations: [],
 			loading: false
@@ -180,13 +176,6 @@ export default {
 			this.loading = !this.loading;
 			this.$http.post('/api/reagent/moving', obj).then(response => (this.open = false, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 		},
-		// showModal(index = null){
-		// 	this.materialIndex = index;
-		// 	this.isShowModal = true;
-		// },
-		// hideModal(){
-		// 	this.isShowModal = false;
-		// },
 		getStorageAll(){
 			this.$http.get('/api/reagent/storage/all').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
@@ -248,7 +237,6 @@ export default {
 	computed: {
 		filteredRows: function () {
 			let sortKey = this.sortKey;
-			//let filterKey = this.filterKey && this.filterKey.toLowerCase();
 			let filterKey = this.filterKey;
 			let order = this.sortColumns[sortKey] || 1;
 			let rows = this.gridData;
@@ -285,15 +273,12 @@ export default {
         forDropdown(){
             if(this.listLocations.length)
             {
-                let rows = [];
-                for(let item in this.listLocations){
-                    rows.push({
-                        key: this.listLocations[item].id,
-                        value: this.listLocations[item].id,
-                        text: this.listLocations[item].cabinet_number + " " + this.listLocations[item].place + " " + this.listLocations[item].notation
-                    });
+				let result = [];
+                for(let item of this.listLocations){
+					let obj = { key: item.id, value: item.id, text: item.cabinet_number + " " + item.place + " " + item.notation};
+                    result.push(obj);
                 }
-                return rows;
+                return result;
             }
 		},
 		returnUniq(){
