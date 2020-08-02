@@ -31,6 +31,8 @@ const token = localStorage.getItem('token');
 if(token){
   Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
+if(process.env.NODE_ENV === 'production') Vue.prototype.env='http://laravel/api/';
+else Vue.prototype.env='/api/';
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
@@ -84,7 +86,6 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
 new Vue({
   el: '#app',
   router: router,

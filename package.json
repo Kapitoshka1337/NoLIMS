@@ -16,7 +16,8 @@
     "semantic-ui-vue": "^0.11.0",
     "vue": "^2.5.11",
     "vue-router": "^3.3.4",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "webpack-cli": "^3.3.12"
   },
   "browserslist": [
     "> 1%",
@@ -31,10 +32,11 @@
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.4",
+    "html-webpack-plugin": "^3.2.0",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
     "vuejs-validators": "^1.1.7",
-    "webpack": "^3.6.0",
+    "webpack": "^3.12.0",
     "webpack-dev-server": "^2.9.1"
   }
 }
