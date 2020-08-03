@@ -17,6 +17,7 @@ class reagent_arrival_material extends Model
         'shelf_life',
         'date_create',
         'id_passport',
+        'density',
         'archive'
     ];
 }

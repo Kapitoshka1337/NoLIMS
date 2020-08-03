@@ -36,7 +36,8 @@ class ArrivalsController extends Controller
 					'amount' => $material['amount'],
 					'id_location' => $material['id_location'],
 					'shelf_life' => $material['shelf_life'],
-					'date_create' => $material['date_create']
+					'date_create' => $material['date_create'],
+					'density' => $material['density']
 				);
 			}
 			$order_material = reagent_arrival_material::insert($arr);
