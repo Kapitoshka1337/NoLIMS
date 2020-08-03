@@ -65,7 +65,6 @@
 </template>
 
 <script>
-//import axios from 'axios';
 import ArrivalModal from '../modals/arrival_material.vue'
 
 export default {
@@ -120,7 +119,7 @@ export default {
 		//	this.isShowModal = false;
 		//},
 		getCorrections(){
-			this.$http.get('/api/reagent/corrections').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.$http.get('http://laravel/api/reagent/corrections').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 			//fetch("/api/reagent/storage").then(response => (
 				//response.json().then(data => (this.gridData = data))
 			//)).catch(function(data){alert(data)});
@@ -167,7 +166,7 @@ export default {
 		allow(index = null){
 			let obj = { id_outgo: this.gridData[index].id_outgo, amount: this.gridData[index].corrected_amount};
 			this.isAllowLoading = !this.isAllowLoading;
-			this.$http.put("/api/reagent/corrections/allow/" + this.gridData[index].id, obj,{
+			this.$http.put("http://laravel/api/reagent/corrections/allow/" + this.gridData[index].id, obj,{
 				headers: {'Content-Type': 'application/json'}})
 				.then(response => (this.gridData[index].id_status = 2,
 				this.gridData[index].status = 'Подтверждена',
@@ -176,7 +175,7 @@ export default {
 		},
 		deny(index = null){
 			this.isDenyLoading = !this.isDenyLoading;
-			this.$http.put("/api/reagent/corrections/deny/" + this.gridData[index].id, {
+			this.$http.put("http://laravel/api/reagent/corrections/deny/" + this.gridData[index].id, {
 				headers: {'Content-Type': 'application/json'}})
 				.then(response => (this.gridData[index].id_status = 3,
 				this.gridData[index].status = 'Отклонена',

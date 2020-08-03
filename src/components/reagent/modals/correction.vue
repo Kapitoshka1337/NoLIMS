@@ -61,7 +61,7 @@ export default {
 					reason_correct: this.correctReason
 				};
 				this.loading = !this.loading;
-				this.$http.post("/api/reagent/expenses/correct", JSON.stringify(correct), {
+				this.$http.post("http://laravel/api/reagent/expenses/correct", JSON.stringify(correct), {
 					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 			}
 		}

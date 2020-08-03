@@ -36,6 +36,10 @@
                                             <input type="number" v-model="material.amount">
                                         </sui-form-field>
                                         <sui-form-field>
+                                            <label>Плотность</label>
+                                            <input type="number" min="1" step="0.1" v-model="material.density">
+                                        </sui-form-field>
+                                        <sui-form-field>
                                             <label>Местоположение</label>
                                             <sui-dropdown :options="forDropdown" search selection v-model="material.id_location"></sui-dropdown>
                                         </sui-form-field>
@@ -96,7 +100,7 @@ export default {
     watch:{
         selectedMaterials(){
             if(!this.listLocations.length)
-                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
+                this.$http.get('http://laravel/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
         }
     },
     computed:{
@@ -130,7 +134,7 @@ export default {
             else
             {
                 this.isLoadMaterial = !this.isLoadMaterial;
-                this.$http.get('/api/reagent/material').then(response => (this.materials = response.data, this.isShowModal = true, this.isLoadMaterial = !this.isLoadMaterial)).catch(error => (alert(error), this.isLoadMaterial = !this.isLoadMaterial));
+                this.$http.get('http://laravel/api/reagent/material').then(response => (this.materials = response.data, this.isShowModal = true, this.isLoadMaterial = !this.isLoadMaterial)).catch(error => (alert(error), this.isLoadMaterial = !this.isLoadMaterial));
             }
         },
 		deleteMaterial(index, material) {
@@ -140,7 +144,7 @@ export default {
         submitOrder(){
             this.order.materials = this.selectedMaterials;
             this.loading = !this.loading;
-            this.$http.post('/api/reagent/arrivals', this.order).then(response => (this.$router.push({path: '/reagent/storage'}), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));            
+            this.$http.post('http://laravel/api/reagent/arrivals', this.order).then(response => (this.$router.push({path: '/reagent/storage'}), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));            
         }
     }
 }

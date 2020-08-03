@@ -52,7 +52,7 @@ export default {
 		},
 		createLocation(){
 			this.loading = !this.loading;
-            this.$http.post("/api/reagent/locations", JSON.stringify(this.material), {headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', response.data), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
+            this.$http.post("http://laravel/api/reagent/locations", JSON.stringify(this.material), {headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success', response.data), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 		},
 	}
 }

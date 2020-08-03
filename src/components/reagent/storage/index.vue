@@ -52,7 +52,7 @@
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
 								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"></sui-button>
-								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)" v-if="!isWarehouse"></sui-button>
+								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)"></sui-button>
 							</sui-table-cell>
 						</sui-table-row>
 					</sui-table-body>
@@ -98,7 +98,7 @@ export default {
 					{'location':'Местоположение'},
 					{'material':'Материал'},
 					{'measure':'Ед.изм'},
-					{'total':'Количество'},
+					{'total':'Ост./Пост.'},
 					{'shelf_life':'Срок хранения'},
 					{'action':''}
 				],
@@ -149,7 +149,7 @@ export default {
 				this.gridData[this.materialIndex].shelf_life = renewaDate;
 		},
 		getStorage(){
-			this.$http.get(this.env + 'reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.$http.get('http://laravel/api/reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		sortBy: function (key) {
 			if(key === 'action') return;
@@ -190,13 +190,13 @@ export default {
 		},
 		moveToArchive(index){
 			this.isToArchive = !this.isToArchive;
-			this.$http.post("/api/reagent/storage/archive", JSON.stringify({id: this.gridData[index].arrival_material_id}), {
+			this.$http.post("http://laravel/api/reagent/storage/archive", JSON.stringify({id: this.gridData[index].arrival_material_id}), {
 				headers: {'Content-Type': 'application/json'}}).then( response => (this.gridData[index].archive = 1), this.isToArchive = !this.isToArchive)
 				.catch(error => (alert(error), this.isToArchive = !this.isToArchive));
 		},
 		printInventory(){
 			this.isPrint = !this.isPrint;
-			this.$http.get('/api/reagent/storage/print/' + this.selectedIdLocation, {responseType: 'blob'})
+			this.$http.get('http://laravel/api/reagent/storage/print/' + this.selectedIdLocation, {responseType: 'blob'})
 			.then(response => {
 				const file = new Blob([response.data], {type: 'application/pdf'});
 				fs.saveAs(file, 'Опись расходных материалов ' + this.todays + '.pdf');
@@ -215,9 +215,6 @@ export default {
 		}
 	},
 	computed: {
-		isWarehouse(){
-			return this.$store.getters.isRoles === 3 ? true : false
-		},
 		todays(){
 			let today = new Date();
 			return today.toLocaleString().split(',')[0];

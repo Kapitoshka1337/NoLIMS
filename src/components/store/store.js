@@ -37,7 +37,7 @@ export default new Vuex.Store({
 		login({commit}, user){
 			return new Promise((resolve, reject) => {
 			//  commit('auth_request');
-			  axios({url: this.env + 'auth/login', data: user, method: 'POST' })
+			  axios({url: 'http://laravel/api/auth/login', data: user, method: 'POST' })
 			  .then(response => {
 				const tkn = response.data.token;
 				const usr = response.data.user;
@@ -62,7 +62,7 @@ export default new Vuex.Store({
 		register({commit}, user){
 			return new Promise((resolve, reject) => {
 			//  commit('auth_request');
-			  axios({url: this.env + 'auth/singup', data: user, method: 'POST' })
+			  axios({url: 'http://laravel/api/auth/singup', data: user, method: 'POST' })
 			  .then(response => {
 				const tkn = response.data.token;
 				const usr = response.data.user;

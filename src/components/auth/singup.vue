@@ -64,7 +64,7 @@ export default {
 	methods: {
 		getInfo(){
 			this.loading = !this.loading;
-			axios.get('/api/structure').then(response => (this.data = response.data, this.loading = !this.loading)).catch(error => (alert(error), this.loading = !this.loading));
+			axios.get('http://laravel/api/structure').then(response => (this.data = response.data, this.loading = !this.loading)).catch(error => (alert(error), this.loading = !this.loading));
 		},
 		singup(){
 			Object.keys(this.user).some(us => {

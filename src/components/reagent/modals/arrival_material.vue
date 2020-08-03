@@ -15,6 +15,7 @@
                 <sui-table-body>
                     <sui-table-row v-for="(material, index) in order.materials" :key="index">
                         <sui-table-cell>{{material.id_material}}</sui-table-cell>
+                        <sui-table-cell>{{material.location}}</sui-table-cell>
                         <sui-table-cell>{{material.type}}</sui-table-cell>
                         <sui-table-cell>{{material.material}}</sui-table-cell>
                         <sui-table-cell>{{material.measure}}</sui-table-cell>
@@ -42,6 +43,7 @@ export default {
 			gridColumns: {
                 tableColumn: [
                     {'id_material': 'Код'},
+                    {'location': 'Кабинет/Мебель/Полка'},
                     {'type': 'Тип'},
                     {'material': 'Материал'},
                     {'measure': 'Ед.изм'},

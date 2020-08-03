@@ -119,7 +119,7 @@ export default {
 			{
 				let obj = { id_arrival: this.material.arrival_material_id, amount: this.expensesAmount, date: this.expensesDate, renewal: {status: this.renewalShelfLife, date: this.renewalDate}};
 				this.loading = true;
-				this.$http.post("/api/reagent/" + this.url, JSON.stringify(obj), {
+				this.$http.post("http://laravel/api/reagent/" + this.url, JSON.stringify(obj), {
 					headers: {'Content-Type': 'application/json'}}).then(response => (
 						this.$emit('success', this.expensesAmount, this.renewalDate), this.loading = false, this.expensesAmount = null)).catch(error => (
 							alert(error.response.data.message), this.loading = false, this.expensesAmount = null));

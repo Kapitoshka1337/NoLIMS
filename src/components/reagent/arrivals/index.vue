@@ -41,7 +41,7 @@
 							}">{{ order.moving_type }}</span>
 							<div class="header">Заказ № {{ order.num_order }} от {{ today(order.date_order) }}</div>
 							<div class="meta">
-								<span class="category">Отдел: {{ order.department }}</span>
+								<span class="category">{{ order.department }}</span>
 							</div>
 						</div>
 						<div class="content">
@@ -106,7 +106,7 @@ export default {
             // this.orderIndex = index;
 			this.order.order = this.gridData[index];
 			this.loading = !this.loading;
-            this.$http.get('/api/reagent/arrivals/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true, this.loading = !this.loading)).catch(error => (alert(error), this.loading = !this.loading));
+            this.$http.get('http://laravel/api/reagent/arrivals/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true, this.loading = !this.loading)).catch(error => (alert(error), this.loading = !this.loading));
             //this.isShowModal = true;
         },
 		hideModal(){
@@ -117,7 +117,7 @@ export default {
 		//	this.gridData[this.orderIndex].total = this.gridData[this.orderIndex].total - expenseAmount;
 		//},
 		getArrivals(){
-			this.$http.get('/api/reagent/arrivals').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.$http.get('http://laravel/api/reagent/arrivals').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 			//fetch("/api/reagent/storage").then(response => (
 				//response.json().then(data => (this.gridData = data))
 			//)).catch(function(data){alert(data)});
