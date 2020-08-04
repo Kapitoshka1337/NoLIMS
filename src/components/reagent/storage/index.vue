@@ -42,7 +42,7 @@
 							<sui-table-cell collapsing>{{ material.material_id }}</sui-table-cell>
 							<sui-table-cell :width="1">{{ today(material.date_order) }}</sui-table-cell>
 							<sui-table-cell collapsing>{{ material.location }}</sui-table-cell>
-							<sui-table-cell >{{ material.material }}</sui-table-cell>
+							<sui-table-cell >{{ material.material }} ({{material.density}})</sui-table-cell>
 							<sui-table-cell collapsing>{{ material.measure }}</sui-table-cell>
 							<sui-table-cell collapsing
 							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
@@ -203,6 +203,9 @@ export default {
 				this.isPrint = !this.isPrint;
 			})
 			.catch(error => (alert(error), this.isPrint = !this.isPrint));	
+		},
+		density(amount = null, density = null){
+			return (amount / density).toFixed(2);
 		}
 	},
 	watch: {
@@ -241,14 +244,18 @@ export default {
 					return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
 				});
 			}
+//{{density(material.amount, material.density)}} / {{(density(material.amount, material.density) * material.density).toFixed(2)}})
 			return rows.filter(r =>
 			{
+				if((r.id_measure === 6 && r.id_order_measure === 4) && this.$store.getters.idDepartment != 5)
+					r.amount = ((r.amount / r.density) * 1000).toFixed(2);
+				//if((r.id_measure === 6 && r.id_order_measure === 11) && this.$store.getters.idDepartment != 5)
+				//	r.amount = (r.amount / r.density).toFixed(2);
 				return Object.keys(this.filters).every(f =>
 				{
-					if(r.archive === 1) return;
 					if(r.total === null) r.total = r.amount;
-						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
-				})
+					return this.filters[f].length < 1 || this.filters[f].includes(r[f])
+				});
 			})
 		},
 		paginateRows(){
