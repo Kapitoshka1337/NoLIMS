@@ -43,7 +43,7 @@
 							<sui-table-cell :width="1">{{ today(material.date_order) }}</sui-table-cell>
 							<sui-table-cell collapsing>{{ material.location }}</sui-table-cell>
 							<sui-table-cell >{{ material.material }} ({{material.density}})</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.measure }}</sui-table-cell>
+							<sui-table-cell collapsing>{{ material.order_measure }}</sui-table-cell>
 							<sui-table-cell collapsing
 							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
 							>{{ material.total }} / {{ material.amount }}</sui-table-cell>
@@ -203,9 +203,6 @@ export default {
 				this.isPrint = !this.isPrint;
 			})
 			.catch(error => (alert(error), this.isPrint = !this.isPrint));	
-		},
-		density(amount = null, density = null){
-			return (amount / density).toFixed(2);
 		}
 	},
 	watch: {
@@ -226,7 +223,7 @@ export default {
 			let sortKey = this.sortKey;
 			let filterKey = this.filterKey;
 			let order = this.sortColumns[sortKey] || 1;
-			let rows = this.gridData;
+			let rows = JSON.parse(JSON.stringify(this.gridData));
 			if (sortKey)
 			{
 				rows = rows.slice().sort(function (a, b) {
@@ -247,10 +244,22 @@ export default {
 //{{density(material.amount, material.density)}} / {{(density(material.amount, material.density) * material.density).toFixed(2)}})
 			return rows.filter(r =>
 			{
-				if((r.id_measure === 6 && r.id_order_measure === 4) && this.$store.getters.idDepartment != 5)
-					r.amount = ((r.amount / r.density) * 1000).toFixed(2);
-				//if((r.id_measure === 6 && r.id_order_measure === 11) && this.$store.getters.idDepartment != 5)
-				//	r.amount = (r.amount / r.density).toFixed(2);
+				//кг -> см3
+				if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					r.amount = Math.round((r.amount / r.density) * 1000);
+					r.order_measure = r.measure;
+					//if(r.total === null) r.total = r.amount;
+					//else r.total = Math.round(r.total * 1000);
+				}
+				//кг -> г
+				if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					r.amount = Math.round(r.amount * 1000);
+					r.order_measure = r.measure;
+					if(r.total === null) r.total = r.amount;
+					else r.total = Math.round(r.total * 1000);
+				}
 				return Object.keys(this.filters).every(f =>
 				{
 					if(r.total === null) r.total = r.amount;

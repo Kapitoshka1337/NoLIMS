@@ -49,7 +49,7 @@
 							<td class="collapsing">{{ material.material_id }}</td>
 							<td class="collapsing">{{ material.date_order }}</td>
 							<td>{{ material.material }}</td>
-							<td class="collapsing">{{ material.measure }}</td>
+							<td class="collapsing">{{ material.order_measure }}</td>
 							<td class="collapsing">{{ material.amount_outgo }}</td>
 							<td class="collapsing">{{ material.user }}</td>
 							<td class="one wide">{{ material.date_usage }}</td>
@@ -240,6 +240,18 @@ export default {
 			}
 			return rows.filter(r =>
 			{
+				//кг -> см3
+				if((r.id_measure === 6) && (this.$store.getters.idDepartment != 5 || this.$store.getters.idDepartment != 15))
+				{
+					r.amount_outgo = Math.round((r.amount_outgo / r.density) * 1000);
+					r.order_measure = r.measure;
+				}
+				//кг -> г
+				if((r.id_measure === 2) && (this.$store.getters.idDepartment != 5 || this.$store.getters.idDepartment != 15))
+				{
+					r.amount_outgo = Math.round(r.amount_outgo * 1000);
+					r.order_measure = r.measure;
+				}
 				return Object.keys(this.filters).every(f =>
 				{
 						return this.filters[f].length < 1 || this.filters[f].includes(r[f])

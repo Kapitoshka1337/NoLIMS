@@ -47,7 +47,7 @@
                             <sui-table-cell collapsing>{{ today(material.date_order) }}</sui-table-cell>
 							<sui-table-cell :width="1">{{ material.type }}</sui-table-cell>
 							<sui-table-cell >{{ material.material }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.measure }}</sui-table-cell>
+							<sui-table-cell collapsing>{{ material.order_measure }}</sui-table-cell>
 							<sui-table-cell collapsing
 							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
 							>{{ material.total }} / {{ material.amount }}
@@ -163,12 +163,22 @@ export default {
 		},
 		submutMoving(){
 			let obb = [];
-			for(let item in this.selectedMaterials)
+			for(let item of this.selectedMaterials)
+			{
+				if((item['id_order_measure'] === 4 && item['id_measure'] === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					item['moving_amount'] = (item['moving_amount'] * item['density']) / 1000;
+				}
+				if((item['id_order_measure'] === 4 && item['id_measure'] === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					item['moving_amount'] = item['moving_amount'] / 1000;
+				}
 				obb.push({
-					id_arrival_material: this.selectedMaterials[item].arrival_material_id,
-					id_location: this.selectedMaterials[item].id_location,
-					amount: this.selectedMaterials[item].moving_amount
+					id_arrival_material: item['arrival_material_id'],
+					id_location: item['id_location'],
+					amount: item['moving_amount']
 				});
+			}
 			let obj = {
 				id_department_to: this.selectedMaterials[0].id_department,
 				materials: obb
@@ -239,7 +249,7 @@ export default {
 			let sortKey = this.sortKey;
 			let filterKey = this.filterKey;
 			let order = this.sortColumns[sortKey] || 1;
-			let rows = this.gridData;
+			let rows = JSON.parse(JSON.stringify(this.gridData));
 			if (sortKey)
 			{
 				rows = rows.slice().sort(function (a, b) {
@@ -259,11 +269,24 @@ export default {
 			}
 			return rows.filter(r =>
 			{
+				//кг -> см3
+				if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					r.amount = Math.round((r.amount / r.density) * 1000);
+					r.order_measure = r.measure;
+				}
+				//кг -> г
+				if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					r.amount = Math.round(r.amount * 1000);
+					r.order_measure = r.measure;
+					if(r.total === null) r.total = r.amount;
+					else r.total = Math.round(r.total * 1000);
+				}
 				return Object.keys(this.filters).every(f =>
 				{
-					if(r.archive === 1) return;
 					if(r.total === null) r.total = r.amount;
-						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
+					return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				})
 			})
 		},
@@ -297,7 +320,24 @@ export default {
 				resa.push({key: res, value: res, text: res});
 			}
 			return resa;
-		}
+		},
+		//FormatAmount(){
+		//		//кг -> см3
+		//		if((this.selectedMaterials.id_order_measure === 4 && this.selectedMaterials.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+		//		{
+		//			return (this.selectedMaterials.moving_amount * this.selectedMaterials.density) / 1000;
+		//			//this.material.order_measure = this.material.measure;
+		//		}
+		//		////кг -> г
+		//		if((this.selectedMaterials.id_order_measure === 4 && this.selectedMaterials.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+		//		{
+		//			return this.selectedMaterials.moving_amount / 1000;
+		//			//r.order_measure = r.measure;
+		//			//if(r.total === null) r.total = r.amount;
+		//			//else r.total = Math.round(r.total * 1000);
+		//		}
+		//		return this.selectedMaterials.moving_amount;
+		//}
 	},
 	created(){
 		this.getStorageAll();

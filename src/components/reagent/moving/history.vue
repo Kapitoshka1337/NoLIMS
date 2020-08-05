@@ -41,12 +41,9 @@
 						<div class="content">
 							<sui-button v-bind:loading="loading" size="mini" content="Запрашиваемые материалы" color="purple" floated="left" v-on:click="showModal(index)"></sui-button>
 							<div v-if="moving.id_department_from != idDep && moving.id_status === 1">
-								<!--<div v-if="moving.id_status === 1">-->
-									<sui-button v-bind:loading="isDenyLoading" size="mini" content="Отклонить" color="red" floated="right" v-on:click="deny(index)"></sui-button>
-									<sui-button v-bind:loading="isAllowLoading" size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
-								<!--</div>-->
+								<sui-button v-bind:loading="isDenyLoading" size="mini" content="Отклонить" color="red" floated="right" v-on:click="deny(index)"></sui-button>
+								<sui-button v-bind:loading="isAllowLoading" size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
 							</div>
-							<!--moving.id_department_from != idDep || moving.id_department_to === idDep && moving.id_status === 1-->
 						</div>
 					</div>
 				</div>

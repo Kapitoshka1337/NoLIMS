@@ -103,6 +103,23 @@ export default {
 		},
 		isHead(){
 			return this.$store.getters.isRoles === 2 ? true : false;
+		},
+		FormatAmount(){
+				//кг -> см3
+				if((this.material.id_order_measure === 4 && this.material.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					return (this.expensesAmount * this.material.density) / 1000;
+					//this.material.order_measure = this.material.measure;
+				}
+				////кг -> г
+				if((this.material.id_order_measure === 4 && this.material.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					return this.expensesAmount / 1000;
+					//r.order_measure = r.measure;
+					//if(r.total === null) r.total = r.amount;
+					//else r.total = Math.round(r.total * 1000);
+				}
+				return this.expensesAmount;
 		}
 	},
 	methods: {
@@ -117,11 +134,11 @@ export default {
 		saveExpenses(){
 			if ((this.material.total - this.expensesAmount) >= 0)
 			{
-				let obj = { id_arrival: this.material.arrival_material_id, amount: this.expensesAmount, date: this.expensesDate, renewal: {status: this.renewalShelfLife, date: this.renewalDate}};
+				let obj = { id_arrival: this.material.arrival_material_id, amount: this.FormatAmount, date: this.expensesDate, renewal: {status: this.renewalShelfLife, date: this.renewalDate}};
 				this.loading = true;
 				this.$http.post("http://laravel/api/reagent/" + this.url, JSON.stringify(obj), {
 					headers: {'Content-Type': 'application/json'}}).then(response => (
-						this.$emit('success', this.expensesAmount, this.renewalDate), this.loading = false, this.expensesAmount = null)).catch(error => (
+						this.$emit('success', this.FormatAmount, this.renewalDate), this.loading = false, this.expensesAmount = null)).catch(error => (
 							alert(error.response.data.message), this.loading = false, this.expensesAmount = null));
 			}
 		},

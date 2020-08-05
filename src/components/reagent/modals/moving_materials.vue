@@ -16,7 +16,7 @@
                     <sui-table-row v-for="(material, index) in filteredRows" :key="index">
                         <sui-table-cell>{{material.id_material}}</sui-table-cell>
                         <sui-table-cell>{{material.material}}</sui-table-cell>
-                        <sui-table-cell>{{material.measure}}</sui-table-cell>
+                        <sui-table-cell>{{material.order_measure}}</sui-table-cell>
                         <sui-table-cell>{{material.amount}} / {{material.total}}</sui-table-cell>
                         <sui-table-cell>{{today(material.date_create)}}</sui-table-cell>
                         <sui-table-cell
@@ -61,6 +61,22 @@ export default {
             let rows = this.order;
 			return rows.materials.filter(r =>
 			{
+				//кг -> см3
+				if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					r.amount = Math.round((r.amount / r.density) * 1000);
+					r.order_measure = r.measure;
+					//if(r.total === null) r.total = r.amount;
+					//else r.total = Math.round(r.total * 1000);
+				}
+				//кг -> г
+				if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				{
+					r.amount = Math.round(r.amount * 1000);
+					r.order_measure = r.measure;
+					if(r.total === null) r.total = r.amount;
+					else r.total = Math.round(r.total * 1000);
+				}
                 if(r.total === null) r.total = r.arrival_amount;
                 return r;
 			});
