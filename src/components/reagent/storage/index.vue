@@ -149,7 +149,7 @@ export default {
 				this.gridData[this.materialIndex].shelf_life = renewaDate;
 		},
 		getStorage(){
-			this.$http.get('http://laravel/api/reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.$http.get('/api/reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		sortBy: function (key) {
 			if(key === 'action') return;
@@ -190,13 +190,13 @@ export default {
 		},
 		moveToArchive(index){
 			this.isToArchive = !this.isToArchive;
-			this.$http.post("http://laravel/api/reagent/storage/archive", JSON.stringify({id: this.gridData[index].arrival_material_id}), {
+			this.$http.post("/api/reagent/storage/archive", JSON.stringify({id: this.gridData[index].arrival_material_id}), {
 				headers: {'Content-Type': 'application/json'}}).then( response => (this.gridData[index].archive = 1), this.isToArchive = !this.isToArchive)
 				.catch(error => (alert(error), this.isToArchive = !this.isToArchive));
 		},
 		printInventory(){
 			this.isPrint = !this.isPrint;
-			this.$http.get('http://laravel/api/reagent/storage/print/' + this.selectedIdLocation, {responseType: 'blob'})
+			this.$http.get('/api/reagent/storage/print/' + this.selectedIdLocation, {responseType: 'blob'})
 			.then(response => {
 				const file = new Blob([response.data], {type: 'application/pdf'});
 				fs.saveAs(file, 'Опись расходных материалов ' + this.todays + '.pdf');
@@ -259,6 +259,21 @@ export default {
 					r.order_measure = r.measure;
 					if(r.total === null) r.total = r.amount;
 					else r.total = Math.round(r.total * 1000);
+				}
+				//набор -> шт
+				if((r.id_order_measure === 5 && r.id_measure === 8) && (this.$store.getters.idDepartment === 16))
+				{
+					r.amount = Math.round(r.amount * r.density);
+					r.order_measure = r.measure;
+					if(r.total === null) r.total = r.amount;
+					else r.total = Math.round(r.total * r.density);
+				}
+				if((r.id_order_measure === 7 && r.id_measure === 8) && (this.$store.getters.idDepartment === 16))
+				{
+					r.amount = Math.round(r.amount * r.density);
+					r.order_measure = r.measure;
+					if(r.total === null) r.total = r.amount;
+					else r.total = Math.round(r.total * r.density);
 				}
 				return Object.keys(this.filters).every(f =>
 				{

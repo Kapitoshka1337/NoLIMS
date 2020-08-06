@@ -93,7 +93,7 @@ export default {
             // this.orderIndex = index;
 			this.order.order = this.gridData[index];
 			this.loading = !this.loading;
-            this.$http.get('http://laravel/api/reagent/moving/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
+            this.$http.get('/api/reagent/moving/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
             //this.isShowModal = true;
         },
 		hideModal(){
@@ -104,7 +104,7 @@ export default {
 		//	this.gridData[this.orderIndex].total = this.gridData[this.orderIndex].total - expenseAmount;
 		//},
 		getMovings(){
-			this.$http.get('http://laravel/api/reagent/moving').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.$http.get('/api/reagent/moving').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 			//fetch("/api/reagent/storage").then(response => (
 				//response.json().then(data => (this.gridData = data))
 			//)).catch(function(data){alert(data)});
@@ -161,7 +161,7 @@ export default {
 		},
 		allow(index = null){
 			this.isAllowLoading = !this.isAllowLoading;
-			this.$http.put("http://laravel/api/reagent/moving/allow/" + this.gridData[index].id + "/" + this.gridData[index].id_department_from,{
+			this.$http.put("/api/reagent/moving/allow/" + this.gridData[index].id + "/" + this.gridData[index].id_department_from,{
 				headers: {'Content-Type': 'application/json'}})
 				.then((response) => ( this.gridData[index].status = 'Подтвержден',
 				this.gridData[index].id_status = 2, 
@@ -170,7 +170,7 @@ export default {
 		},
 		deny(index = null){
 			this.isDenyLoading = !this.isDenyLoading;
-			this.$http.put("http://laravel/api/reagent/moving/deny/" + this.gridData[index].id,{
+			this.$http.put("/api/reagent/moving/deny/" + this.gridData[index].id,{
 				headers: {'Content-Type': 'application/json'}})
 				.then(response => ( this.gridData[index].status = 'Отклонен',
 				this.gridData[index].id_status = 3,

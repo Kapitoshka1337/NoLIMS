@@ -45,7 +45,7 @@ export default {
 	methods: {
 		getUsers(){
 			this.loading = !this.loading;
-			this.$http.get('http://laravel/api/structure/users').then(response => (this.users = response.data, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
+			this.$http.get('/api/structure/users').then(response => (this.users = response.data, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 		},
 		login(){
 			this.loading = !this.loading;

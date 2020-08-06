@@ -163,20 +163,23 @@ export default {
 		},
 		submutMoving(){
 			let obb = [];
+			let amount;
 			for(let item of this.selectedMaterials)
 			{
+				//кг -> см3
 				if((item['id_order_measure'] === 4 && item['id_measure'] === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
 				{
-					item['moving_amount'] = (item['moving_amount'] * item['density']) / 1000;
+					amount = (item['moving_amount'] * item['density']) / 1000;
 				}
+				//кг -> г
 				if((item['id_order_measure'] === 4 && item['id_measure'] === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
 				{
-					item['moving_amount'] = item['moving_amount'] / 1000;
+					amount = item['moving_amount'] / 1000;
 				}
 				obb.push({
 					id_arrival_material: item['arrival_material_id'],
 					id_location: item['id_location'],
-					amount: item['moving_amount']
+					amount: amount
 				});
 			}
 			let obj = {
@@ -184,10 +187,10 @@ export default {
 				materials: obb
 			};
 			this.loading = !this.loading;
-			this.$http.post('http://laravel/api/reagent/moving', obj).then(response => (this.open = false, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
+			this.$http.post('/api/reagent/moving', obj).then(response => (this.open = false, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 		},
 		getStorageAll(){
-			this.$http.get('http://laravel/api/reagent/storage/all').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.$http.get('/api/reagent/storage/all').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		sortBy: function (key) {
 			if(key === 'action') return;
@@ -237,7 +240,7 @@ export default {
         },
         selectedMaterials(){
             if(!this.listLocations.length)
-                this.$http.get('http://laravel/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
+                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
         },
         "filters.department":function(newVal, oldVal){
             if(newVal != oldVal)

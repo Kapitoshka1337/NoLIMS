@@ -128,7 +128,7 @@ export default {
 		// 		this.gridData[this.materialIndex].shelf_life = renewaDate;
 		// },
 		getArchive(){
-			this.$http.get('http://laravel/api/reagent/storage/archives').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.$http.get('/api/reagent/storage/archives').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		sortBy: function (key) {
 			if(key === 'action') return;

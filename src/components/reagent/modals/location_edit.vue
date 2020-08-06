@@ -51,7 +51,7 @@ export default {
 		},
 		saveExpenses(){
 			this.loading = !this.loading;
-            this.$http.put("http://laravel/api/reagent/locations/" + this.isMaterial.id, JSON.stringify(this.isMaterial), {
+            this.$http.put("/api/reagent/locations/" + this.isMaterial.id, JSON.stringify(this.isMaterial), {
 					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
 		},
 	}

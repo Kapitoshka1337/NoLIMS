@@ -155,7 +155,7 @@ export default {
 			this.isShowModal = false;
 		},
 		getExpenses(){
-			this.$http.get('http://laravel/api/reagent/expenses').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.$http.get('/api/reagent/expenses').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		sortBy: function (key) {
 			if(key === 'action') return;
@@ -252,9 +252,19 @@ export default {
 					r.amount_outgo = Math.round(r.amount_outgo * 1000);
 					r.order_measure = r.measure;
 				}
+				if(r.id_measure === 8 && this.$store.getters.idDepartment === 16)
+				{
+					r.amount_outgo = Math.round(r.amount_outgo * r.density);
+					r.order_measure = r.measure;
+				}
+				if((r.id_measure === 8 && r.id_order_measure === 7) && this.$store.getters.idDepartment === 16)
+				{
+					r.amount_outgo = Math.round(r.amount_outgo * r.density);
+					r.order_measure = r.measure;
+				}
 				return Object.keys(this.filters).every(f =>
 				{
-						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
+					return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				})
 			})
 		},
