@@ -55,8 +55,8 @@
 					<sui-table-body>
 						<sui-table-row v-for="(material, index) in paginateRows" :key="index">
 							<sui-table-cell>{{ material.id_material }}</sui-table-cell>
-							<sui-table-cell>{{ material.date_order }}</sui-table-cell>
-							<sui-table-cell>{{ material.material }}</sui-table-cell>
+							<sui-table-cell>{{ today(material.date_order) }}</sui-table-cell>
+							<sui-table-cell>{{ material.material }} ({{material.density}})</sui-table-cell>
 							<sui-table-cell>{{ material.packing_name }}</sui-table-cell>
 							<sui-table-cell>{{ material.order_measure }}</sui-table-cell>
 							<sui-table-cell>{{ material.total }} / {{ material.amount }}</sui-table-cell>
