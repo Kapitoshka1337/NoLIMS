@@ -12,8 +12,6 @@ use App\Models\Reagent\arrival_material;
 use PHPJasper\PHPJasper;
 use Illuminate\Support\Str;
 
-// use Illuminate\Support\Facades\Auth;
-
 class StorageController extends Controller
 {
     public function view()
@@ -64,11 +62,6 @@ class StorageController extends Controller
             ];
             $jasper = new PHPJasper;
             $jasper->process($input, $output, $options)->execute();
-            // $x = $jasper->process($input, $output, $options)->output();
-            // return response()->json($x, 200);
-            // return response()->download($output2, '\inventory.pdf', ['Content-Type: application/pdf']);
-            // return response()->streamDownload(function () { echo 'asd';}, $output . 'inventory.pdf');
             return response()->download($output2 . '\inventory.pdf')->deleteFileAfterSend();
-            // return response()->file($output . '/inventory.pdf', ['Content-Type: application/pdf']);
     }
 }

@@ -57,12 +57,14 @@ class MovingController extends Controller
 	public function allowUpdate($id, $from)
 	{
 		DB::transaction(function() use($id, $from){
+			//Создание заказа
 			$order = reagent_arrivals::create([
 				'num_order' => 0,
 				'date_order' => date('Y-m-d'),
 				'id_department' => $from,
 				'id_moving_type' => 3
 			]);
+			//Получение списка материалов для перемещения
 			$materials = raegent_material_for_moving::where('id_moving', $id)->get();
 			foreach ($materials as $material)
 			{
@@ -73,9 +75,11 @@ class MovingController extends Controller
 					'amount' => $material['amount'],
 					'id_location' => $material['id_location'],
 					'shelf_life' => $material['shelf_life'],
-					'date_create' => $material['date_create']
+					'date_create' => $material['date_create'],
+					'density' => $material['density']
 				);
 			};
+			//Добавление материалов в заказ
 			$order_materials = reagent_arrival_material::insert($arr);
 			foreach ($materials as $material)
 			{
@@ -89,6 +93,7 @@ class MovingController extends Controller
 					'id_moving_type' => 3
 				);
 			};
+			//Добавление расхода с типом "Перевод"
 			$expenses = expenses::insert($arr1);
 			moving::where('id', $id)->update(['id_moving_status' => 2, 'date_moving' => date('Y-m-d')]);
 		});

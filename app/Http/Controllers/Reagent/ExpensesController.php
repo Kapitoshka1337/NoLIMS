@@ -21,17 +21,21 @@ class ExpensesController extends Controller
 
     public function create(Request $req)
     {
-        DB::transaction(function() use ($req){
-            expenses::insert([
-                'id_department' => auth()->user()->getIdDepartment(),
-                'id_arrival_material' => $req->input('id_arrival'),
-                'id_user' => auth()->user()->getId(),
-                'amount' => $req->input('amount'),
-                'date_usage' => $req->input('date'),
-                'date_record' => date('Y-m-d'),
-                'id_moving_type' => 2
-            ]);
-        });
+        $material= reagent_arrival_material::where('id',$req->input('id_arrival'))->get();
+        if($material[0]['archive'])
+            return response()->json(['message' => 'Расход архивного материала невозможен!'], 400);
+        else
+            DB::transaction(function() use ($req){
+                expenses::insert([
+                    'id_department' => auth()->user()->getIdDepartment(),
+                    'id_arrival_material' => $req->input('id_arrival'),
+                    'id_user' => auth()->user()->getId(),
+                    'amount' => $req->input('amount'),
+                    'date_usage' => $req->input('date'),
+                    'date_record' => date('Y-m-d'),
+                    'id_moving_type' => 2
+                ]);
+            });
     }
 
     public function create_correct(Request $req)
