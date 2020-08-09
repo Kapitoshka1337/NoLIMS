@@ -211,7 +211,6 @@ export default {
 			{
 				return Object.keys(this.filters).every(f =>
 				{
-					if(r.archive === 1) return;
 					if(r.total === null) r.total = r.amount;
 						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				})
@@ -225,84 +224,4 @@ export default {
 		this.getArrivals();
 	}
   }
-//</script>
-
-
-//export default {
-//    components: {
-//        'axios': axios,
-//        'arrival-modal': ArrivalModal
-//    },
-//    data(){
-//        return {
-//            gridColumns: {
-//                tableColumn: [
-//                ],
-//                filterColumn: [
-//                    {'num_order':'Номер заказа'},
-//                    {'date_order':'Дата заказа'},
-//                    {'moving_type':'Вид поступления'}
-//                ]
-//            },
-//            gridData: [],
-//            filters: {
-//                date_order: [],
-//                moving_type: [],
-//                num_order: []
-//            },
-//            isShowModal: false,
-//            orderIndex: null
-//        }
-//    },
-//	computed: {
-//		filteredRows: function () {
-//			let rows = this.gridData;
-//			return rows.filter(r =>
-//			{
-//				return Object.keys(this.filters).every(f =>
-//				{
-//					return this.filters[f].length < 1 || this.filters[f].includes(r[f]);
-//				})
-//			})
-//		}
-//	},
-//	methods: {
-//		getArrivals(){
-//			axios.get("/api/reagent/arrivals").then( response => (this.gridData = response.data));
-//        },
-//		today(date){
-//			if(date === null) return;
-//			let today = new Date(date);
-//			return today.toLocaleString().split(',')[0];
-//        },
-//        //ПЕРЕДЕЛАТЬ
-//		returnUniq(column){
-//            let result = [];
-//            let resa = [];
-//			for (let str of this.gridData)
-//				if (!result.includes(str[column]))
-//					result.push(str[column]);
-//				result = result.slice().sort(function (a, b){
-//					if(a === b) return 0 ;
-//					else if (a > b) return 1;
-//					else return - 1;
-//                })
-//            for (let res of result)
-//            {
-//                resa.push({key: res, value: res, text: res});
-//            }
-//			return resa;
-//        },
-//		showModal(index = null){
-//            this.orderIndex = index;
-//			this.isShowModal = true;
-//        },
-//		hideModal(){
-//			this.isShowModal = false;
-//		},
-//    },
-//    mounted(){
-//        this.getArrivals();
-//    }
-//}
 </script>

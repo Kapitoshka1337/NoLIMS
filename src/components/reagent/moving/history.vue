@@ -161,8 +161,7 @@ export default {
 		},
 		allow(index = null){
 			this.isAllowLoading = !this.isAllowLoading;
-			this.$http.put("/api/reagent/moving/allow/" + this.gridData[index].id + "/" + this.gridData[index].id_department_from,{
-				headers: {'Content-Type': 'application/json'}})
+			this.$http.put("/api/reagent/moving/allow/" + this.gridData[index].id + "/" + this.gridData[index].id_department_from)
 				.then((response) => ( this.gridData[index].status = 'Подтвержден',
 				this.gridData[index].id_status = 2, 
 				this.gridData[index].date_moving = this.dateToday(), 
@@ -170,8 +169,7 @@ export default {
 		},
 		deny(index = null){
 			this.isDenyLoading = !this.isDenyLoading;
-			this.$http.put("/api/reagent/moving/deny/" + this.gridData[index].id,{
-				headers: {'Content-Type': 'application/json'}})
+			this.$http.put("/api/reagent/moving/deny/" + this.gridData[index].id,)
 				.then(response => ( this.gridData[index].status = 'Отклонен',
 				this.gridData[index].id_status = 3,
 				this.gridData[index].date_moving = this.dateToday(),
@@ -223,7 +221,6 @@ export default {
 			{
 				return Object.keys(this.filters).every(f =>
 				{
-					if(r.archive === 1) return;
 					if(r.total === null) r.total = r.amount;
 						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				})

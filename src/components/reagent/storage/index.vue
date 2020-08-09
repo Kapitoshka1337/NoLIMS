@@ -51,8 +51,8 @@
 							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
-								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"></sui-button>
 								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)"></sui-button>
+								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"></sui-button>
 							</sui-table-cell>
 						</sui-table-row>
 					</sui-table-body>
@@ -84,6 +84,7 @@
 <script>
 import ExpensesModal from '../modals/expenses.vue';
 import fs from 'file-saver';
+import unit from '../unit.js';
 
 export default {
 	components: {
@@ -144,7 +145,12 @@ export default {
 		},
 		successExpenses(expenseAmount, renewaDate){
 			this.isShowModal = false;
-			this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].total - expenseAmount;
+
+			if(this.gridData[this.materialIndex].total === null)
+				this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].amount - expenseAmount;
+			else
+				this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].total - expenseAmount;
+			
 			if(renewaDate)
 				this.gridData[this.materialIndex].shelf_life = renewaDate;
 		},
@@ -219,6 +225,9 @@ export default {
 			let today = new Date();
 			return today.toLocaleString().split(',')[0];
 		},
+		idDep(){
+			return this.$store.getters.idDepartment;
+		},
 		filteredRows: function () {
 			let sortKey = this.sortKey;
 			let filterKey = this.filterKey;
@@ -241,42 +250,50 @@ export default {
 					return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
 				});
 			}
-//{{density(material.amount, material.density)}} / {{(density(material.amount, material.density) * material.density).toFixed(2)}})
 			return rows.filter(r =>
 			{
-				//кг -> см3
-				if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				if(this.idDep != 5)
 				{
-					r.amount = Math.round((r.amount / r.density) * 1000);
+					r.amount = this.$convert(r.amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
 					r.order_measure = r.measure;
-					//if(r.total === null) r.total = r.amount;
-					//else r.total = Math.round(r.total * 1000);
+					if(r.total === null) r.total = r.amount
+					else r.total = this.$convert(r.total).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
 				}
-				//кг -> г
-				if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				{
-					r.amount = Math.round(r.amount * 1000);
-					r.order_measure = r.measure;
-					if(r.total === null) r.total = r.amount;
-					else r.total = Math.round(r.total * 1000);
-				}
-				//набор -> шт
-				if((r.id_order_measure === 5 && r.id_measure === 8) && (this.$store.getters.idDepartment === 16))
-				{
-					r.amount = Math.round(r.amount * r.density);
-					r.order_measure = r.measure;
-					if(r.total === null) r.total = r.amount;
-					else r.total = Math.round(r.total * r.density);
-				}
-				if((r.id_order_measure === 7 && r.id_measure === 8) && (this.$store.getters.idDepartment === 16))
-				{
-					r.amount = Math.round(r.amount * r.density);
-					r.order_measure = r.measure;
-					if(r.total === null) r.total = r.amount;
-					else r.total = Math.round(r.total * r.density);
-				}
+				////кг -> см3
+				//if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				//{
+				//	//r.amount = (r.amount / r.density) * 1000;
+				//	r.amount = convert(r.amount).param(r.density).measure('kg').to('kub');
+				//	r.order_measure = r.measure;
+				//}
+				////кг -> г
+				//if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				//{
+				//	//r.amount = Math.round(r.amount * 1000);
+				//	r.amount = convert(r.amount).measure('kg').to('g');
+				//	r.order_measure = r.measure;
+				//	if(r.total === null) r.total = r.amount;
+				//	else r.total = Math.round(r.total * 1000);
+				//}
+				////уп -> шт
+				//if((r.id_order_measure === 7 && r.id_measure === 8) && (this.$store.getters.idDepartment === 16))
+				//{
+				//	r.amount = Math.round(r.amount * r.density);
+				//	r.order_measure = r.measure;
+				//	if(r.total === null) r.total = r.amount;
+				//	else r.total = Math.round(r.total * r.density);
+				//}
+				////набор -> шт
+				//if((r.id_order_measure === 5 && r.id_measure === 8) && (this.$store.getters.idDepartment === 16))
+				//{
+				//	r.amount = Math.round(r.amount * r.density);
+				//	r.order_measure = r.measure;
+				//	if(r.total === null) r.total = r.amount;
+				//	else r.total = Math.round(r.total * r.density);
+				//}
 				return Object.keys(this.filters).every(f =>
 				{
+					if(r.archive === 1) return;
 					if(r.total === null) r.total = r.amount;
 					return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				});
@@ -299,7 +316,7 @@ export default {
 				});
 			}
 			return result;
-		},
+		}
 	},
 	created(){
 		this.getStorage();

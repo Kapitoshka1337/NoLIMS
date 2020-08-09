@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import unit from '../unit.js';
+
 export default {
 	props: {
         open: Boolean,
@@ -44,7 +46,7 @@ export default {
                 tableColumn: [
                     {'id_material': 'Код'},
                     {'material': 'Материал'},
-                    {'measure': 'Ед.изм'},
+                    {'order_measure': 'Ед.изм'},
                     {'amount': 'Кол./Остаток'},
                     {'date_create': 'Дата изг.'},
                     {'shelf_life': 'Срок хранения'}
@@ -56,28 +58,39 @@ export default {
 	computed:{
 		show(){
 			return this.open
-        },
+		},
+		idDep(){
+			return this.$store.getters.idDepartment;
+		},
         filteredRows(){
-            let rows = this.order;
+			let rows = this.order;
 			return rows.materials.filter(r =>
 			{
-				//кг -> см3
-				if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				////кг -> см3
+				//if((r.id_order_measure === 4 && r.id_measure === 6) && (this.idDep != 5 && this.idDep != 15))
+				//{
+				//	r.amount = Math.round((r.amount / r.density) * 1000);
+				//	r.order_measure = r.measure;
+				//	//if(r.total === null) r.total = r.amount;
+				//	//else r.total = Math.round(r.total * 1000);
+				//}
+				////кг -> г
+				//if((r.id_order_measure === 4 && r.id_measure === 2) && (this.idDep != 5 && this.idDep != 15))
+				//{
+				//	r.amount = Math.round(r.amount * 1000);
+				//	r.order_measure = r.measure;
+				//	if(r.total === null) r.total = r.amount;
+				//	else r.total = Math.round(r.total * 1000);
+				//}
+				//if(r.total === null) r.total = r.arrival_amount;
+				if(this.idDep != 5)
 				{
-					r.amount = Math.round((r.amount / r.density) * 1000);
+					r.amount = this.$convert(r.amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
 					r.order_measure = r.measure;
-					//if(r.total === null) r.total = r.amount;
-					//else r.total = Math.round(r.total * 1000);
+					if(r.total === null) r.total = this.$convert(r.arrival_amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
+					else r.total = this.$convert(r.total).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
 				}
-				//кг -> г
-				if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				{
-					r.amount = Math.round(r.amount * 1000);
-					r.order_measure = r.measure;
-					if(r.total === null) r.total = r.amount;
-					else r.total = Math.round(r.total * 1000);
-				}
-                if(r.total === null) r.total = r.arrival_amount;
+				if(r.total === null) r.total = r.arrival_amount;
                 return r;
 			});
         }
@@ -95,7 +108,7 @@ export default {
 			let today = new Date();
 			let shelf_life = new Date(date.split(".").reverse().join("-"));
 			return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
-        },
+        }
     }
 }
 </script>

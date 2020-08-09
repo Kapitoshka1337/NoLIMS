@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import unit from '../unit.js';
+
 export default {
 	props: {
 		open: Boolean,
@@ -104,32 +106,40 @@ export default {
 		isHead(){
 			return this.$store.getters.isRoles === 2 ? true : false;
 		},
+		idDep(){
+			return this.$store.getters.idDepartment;
+		},
 		FormatAmount(){
-				//кг -> см3
-				if((this.material.id_order_measure === 4 && this.material.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				if(this.idDep != 5)
 				{
-					return (this.expensesAmount * this.material.density) / 1000;
+					return this.$convert(this.expensesAmount).param(this.material.density).measure(unit[this.material.id_measure]).to(unit[this.material.id_order_measure]);
 				}
-				//кг -> г
-				if((this.material.id_order_measure === 4 && this.material.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				{
-					return this.expensesAmount / 1000;;
-				}
-				//набор -> шт
-				if((this.material.id_order_measure === 5 && this.material.id_measure === 8) && (this.$store.getters.idDepartment === 16))
-				{
-					return (this.expensesAmount / this.material.density).toFixed(2);
-				}
-				//пакет -> шт
-				if((this.material.id_order_measure === 7 && this.material.id_measure === 8) && (this.$store.getters.idDepartment === 16))
-				{
-					return (this.expensesAmount / this.material.density).toFixed(2);
-				}
+				////кг -> см3
+				//if((this.material.id_order_measure === 4 && this.material.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				//{
+				//	return (this.expensesAmount * this.material.density) / 1000;
+				//}
+				////кг -> г
+				//if((this.material.id_order_measure === 4 && this.material.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				//{
+				//	return this.expensesAmount / 1000;;
+				//}
+				////набор -> шт
+				//if((this.material.id_order_measure === 5 && this.material.id_measure === 8) && (this.$store.getters.idDepartment === 16))
+				//{
+				//	return (this.expensesAmount / this.material.density).toFixed(2);
+				//}
+				////пакет -> шт
+				//if((this.material.id_order_measure === 7 && this.material.id_measure === 8) && (this.$store.getters.idDepartment === 16))
+				//{
+				//	return (this.expensesAmount / this.material.density).toFixed(2);
+				//}
 				return this.expensesAmount;
 		}
 	},
 	methods: {
 		hide(){
+			this.expensesAmount = null;
 			this.$emit('close');
 		},
 		dateFormat(date){

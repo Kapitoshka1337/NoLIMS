@@ -88,6 +88,7 @@
 
 <script>
 import CorrectionModal from '../modals/correction.vue';
+import unit from '../unit.js';
 
 export default {
 	components: {
@@ -200,6 +201,9 @@ export default {
 		}
 	},
 	computed: {
+		idDep(){
+			return this.$store.getters.idDepartment;
+		},
 		filteredRows: function () {
 			let sortKey = this.sortKey;
 			let filterKey = this.filterKey && this.filterKey.toLowerCase();
@@ -223,45 +227,38 @@ export default {
 					|| String(row['material']).toLowerCase().indexOf(filterKey) > -1
 					|| String(row['date_usage']).toLowerCase().indexOf(filterKey) > -1;
 				});
-//var app = new Vue({
-//  el: '#app',
-//  data: {
-//    keyword: '',
-//    samsungList: []
-//  },
-//  computed: {
-//    samsungFilteredList() {
-//      return this.samsungList.filter((samsung) => {
-//        return this.keyword.toLowerCase().split(' ').every(v => samsung.title.toLowerCase().includes(v));
-//      });
-//    }
-//  }
-//});
 			}
 			return rows.filter(r =>
 			{
+				if(this.idDep != 5)
+				{
+					r.amount_outgo = this.$convert(r.amount_outgo).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
+					r.order_measure = r.measure;
+				}
 				//кг -> см3
-				if((r.id_measure === 6) && (this.$store.getters.idDepartment != 5 || this.$store.getters.idDepartment != 15))
-				{
-					r.amount_outgo = Math.round((r.amount_outgo / r.density) * 1000);
-					r.order_measure = r.measure;
-				}
-				//кг -> г
-				if((r.id_measure === 2) && (this.$store.getters.idDepartment != 5 || this.$store.getters.idDepartment != 15))
-				{
-					r.amount_outgo = Math.round(r.amount_outgo * 1000);
-					r.order_measure = r.measure;
-				}
-				if(r.id_measure === 8 && this.$store.getters.idDepartment === 16)
-				{
-					r.amount_outgo = Math.round(r.amount_outgo * r.density);
-					r.order_measure = r.measure;
-				}
-				if((r.id_measure === 8 && r.id_order_measure === 7) && this.$store.getters.idDepartment === 16)
-				{
-					r.amount_outgo = Math.round(r.amount_outgo * r.density);
-					r.order_measure = r.measure;
-				}
+				//if((r.id_measure === 6) && (this.$store.getters.idDepartment != 5 || this.$store.getters.idDepartment != 15))
+				//{
+				//	r.amount_outgo = Math.round((r.amount_outgo / r.density) * 1000);
+				//	r.order_measure = r.measure;
+				//}
+				////кг -> г
+				//if((r.id_measure === 2) && (this.$store.getters.idDepartment != 5 || this.$store.getters.idDepartment != 15))
+				//{
+				//	r.amount_outgo = Math.round(r.amount_outgo * 1000);
+				//	r.order_measure = r.measure;
+				//}
+				////уп -> шт
+				//if((r.id_measure === 8 && r.id_order_measure === 7) && this.$store.getters.idDepartment === 16)
+				//{
+				//	r.amount_outgo = Math.round(r.amount_outgo * r.density);
+				//	r.order_measure = r.measure;
+				//}
+				////набор -> шт
+				//if((r.id_measure === 8 && r.id_order_measure === 5) && this.$store.getters.idDepartment === 16)
+				//{
+				//	r.amount_outgo = Math.round(r.amount_outgo * r.density);
+				//	r.order_measure = r.measure;
+				//}
 				return Object.keys(this.filters).every(f =>
 				{
 					return this.filters[f].length < 1 || this.filters[f].includes(r[f])

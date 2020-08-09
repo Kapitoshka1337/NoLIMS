@@ -46,7 +46,7 @@
 							<sui-table-cell collapsing>{{ material.department }}</sui-table-cell>
                             <sui-table-cell collapsing>{{ today(material.date_order) }}</sui-table-cell>
 							<sui-table-cell :width="1">{{ material.type }}</sui-table-cell>
-							<sui-table-cell >{{ material.material }}</sui-table-cell>
+							<sui-table-cell >{{ material.material }} ({{ material.density }})</sui-table-cell>
 							<sui-table-cell collapsing>{{ material.order_measure }}</sui-table-cell>
 							<sui-table-cell collapsing
 							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
@@ -97,7 +97,7 @@
                     <sui-table-body>
                         <sui-table-row v-for="material in selectedMaterials" :key="material.material_id">
                             <sui-table-cell>{{ material.type }}</sui-table-cell>
-                            <sui-table-cell>{{ material.material }}</sui-table-cell>
+                            <sui-table-cell>{{ material.material }} ({{ material.density }})</sui-table-cell>
                             <sui-table-cell>{{ material.measure }}</sui-table-cell>
                             <sui-table-cell>{{ material.total }}</sui-table-cell>
                             <sui-table-cell collapsing><sui-input type="number" min="0" v-model="material.moving_amount"></sui-input></sui-table-cell>
@@ -117,6 +117,7 @@
 
 <script>
 import ExpensesModal from '../modals/expenses.vue';
+import unit from '../unit.js';
 
 export default {
 	components: {
@@ -163,23 +164,24 @@ export default {
 		},
 		submutMoving(){
 			let obb = [];
-			let amount;
+			//let amount;
 			for(let item of this.selectedMaterials)
 			{
+
 				//кг -> см3
-				if((item['id_order_measure'] === 4 && item['id_measure'] === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				{
-					amount = (item['moving_amount'] * item['density']) / 1000;
-				}
-				//кг -> г
-				if((item['id_order_measure'] === 4 && item['id_measure'] === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				{
-					amount = item['moving_amount'] / 1000;
-				}
+				//if((item['id_order_measure'] === 4 && item['id_measure'] === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				//{
+				//	amount = (item['moving_amount'] * item['density']) / 1000;
+				//}
+				////кг -> г
+				//if((item['id_order_measure'] === 4 && item['id_measure'] === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				//{
+				//	amount = item['moving_amount'] / 1000;
+				//}
 				obb.push({
 					id_arrival_material: item['arrival_material_id'],
 					id_location: item['id_location'],
-					amount: amount
+					amount: this.$convert(item['moving_amount']).param(item['density']).measure(unit[item['id_measure']]).to(unit[item['id_order_measure']])
 				});
 			}
 			let obj = {
@@ -273,19 +275,24 @@ export default {
 			return rows.filter(r =>
 			{
 				//кг -> см3
-				if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				{
-					r.amount = Math.round((r.amount / r.density) * 1000);
-					r.order_measure = r.measure;
-				}
-				//кг -> г
-				if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				{
-					r.amount = Math.round(r.amount * 1000);
-					r.order_measure = r.measure;
-					if(r.total === null) r.total = r.amount;
-					else r.total = Math.round(r.total * 1000);
-				}
+				//if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				//{
+				//	r.amount = Math.round((r.amount / r.density) * 1000);
+				//	r.order_measure = r.measure;
+				//}
+				////кг -> г
+				//if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
+				//{
+				//	r.amount = Math.round(r.amount * 1000);
+				//	r.order_measure = r.measure;
+				//	if(r.total === null) r.total = r.amount;
+				//	else r.total = Math.round(r.total * 1000);
+				//}
+				r.amount = this.$convert(r.amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
+				r.order_measure = r.measure;
+				if(r.total === null) r.total = r.amount
+				else r.total = this.$convert(r.total).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
+				
 				return Object.keys(this.filters).every(f =>
 				{
 					if(r.total === null) r.total = r.amount;

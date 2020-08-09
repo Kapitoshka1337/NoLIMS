@@ -8,6 +8,7 @@ import 'semantic-ui-css/semantic.min.css';
 import SuiVue from 'semantic-ui-vue';
 //AXIOS
 import Axios from 'axios';
+import Convert from './components/reagent/convert.js';
 //COMPONENTS
 import Login from "./components/auth/login.vue";
 import Singup from "./components/auth/singup.vue";
@@ -22,11 +23,13 @@ import Archive from "./components/reagent/archive/index.vue";
 import Arrivals from "./components/reagent/arrivals/index.vue";
 import AppendArrivals from "./components/reagent/arrivals/create.vue";
 import Expenses from "./components/reagent/expenses/index.vue";
+import Writreoff from "./components/reagent/writeoff/index.vue";
 import MovingReq from "./components/reagent/moving/request.vue";
 import MovingHistory from "./components/reagent/moving/history.vue";
 import Location from "./components/reagent/location/index.vue";
 
 Vue.prototype.$http = Axios;
+Vue.prototype.$convert = Convert;
 const token = localStorage.getItem('token');
 if(token){
   Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
@@ -53,6 +56,7 @@ var router = new VueRouter({
         { path: 'moving', component: MovingReq, meta: { roles: [2, 3] } },
         { path: 'moving/history', component: MovingHistory, meta: { roles: [2, 3] } },
         { path: 'expenses', component: Expenses,  meta: { roles: [1, 2, 3] } },
+        { path: 'writeoff', component: Writreoff,  meta: { roles: [1, 2, 3] } },
         { path: 'locations', component: Location,  meta: { roles: [1, 2, 3] } },
         { path: 'corrections', component: Corrections, meta: { roles: [2, 3] } }
       ]
