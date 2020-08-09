@@ -36,7 +36,7 @@
                                             <input type="number" v-model="material.amount">
                                         </sui-form-field>
                                         <sui-form-field>
-                                            <label>Плотность</label>
+                                            <label>Плотность (емкость, вместимость)</label>
                                             <input type="number" min="1" step="0.1" v-model="material.density">
                                         </sui-form-field>
                                         <sui-form-field>
