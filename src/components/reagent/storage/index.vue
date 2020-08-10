@@ -59,22 +59,24 @@
 						</sui-table-row>
 					</sui-table-body>
 					<sui-table-footer>
-						<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-							<sui-label >
-								Страница {{ currentPage }} из {{ listPages.length }}
-							</sui-label>
-							<div class="ui icon basic right floated small buttons">
-								<sui-button v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></sui-button>
-								<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
-								<sui-form>
-									<sui-form-field>
-										<input type="text" v-bind:value="currentPage">
-									</sui-form-field>
-								</sui-form>
-								<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
-								<sui-button class="ui button" v-on:click="currentPage = listPages.length"><i class="icon angle double right"></i></sui-button>
-							</div>
-						</sui-table-header-cell>
+						<sui-table-row>
+							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+								<sui-label >
+									Страница {{ currentPage }} из {{ listPages.length }}
+								</sui-label>
+								<div class="ui icon basic right floated small buttons">
+									<sui-button v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></sui-button>
+									<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
+									<sui-form>
+										<sui-form-field>
+											<input type="text" v-bind:value="currentPage">
+										</sui-form-field>
+									</sui-form>
+									<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
+									<sui-button class="ui button" v-on:click="currentPage = listPages.length"><i class="icon angle double right"></i></sui-button>
+								</div>
+							</sui-table-header-cell>
+						</sui-table-row>
 					</sui-table-footer>
 				</sui-table>
 				<expenses-modal :open="isShowModal" @close="hideModal" @success="successExpenses" :material="paginateRows[materialIndex]"></expenses-modal>

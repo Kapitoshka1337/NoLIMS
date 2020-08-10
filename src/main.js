@@ -14,10 +14,9 @@ import Login from "./components/auth/login.vue";
 import Singup from "./components/auth/singup.vue";
 import Hub from "./components/hub.vue";
 import MenuNav from './components/reagent/menu.vue';
-
+//REAGENT
 import Reagent from "./components/reagent/main.vue";
 import Corrections from "./components/reagent/correction/index.vue";
-
 import Storage from "./components/reagent/storage/index.vue";
 import Archive from "./components/reagent/archive/index.vue";
 import Arrivals from "./components/reagent/arrivals/index.vue";
@@ -27,6 +26,9 @@ import Writreoff from "./components/reagent/writeoff/index.vue";
 import MovingReq from "./components/reagent/moving/request.vue";
 import MovingHistory from "./components/reagent/moving/history.vue";
 import Location from "./components/reagent/location/index.vue";
+//EQUIPMENT
+import Equipment from "./components/equipment/main.vue";
+import Metrolog from "./components/equipment/metrolog/index.vue";
 
 Vue.prototype.$http = Axios;
 Vue.prototype.$convert = Convert;
@@ -59,6 +61,11 @@ var router = new VueRouter({
         { path: 'writeoff', component: Writreoff,  meta: { roles: [1, 2, 3] } },
         { path: 'locations', component: Location,  meta: { roles: [1, 2, 3] } },
         { path: 'corrections', component: Corrections, meta: { roles: [2, 3] } }
+      ]
+    },
+    { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 3] },
+      children: [
+        { path: 'metrolog', component: Metrolog, meta: { roles: [1, 2, 3] } },
       ]
     },
     {
