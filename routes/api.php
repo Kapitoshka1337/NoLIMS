@@ -47,7 +47,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::post('{id}/renewal', 'Reagent\ExpensesController@renewal');
 		});
 		Route::prefix('writeoff')->group(function(){
-			Route::get('{start?}{end?}', 'Reagent\WriteoffController@view');
+			Route::post('', 'Reagent\WriteoffController@view');
 		});
 		Route::prefix('material')->group(function(){
 			Route::get('', 'Reagent\MaterialController@view');

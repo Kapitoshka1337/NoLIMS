@@ -48,7 +48,7 @@ class StorageController extends Controller
             $output2 = public_path() . "\downloads";
             $options = [
                 'format' => ['pdf'],
-                'params' => ['id_loc' => $id],
+                'params' => ['id_loc' => 'archive = 0 AND id_location = ' . $id],
                 'db_connection' => [
                     'driver' => 'generic',
                     'host' => env('DB_HOST'),
