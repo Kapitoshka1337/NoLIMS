@@ -70,4 +70,9 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::put('deny/{id}', 'Reagent\CorrectionController@denyUpdate');
 		});
 	});
+	Route::prefix('equipment')->group(function () {
+		Route::prefix('metrolog')->group(function(){
+			Route::get('', 'Equipment\MetrologController@view');
+		});
+	});
 });
