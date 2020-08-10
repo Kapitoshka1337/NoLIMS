@@ -1,10 +1,10 @@
 <template>
 	<sui-grid class="padded">
-		<sui-grid-row>
+		<!--<sui-grid-row>
 			<sui-grid-column>
 				<menu-equipment></menu-equipment>
 			</sui-grid-column>
-		</sui-grid-row>
+		</sui-grid-row>-->
 		<sui-grid-row>
 			<sui-grid-column>
 				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>

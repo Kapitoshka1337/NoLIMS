@@ -68,8 +68,11 @@ var router = new VueRouter({
     },
     { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 3] },
       children: [
-        { path: 'metrolog', component: Metrolog, meta: { roles: [1, 2, 3] } },
-        { path: 'metrolog/equipments', component: MetrologEquipment, meta: { roles: [1, 2, 3] } },
+        { path: 'metrolog', component: Metrolog, meta: { roles: [1, 2, 3] },
+          children: [
+            { path: 'equipments', component: MetrologEquipment, meta: { roles: [1, 2, 3] } },
+          ]
+        },
       ]
     },
     {
