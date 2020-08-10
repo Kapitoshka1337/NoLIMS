@@ -38,7 +38,7 @@
 						</sui-table-row>
 					</sui-table-header>
 					<sui-table-body>
-						<sui-table-row v-for="(material, index) in paginateRows" :key="index">
+						<sui-table-row v-for="(material, index) in paginateRows" :key="material.arrival_material_id">
 							<sui-table-cell collapsing>{{ material.material_id }}</sui-table-cell>
 							<sui-table-cell :width="1">{{ today(material.date_order) }}</sui-table-cell>
 							<sui-table-cell collapsing>{{ material.location }}</sui-table-cell>
@@ -52,7 +52,9 @@
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
 								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)"></sui-button>
-								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"></sui-button>
+								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" 
+								v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" 
+								v-on:click="moveToArchive(material.arrival_material_id)"></sui-button>
 							</sui-table-cell>
 						</sui-table-row>
 					</sui-table-body>
@@ -196,8 +198,9 @@ export default {
 		},
 		moveToArchive(index){
 			this.isToArchive = !this.isToArchive;
-			this.$http.post("/api/reagent/storage/archive", JSON.stringify({id: this.gridData[index].arrival_material_id}), {
-				headers: {'Content-Type': 'application/json'}}).then( response => (this.gridData[index].archive = 1), this.isToArchive = !this.isToArchive)
+			let material = this.gridData.find(x => x.arrival_material_id === index);
+			this.$http.post("/api/reagent/storage/archive", JSON.stringify({id: material.arrival_material_id}), {
+				headers: {'Content-Type': 'application/json'}}).then( response => (material.archive = 1), this.isToArchive = !this.isToArchive)
 				.catch(error => (alert(error), this.isToArchive = !this.isToArchive));
 		},
 		printInventory(){

@@ -10,7 +10,7 @@
           <router-link to="#" class="item">Заявки</router-link>
         </div>
         <div class="right menu">
-          <div class="item">{{ user }}</div>
+          <div class="item">{{ user }} ({{idDep}})</div>
           <a class="item" v-on:click="logout"><i class="icon sign out"></i></a>
         </div>
       </div>
@@ -28,7 +28,10 @@ export default {
   computed:{
     user(){
       return this.$store.getters.name;      
-    }
+    },
+    idDep(){
+      return this.$store.getters.idDepartment;
+		},
   },
   methods:{
     logout(){

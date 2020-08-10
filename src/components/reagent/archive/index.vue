@@ -32,22 +32,24 @@
 						</sui-table-row>
 					</sui-table-header>
 					<sui-table-body>
-						<sui-table-row v-for="(material, index) in paginateRows" :key="index">
+							<sui-table-row v-for="material in paginateRows" :key="material.arrival_material_id">
 							<sui-table-cell collapsing>{{ material.material_id }}</sui-table-cell>
 							<sui-table-cell :width="1">{{ today(material.date_order) }}</sui-table-cell>
 							<sui-table-cell collapsing>{{ material.location }}</sui-table-cell>
-							<sui-table-cell >{{ material.material }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.measure }}</sui-table-cell>
+							<sui-table-cell >{{ material.material }} ({{material.density}})</sui-table-cell>
+							<sui-table-cell collapsing>{{ material.order_measure }}</sui-table-cell>
 							<sui-table-cell collapsing
 							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
 							>{{ material.total }} / {{ material.amount }}</sui-table-cell>
 							<sui-table-cell :width="2"
 							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
-							<!-- <sui-table-cell collapsing>
-								<button class="ui icon mini blue button" v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" v-on:click="moveToArchive(index)"><i class="icon archive"></i></button>
-								<button class="ui icon mini red button" v-on:click="showModal(index)"><i class="icon tint"></i></button>
-							</sui-table-cell> -->
+							<!--<sui-table-cell collapsing>
+								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)"></sui-button>
+								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" 
+								v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" 
+								v-on:click="moveToArchive(material.arrival_material_id)"></sui-button>
+							</sui-table-cell>-->
 						</sui-table-row>
 					</sui-table-body>
 					<sui-table-footer>
@@ -75,6 +77,8 @@
 </template>
 
 <script>
+import unit from '../unit.js';
+
 export default {
 	data () {
 		return {
@@ -185,6 +189,9 @@ export default {
 		}
 	},
 	computed: {
+		idDep(){
+			return this.$store.getters.idDepartment;
+		},
 		filteredRows: function () {
 			let sortKey = this.sortKey;
 			let filterKey = this.filterKey;
@@ -209,10 +216,17 @@ export default {
 			}
 			return rows.filter(r =>
 			{
+				if(this.idDep != 5)
+				{
+					r.amount = this.$convert(r.amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
+					r.order_measure = r.measure;
+					if(r.total === null) r.total = r.amount
+					else r.total = this.$convert(r.total).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
+				}
 				return Object.keys(this.filters).every(f =>
 				{
 					if(r.total === null) r.total = r.amount;
-						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
+					return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				})
 			})
 		},
