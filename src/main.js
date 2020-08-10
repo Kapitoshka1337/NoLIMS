@@ -27,8 +27,10 @@ import MovingReq from "./components/reagent/moving/request.vue";
 import MovingHistory from "./components/reagent/moving/history.vue";
 import Location from "./components/reagent/location/index.vue";
 //EQUIPMENT
+import MenuEquipment from './components/equipment/menu.vue';
 import Equipment from "./components/equipment/main.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
+import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
 
 Vue.prototype.$http = Axios;
 Vue.prototype.$convert = Convert;
@@ -42,6 +44,7 @@ if(token){
 Vue.use(SuiVue);
 Vue.use(VueRouter);
 Vue.component('menu-nav', MenuNav);
+Vue.component('menu-equipment', MenuEquipment);
 
 var router = new VueRouter({
   mode: 'history',
@@ -66,6 +69,7 @@ var router = new VueRouter({
     { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 3] },
       children: [
         { path: 'metrolog', component: Metrolog, meta: { roles: [1, 2, 3] } },
+        { path: 'metrolog/equipments', component: MetrologEquipment, meta: { roles: [1, 2, 3] } },
       ]
     },
     {
