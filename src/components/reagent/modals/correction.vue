@@ -24,7 +24,8 @@
 </template>
 
 <script>
-//import axios from 'axios';
+import unit from '../unit.js';
+
 export default {
 	props: {
 		open: Boolean,
@@ -43,6 +44,13 @@ export default {
 		},
 		isNull(){
 			if(this.correctAmount < 0) this.correctAmount = this.correctAmount * -1;
+		},
+		FormatAmount(){
+				if(this.idDep != 5)
+				{
+					return this.$convert(this.correctAmount).param(this.material.density).measure(unit[this.material.id_measure]).to(unit[this.material.id_order_measure]);
+				}
+				return this.correctAmount;
 		}
 	},
 	methods: {
@@ -56,7 +64,7 @@ export default {
 			{
 				let	correct = {
 					id_outgo: this.material.id,
-					corrected_amount: this.correctAmount,
+					corrected_amount: this.FormatAmount,
 					spent_amount: this.material.amount_outgo,
 					reason_correct: this.correctReason
 				};

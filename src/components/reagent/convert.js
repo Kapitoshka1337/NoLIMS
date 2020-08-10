@@ -267,7 +267,7 @@
     table.set('kit', {
         match: 'kit',
         piece: function(val, par) {
-            return val * par
+            return Math.round(val * par)
         },
         kit: function(val) {
             return val
@@ -297,6 +297,9 @@
         },
         dose: function(val) {
             return val * 1000
+        },
+        litr: function(val) {
+            return val
         }
     })
 

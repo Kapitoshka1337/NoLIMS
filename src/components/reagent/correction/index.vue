@@ -44,6 +44,7 @@
 									<sui-table-row>
 										<sui-table-cell text-align="center" :width="1">{{ correct.id_material }}</sui-table-cell>
 										<sui-table-cell :width="1">{{ today(correct.date_usage) }}</sui-table-cell>
+										<sui-table-cell :width="1">{{ correct.order_measure }}</sui-table-cell>
 										<sui-table-cell text-align="center" :width="2">{{ correct.spent_amount }}</sui-table-cell>
 										<sui-table-cell text-align="center" :width="2">{{ correct.corrected_amount }}</sui-table-cell>
 									</sui-table-row>
@@ -65,7 +66,8 @@
 </template>
 
 <script>
-import ArrivalModal from '../modals/arrival_material.vue'
+import ArrivalModal from '../modals/arrival_material.vue';
+import unit from '../unit.js';
 
 export default {
 	components: {
@@ -77,8 +79,9 @@ export default {
                 tableColumn: [
 					{'id_material': 'Код материала'},
 					{'date_usage': 'Дата потр-ия'},
+					{'order_measure': 'Ед. изм'},
 					{'spent_amount': 'Потраченное кол-во'},
-					{'correct_amount': 'Исправляемое кол-во'}
+					{'corrected_amount': 'Исправляемое кол-во'}
 				],
                 filterColumn: [
                     {'created_at':'Дата ошибки'},
@@ -223,10 +226,16 @@ export default {
 			//}
 			return rows.filter(r =>
 			{
+				if(this.idDep != 5)
+				{
+					r.corrected_amount = this.$convert(r.corrected_amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
+					r.order_measure = r.measure;
+					// if(r.total === null) r.total = r.amount
+					// else r.total = this.$convert(r.total).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
+				}
 				return Object.keys(this.filters).every(f =>
 				{
-					if(r.archive === 1) return;
-					if(r.total === null) r.total = r.amount;
+					// if(r.total === null) r.total = r.amount;
 						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
 				})
 			})

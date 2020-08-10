@@ -34,8 +34,8 @@ const token = localStorage.getItem('token');
 if(token){
   Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
-if(process.env.NODE_ENV === 'production') Vue.prototype.$env='/api/';
-else Vue.prototype.$env='/api/';
+// if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.152';
+// else Vue.prototype.$http.defaults.baseURL = 'http://laravel';
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);

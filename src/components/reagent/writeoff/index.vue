@@ -202,7 +202,8 @@ export default {
 		},
 		submitPeriod(){
 			this.loading = !this.loading;
-			this.$http.get('/api/reagent/writeoff/?start=' + this.period.start + "&end=" + this.period.end, )
+			// this.$http.get('/api/reagent/writeoff/?start=' + this.period.start + "&end=" + this.period.end)
+			this.$http.post('/api/reagent/writeoff', this.period)
 			.then(response => {this.loading = !this.loading; this.gridData = response.data; this.open = !this.open})
 			.catch(error => (this.loading = !this.loading, alert(error)));
 		}
