@@ -7,25 +7,14 @@
 		</sui-grid-row>
 		<sui-grid-row>
 			<sui-grid-column>
-				<!--<sui-menu :width="3">
-					<router-link to="/reagent/arrivals" is="sui-menu-item">Поступления</router-link>
-					<router-link to="/reagent/expenses" is="sui-menu-item">Потребление</router-link>
-					<router-link to="#" is="sui-menu-item">Списание</router-link>
-					<router-link to="#" is="sui-dropdown" item simple text="Передача">
-						<sui-dropdown-menu>
-							<router-link to="/reagent/moving" is="sui-dropdown-item" item>Запрос</router-link>
-							<router-link to="/reagent/moving/history" is="sui-dropdown-item" item>История</router-link>						</sui-dropdown-menu>
-					</router-link>
-					<router-link to="/reagent/locations" is="sui-menu-item" floated="right">Местоположение</router-link>
-				</sui-menu>-->
 				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
 				<sui-table selectable compact v-if="gridData.length > 0">
 					<sui-table-header>
 						<sui-table-row>
 							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
 									История потребления
-									<sui-button class="ui right floated mini icon green button" v-on:click="clearFilter()"><i class="icon undo"></i></sui-button>
-									<button class="ui right floated mini icon teal button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
+									<!-- <sui-button color="green" size="mini" icon="undo" floated="right" v-on:click="clearFilter()"></i></sui-button> -->
+									<sui-button color="teal" size="mini" icon="filter" floated="right" v-on:click="toggle()"></sui-button>
 							</sui-table-header-cell>
 						</sui-table-row>
 						<sui-table-row>
@@ -83,6 +72,17 @@
 				<correction-modal :open="isShowModal" @close="hideModal" @success="successExpenses" :material="paginateRows[materialIndex]"></correction-modal>
 			</sui-grid-column>
 		</sui-grid-row>
+        <sui-modal v-model="open">
+            <sui-modal-header>Поиск</sui-modal-header>
+            <sui-modal-content>
+				<sui-form>
+					<sui-form-field v-for="key in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))">
+						<label>{{ Object.values(key)[0] }}</label>
+						<sui-dropdown v-bind:placeholder="Object.values(key)[0]" search selection multiple :options="returnUniq(Object.keys(key))" v-model="filters[Object.keys(key)]"></sui-dropdown>
+					</sui-form-field>
+				</sui-form>
+            </sui-modal-content>
+        </sui-modal>
 	</div>
 </template>
 
@@ -111,12 +111,12 @@ export default {
                 ],
                 filterColumn: [
                     {'material_id':'Код материала'},
-                    {'date_create':'Дата изготовления'},
+                    {'date_order':'Дата поступления'},
                     {'type':'Тип'},
                     {'material':'Материал'},
                     {'date_usage':'Дата потребления'},
                     {'user':'Сотрудник'},
-                    {'moving_type':'Операция'},
+                    {'moving_type':'Операция'}
                 ]
             },
             gridData: [],
@@ -124,7 +124,7 @@ export default {
                 material_id: [],
                 type: [],
                 material: [],
-                date_create: [],
+                date_order: [],
                 date_usage: [],
                 user: [],
                 moving_type: []
@@ -136,7 +136,8 @@ export default {
 			countPost: 100,
 			isShowModal: false,
 			materialIndex: null,
-			filterKey: ''
+			filterKey: '',
+			open: false
 		}
 	},
 	methods: {
@@ -189,6 +190,26 @@ export default {
 				});
 			});
 			this.sortColumns = sortColumns;
+		},
+		returnUniq(column){
+			let result = [];
+			let resa = [];
+			for (let str of this.gridData)
+				if (!result.includes(str[column]))
+					result.push(str[column]);
+				result = result.slice().sort(function (a, b){
+					if(a === b) return 0 ;
+					else if (a > b) return 1;
+					else return - 1;
+				});
+			for (let res of result)
+			{
+				resa.push({key: res, value: res, text: res});
+			}
+			return resa;
+		},
+		toggle() {
+			this.open = !this.open;
 		}
 	},
 	watch: {
@@ -235,30 +256,6 @@ export default {
 					r.amount_outgo = this.$convert(r.amount_outgo).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
 					r.order_measure = r.measure;
 				}
-				//кг -> см3
-				//if((r.id_measure === 6) && (this.$store.getters.idDepartment != 5 || this.$store.getters.idDepartment != 15))
-				//{
-				//	r.amount_outgo = Math.round((r.amount_outgo / r.density) * 1000);
-				//	r.order_measure = r.measure;
-				//}
-				////кг -> г
-				//if((r.id_measure === 2) && (this.$store.getters.idDepartment != 5 || this.$store.getters.idDepartment != 15))
-				//{
-				//	r.amount_outgo = Math.round(r.amount_outgo * 1000);
-				//	r.order_measure = r.measure;
-				//}
-				////уп -> шт
-				//if((r.id_measure === 8 && r.id_order_measure === 7) && this.$store.getters.idDepartment === 16)
-				//{
-				//	r.amount_outgo = Math.round(r.amount_outgo * r.density);
-				//	r.order_measure = r.measure;
-				//}
-				////набор -> шт
-				//if((r.id_measure === 8 && r.id_order_measure === 5) && this.$store.getters.idDepartment === 16)
-				//{
-				//	r.amount_outgo = Math.round(r.amount_outgo * r.density);
-				//	r.order_measure = r.measure;
-				//}
 				return Object.keys(this.filters).every(f =>
 				{
 					return this.filters[f].length < 1 || this.filters[f].includes(r[f])

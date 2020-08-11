@@ -1,117 +1,193 @@
 <template>
-	<sui-grid class="padded">
-		<!--<sui-grid-row>
-			<sui-grid-column>
-				<menu-equipment></menu-equipment>
-			</sui-grid-column>
-		</sui-grid-row>-->
-		<sui-grid-row>
-			<sui-grid-column>
-				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
-				<sui-table selectable compact v-if="gridData.length > 0">
-					<sui-table-header>
-						<sui-table-row>
-							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-									Оборудование
-							</sui-table-header-cell>
-						</sui-table-row>
-						<sui-table-row>
-							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+	<sui-grid-row>
+		<sui-grid-column>
+			<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
+			<sui-table selectable compact v-if="gridData.length > 0">
+				<sui-table-header>
+					<sui-table-row>
+						<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+							Оборудование
+							<sui-button color="violet" icon="calendar check outline" size="mini" floated="right" v-on:click="showModal('CheckReq')"></sui-button>
+							<!-- <div class="ui orange right floated icon top right mini pointing dropdown button">
+								<i class="icon tags"></i>
+								<i class="icon dropdown"></i>
+								<div class="menu">
+									<div class="header">
+										<i class="tags icon"></i>
+										Поставить метку
+									</div>
+									<div class="item" v-on:click="setTag('is_archive', true)">
+										<div class="ui teal empty circular label"></div>
+										Архив
+									</div>
+									<div class="item" v-on:click="setTag('is_working', true)">
+										<div class="ui green empty circular label"></div>
+										Используется
+									</div>
+									<div class="item" v-on:click="setTag('is_conservation', true)">
+										<div class="ui yellow empty circular label"></div>
+										Консервация
+									</div>
+									<div class="item" v-on:click="setTag('is_repair', true)">
+										<div class="ui red empty circular label"></div>
+										Ремонт
+									</div>
+									<div class="item" v-on:click="setTag('is_check', true)">
+										<div class="ui violet empty circular label"></div>
+										ЦСМ
+									</div>
+									<div class="divider"></div>
+									<div class="header" v-show="selectedEquipments.length > 0">
+										<i class="tags icon"></i>
+										Снять метку
+									</div>
+									<div class="item" v-for="item in Object.keys(tagsFromSelected)" v-on:click="setTag(item, false)">
+										<div v-bind:class="{
+										'ui violet empty circular label': item === 'is_check',
+										'ui red empty circular label': item === 'is_repair',
+										'ui yellow empty circular label': item === 'is_conservation',
+										'ui green empty circular label': item === 'is_working',
+										'ui teal empty circular label': item === 'is_archive'}"></div>
+										{{ tagsFromSelected[item] }}
+									</div>
+								</div>
+							</div> -->
+							<!-- <sui-dropdown floated="right" icon="print">
+								<sui-icon name="dropdown"/>
+								<sui-dropdown-menu>
+									<sui-dropdown-item>
+										Этикетка
+										<sui-dropdown-menu text="Передача">
+											<sui-dropdown-item>asd</sui-dropdown-item>
+										</sui-dropdown-menu>
+									</sui-dropdown-item>
+									<sui-dropdown-item>Таблица проверок</sui-dropdown-item>
+									<sui-dropdown-item>ПТС</sui-dropdown-item>
+								</sui-dropdown-menu>
+							</sui-dropdown> -->
+							<sui-dropdown class="ui blue right floated icon top left mini pointing button">
+								<i class="icon print"></i>
+								<i class="icon dropdown"></i>
+								<sui-dropdown-menu>
+									<div class="item">
+										Этикетка
+										<div class="menu">
+											<div class="item" v-on:click="GetSticker('large')">Большая</div>
+											<div class="item" v-on:click="GetSticker('middle')">Средняя</div>
+											<div class="item" v-on:click="GetSticker('tiny')">Маленькая</div>
+										</div>
+									</div>
+									<div class="item" v-on:click="GetCard()">Регистрационная карта</div>
+									<div class="item" v-on:click="printTable()">Таблица проверок</div>
+									<div class="item" v-on:click="showModal('Protocol')">ПТС</div>
+								</sui-dropdown-menu>
+							</sui-dropdown>
+							<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>
+							<button class="ui teal right floated mini icon button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
+							<a href="<?php echo Url::toRoute(['append/']) ?>" class="ui yellow right floated mini icon button" ><i class="icon plus"></i></a>
+						</sui-table-header-cell>
+					</sui-table-row>
+					<sui-table-row>
+						<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+							<sui-form>
+								<sui-form-field>
+									<sui-input type="text" placeholder="Поиск" v-model="filterKey"></sui-input>
+								</sui-form-field>
+							</sui-form>
+						</sui-table-header-cell>
+					</sui-table-row>
+					<sui-table-row>
+						<th :colspan="gridColumns.tableColumn.length + 1">
+							<div class="ui checkbox">
+								<input type="checkbox">
+								<label>Архив</label>
+							</div>
+							<div class="ui checkbox">
+								<input type="checkbox">
+								<label>Используется</label>
+							</div>
+							<div class="ui checkbox">
+								<input type="checkbox">
+								<label>Консервация</label>
+							</div>
+							<div class="ui checkbox">
+								<input type="checkbox">
+								<label>Ремонт</label>
+							</div>
+							<div class="ui checkbox">
+								<input type="checkbox">
+								<label>ЦСМ</label>
+							</div>
+						</th>
+					</sui-table-row>
+					<sui-table-row>
+						<sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell>
+						<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
+							{{ Object.values(column)[0] }}
+							<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
+						</sui-table-header-cell>
+					</sui-table-row>
+				</sui-table-header>
+				<sui-table-body>
+					<sui-table-row v-for="equipment in paginateRows" :key="equipment.id">
+						<sui-table-cell collapsing>
+							<div class="ui checkbox">
+								<input type="checkbox">
+								<label></label>
+							</div>
+						</sui-table-cell>
+						<sui-table-cell collapsing>{{ equipment.number_card }}</sui-table-cell>
+						<sui-table-cell>{{ equipment.equipment }}</sui-table-cell>
+						<sui-table-cell collapsing>{{ equipment.model }}</sui-table-cell>
+						<sui-table-cell collapsing text-align="right">{{ equipment.serial_number }}</sui-table-cell>
+						<sui-table-cell collapsing>{{ today(equipment.date_current_check) }}</sui-table-cell>
+						<sui-table-cell collapsing>{{ today(equipment.date_next_check) }}</sui-table-cell>
+						<sui-table-cell collapsing>
+							<a><span class="ui teal small circular label" v-show="equipment.is_archive">А</span></a>
+							<a><span class="ui green small circular label" v-show="equipment.is_working">И</span></a>
+							<a><span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span></a>
+							<a><span class="ui red small circular label" v-show="equipment.is_repair">Р</span></a>
+							<a><span class="ui violet small circular label" v-show="equipment.is_check">Ц</span></a>
+						</sui-table-cell>
+						<sui-table-cell collapsing>
+							<sui-dropdown class="icon" icon="settings" button pointing="right">
+								<sui-dropdown-menu>
+									<sui-dropdown-item>Подробнее</sui-dropdown-item>
+									<sui-dropdown-item>Добавить проверку</sui-dropdown-item>
+								</sui-dropdown-menu>
+							</sui-dropdown>
+								<!--<div class="menu">
+									КОСТЫЛЬ v-bind:href="'details/' + equipment.id" 
+									<a v-bind:href="'edit/' + equipment.id" class="item">Подробнее</a>
+									<div class="item" v-on:click="showModalHandoff('Handoff', equipment.id, equipment.department)">Перемещение</div>
+									<div class="item" v-on:click="showModal('Check', equipment.id)">Проверка</div>
+								</div>-->
+						</sui-table-cell>
+					</sui-table-row>
+				</sui-table-body>
+				<sui-table-footer>
+					<sui-table-row>
+						<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+							<sui-label >
+								Страница {{ currentPage }} из {{ listPages.length }}
+							</sui-label>
+							<div class="ui icon basic right floated small buttons">
+								<sui-button v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></sui-button>
+								<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
 								<sui-form>
 									<sui-form-field>
-										<sui-input type="text" placeholder="Поиск" v-model="filterKey"></sui-input>
+										<input type="text" v-bind:value="currentPage">
 									</sui-form-field>
 								</sui-form>
-							</sui-table-header-cell>
-						</sui-table-row>
-						<sui-table-row>
-							<sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell>
-							<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
-								{{ Object.values(column)[0] }}
-								<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
-							</sui-table-header-cell>
-						</sui-table-row>
-					</sui-table-header>
-					<sui-table-body>
-						<sui-table-row v-for="equipment in paginateRows" :key="equipment.id">
-							<sui-table-cell collapsing>
-								<div class="ui checkbox">
-									<input type="checkbox">
-									<label></label>
-								</div>
-							</sui-table-cell>
-							<sui-table-cell collapsing>{{ equipment.number_card }}</sui-table-cell>
-							<sui-table-cell>{{ equipment.equipment }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ equipment.model }}</sui-table-cell>
-							<sui-table-cell collapsing text-align="right">{{ equipment.serial_number }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ today(equipment.date_current_check) }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ today(equipment.date_next_check) }}</sui-table-cell>
-							<sui-table-cell collapsing>
-								<a><span class="ui teal small circular label" v-show="equipment.is_archive">А</span></a>
-								<a><span class="ui green small circular label" v-show="equipment.is_working">И</span></a>
-								<a><span class="ui yellow small circular label" v-show="equipment.is_conservation">К</span></a>
-								<a><span class="ui red small circular label" v-show="equipment.is_repair">Р</span></a>
-								<a><span class="ui violet small circular label" v-show="equipment.is_check">Ц</span></a>
-							</sui-table-cell>
-							<sui-table-cell collapsing>
-								<sui-dropdown class="icon" icon="settings" button pointing="right">
-									<sui-dropdown-menu>
-										<sui-dropdown-item>Подробнее</sui-dropdown-item>
-										<sui-dropdown-item>Добавить проверку</sui-dropdown-item>
-									</sui-dropdown-menu>
-								</sui-dropdown>
-									<!--<div class="menu">
-										КОСТЫЛЬ v-bind:href="'details/' + equipment.id" 
-										<a v-bind:href="'edit/' + equipment.id" class="item">Подробнее</a>
-										<div class="item" v-on:click="showModalHandoff('Handoff', equipment.id, equipment.department)">Перемещение</div>
-										<div class="item" v-on:click="showModal('Check', equipment.id)">Проверка</div>
-									</div>-->
-							</sui-table-cell>
-						</sui-table-row>
-						<!--<sui-table-row v-for="(material, index) in paginateRows" :key="material.arrival_material_id">
-							<sui-table-cell collapsing>{{ material.material_id }}</sui-table-cell>
-							<sui-table-cell :width="1">{{ today(material.date_order) }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.location }}</sui-table-cell>
-							<sui-table-cell >{{ material.material }} ({{material.density}})</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.order_measure }}</sui-table-cell>
-							<sui-table-cell collapsing
-							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
-							>{{ material.total }} / {{ material.amount }}</sui-table-cell>
-							<sui-table-cell :width="2"
-							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
-							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
-							<sui-table-cell collapsing>
-								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)"></sui-button>
-								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" 
-								v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" 
-								v-on:click="moveToArchive(material.arrival_material_id)"></sui-button>
-							</sui-table-cell>
-						</sui-table-row>-->
-					</sui-table-body>
-					<sui-table-footer>
-						<sui-table-row>
-							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-								<sui-label >
-									Страница {{ currentPage }} из {{ listPages.length }}
-								</sui-label>
-								<div class="ui icon basic right floated small buttons">
-									<sui-button v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></sui-button>
-									<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
-									<sui-form>
-										<sui-form-field>
-											<input type="text" v-bind:value="currentPage">
-										</sui-form-field>
-									</sui-form>
-									<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
-									<sui-button class="ui button" v-on:click="currentPage = listPages.length"><i class="icon angle double right"></i></sui-button>
-								</div>
-							</sui-table-header-cell>
-						</sui-table-row>
-					</sui-table-footer>
-				</sui-table>
-			</sui-grid-column>
-		</sui-grid-row>
-	</sui-grid>
+								<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
+								<sui-button class="ui button" v-on:click="currentPage = listPages.length"><i class="icon angle double right"></i></sui-button>
+							</div>
+						</sui-table-header-cell>
+					</sui-table-row>
+				</sui-table-footer>
+			</sui-table>
+		</sui-grid-column>
+	</sui-grid-row>
 </template>
 
 <script>

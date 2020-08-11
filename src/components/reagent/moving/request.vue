@@ -159,25 +159,13 @@ export default {
 		}
 	},
 	methods: {
-        toggle() {
-            this.open = !this.open;
+		toggle() {
+			this.open = !this.open;
 		},
 		submutMoving(){
 			let obb = [];
-			//let amount;
 			for(let item of this.selectedMaterials)
 			{
-
-				//кг -> см3
-				//if((item['id_order_measure'] === 4 && item['id_measure'] === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				//{
-				//	amount = (item['moving_amount'] * item['density']) / 1000;
-				//}
-				////кг -> г
-				//if((item['id_order_measure'] === 4 && item['id_measure'] === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				//{
-				//	amount = item['moving_amount'] / 1000;
-				//}
 				obb.push({
 					id_arrival_material: item['arrival_material_id'],
 					id_location: item['id_location'],
@@ -274,20 +262,6 @@ export default {
 			}
 			return rows.filter(r =>
 			{
-				//кг -> см3
-				//if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				//{
-				//	r.amount = Math.round((r.amount / r.density) * 1000);
-				//	r.order_measure = r.measure;
-				//}
-				////кг -> г
-				//if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				//{
-				//	r.amount = Math.round(r.amount * 1000);
-				//	r.order_measure = r.measure;
-				//	if(r.total === null) r.total = r.amount;
-				//	else r.total = Math.round(r.total * 1000);
-				//}
 				r.amount = this.$convert(r.amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
 				r.order_measure = r.measure;
 				if(r.total === null) r.total = r.amount
@@ -330,24 +304,7 @@ export default {
 				resa.push({key: res, value: res, text: res});
 			}
 			return resa;
-		},
-		//FormatAmount(){
-		//		//кг -> см3
-		//		if((this.selectedMaterials.id_order_measure === 4 && this.selectedMaterials.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-		//		{
-		//			return (this.selectedMaterials.moving_amount * this.selectedMaterials.density) / 1000;
-		//			//this.material.order_measure = this.material.measure;
-		//		}
-		//		////кг -> г
-		//		if((this.selectedMaterials.id_order_measure === 4 && this.selectedMaterials.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-		//		{
-		//			return this.selectedMaterials.moving_amount / 1000;
-		//			//r.order_measure = r.measure;
-		//			//if(r.total === null) r.total = r.amount;
-		//			//else r.total = Math.round(r.total * 1000);
-		//		}
-		//		return this.selectedMaterials.moving_amount;
-		//}
+		}
 	},
 	created(){
 		this.getStorageAll();
