@@ -131,10 +131,7 @@
 				<sui-table-body>
 					<sui-table-row v-for="equipment in paginateRows" :key="equipment.id">
 						<sui-table-cell collapsing>
-							<div class="ui checkbox">
-								<input type="checkbox">
-								<label></label>
-							</div>
+							<sui-checkbox/>
 						</sui-table-cell>
 						<sui-table-cell collapsing>{{ equipment.number_card }}</sui-table-cell>
 						<sui-table-cell>{{ equipment.equipment }}</sui-table-cell>
@@ -152,7 +149,7 @@
 						<sui-table-cell collapsing>
 							<sui-dropdown class="icon" icon="settings" button pointing="right">
 								<sui-dropdown-menu>
-									<sui-dropdown-item>Подробнее</sui-dropdown-item>
+									<router-link :to="{ name: 'details', params: { id: equipment.id }}" is="sui-dropdown-item">Подробнее</router-link>
 									<sui-dropdown-item>Добавить проверку</sui-dropdown-item>
 								</sui-dropdown-menu>
 							</sui-dropdown>

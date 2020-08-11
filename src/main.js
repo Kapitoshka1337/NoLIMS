@@ -31,6 +31,7 @@ import MenuEquipment from './components/equipment/menu.vue';
 import Equipment from "./components/equipment/main.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
 import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
+import MetrologEquipmentDetails from "./components/equipment/metrolog/detail.vue";
 
 Vue.prototype.$http = Axios;
 Vue.prototype.$convert = Convert;
@@ -71,6 +72,7 @@ var router = new VueRouter({
         { path: 'metrolog', component: Metrolog, meta: { roles: [1, 2, 3] },
           children: [
             { path: 'equipments', component: MetrologEquipment, meta: { roles: [1, 2, 3] } },
+            { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { roles: [1, 2, 3] } },
           ]
         },
       ]
