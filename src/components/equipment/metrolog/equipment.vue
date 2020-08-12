@@ -52,34 +52,14 @@
 									</div>
 								</div>
 							</div> -->
-							<!-- <sui-dropdown floated="right" icon="print">
-								<sui-icon name="dropdown"/>
+							<sui-dropdown class="ui blue right floated icon top left mini pointing button" icon="print">
 								<sui-dropdown-menu>
-									<sui-dropdown-item>
-										Этикетка
-										<sui-dropdown-menu text="Передача">
-											<sui-dropdown-item>asd</sui-dropdown-item>
-										</sui-dropdown-menu>
-									</sui-dropdown-item>
-									<sui-dropdown-item>Таблица проверок</sui-dropdown-item>
-									<sui-dropdown-item>ПТС</sui-dropdown-item>
-								</sui-dropdown-menu>
-							</sui-dropdown> -->
-							<sui-dropdown class="ui blue right floated icon top left mini pointing button">
-								<i class="icon print"></i>
-								<i class="icon dropdown"></i>
-								<sui-dropdown-menu>
-									<div class="item">
-										Этикетка
-										<div class="menu">
-											<div class="item" v-on:click="GetSticker('large')">Большая</div>
-											<div class="item" v-on:click="GetSticker('middle')">Средняя</div>
-											<div class="item" v-on:click="GetSticker('tiny')">Маленькая</div>
-										</div>
-									</div>
-									<div class="item" v-on:click="GetCard()">Регистрационная карта</div>
-									<div class="item" v-on:click="printTable()">Таблица проверок</div>
-									<div class="item" v-on:click="showModal('Protocol')">ПТС</div>
+									<sui-dropdown-item>Большая этикетка</sui-dropdown-item>
+									<sui-dropdown-item>Средняя этикетка</sui-dropdown-item>
+									<sui-dropdown-item>Маленькая этикетка</sui-dropdown-item>
+									<sui-dropdown-item v-on:click="GetCard()">Регистрационная карта</sui-dropdown-item>
+									<sui-dropdown-item v-on:click="printTable()">Таблица проверок</sui-dropdown-item>
+									<sui-dropdown-item v-on:click="showModal('Protocol')">ПТС</sui-dropdown-item>
 								</sui-dropdown-menu>
 							</sui-dropdown>
 							<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>
@@ -97,28 +77,13 @@
 						</sui-table-header-cell>
 					</sui-table-row>
 					<sui-table-row>
-						<th :colspan="gridColumns.tableColumn.length + 1">
-							<div class="ui checkbox">
-								<input type="checkbox">
-								<label>Архив</label>
-							</div>
-							<div class="ui checkbox">
-								<input type="checkbox">
-								<label>Используется</label>
-							</div>
-							<div class="ui checkbox">
-								<input type="checkbox">
-								<label>Консервация</label>
-							</div>
-							<div class="ui checkbox">
-								<input type="checkbox">
-								<label>Ремонт</label>
-							</div>
-							<div class="ui checkbox">
-								<input type="checkbox">
-								<label>ЦСМ</label>
-							</div>
-						</th>
+						<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
+							<sui-checkbox label="Архив"/>
+							<sui-checkbox label="Используется"/>
+							<sui-checkbox label="Консервация"/>
+							<sui-checkbox label="Ремонт"/>
+							<sui-checkbox label="ЦСМ"/>
+						</sui-table-header-cell>
 					</sui-table-row>
 					<sui-table-row>
 						<sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell>
@@ -147,18 +112,12 @@
 							<a><span class="ui violet small circular label" v-show="equipment.is_check">Ц</span></a>
 						</sui-table-cell>
 						<sui-table-cell collapsing>
-							<sui-dropdown class="icon" icon="settings" button pointing="right">
+							<sui-dropdown class="icon mini" icon="settings" button pointing="right">
 								<sui-dropdown-menu>
 									<router-link :to="{ name: 'details', params: { id: equipment.id }}" is="sui-dropdown-item">Подробнее</router-link>
 									<sui-dropdown-item>Добавить проверку</sui-dropdown-item>
 								</sui-dropdown-menu>
 							</sui-dropdown>
-								<!--<div class="menu">
-									КОСТЫЛЬ v-bind:href="'details/' + equipment.id" 
-									<a v-bind:href="'edit/' + equipment.id" class="item">Подробнее</a>
-									<div class="item" v-on:click="showModalHandoff('Handoff', equipment.id, equipment.department)">Перемещение</div>
-									<div class="item" v-on:click="showModal('Check', equipment.id)">Проверка</div>
-								</div>-->
 						</sui-table-cell>
 					</sui-table-row>
 				</sui-table-body>
@@ -280,7 +239,7 @@ export default {
 		getEquipment(){
 			this.$http.get('/api/equipment/metrolog').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
-		sortBy: function (key) {
+		sortBy(key) {
 			if(key === 'action') return;
 			this.sortKey = key;
 			this.sortColumns[key] = this.sortColumns[key] * -1;
@@ -299,8 +258,7 @@ export default {
 		},
 		today(date){
 			if(date === null) return;
-			let today = new Date(date);
-			return today.toLocaleString().split(',')[0];
+			return new Date(date).toLocaleString().split(',')[0];
 		},
 		setSortColumn(){
 			let sortColumns = {};
@@ -340,37 +298,28 @@ export default {
 		idDep(){
 			return this.$store.getters.idDepartment;
 		},
-		filteredRows: function () {
+		sortedRows(){
 			let sortKey = this.sortKey;
-			let filterKey = this.filterKey;
 			let order = this.sortColumns[sortKey] || 1;
 			let rows = JSON.parse(JSON.stringify(this.gridData));
-			if (sortKey)
+			return rows.sort(function (a, b) {
+				a = a[sortKey];
+				b = b[sortKey];
+				if(a === b) return 0 * order;
+				else if (a > b) return 1 * order;
+				else return - 1 * order;
+			})
+		},
+		searchRows(){
+			let filterKey = this.filterKey;
+			let rows = this.sortedRows;
+			return rows.filter(function(row)
 			{
-				rows = rows.slice().sort(function (a, b) {
-					a = a[sortKey];
-					b = b[sortKey];
-					if(a === b) return 0 * order;
-					else if (a > b) return 1 * order;
-					else return - 1 * order;
-				})
-			}
-			if (filterKey)
-			{
-				rows = rows.filter(function(row)
-				{
-					return Object.keys(row).some(function(key)
-					{
-						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);});
-				});
-			}
-			//if (filterKey)
-			//{
-			//	rows = rows.filter(function(row)
-			//	{
-			//		return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
-			//	});
-			//}
+				return String(row['number_card']).includes(filterKey);
+			});
+		},
+		filteredRows: function () {
+			let rows = this.searchRows;
 			return rows.filter(r =>
 			{
 				return Object.keys(this.filters).every(f =>
@@ -403,15 +352,3 @@ export default {
 	}
   }
 </script>
-
-<style scoped>
-	.success {
-		background-color: #ddffdd;
-	}
-	.caution {
-		background-color: #ffffcc;
-	}
-	.danger {
-		background-color: #ffdddd;
-	}
-</style>
