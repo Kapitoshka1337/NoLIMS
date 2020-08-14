@@ -14,7 +14,7 @@
                 </sui-table-header>
                 <sui-table-body>
                     <sui-table-row v-for="(material, index) in filteredRows" :key="index">
-                        <sui-table-cell>{{material.id_material}}</sui-table-cell>
+                        <sui-table-cell>{{material.id_material}} / {{ today(material.date_order) }}</sui-table-cell>
                         <sui-table-cell>{{material.material}}</sui-table-cell>
                         <sui-table-cell>{{material.order_measure}}</sui-table-cell>
                         <sui-table-cell>{{material.amount}} / {{material.total}}</sui-table-cell>
@@ -66,23 +66,6 @@ export default {
 			let rows = this.order;
 			return rows.materials.filter(r =>
 			{
-				////кг -> см3
-				//if((r.id_order_measure === 4 && r.id_measure === 6) && (this.idDep != 5 && this.idDep != 15))
-				//{
-				//	r.amount = Math.round((r.amount / r.density) * 1000);
-				//	r.order_measure = r.measure;
-				//	//if(r.total === null) r.total = r.amount;
-				//	//else r.total = Math.round(r.total * 1000);
-				//}
-				////кг -> г
-				//if((r.id_order_measure === 4 && r.id_measure === 2) && (this.idDep != 5 && this.idDep != 15))
-				//{
-				//	r.amount = Math.round(r.amount * 1000);
-				//	r.order_measure = r.measure;
-				//	if(r.total === null) r.total = r.amount;
-				//	else r.total = Math.round(r.total * 1000);
-				//}
-				//if(r.total === null) r.total = r.arrival_amount;
 				if(this.idDep != 5)
 				{
 					r.amount = this.$convert(r.amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);

@@ -35,6 +35,7 @@
 					</sui-table-header>
 					<sui-table-body>
 						<sui-table-row v-for="(material, index) in paginateRows" :key="index">
+							<td class="collapsing">{{ material.id }}</td>
 							<td class="collapsing">{{ material.material_id }}</td>
 							<td class="collapsing">{{ material.date_order }}</td>
 							<td>{{ material.material }}</td>
@@ -98,6 +99,7 @@ export default {
 		return {
             gridColumns: {
                 tableColumn: [
+                    {'id':'№'},
                     {'material_id':'Код'},
                     {'date_order':'Дата пост.'},
                     {'material':'Материал'},

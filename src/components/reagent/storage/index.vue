@@ -52,7 +52,8 @@
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
 								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)"></sui-button>
-								<sui-button v-bind:loading="isToArchive" color="blue" size="mini" icon="archive" 
+								<sui-button color="yellow" size="mini" icon="edit" v-on:click="showModalEdit(index)"></sui-button>
+								<sui-button v-bind:loading="isToArchive" color="green" size="mini" icon="archive" 
 								v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" 
 								v-on:click="moveToArchive(material.arrival_material_id)"></sui-button>
 							</sui-table-cell>
@@ -80,6 +81,7 @@
 					</sui-table-footer>
 				</sui-table>
 				<expenses-modal :open="isShowModal" @close="hideModal" @success="successExpenses" :material="paginateRows[materialIndex]"></expenses-modal>
+				<edit-modal :open="isShowModalEdit" @close="hideModalEdit" @success="successEdit" :material="paginateRows[materialIndex]"></edit-modal>
 			</sui-grid-column>
 		</sui-grid-row>
 	</sui-grid>
@@ -87,12 +89,14 @@
 
 <script>
 import ExpensesModal from '../modals/expenses.vue';
+import EditModal from '../modals/edit_material.vue';
 import fs from 'file-saver';
 import unit from '../unit.js';
 
 export default {
 	components: {
-		'expenses-modal': ExpensesModal
+		'expenses-modal': ExpensesModal,
+		'edit-modal': EditModal
 	},
 	data () {
 		return {
@@ -132,6 +136,7 @@ export default {
 			listPages: [],
 			countPost: 100,
 			isShowModal: false,
+			isShowModalEdit: false,
 			materialIndex: null,
 			filterKey: '',
 			selectedIdLocation: null,
@@ -144,8 +149,15 @@ export default {
 			this.materialIndex = index;
 			this.isShowModal = true;
 		},
+		showModalEdit(index = null){
+			this.materialIndex = index;
+			this.isShowModalEdit = true;
+		},
 		hideModal(){
 			this.isShowModal = false;
+		},
+		hideModalEdit(){
+			this.isShowModalEdit = false;
 		},
 		successExpenses(expenseAmount, renewaDate){
 			this.isShowModal = false;
@@ -157,6 +169,9 @@ export default {
 			
 			if(renewaDate)
 				this.gridData[this.materialIndex].shelf_life = renewaDate;
+		},
+		successEdit(){
+			this.isShowModalEdit = false;
 		},
 		getStorage(){
 			this.$http.get('/api/reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
@@ -264,38 +279,6 @@ export default {
 					if(r.total === null) r.total = r.amount
 					else r.total = this.$convert(r.total).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
 				}
-				////кг -> см3
-				//if((r.id_order_measure === 4 && r.id_measure === 6) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				//{
-				//	//r.amount = (r.amount / r.density) * 1000;
-				//	r.amount = convert(r.amount).param(r.density).measure('kg').to('kub');
-				//	r.order_measure = r.measure;
-				//}
-				////кг -> г
-				//if((r.id_order_measure === 4 && r.id_measure === 2) && (this.$store.getters.idDepartment != 5 && this.$store.getters.idDepartment != 15))
-				//{
-				//	//r.amount = Math.round(r.amount * 1000);
-				//	r.amount = convert(r.amount).measure('kg').to('g');
-				//	r.order_measure = r.measure;
-				//	if(r.total === null) r.total = r.amount;
-				//	else r.total = Math.round(r.total * 1000);
-				//}
-				////уп -> шт
-				//if((r.id_order_measure === 7 && r.id_measure === 8) && (this.$store.getters.idDepartment === 16))
-				//{
-				//	r.amount = Math.round(r.amount * r.density);
-				//	r.order_measure = r.measure;
-				//	if(r.total === null) r.total = r.amount;
-				//	else r.total = Math.round(r.total * r.density);
-				//}
-				////набор -> шт
-				//if((r.id_order_measure === 5 && r.id_measure === 8) && (this.$store.getters.idDepartment === 16))
-				//{
-				//	r.amount = Math.round(r.amount * r.density);
-				//	r.order_measure = r.measure;
-				//	if(r.total === null) r.total = r.amount;
-				//	else r.total = Math.round(r.total * r.density);
-				//}
 				return Object.keys(this.filters).every(f =>
 				{
 					if(r.archive === 1) return;
