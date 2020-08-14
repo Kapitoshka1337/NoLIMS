@@ -234,6 +234,9 @@
         match: 'g',
         kg: function(val) {
             return val / 1000
+        },
+        g: function(val) {
+            return val
         }
     })
 
@@ -248,6 +251,12 @@
         match: 'package',
         piece: function(val, par) {
             return val * par
+        },
+        ampule: function(val, par) {
+            return val * par
+        },
+        package: function(val) {
+            return val
         }
     })
 
@@ -306,6 +315,9 @@
     table.set('ampule', {
         match: 'ampule',
         kit: function(val, par) {
+            return val / par
+        },
+        package: function(val, par) {
             return val / par
         },
         ampule: function(val) {
