@@ -165,7 +165,7 @@
                                 </sui-table-row>
                             </sui-table-header>
                             <sui-table-body>
-                                <sui-table-row v-for="check in indentificationData.history_checks">
+                                <sui-table-row v-for="check in indentificationData.history_checks" :key="check">
                                     <sui-table-cell>{{ today(check.date_current_check) }}</sui-table-cell>
                                     <sui-table-cell>{{ today(check.date_next_check) }}</sui-table-cell>
                                     <sui-table-cell>{{ check.type_document || 'Не указан' }}</sui-table-cell>
@@ -219,7 +219,7 @@
                                 </sui-table-row>
                             </sui-table-header>
                             <sui-table-body>
-                                <sui-table-row v-for="check in indentificationData.history_moving">
+                                <sui-table-row v-for="check in indentificationData.history_moving" :key="check">
                                     <sui-table-cell>{{ check.last_department }}</sui-table-cell>
                                     <sui-table-cell>{{ check.department }}</sui-table-cell>
                                     <sui-table-cell>{{ check.cabinet_number }}</sui-table-cell>
@@ -281,7 +281,7 @@
                                 </sui-table-row>
                             </sui-table-header>
                             <sui-table-body>
-                                <sui-table-row v-for="check in indentificationData.maintance">
+                                <sui-table-row v-for="check in indentificationData.maintance" :key="check">
                                     <sui-table-cell>{{ check.type_maintenance }}</sui-table-cell>
                                     <sui-table-cell>{{ check.executor }}</sui-table-cell>
                                     <sui-table-cell>{{ check.periodicity }}</sui-table-cell>

@@ -3,12 +3,14 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from './App.vue';
 import store from './components/store/store.js';
+//import Vuesax from 'vuesax';
+//import 'vuesax/dist/vuesax.css';
 //SEMANTIC UI
 import 'semantic-ui-css/semantic.min.css';
 import SuiVue from 'semantic-ui-vue';
 //AXIOS
 import Axios from 'axios';
-import Convert from './components/reagent/convert.js';
+//import Convert from './components/reagent/convert.js';
 //COMPONENTS
 import Login from "./components/auth/login.vue";
 import Singup from "./components/auth/singup.vue";
@@ -32,16 +34,18 @@ import Equipment from "./components/equipment/main.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
 import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
 import MetrologEquipmentDetails from "./components/equipment/metrolog/detail.vue";
+import FishUI from 'fish-ui';
 
 Vue.prototype.$http = Axios;
-Vue.prototype.$convert = Convert;
+//Vue.prototype.$convert = Convert;
 const token = localStorage.getItem('token');
 if(token){
   Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
-// if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.152';
-// else Vue.prototype.$http.defaults.baseURL = 'http://laravel';
+ if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.152';
+ else Vue.prototype.$http.defaults.baseURL = 'http://laravel';
 
+Vue.use(FishUI);
 Vue.use(SuiVue);
 Vue.use(VueRouter);
 Vue.component('menu-nav', MenuNav);
@@ -58,7 +62,7 @@ var router = new VueRouter({
         { path: 'storage', component: Storage, meta: { roles: [1, 2, 3] } },
         { path: 'archive', component: Archive,  meta: { roles: [1, 2, 3] } },
         { path: 'arrivals', component: Arrivals,  meta: { roles: [1, 2, 3] } },
-        { path: 'arrivals/create', component: AppendArrivals,  meta: { roles: [1, 2, 3] } }, //ПЕРЕДЕЛАТЬ
+        { path: 'arrivals/create', component: AppendArrivals,  meta: { roles: [2, 3] } }, //ПЕРЕДЕЛАТЬ
         { path: 'moving', component: MovingReq, meta: { roles: [2, 3] } },
         { path: 'moving/history', component: MovingHistory, meta: { roles: [2, 3] } },
         { path: 'expenses', component: Expenses,  meta: { roles: [1, 2, 3] } },

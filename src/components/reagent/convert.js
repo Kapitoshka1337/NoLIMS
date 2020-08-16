@@ -339,7 +339,6 @@
         if ('table' == arg) {
             return table;
         }
-
         return new Convert(arg)
     }
 

@@ -248,28 +248,28 @@ export default {
 		idDep(){
 			return this.$store.getters.idDepartment;
 		},
-		filteredRows: function () {
+		sortedRows(){
 			let sortKey = this.sortKey;
-			let filterKey = this.filterKey;
 			let order = this.sortColumns[sortKey] || 1;
 			let rows = JSON.parse(JSON.stringify(this.gridData));
-			if (sortKey)
+			return rows.sort(function (a, b) {
+				a = a[sortKey];
+				b = b[sortKey];
+				if(a === b) return 0 * order;
+				else if (a > b) return 1 * order;
+				else return - 1 * order;
+			})
+		},
+		searchRows(){
+			let filterKey = this.filterKey;
+			let rows = this.sortedRows;
+			return rows.filter(function(row)
 			{
-				rows = rows.slice().sort(function (a, b) {
-					a = a[sortKey];
-					b = b[sortKey];
-					if(a === b) return 0 * order;
-					else if (a > b) return 1 * order;
-					else return - 1 * order;
-				})
-			}
-			if (filterKey)
-			{
-				rows = rows.filter(function(row)
-				{
-					return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
-				});
-			}
+				return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
+			});
+		},
+		filteredRows: function () {
+			let rows = JSON.parse(JSON.stringify(this.searchRows));
 			return rows.filter(r =>
 			{
 				if(this.idDep != 5)

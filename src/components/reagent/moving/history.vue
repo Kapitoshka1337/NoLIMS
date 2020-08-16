@@ -35,7 +35,8 @@
 							}">{{ moving.status }}</span>
 							<div class="header">{{ moving.dep_from }} ({{ moving.user }}) -> {{ moving.dep_to }}</div>
 							<div class="meta">
-								<span class="category">Запроc/Ответ: {{ today(moving.created_at) }} / {{ today(moving.date_moving) }}</span>
+								<div class="category">Запроc/Ответ: {{ today(moving.created_at) }} / {{ today(moving.date_moving) }}</div>
+								Код: {{ moving.id }}
 							</div>
 						</div>
 						<div class="content">

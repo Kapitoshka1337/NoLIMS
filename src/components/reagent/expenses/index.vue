@@ -77,7 +77,7 @@
             <sui-modal-header>Поиск</sui-modal-header>
             <sui-modal-content>
 				<sui-form>
-					<sui-form-field v-for="key in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))">
+					<sui-form-field v-for="key in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))" :key="key">
 						<label>{{ Object.values(key)[0] }}</label>
 						<sui-dropdown v-bind:placeholder="Object.values(key)[0]" search selection multiple :options="returnUniq(Object.keys(key))" v-model="filters[Object.keys(key)]"></sui-dropdown>
 					</sui-form-field>

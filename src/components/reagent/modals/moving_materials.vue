@@ -49,7 +49,7 @@ export default {
                     {'order_measure': 'Ед.изм'},
                     {'amount': 'Кол./Остаток'},
                     {'date_create': 'Дата изг.'},
-                    {'shelf_life': 'Срок хранения'}
+                    {'shelf_life': 'Годен до'}
                 ],
                 filterColumn: []
 			}

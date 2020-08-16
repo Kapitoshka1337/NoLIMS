@@ -7,7 +7,6 @@
 					<sui-table-row>
 						<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
 							Оборудование
-							<sui-button color="violet" icon="calendar check outline" size="mini" floated="right" v-on:click="showModal('CheckReq')"></sui-button>
 							<!-- <div class="ui orange right floated icon top right mini pointing dropdown button">
 								<i class="icon tags"></i>
 								<i class="icon dropdown"></i>
@@ -52,6 +51,7 @@
 									</div>
 								</div>
 							</div> -->
+							<sui-button color="violet" icon="calendar check outline" size="mini" floated="right" v-on:click="showModal('CheckReq')"></sui-button>
 							<sui-dropdown class="ui blue right floated icon top left mini pointing button" icon="print">
 								<sui-dropdown-menu>
 									<sui-dropdown-item>Большая этикетка</sui-dropdown-item>
@@ -63,7 +63,7 @@
 								</sui-dropdown-menu>
 							</sui-dropdown>
 							<button class="ui green right floated mini icon button" v-on:click="clearFilter()"><i class="icon undo"></i></button>
-							<button class="ui teal right floated mini icon button" v-on:click="showModal('Filter')"><i class="icon filter"></i></button>
+							<button class="ui teal right floated mini icon button" v-on:click="toggle()"><i class="icon filter"></i></button>
 							<a href="<?php echo Url::toRoute(['append/']) ?>" class="ui yellow right floated mini icon button" ><i class="icon plus"></i></a>
 						</sui-table-header-cell>
 					</sui-table-row>
@@ -86,7 +86,7 @@
 						</sui-table-header-cell>
 					</sui-table-row>
 					<sui-table-row>
-						<sui-table-header-cell><sui-checkbox label="" /></sui-table-header-cell>
+						<sui-table-header-cell><sui-checkbox label="" v-model="selectAll" v-on:click="select"/></sui-table-header-cell>
 						<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
 							{{ Object.values(column)[0] }}
 							<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
@@ -96,7 +96,7 @@
 				<sui-table-body>
 					<sui-table-row v-for="equipment in paginateRows" :key="equipment.id">
 						<sui-table-cell collapsing>
-							<sui-checkbox/>
+							<sui-checkbox v-model="selectedEquipments" v-bind:value="equipment"/>
 						</sui-table-cell>
 						<sui-table-cell collapsing>{{ equipment.number_card }}</sui-table-cell>
 						<sui-table-cell>{{ equipment.equipment }}</sui-table-cell>
@@ -104,6 +104,7 @@
 						<sui-table-cell collapsing text-align="right">{{ equipment.serial_number }}</sui-table-cell>
 						<sui-table-cell collapsing>{{ today(equipment.date_current_check) }}</sui-table-cell>
 						<sui-table-cell collapsing>{{ today(equipment.date_next_check) }}</sui-table-cell>
+						<sui-table-cell collapsing>{{ today(equipment.date_commissioning) }}</sui-table-cell>
 						<sui-table-cell collapsing>
 							<a><span class="ui teal small circular label" v-show="equipment.is_archive">А</span></a>
 							<a><span class="ui green small circular label" v-show="equipment.is_working">И</span></a>
@@ -143,6 +144,50 @@
 				</sui-table-footer>
 			</sui-table>
 		</sui-grid-column>
+		<sui-modal v-model="open">
+			<sui-modal-header>Поиск</sui-modal-header>
+			<sui-modal-content scrolling>
+				<sui-form>
+					<sui-form-field v-for="key in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))" :key="key">
+						<label>{{ Object.values(key)[0] }}</label>
+						<sui-dropdown v-bind:placeholder="Object.values(key)[0]" search selection multiple :options="returnUniq(Object.keys(key))" v-model="filters[Object.keys(key)]"></sui-dropdown>
+					</sui-form-field>
+					<sui-header dividing>Период пройденой проверки</sui-header>
+					<sui-form-fields fields="two">
+						<sui-form-field>
+							<label>Начало</label>
+							<input type="date" v-model="dateFilterCurrent.start">
+						</sui-form-field>
+						<sui-form-field>
+							<label>Конец</label>
+							<input type="date" v-model="dateFilterCurrent.end">
+						</sui-form-field>
+					</sui-form-fields>
+					<sui-header dividing>Период следующей проверки</sui-header>
+					<sui-form-fields fields="two">
+						<sui-form-field>
+							<label>Начало</label>
+							<input type="date" v-model="dateFilterNext.start">
+						</sui-form-field>
+						<sui-form-field>
+							<label>Конец</label>
+							<input type="date" v-model="dateFilterNext.end">
+						</sui-form-field>
+					</sui-form-fields>
+					<sui-header dividing>Ввод в эксплуатацию</sui-header>
+					<sui-form-fields fields="two">
+						<sui-form-field>
+							<label>Начало</label>
+							<input type="date" v-model="dateFilterCommissioning.start">
+						</sui-form-field>
+						<sui-form-field>
+							<label>Конец</label>
+							<input type="date" v-model="dateFilterCommissioning.end">
+						</sui-form-field>
+					</sui-form-fields>
+				</sui-form>
+			</sui-modal-content>
+		</sui-modal>
 	</sui-grid-row>
 </template>
 
@@ -160,21 +205,32 @@ export default {
 					{'serial_number':'С/Н'},
 					{'date_current_check':'Текущая'},
 					{'date_next_check':'Следующая'},
+					{'date_commissioning':'В экспл.'},
 					{'Tag': ''},
 					{'action': ''}
 				],
 				filterColumn: [
 					{'number':'Номер'},
 					{'department':'Отдел'},
-					{'type':'Вид'},
-					{'equipment':'Оборудование'}
+					{'type':'Вид'}
 				]
 			},
 			filters: {
 				number: [],
 				department: [],
 				type: [],
-				equipment: [],
+			},
+			dateFilterNext: {
+				start: null,
+				end: null
+			},
+			dateFilterCurrent: {
+				start: null,
+				end: null
+			},
+			dateFilterCommissioning: {
+				start: null,
+				end: null
 			},
 			gridData: [],
 			sortKey: '',
@@ -200,16 +256,15 @@ export default {
 				is_repair: false,
 				is_working: false
 			},
-			dateFilter: {
-				start: null,
-				end: null
-			},
 			handoff: {
 				id_equipment: null,
 				department: null,
 				id_department_to: null,
 				id_location: null
 			},
+			open: false,
+			selectAll: false,
+			selectedEquipments: [],
 			//isShowModal: false,
 			//materialIndex: null,
 			//selectedIdLocation: null,
@@ -218,6 +273,17 @@ export default {
 		}
 	},
 	methods: {
+		toggle() {
+			this.open = !this.open;
+		},
+		select() {
+			this.selectedEquipments = [];
+			if (!this.selectAll) {
+				for (let eq in this.filteredRows) {
+					this.selectedEquipments.push(this.filteredRows[eq]);
+				}
+			}
+		},
 	//	showModal(index = null){
 	//		this.materialIndex = index;
 	//		this.isShowModal = true;
@@ -270,6 +336,23 @@ export default {
 			});
 			this.sortColumns = sortColumns;
 		},
+		returnUniq(column){
+			let result = [];
+			let resa = [];
+			for (let str of this.gridData)
+				if (!result.includes(str[column]))
+					result.push(str[column]);
+				result = result.slice().sort(function (a, b){
+					if(a === b) return 0 ;
+					else if (a > b) return 1;
+					else return - 1;
+				});
+			for (let res of result)
+			{
+				resa.push({key: res, value: res, text: res});
+			}
+			return resa;
+		},
 		//printInventory(){
 		//	this.isPrint = !this.isPrint;
 		//	this.$http.get('/api/reagent/storage/print/' + this.selectedIdLocation, {responseType: 'blob'})
@@ -298,28 +381,60 @@ export default {
 		idDep(){
 			return this.$store.getters.idDepartment;
 		},
-		sortedRows(){
+		//sortedRows(){
+		//	let sortKey = this.sortKey;
+		//	let order = this.sortColumns[sortKey] || 1;
+		//	let rows = JSON.parse(JSON.stringify(this.gridData));
+		//	return rows.sort(function (a, b) {
+		//		a = a[sortKey];
+		//		b = b[sortKey];
+		//		if(a === b) return 0 * order;
+		//		else if (a > b) return 1 * order;
+		//		else return - 1 * order;
+		//	})
+		//},
+		//searchRows(){
+		//	let filterKey = this.filterKey;
+		//	let rows = this.sortedRows;
+		//	return rows.filter(function(row)
+		//	{
+		//		return String(row['number_card']).includes(filterKey);
+		//	});
+		//},
+		filteredRows() {
 			let sortKey = this.sortKey;
+			let filterKey = this.filterKey && this.filterKey.toLowerCase();
 			let order = this.sortColumns[sortKey] || 1;
-			let rows = JSON.parse(JSON.stringify(this.gridData));
-			return rows.sort(function (a, b) {
-				a = a[sortKey];
-				b = b[sortKey];
-				if(a === b) return 0 * order;
-				else if (a > b) return 1 * order;
-				else return - 1 * order;
-			})
-		},
-		searchRows(){
-			let filterKey = this.filterKey;
-			let rows = this.sortedRows;
-			return rows.filter(function(row)
+			let rows = this.gridData;
+			if (sortKey)
 			{
-				return String(row['number_card']).includes(filterKey);
-			});
-		},
-		filteredRows: function () {
-			let rows = this.searchRows;
+				rows = rows.slice().sort(function (a, b) {
+					a = a[sortKey];
+					b = b[sortKey];
+					if(a === b) return 0 * order;
+					else if (a > b) return 1 * order;
+					else return - 1 * order;
+				})
+			}
+			if (filterKey)
+			{
+				rows = rows.filter(function(row)
+				{
+					return Object.keys(row).some(function(key)
+					{
+						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);});
+				});
+			}
+			//Переделать
+			if(this.dateFilterNext['start'] != null && this.dateFilterNext['end'] != null)
+				rows = rows.filter(row => {
+					return row['date_next_check'] >= this.dateFilterNext['start'] && row['date_next_check'] <= this.dateFilterNext['end'];
+				})
+			if(this.dateFilterCurrent['start'] != null && this.dateFilterCurrent['end'] != null)
+				rows = rows.filter(row => {
+					return row['date_current_check'] >= this.dateFilterCurrent['start'] && row['date_current_check'] <= this.dateFilterCurrent['end'];
+				})
+			//
 			return rows.filter(r =>
 			{
 				return Object.keys(this.filters).every(f =>

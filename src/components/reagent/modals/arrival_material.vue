@@ -43,7 +43,7 @@ export default {
 			gridColumns: {
                 tableColumn: [
                     {'id_material': 'Код'},
-                    {'location': 'Кабинет/Мебель/Полка'},
+                    {'location': 'Местоположение'},
                     {'type': 'Тип'},
                     {'material': 'Материал'},
                     {'measure': 'Ед.изм'},

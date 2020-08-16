@@ -44,7 +44,7 @@
                             <sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
                             <sui-form>
                                 <sui-form-field>
-                                    <input is="sui-input" type="text" :value="currentPage">
+                                    <input type="text" :value="currentPage">
                                 </sui-form-field>
                             </sui-form>
                             <sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
