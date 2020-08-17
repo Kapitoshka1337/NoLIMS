@@ -42,6 +42,7 @@
 							<sui-table-cell collapsing>{{ material.material_id }}</sui-table-cell>
 							<sui-table-cell :width="1">{{ today(material.date_order) }}</sui-table-cell>
 							<sui-table-cell collapsing>{{ material.location }}</sui-table-cell>
+							<sui-table-cell collapsing>{{ material.type }}</sui-table-cell>
 							<sui-table-cell >{{ material.material }} ({{material.density}})</sui-table-cell>
 							<sui-table-cell collapsing>{{ material.order_measure }}</sui-table-cell>
 							<sui-table-cell collapsing
@@ -105,6 +106,7 @@ export default {
 					{'material_id':'Код'},
 					{'date_order':'Дата пост.'},
 					{'location':'Местоположение'},
+					{'type':'Тип'},
 					{'material':'Материал'},
 					{'measure':'Ед.изм'},
 					{'total':'Ост./Пост.'},

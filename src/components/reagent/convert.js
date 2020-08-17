@@ -237,6 +237,12 @@
         },
         g: function(val) {
             return val
+        },
+        flacon: function(val, par) {
+            return val / par
+        },
+        ampule: function(val, par) {
+            return val / par
         }
     })
 
@@ -320,6 +326,9 @@
         package: function(val, par) {
             return val / par
         },
+        g: function(val, par) {
+            return val * par
+        },
         ampule: function(val) {
             return val
         }
@@ -329,6 +338,9 @@
         match: 'flacon',
         kit: function(val, par) {
             return val / par
+        },
+        g: function(val, par) {
+            return val * par
         },
         flacon: function(val) {
             return val
