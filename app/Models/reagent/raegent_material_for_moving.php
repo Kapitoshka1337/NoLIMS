@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models\Reagent;
 
 use Illuminate\Database\Eloquent\Model;

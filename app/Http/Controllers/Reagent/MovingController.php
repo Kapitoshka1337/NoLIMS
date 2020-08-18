@@ -70,6 +70,7 @@ class MovingController extends Controller
 			{
 				$arr[] = array(
 					'id_arrival' => $order->id,
+					'date_order' => $material['date_order'],
 					'id_material' => $material['id_material'],
 					'packing_name' => $material['packing_name'],
 					'amount' => $material['amount'],

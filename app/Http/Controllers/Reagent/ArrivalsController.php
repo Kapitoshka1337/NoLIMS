@@ -31,6 +31,7 @@ class ArrivalsController extends Controller
 			{
 				$arr[] = array(
 					'id_arrival' => $new_order->id,
+					'date_order' => $new_order->date_order,
 					'id_material' => $material['id'],
 					'packing_name' => $material['post_name'],
 					'amount' => $material['amount'],

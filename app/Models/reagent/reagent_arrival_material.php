@@ -10,13 +10,13 @@ class reagent_arrival_material extends Model
     public $timestamps = false;
     protected $fillable = [
         'id_arrival',
+        'date_order',
         'id_material',
         'packing_name',
         'amount',
         'id_location',
         'shelf_life',
         'date_create',
-        'id_passport',
         'density',
         'archive'
     ];
