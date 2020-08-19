@@ -7,14 +7,13 @@
 		<sui-modal-content>
             <sui-form>
                 <sui-form-field>
-                    <label>Кабинет</label>
-                    <sui-input type="text" v-model="isMaterial.cabinet_number"></sui-input>
-                    <!-- <sui-dropdown placeholder="Местоположение" search selection :options="dropdownLocations" v-model="selectedIdLocation"></sui-dropdown> -->
+                    <label>Местоположение</label>
+                    <sui-dropdown placeholder="Местоположение" search selection :options="forDropdown" v-model="selectedIdLocation"></sui-dropdown>
                 </sui-form-field>
             </sui-form>
 		</sui-modal-content>
 		<sui-modal-actions>
-			<sui-button color="green" v-on:click="saveExpenses" v-bind:loading="loading">Сохранить</sui-button>
+			<sui-button color="green" v-on:click="saveLocations" v-bind:loading="loading">Сохранить</sui-button>
 			<button class="ui deny orange button" v-on:click="hide">Отмена</button>
 		</sui-modal-actions>
 	</sui-modal>
@@ -26,6 +25,7 @@ export default {
 		open: Boolean,
         material: Object,
 		locations: Array,
+		selectedIdLocation: null,
 		loading: false
 	},
 	data(){
@@ -38,16 +38,34 @@ export default {
 		},
 		isMaterial(){
 			return this.material;
-		}
+		},
+        forDropdown(){
+            if(this.locations.length)
+            {
+                let rows = [];
+                for(let item in this.locations){
+                    rows.push({
+                        key: this.locations[item].id,
+                        value: this.locations[item].id,
+                        text: this.locations[item].cabinet_number + " " + this.locations[item].place + " " + this.locations[item].notation
+                    });
+                }
+                return rows;
+            }
+        }
 	},
 	methods: {
 		hide(){
 			this.$emit('close');
 		},
-		saveExpenses(){
+		saveLocations(){
 			this.loading = !this.loading;
-            this.$http.put("/api/reagent/locations/" + this.isMaterial.id, JSON.stringify(this.isMaterial), {
-					headers: {'Content-Type': 'application/json'}}).then(response => (this.$emit('success'), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
+			this.$http.put("/api/reagent/arrivals/updloc/" + this.isMaterial.arrival_material_id, {id_location: this.selectedIdLocation})
+			.then((response) =>{
+			//	var idx = this.selectedEquipments.indexOf(equipment);
+			//if (idx > -1) this.selectedEquipments.splice(idx, 1);
+				this.$emit('success', this.forDropdown.find(x => x.key === this.selectedIdLocation));
+			}).catch(error => (alert(error.response.data.message)));
 		},
 	}
 }

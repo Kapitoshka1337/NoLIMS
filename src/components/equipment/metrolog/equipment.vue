@@ -1,12 +1,12 @@
 <template>
 	<sui-grid-row>
 		<sui-grid-column>
-			<!-- <sui-loader centered v-bind:active="gridData.length <= 0" inline/>
+			<!--<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
 			<sui-table selectable compact v-if="gridData.length > 0">
 				<sui-table-header>
 					<sui-table-row>
 						<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-							Оборудование -->
+							Оборудование-->
 							<!-- <div class="ui orange right floated icon top right mini pointing dropdown button">
 								<i class="icon tags"></i>
 								<i class="icon dropdown"></i>
@@ -51,7 +51,7 @@
 									</div>
 								</div>
 							</div> -->
-							<!-- <sui-button color="violet" icon="calendar check outline" size="mini" floated="right" v-on:click="showModal('CheckReq')"></sui-button>
+							<!--<sui-button color="violet" icon="calendar check outline" size="mini" floated="right" v-on:click="showModal('CheckReq')"></sui-button>
 							<sui-dropdown class="ui blue right floated icon top left mini pointing button" icon="print">
 								<sui-dropdown-menu>
 									<sui-dropdown-item>Большая этикетка</sui-dropdown-item>
@@ -142,8 +142,7 @@
 						</sui-table-header-cell>
 					</sui-table-row>
 				</sui-table-footer>
-			</sui-table> -->
-			<a-table :columns="gridColumns.tableColumn" :data-source="gridData" size="small" :pagination="{pageSize: 100 }"></a-table>
+			</sui-table>-->
 		</sui-grid-column>
 		<sui-modal v-model="open">
 			<sui-modal-header>Поиск</sui-modal-header>
@@ -200,22 +199,15 @@ export default {
 		return {
 			gridColumns: {
 				tableColumn: [
-					{title: 'Номер', dataIndex: 'number_card'},
-					{title: 'Оборудование', dataIndex: 'equipment'},
-					{title: 'Модель', dataIndex: 'model', filters: (model) => {return this.returnUniq(model)} },
-					{title: 'С/Н', dataIndex: 'serial_number'},
-					{title: 'Текущая', dataIndex: 'date_current_check', customRender: (check) => {return this.today(check)}},
-					{title: 'Следующая', dataIndex: 'date_next_check', customRender: (check) => {return this.today(check)}},
-					{title: 'В экспл.', dataIndex: 'date_commissioning', customRender: (check) => {return this.today(check)}}
-					// {'number':'Номер'},
-					// {'equipment':'Оборудование'},
-					// {'model':'Модель'},
-					// {'serial_number':'С/Н'},
-					// {'date_current_check':'Текущая'},
-					// {'date_next_check':'Следующая'},
-					// {'date_commissioning':'В экспл.'},
-					// {'Tag': ''},
-					// {'action': ''}
+					{'number':'Номер'},
+					{'equipment':'Оборудование'},
+					{'model':'Модель'},
+					{'serial_number':'С/Н'},
+					{'date_current_check':'Текущая'},
+					{'date_next_check':'Следующая'},
+					{'date_commissioning':'В экспл.'},
+					{'Tag': ''},
+					{'action': ''}
 				],
 				filterColumn: [
 					{'number':'Номер'},
@@ -346,7 +338,7 @@ export default {
 		},
 		returnUniq(column){
 			let result = [];
-			// let resa = [];
+			let resa = [];
 			for (let str of this.gridData)
 				if (!result.includes(str[column]))
 					result.push(str[column]);
@@ -355,11 +347,11 @@ export default {
 					else if (a > b) return 1;
 					else return - 1;
 				});
-			// for (let res of result)
-			// {
-			// 	resa.push({key: res, value: res, text: res});
-			// }
-			return result;
+			for (let res of result)
+			{
+				resa.push({key: res, value: res, text: res});
+			}
+			return resa;
 		},
 		//printInventory(){
 		//	this.isPrint = !this.isPrint;

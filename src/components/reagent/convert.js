@@ -204,7 +204,7 @@
     table.set('kg', {
         match: 'kg',
         kub: function(val, par) {
-            return Math.round((val / par) * 1000)
+            return parseFloat(((val / par) * 1000).toFixed(4))
         },
         g: function(val){
             return val * 1000
@@ -343,6 +343,13 @@
             return val * par
         },
         flacon: function(val) {
+            return val
+        }
+    })
+
+    table.set('ballon', {
+        match: 'ballon',
+        ballon: function(val) {
             return val
         }
     })

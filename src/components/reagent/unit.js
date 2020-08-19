@@ -9,5 +9,6 @@ export default {
 	8: 'piece',
 	9: 'flacon',
 	10: 'dose',
-	11: 'litr'
+	11: 'litr',
+	12: 'ballon'
 }

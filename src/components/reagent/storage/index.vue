@@ -53,7 +53,7 @@
 							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
 							<sui-table-cell collapsing>
 								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)"></sui-button>
-								<sui-button color="yellow" size="mini" icon="edit" v-on:click="showModalEdit(index)"></sui-button>
+								<sui-button color="yellow" size="mini" icon="edit" v-on:click="showModalEdit(material)"></sui-button>
 								<sui-button v-bind:loading="isToArchive" color="green" size="mini" icon="archive" 
 								v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" 
 								v-on:click="moveToArchive(material.arrival_material_id)"></sui-button>
@@ -82,7 +82,7 @@
 					</sui-table-footer>
 				</sui-table>
 				<expenses-modal :open="isShowModal" @close="hideModal" @success="successExpenses" :material="paginateRows[materialIndex]"></expenses-modal>
-				<edit-modal :open="isShowModalEdit" @close="hideModalEdit" @success="successEdit" :material="paginateRows[materialIndex]"></edit-modal>
+				<edit-modal :open="isShowModalEdit" @close="hideModalEdit" @success="successEdit" :material="material" :locations="listLocations"></edit-modal>
 			</sui-grid-column>
 		</sui-grid-row>
 	</sui-grid>
@@ -132,6 +132,7 @@ export default {
 				{'material_id': 'material_id'}
 			],
 			gridData: [],
+			listLocations: [],
 			sortKey: '',
 			sortColumns: Object,
 			currentPage: 1,
@@ -140,10 +141,12 @@ export default {
 			isShowModal: false,
 			isShowModalEdit: false,
 			materialIndex: null,
+			material: null,
 			filterKey: '',
 			selectedIdLocation: null,
 			isPrint: false,
-			isToArchive: false
+			isToArchive: false,
+			isEdit: false
 		}
 	},
 	methods: {
@@ -152,17 +155,36 @@ export default {
 			this.isShowModal = true;
 		},
 		showModalEdit(index = null){
-			this.materialIndex = index;
-			this.isShowModalEdit = true;
+			if(!this.listLocations.length)
+			{
+				this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
+				this.material = index;
+				this.isShowModalEdit = true;
+			}
+			else
+			{
+				this.material = index;
+				this.isShowModalEdit = true;
+			}
 		},
 		hideModal(){
+			//this.material = {};
 			this.isShowModal = false;
 		},
 		hideModalEdit(){
+			this.material = {};
 			this.isShowModalEdit = false;
 		},
 		successExpenses(expenseAmount, renewaDate){
 			this.isShowModal = false;
+
+			//if(this.material.total === null)
+			//	this.material.total = this.material.amount - expenseAmount;
+			//else
+			//	this.material.total = this.material.total - expenseAmount;
+			
+			//if(renewaDate)
+			//	this.material.shelf_life = renewaDate;
 
 			if(this.gridData[this.materialIndex].total === null)
 				this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].amount - expenseAmount;
@@ -172,7 +194,9 @@ export default {
 			if(renewaDate)
 				this.gridData[this.materialIndex].shelf_life = renewaDate;
 		},
-		successEdit(){
+		successEdit(id_loc){
+			this.material.id_location = id_loc.value;
+			this.material.location = id_loc.text;
 			this.isShowModalEdit = false;
 		},
 		getStorage(){

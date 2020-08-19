@@ -32,9 +32,9 @@ import Equipment from "./components/equipment/main.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
 import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
 import MetrologEquipmentDetails from "./components/equipment/metrolog/detail.vue";
-//ANT
-import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/antd.css';
+
+//import MuseUI from 'muse-ui';
+//import 'muse-ui/dist/muse-ui.css';
 
 Vue.prototype.$http = Axios;
 Vue.prototype.$convert = Convert;
@@ -45,7 +45,7 @@ if(token){
 //  if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.152';
 //  else Vue.prototype.$http.defaults.baseURL = 'http://laravel';
 
-Vue.use(Antd);
+//Vue.use(MuseUI);
 Vue.use(SuiVue);
 Vue.use(VueRouter);
 Vue.component('menu-nav', MenuNav);
