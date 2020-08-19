@@ -40,6 +40,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::get('', 'Reagent\ArrivalsController@view');
 			Route::post('', 'Reagent\ArrivalsController@create');
 			Route::get('{id}/materials', 'Reagent\ArrivalsController@materials');
+			Route::put('updloc/{id}', 'Reagent\ArrivalsController@updateLocation');
 		});
 		Route::prefix('expenses')->group(function(){
 			Route::get('', 'Reagent\ExpensesController@view');

@@ -24,7 +24,6 @@ class MovingController extends Controller
 
     public function create(Request $req)
     {
-    	// return response()->json($req, 200);
 		DB::transaction(function() use ($req){
 			$moving = moving::create([
 			        'id_department_from' => auth()->user()->getIdDepartment(),

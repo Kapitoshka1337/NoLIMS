@@ -50,4 +50,11 @@ class ArrivalsController extends Controller
 		$arr_mat = arrival_materials::where('id', $id)->get();
 		return response()->json($arr_mat, 200);
 	}
+
+	public function updateLocation($id, Request $req)
+	{
+		DB::transaction(function() use($id, $req){
+			reagent_arrival_material::where('id', $id)->update(['id_location' => $req->input('id_location')]);
+		});
+	}
 }
