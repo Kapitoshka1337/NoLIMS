@@ -75,9 +75,17 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('metrolog')->group(function(){
 			Route::get('', 'Equipment\MetrologController@view');
 		});
+		Route::prefix('verification')->group(function(){
+			Route::get('', 'Equipment\VerificationController@view');
+			Route::get('{id}/equipments', 'Equipment\VerificationController@equipments');
+			Route::post('', 'Equipment\VerificationController@create');
+		});
+		Route::prefix('support')->group(function(){
+			Route::get('documents', 'Equipment\SupportController@docType');
+		});
 		Route::prefix('equipments')->group(function(){
 			Route::get('{id}', 'Equipment\EquipmentController@view');
-			Route::get('checks/{id}', 'Equipment\EquipmentController@checks');
+			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
 		});
 	});
 });
