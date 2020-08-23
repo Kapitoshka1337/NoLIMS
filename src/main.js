@@ -2,10 +2,13 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from './App.vue';
+//VUEX
 import store from './components/store/store.js';
 //SEMANTIC UI
 import 'semantic-ui-css/semantic.min.css';
 import SuiVue from 'semantic-ui-vue';
+//VUETIFY
+import vuetify from './plugins/vuetify';
 //AXIOS
 import Axios from 'axios';
 import Convert from './components/reagent/convert.js';
@@ -32,9 +35,8 @@ import Equipment from "./components/equipment/main.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
 import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
 import MetrologEquipmentDetails from "./components/equipment/metrolog/detail.vue";
+import MetrologVerification from "./components/equipment/metrolog/verification.vue";
 
-//import MuseUI from 'muse-ui';
-//import 'muse-ui/dist/muse-ui.css';
 
 Vue.prototype.$http = Axios;
 Vue.prototype.$convert = Convert;
@@ -45,7 +47,6 @@ if(token){
 //  if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.152';
 //  else Vue.prototype.$http.defaults.baseURL = 'http://laravel';
 
-//Vue.use(MuseUI);
 Vue.use(SuiVue);
 Vue.use(VueRouter);
 Vue.component('menu-nav', MenuNav);
@@ -77,6 +78,7 @@ var router = new VueRouter({
           children: [
             { path: 'equipments', component: MetrologEquipment, meta: { roles: [1, 2, 3] } },
             { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { roles: [1, 2, 3] } },
+            { path: 'verification', component: MetrologVerification, meta: { roles: [1, 2, 3] } },
           ]
         },
       ]
@@ -114,5 +116,6 @@ new Vue({
   el: '#app',
   router: router,
   render: h => h(App),
+  vuetify,
   store: store
 })

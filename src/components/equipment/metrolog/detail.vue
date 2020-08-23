@@ -1,307 +1,238 @@
 <template>
-    <sui-grid-row>
-        <sui-grid-column>
-            <sui-loader centered v-bind:active="!indentificationData" inline/>
-            <sui-card-group v-if="indentificationData">
-                <sui-card class="fluid">
-                    <sui-card-content>
-                        <sui-card-header>Идентификационные данныe</sui-card-header>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-form>
-                            <sui-form-fields fields="two">
-                                <sui-form-field>
-                                    <label>Наименование</label>
-                                    <textarea cols="30" rows="2" v-model="indentificationData.equipment.title"></textarea>
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Производитель</label>
-                                    <textarea cols="30" rows="2" v-model="indentificationData.equipment.manufacturer"></textarea>
-                                </sui-form-field>
-                            </sui-form-fields>
-                            <sui-form-fields fields="four">
-                                <sui-form-field>
-                                    <label>Инвентарный номер</label>
-                                    <input type="text" v-model="indentificationData.equipment.inventory_number">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Серийный номер</label>
-                                    <input type="text" v-model="indentificationData.equipment.serial_number">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Модель</label>
-                                    <input type="text" v-model="indentificationData.equipment.model">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Дата изготовления</label>
-                                    <input type="date" v-model="indentificationData.equipment.date_create">
-                                </sui-form-field>
-                            </sui-form-fields>
-                            <sui-form-fields fields="three">
-                                <sui-form-field>
-                                    <label>Номер</label>
-                                    <input type="text" v-model="indentificationData.equipment.number">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>ФИФ</label>
-                                    <input type="text" v-model="indentificationData.equipment.fif_number">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Введено в эксплуатацию</label>
-                                    <input type="date" v-model="indentificationData.equipment.date_commissioning">
-                                </sui-form-field>
-                            </sui-form-fields>
-                            <sui-form-field>
-                                <label>Примечание</label>
-                                <textarea cols="30" rows="2" v-model="indentificationData.equipment.description"></textarea>
-                            </sui-form-field>
-                        </sui-form>
-                    </sui-card-content>
-                </sui-card>
-                <sui-card class="fluid">
-                    <sui-card-content>
-                        <sui-card-header>Состояние</sui-card-header>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-form>
-                            <sui-form-fields inline>
-                                <sui-form-field>
-                                    <sui-checkbox label="Архив" v-model="indentificationData.equipment.is_archive"/>
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <sui-checkbox label="Используется" v-model="indentificationData.equipment.is_working"/>
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <sui-checkbox label="Консервация" v-model="indentificationData.equipment.is_conservation"/>
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <sui-checkbox label="Ремонт" v-model="indentificationData.equipment.is_repair"/>
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <sui-checkbox label="ЦСМ" v-model="indentificationData.equipment.is_check"/>
-                                </sui-form-field>
-                            </sui-form-fields>
-                        </sui-form>
-                    </sui-card-content>
-                </sui-card>
-                <sui-card class="fluid">
-                    <sui-card-content>
-                        <sui-card-header>Характеристики</sui-card-header>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-form>
-                            <sui-form-field>
-                                <label>Вид</label>
-                                <sui-dropdown search selection :options="dropdown('type')" v-model="indentificationData.equipment.id_equipment_type"></sui-dropdown>
-                            </sui-form-field>
-                            <sui-form-fields fields="two">
-                                <sui-form-field>
-                                    <label>Диапазон измерений</label>
-                                    <input type="text" v-model="indentificationData.equipment.measuring_range">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Диапазон работы</label>
-                                    <input type="text" v-model="indentificationData.equipment.measuring_work">
-                                </sui-form-field>
-                            </sui-form-fields>
-                            <sui-form-fields fields="two">
-                                <sui-form-field>
-                                    <label>Точность</label>
-                                    <input type="text" v-model="indentificationData.equipment.accuracy">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Класс точности</label>
-                                    <input type="text" v-model="indentificationData.equipment.class_accuracy">
-                                </sui-form-field>
-                            </sui-form-fields>
-                            <sui-form-fields fields="two">
-                                <sui-form-field>
-                                    <label>Объект исследования</label>
-                                    <sui-dropdown search selection :options="dropdown('studies')" v-model="indentificationData.equipment.id_object_study"></sui-dropdown>
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Функциональное значение</label>
-                                    <sui-dropdown search selection :options="dropdown('function')" v-model="indentificationData.equipment.id_function_of_use"></sui-dropdown>
-                                </sui-form-field>
-                            </sui-form-fields>
-                            <sui-form-field>
-                                <label>Цель использования</label>
-                                <input type="text" v-model="indentificationData.equipment.purpose_of_use">
-                            </sui-form-field>
-                            <sui-form-field>
-                                <label>Дополнительные характеристики</label>
-                                <textarea cols="30" rows="2" v-model="indentificationData.equipment.characteristics"></textarea>
-                            </sui-form-field>
-                            <sui-form-fields fields="two">
-                                <sui-form-field>
-                                    <sui-form-field class="ui green label">Инструкция по эксплуатации</sui-form-field>
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <sui-button size="mini" floated="right" color="red" content="Изменить" v-on:click="showModal('EditInstruction')"></sui-button>
-                                    <sui-button v-if="indentificationData.equipment.id_instruction" size="mini" floated="right" color="yellow" content="Открыть"></sui-button>                                    
-                                    <!--<a v-if="listDetails.instruction" v-bind:href="'/assets/uploads/' + listDetails.instruction.upload_file" class="ui right floated yellow mini button" target="_blank">Открыть</a>-->
-                                </sui-form-field>
-                            </sui-form-fields>
-                        </sui-form>
-                    </sui-card-content>
-                </sui-card>
-                <sui-card class="fluid">
-                    <sui-card-content>
-                        <sui-card-header>
-                            История проверок
-                            <sui-button color="yellow" size="mini" floated="right" icon="plus"></sui-button>
-                        </sui-card-header>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-table compact>
-                            <sui-table-header>
-                                <sui-table-row>
-                                    <sui-table-header-cell>Текущая</sui-table-header-cell>
-                                    <sui-table-header-cell>Следующая</sui-table-header-cell>
-                                    <sui-table-header-cell>Вид документа</sui-table-header-cell>
-                                    <sui-table-header-cell>№ документа</sui-table-header-cell>
-                                    <sui-table-header-cell>Документ</sui-table-header-cell>
-                                    <sui-table-header-cell></sui-table-header-cell>
-                                </sui-table-row>
-                            </sui-table-header>
-                            <sui-table-body>
-                                <sui-table-row v-for="check in indentificationData.history_checks" :key="check">
-                                    <sui-table-cell>{{ today(check.date_current_check) }}</sui-table-cell>
-                                    <sui-table-cell>{{ today(check.date_next_check) }}</sui-table-cell>
-                                    <sui-table-cell>{{ check.type_document || 'Не указан' }}</sui-table-cell>
-                                    <sui-table-cell>{{ check.number_document || 'Не указан'}}</sui-table-cell>
-                                    <sui-table-cell>{{ check.upload_file_name || 'Не загружен'}}</sui-table-cell>
-                                </sui-table-row>
-                            </sui-table-body>
-                        </sui-table>
-                    </sui-card-content>
-                </sui-card>
-                <!-- <sui-card class="fluid">
-                    <sui-card-content>
-                        <sui-card-header>Местоположение</sui-card-header>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-form>
-                            <sui-form-fields fields="two">
-                                <sui-form-field>
-                                    <label>Отдел</label>
-                                    <sui-dropdown search selection multiple ></sui-dropdown>
-                                    <select class="ui search dropdown disabled" v-model="listDetails.equipment.id_department">
-                                        <option v-for="department in listDepartment" v-bind:value="department.id_department">{{ department.department }}</option>
-                                    </select>
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Кабинет</label>
-                                    <sui-dropdown search selection multiple ></sui-dropdown>
-                                    <select class="ui search dropdown" v-model="listDetails.equipment.id_location">
-                                        <option v-for="location in filteredLocation" v-bind:value="location.id">{{ location.cabinet_number }}</option>
-                                    </select>
-                                </sui-form-field>
-                            </sui-form-fields>
-                        </sui-form>
-                    </sui-card-content>
-                </sui-card> -->
-                <sui-card class="fluid">
-                    <sui-card-content>
-                        <sui-card-header>
-                            Перемещения
-                            <sui-button color="yellow" size="mini" floated="right" icon="plus"></sui-button>
-                        </sui-card-header>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-table compact>
-                            <sui-table-header>
-                                <sui-table-row>
-                                    <sui-table-header-cell>Прошлый отдел</sui-table-header-cell>
-                                    <sui-table-header-cell>Текущий отдел</sui-table-header-cell>
-                                    <sui-table-header-cell>Прошлый кабинет</sui-table-header-cell>
-                                    <sui-table-header-cell>Текущий кабинет</sui-table-header-cell>
-                                </sui-table-row>
-                            </sui-table-header>
-                            <sui-table-body>
-                                <sui-table-row v-for="check in indentificationData.history_moving" :key="check">
-                                    <sui-table-cell>{{ check.last_department }}</sui-table-cell>
-                                    <sui-table-cell>{{ check.department }}</sui-table-cell>
-                                    <sui-table-cell>{{ check.cabinet_number }}</sui-table-cell>
-                                    <sui-table-cell>{{ check.last_cabinet }}</sui-table-cell>
-                                </sui-table-row>
-                            </sui-table-body>
-                        </sui-table>
-                    </sui-card-content>
-                </sui-card>
-                <sui-card class="fluid">
-                    <sui-card-content>
-                        <sui-card-header>Условия работы (ОТКАЗ)</sui-card-header>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-form>
-                            <sui-form-fields fields="three">
-                                <sui-form-field>
-                                    <label>Влажность</label>
-                                    <input type="text">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Давление</label>
-                                    <input type="text">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Температура</label>
-                                    <input type="text">
-                                </sui-form-field>
-                            </sui-form-fields>
-                            <sui-form-fields fields="two">
-                                <sui-form-field>
-                                    <label>Напряжение</label>
-                                    <input type="number">
-                                </sui-form-field>
-                                <sui-form-field>
-                                    <label>Ток</label>
-                                    <input type="number">
-                                </sui-form-field>
-                            </sui-form-fields>
-                        </sui-form>
-                    </sui-card-content>
-                </sui-card>
-                <sui-card class="fluid">
-                    <sui-card-content>
-                        <sui-card-header>
-                            Требуемое техническое обслуживание
-                            <sui-button color="yellow" size="mini" floated="right" icon="plus"></sui-button>
-                        </sui-card-header>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-table compact>
-                            <sui-table-header>
-                                <sui-table-row>
-                                    <sui-table-header-cell>Вид ТО</sui-table-header-cell>
-                                    <sui-table-header-cell>Исполнитель</sui-table-header-cell>
-                                    <sui-table-header-cell>Периодичность</sui-table-header-cell>
-                                    <sui-table-header-cell>ТО</sui-table-header-cell>
-                                    <sui-table-header-cell></sui-table-header-cell>
-                                </sui-table-row>
-                            </sui-table-header>
-                            <sui-table-body>
-                                <sui-table-row v-for="check in indentificationData.maintance" :key="check">
-                                    <sui-table-cell>{{ check.type_maintenance }}</sui-table-cell>
-                                    <sui-table-cell>{{ check.executor }}</sui-table-cell>
-                                    <sui-table-cell>{{ check.periodicity }}</sui-table-cell>
-                                    <sui-table-cell>{{ check.description }}</sui-table-cell>
-                                </sui-table-row>
-                            </sui-table-body>
-                        </sui-table>
-                    </sui-card-content>
-                </sui-card>
-            </sui-card-group>
-        </sui-grid-column>
-    </sui-grid-row>
+    <v-row>
+        <v-col cols="12">
+            <v-card outlined>
+                <v-card-title>Идентификационные данныe</v-card-title>
+                <v-card-text>
+                    <v-form>
+                        <v-row>
+                            <v-col cols="12" md="6">
+                                <v-text-field dense label="Наименование" outlined v-model="indentificationData.equipment.title"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-text-field dense label="Производитель" outlined v-model="indentificationData.equipment.manufacturer"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="3">
+                                <v-text-field dense label="Инвентарный номер" outlined v-model="indentificationData.equipment.inventory_number"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3">
+                                <v-text-field dense label="Серийный номер" outlined v-model="indentificationData.equipment.serial_number"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3">
+                                <v-text-field dense label="Модель" outlined v-model="indentificationData.equipment.model"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3">
+                                <input type="date" is="v-text-field" dense label="Дата изготовления" outlined v-model="indentificationData.equipment.date_create">
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="4">
+                                <v-text-field dense label="Номер" outlined v-model="indentificationData.equipment.number"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="4">
+                                <v-text-field dense label="ФИФ" outlined v-model="indentificationData.equipment.fif_number"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="4">
+                                <input type="date" is="v-text-field" dense label="Введено в эксплуатацию" outlined v-model="indentificationData.equipment.date_commissioning">
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="12">
+                                <v-textarea :rows="2" :height="100" dense label="Примечание" outlined v-model="indentificationData.equipment.description"></v-textarea>
+                            </v-col>
+                        </v-row>
+                    </v-form>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <v-card outlined>
+                <v-card-title>Состояние</v-card-title>
+                <v-card-text>
+                        <v-checkbox label="Архив" color="teal" hide-details v-model="indentificationData.equipment.is_archive"></v-checkbox>
+                        <v-checkbox label="Используется" color="green" hide-details v-model="indentificationData.equipment.is_working"></v-checkbox>
+                        <v-checkbox label="Консервация" color="orange" hide-details v-model="indentificationData.equipment.is_conservation"></v-checkbox>
+                        <v-checkbox label="Ремонт" color="red" hide-details v-model="indentificationData.equipment.is_repair"></v-checkbox>
+                        <v-checkbox label="ЦСМ" color="purple" hide-details v-model="indentificationData.equipment.is_check"></v-checkbox>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <v-card outlined>
+                <v-card-title>Характеристики</v-card-title>
+                <v-card-text>
+                    <v-form>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-autocomplete :items="dropdown('type')" outlined dense label="Вид" v-model="indentificationData.equipment.id_equipment_type"></v-autocomplete>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="6">
+                                <v-autocomplete :items="dropdown('studies')" outlined dense label="Объект исследования" v-model="indentificationData.equipment.id_object_study"></v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-autocomplete :items="dropdown('function')" outlined dense label="Функциональное значение" v-model="indentificationData.equipment.id_function_of_use"></v-autocomplete>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="6">
+                                <v-text-field dense label="Диапазон измерений" outlined v-model="indentificationData.equipment.measuring_range"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-text-field dense label="Диапазон работы" outlined v-model="indentificationData.equipment.measuring_work"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="6">
+                                <v-text-field dense label="Точность" outlined v-model="indentificationData.equipment.accuracy"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-text-field dense label="Класс точности" outlined v-model="indentificationData.equipment.class_accuracy"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="12">
+                                <v-text-field dense label="Цель использования" outlined v-model="indentificationData.equipment.purpose_of_use"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="12">
+                                <v-textarea :rows="2" :height="100" dense label="Дополнительные характеристики" outlined v-model="indentificationData.equipment.characteristics"></v-textarea>
+                            </v-col>
+                        </v-row>
+                    </v-form>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <v-card outlined>
+                <v-card-title>
+                    История проверок
+                    <v-spacer></v-spacer>
+					<v-btn icon color="orange">
+						<v-icon>mdi-plus</v-icon>
+					</v-btn>
+                </v-card-title>
+                <v-card-text>
+                    <v-data-table dense :headers="tableColumn" :items="indentificationData.history_checks" :items-per-page="5">
+                        <template v-slot:item.date_current_check="{ item }">
+                            {{ today(item.date_current_check) }}
+                        </template>
+                        <template v-slot:item.date_next_check="{ item }">
+                            {{ today(item.date_next_check) }}
+                        </template>
+                        <template v-slot:item.type_document="{ item }">
+                            {{ item.type_document || "Не указан"}}
+                        </template>
+                        <template v-slot:item.number_document="{ item }">
+                            {{ item.number_document || "Не указан"}}
+                        </template>
+                        <template v-slot:item.upload_file_name="{ item }">
+                            {{ item.upload_file_name || "Не загружен"}}
+                        </template>
+                    </v-data-table>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <v-card outlined>
+                <v-card-title>
+                    Перемещения
+                    <v-spacer></v-spacer>
+					<v-btn icon color="orange">
+						<v-icon>mdi-plus</v-icon>
+					</v-btn>
+                </v-card-title>
+                <v-card-text>
+                    <v-data-table dense :headers="tableColumn1" :items="indentificationData.history_moving" :items-per-page="5">
+                        <template v-slot:item.cabinet="{ item }">
+                            {{ item.cabinet || "Не указан"}}
+                        </template>
+                        <template v-slot:item.last_cabinet="{ item }">
+                            {{ item.last_cabinet || "Не указан"}}
+                        </template>
+                    </v-data-table>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <v-card outlined>
+                <v-card-title>
+                    Требуемое техническое обслуживание
+                    <v-spacer></v-spacer>
+					<v-btn icon color="orange">
+						<v-icon>mdi-plus</v-icon>
+					</v-btn>
+                </v-card-title>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <v-card color="red" outlined>
+                <v-card-title>Условия работы (УБРАТЬ)</v-card-title>
+            </v-card>
+        </v-col>
+    </v-row>
+                
+            <!--<sui-form-fields fields="two">
+                <sui-form-field>
+                    <sui-form-field class="ui green label">Инструкция по эксплуатации</sui-form-field>
+                </sui-form-field>
+                <sui-form-field>
+                    <sui-button size="mini" floated="right" color="red" content="Изменить" v-on:click="showModal('EditInstruction')"></sui-button>
+                    <sui-button v-if="indentificationData.equipment.id_instruction" size="mini" floated="right" color="yellow" content="Открыть"></sui-button>                                    
+                    <a v-if="listDetails.instruction" v-bind:href="'/assets/uploads/' + listDetails.instruction.upload_file" class="ui right floated yellow mini button" target="_blank">Открыть</a>
+                </sui-form-field>
+                <sui-table-header>
+                    <sui-table-row>
+                        <sui-table-header-cell>Вид ТО</sui-table-header-cell>
+                        <sui-table-header-cell>Исполнитель</sui-table-header-cell>
+                        <sui-table-header-cell>Периодичность</sui-table-header-cell>
+                        <sui-table-header-cell>ТО</sui-table-header-cell>
+                        <sui-table-header-cell></sui-table-header-cell>
+                    </sui-table-row>
+                </sui-table-header>
+                <sui-table-body>
+                    <sui-table-row v-for="check in indentificationData.maintance" :key="check">
+                        <sui-table-cell>{{ check.type_maintenance }}</sui-table-cell>
+                        <sui-table-cell>{{ check.executor }}</sui-table-cell>
+                        <sui-table-cell>{{ check.periodicity }}</sui-table-cell>
+                        <sui-table-cell>{{ check.description }}</sui-table-cell>
+                    </sui-table-row>
+                </sui-table-body>-->
 </template>
 
 <script>
 export default {
-	props:['id'],
+	props:{
+        id: {
+            type: Number
+        }
+    },
     data(){
         return {
-            indentificationData: null
+            indentificationData: null,
+            tableColumn: [
+                { text: 'Пройденная', align: 'start', sortable: false, value: 'date_current_check' },
+                { text: 'Предстоящая', align: 'start', sortable: false, value: 'date_next_check' },
+                { text: 'Вид документа', align: 'start', sortable: false, value: 'type_document' },
+                { text: '№ документа', align: 'start', sortable: false, value: 'number_document' },
+                { text: 'Документ', align: 'start', sortable: false, value: 'upload_file_name'}
+            ],
+            tableColumn1: [
+                { text: 'Отдел (ушел)', align: 'start', sortable: false, value: 'last_department' },
+                { text: 'Отдел (пришел)', align: 'start', sortable: false, value: 'department' },
+                { text: 'Кабинет (ушел)', align: 'end', sortable: false, value: 'cabinet' },
+                { text: 'Кабинет (пришел)', align: 'end', sortable: false, value: 'last_cabinet' }
+            ]
+        }
+    },
+    watch: {
+        id(newVal, oldVal) {
+            if(newVal != oldVal)
+                this.getEquipment();
         }
     },
     methods: {
@@ -317,9 +248,9 @@ export default {
             {
                 let result = [];
                 for (let str of this.indentificationData[tp])
-                    result.push({key: str['id'], value: str['id'], text: str['title']});
+                    result.push({value: str['id'], text: str['title']});
                 return result;
-            }            
+            }
         }
     },
     created() {
