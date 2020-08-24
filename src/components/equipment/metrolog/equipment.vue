@@ -1,16 +1,14 @@
 <template>
-	<div>
-		<v-tabs>
-			<v-tab>Оборудование</v-tab>
-			<v-tab>Подробности</v-tab>
-		<v-tab-item>
-			<equipment @id='inputId'></equipment>
-		</v-tab-item>
-		<v-tab-item>
-			<detail :id="idEquipment"></detail>
-		</v-tab-item>
-		</v-tabs>
-	</div>
+	<v-tabs>
+		<v-tab>Оборудование</v-tab>
+		<v-tab>Подробности</v-tab>
+	<v-tab-item>
+		<equipment @id='inputId'></equipment>
+	</v-tab-item>
+	<v-tab-item>
+		<detail :id="idEquipment"></detail>
+	</v-tab-item>
+	</v-tabs>
 </template>
 
 <script>
