@@ -77,9 +77,11 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		});
 		Route::prefix('verification')->group(function(){
 			Route::get('', 'Equipment\VerificationController@view');
-			Route::get('{id}/equipments', 'Equipment\VerificationController@equipments');
 			Route::post('', 'Equipment\VerificationController@create');
+			Route::get('{id}/equipments', 'Equipment\VerificationController@equipments');
 			Route::put('{check}/play', 'Equipment\VerificationController@play');
+			Route::delete('{check}/vdelete', 'Equipment\VerificationController@check_delete');
+			Route::delete('{id}/edelete', 'Equipment\VerificationController@eq_delete');
 			Route::put('{check}/{id}/before', 'Equipment\VerificationController@before');
 			Route::put('{check}/{id}/after', 'Equipment\VerificationController@after');
 		});
