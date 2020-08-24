@@ -41,4 +41,26 @@ class VerificationController extends Controller
 		$arr_mat = equipment_kits::where('id_checks', $id)->get();
 		return response()->json($arr_mat, 200);
 	}
+
+	public function play($check)
+	{
+		// return response()->json($id, 200);
+		// DB::transaction(function() use($id){
+		// 	equipment_kit_equipment::where('id', $id)->update(['is_received_before' => 1]);
+		// });
+	}
+
+	public function before($check, $id)
+	{
+		DB::transaction(function() use($id){
+			equipment_kit_equipment::where('id', $id)->update(['is_received_before' => 1]);
+		});
+	}
+
+	public function after($check, $id)
+	{
+		DB::transaction(function() use($id){
+			equipment_kit_equipment::where('id', $id)->update(['is_received_after' => 1]);
+		});
+	}
 }
