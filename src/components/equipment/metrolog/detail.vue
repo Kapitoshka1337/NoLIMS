@@ -12,8 +12,6 @@
                             <v-col cols="12" md="6">
                                 <v-text-field dense label="Производитель" outlined v-model="indentificationData.equipment.manufacturer"></v-text-field>
                             </v-col>
-                        </v-row>
-                        <v-row>
                             <v-col cols="12" md="3">
                                 <v-text-field dense label="Инвентарный номер" outlined v-model="indentificationData.equipment.inventory_number"></v-text-field>
                             </v-col>
@@ -24,10 +22,8 @@
                                 <v-text-field dense label="Модель" outlined v-model="indentificationData.equipment.model"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="3">
-                                <input type="date" is="v-text-field" dense label="Дата изготовления" outlined v-model="indentificationData.equipment.date_create">
+                                <v-text-field type="date" dense label="Дата изготовления" outlined v-model="indentificationData.equipment.date_create"></v-text-field>
                             </v-col>
-                        </v-row>
-                        <v-row>
                             <v-col cols="12" md="4">
                                 <v-text-field dense label="Номер" outlined v-model="indentificationData.equipment.number"></v-text-field>
                             </v-col>
@@ -35,10 +31,8 @@
                                 <v-text-field dense label="ФИФ" outlined v-model="indentificationData.equipment.fif_number"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="4">
-                                <input type="date" is="v-text-field" dense label="Введено в эксплуатацию" outlined v-model="indentificationData.equipment.date_commissioning">
+                                <v-text-field type="date" dense label="Введено в эксплуатацию" outlined v-model="indentificationData.equipment.date_commissioning"></v-text-field>
                             </v-col>
-                        </v-row>
-                        <v-row>
                             <v-col cols="12" md="12">
                                 <v-textarea :rows="2" :height="100" dense label="Примечание" outlined v-model="indentificationData.equipment.description"></v-textarea>
                             </v-col>
@@ -68,37 +62,27 @@
                             <v-col cols="12">
                                 <v-autocomplete :items="dropdown('type')" outlined dense label="Вид" v-model="indentificationData.equipment.id_equipment_type"></v-autocomplete>
                             </v-col>
-                        </v-row>
-                        <v-row>
                             <v-col cols="12" md="6">
                                 <v-autocomplete :items="dropdown('studies')" outlined dense label="Объект исследования" v-model="indentificationData.equipment.id_object_study"></v-autocomplete>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-autocomplete :items="dropdown('function')" outlined dense label="Функциональное значение" v-model="indentificationData.equipment.id_function_of_use"></v-autocomplete>
                             </v-col>
-                        </v-row>
-                        <v-row>
                             <v-col cols="12" md="6">
                                 <v-text-field dense label="Диапазон измерений" outlined v-model="indentificationData.equipment.measuring_range"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-text-field dense label="Диапазон работы" outlined v-model="indentificationData.equipment.measuring_work"></v-text-field>
                             </v-col>
-                        </v-row>
-                        <v-row>
                             <v-col cols="12" md="6">
                                 <v-text-field dense label="Точность" outlined v-model="indentificationData.equipment.accuracy"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-text-field dense label="Класс точности" outlined v-model="indentificationData.equipment.class_accuracy"></v-text-field>
                             </v-col>
-                        </v-row>
-                        <v-row>
                             <v-col cols="12" md="12">
                                 <v-text-field dense label="Цель использования" outlined v-model="indentificationData.equipment.purpose_of_use"></v-text-field>
                             </v-col>
-                        </v-row>
-                        <v-row>
                             <v-col cols="12" md="12">
                                 <v-textarea :rows="2" :height="100" dense label="Дополнительные характеристики" outlined v-model="indentificationData.equipment.characteristics"></v-textarea>
                             </v-col>
@@ -160,6 +144,30 @@
         </v-col>
         <v-col cols="12">
             <v-card outlined>
+                <v-card-title>Условия работы</v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <!--<v-col cols="4">
+                            <v-text-field dense label="Влажность" outlined v-model="indentificationData.condition_working.humidity"></v-text-field>
+                        </v-col>
+                        <v-col cols="4">
+                            <v-text-field dense label="Давление" outlined v-model="indentificationData.condition_working.pressure"></v-text-field>
+                        </v-col>
+                        <v-col cols="4">
+                            <v-text-field dense label="Температура" outlined v-model="indentificationData.condition_working.temperature"></v-text-field>
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field dense label="Напряжение" outlined v-model="indentificationData.condition_working.voltage"></v-text-field>
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field dense label="Ток" outlined v-model="indentificationData.condition_working.amperage"></v-text-field>
+                        </v-col>-->
+                    </v-row>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <v-card outlined>
                 <v-card-title>
                     Требуемое техническое обслуживание
                     <v-spacer></v-spacer>
@@ -167,11 +175,6 @@
 						<v-icon>mdi-plus</v-icon>
 					</v-btn>
                 </v-card-title>
-            </v-card>
-        </v-col>
-        <v-col cols="12">
-            <v-card color="red" outlined>
-                <v-card-title>Условия работы (УБРАТЬ)</v-card-title>
             </v-card>
         </v-col>
     </v-row>
