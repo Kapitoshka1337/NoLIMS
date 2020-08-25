@@ -19,12 +19,12 @@
             </v-list-item-icon>
             <v-list-item-title>Главная</v-list-item-title>
           </v-list-item>
-          <v-list-item link>
+          <!-- <v-list-item link>
             <v-list-item-icon>
               <v-icon>mdi-image</v-icon>
             </v-list-item-icon>
             <v-list-item-title>План-график</v-list-item-title>
-          </v-list-item>
+          </v-list-item> -->
           <v-list-group prepend-icon="mdi-help-box" no-action>
             <template v-slot:activator>
               <v-list-item-content>
@@ -46,11 +46,11 @@
                 <v-list-item-title>Ремонт</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item link>
+            <!-- <v-list-item link>
               <v-list-item-content>
                 <v-list-item-title>План-график</v-list-item-title>
               </v-list-item-content>
-            </v-list-item>
+            </v-list-item> -->
           </v-list-group>
         </v-list>
       </v-navigation-drawer>

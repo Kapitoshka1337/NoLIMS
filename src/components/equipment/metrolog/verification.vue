@@ -13,16 +13,16 @@
 				<template v-slot:item.date_submit="{ item }">
 					{{ today(item.date_submit) }}
 				</template>
-				<!-- <template v-slot:item.total="{ item }">
-					{{gridData.map(function(x) {return x.id; }).indexOf(item.id)}}
-				</template> -->
 				<template v-slot:item.actions="{ item }">
-					<v-btn small icon color="orange" v-on:click="selectedRow(item)" :loading="equipments"><v-icon>mdi-eye</v-icon></v-btn>
-					<v-btn small icon color="blue"><v-icon>mdi-printer</v-icon></v-btn>
+					<v-btn small icon color="orange" v-on:click="selectedRow(item)"><v-icon>mdi-eye</v-icon></v-btn>
+					<v-btn small icon color="blue" v-on:click="confirmPrint(item)"><v-icon>mdi-printer</v-icon></v-btn>
 					<v-btn small icon color="red" v-on:click="confirmDeleteVerification(item)" v-if="item.id_status_check != 2 && item.id_status_check != 3"><v-icon>mdi-delete</v-icon></v-btn>
-					<v-btn small icon color="green" v-if="!item.date_submit" v-on:click="play(item)" :loading="plays"><v-icon>mdi-play</v-icon></v-btn>
+					<v-btn small icon color="green" v-if="!item.date_submit" v-on:click="play(item)"><v-icon>mdi-play</v-icon></v-btn>
 				</template>
 			</v-data-table>
+			<v-overlay :value="overlay">
+				<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
+			</v-overlay>
 			<v-dialog dense v-model="dialog" max-width="1256px">
 				<v-card>
 					<v-card-title>{{header}}</v-card-title>
@@ -66,6 +66,27 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
+			<v-dialog dense v-model="printDialog" max-width="512">
+				<v-card>
+					<v-card-title>Формирование заявки</v-card-title>
+					<v-divider></v-divider>
+					<v-card-text>
+						<v-row>
+							<v-container>
+								<v-row align-content="center">
+									<v-text-field label="Приложение к договору" outlined dense v-model="item.descr"></v-text-field>
+								</v-row>
+							</v-container>
+						</v-row>
+					</v-card-text>
+					<v-divider></v-divider>
+					<v-card-actions>
+						<v-spacer></v-spacer>
+						<v-btn color="success" @click="printCSM()" :loading="loadDelete">Сохранить</v-btn>
+						<v-btn color="error" @click="printDialog = false">Отмена</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
 		</v-col>
 	</v-row>
 </template>
@@ -100,15 +121,17 @@ export default {
 			gridData: [],
 			verificationInfo: {},
 			gridData1: [],
-			equipments: false,
-			plays: false,
+			// equipments: false,
+			// plays: false,
 			dialog: false,
 			param: false,
 			deleteVerificationDialog: false,
 			deleteEqDialog: false,
+			printDialog: false,
 			loadDelete: false,
 			item: {},
-			check: {}
+			check: {},
+			overlay: false
 		}
 	},
 	methods: {
@@ -121,8 +144,8 @@ export default {
 		},
 		selectedRow(data){
 			this.verificationInfo = data;
-			this.equipments = true;
-			this.$http.get('/api/equipment/verification/' + data.id + "/equipments").then(response => (this.gridData1 = response.data, this.equipments = false, this.dialog = true)).catch(error => (this.equipments = false, alert(error.response.data.message)));
+			this.overlay = true;
+			this.$http.get('/api/equipment/verification/' + data.id + "/equipments").then(response => (this.gridData1 = response.data, this.overlay = false, this.dialog = true)).catch(error => (this.overlay = false, alert(error.response.data.message)));
 		},
 		submitBefore(item){
 			let param;
@@ -133,8 +156,8 @@ export default {
 			.then(response => (item[`is_received_${param}`] = true, this.param = false)).catch(error => (this.param = false, alert(error.response.data.message)));
 		},
 		play(item){
-			this.plays = true;
-			this.$http.put(`/api/equipment/verification/${item.id}/play`).then(response => (item.date_submit = new Date(), item.id_status_check = 2, this.plays = false)).catch(error => (this.plays = false, alert(error.response.data.message)));
+			this.overlay = true;
+			this.$http.put(`/api/equipment/verification/${item.id}/play`).then(response => (item.date_submit = new Date(), item.id_status_check = 2, this.overlay = false)).catch(error => (this.overlay = false, alert(error.response.data.message)));
 		},
 		confirmDeleteVerification(item){
 			this.item = item;
@@ -161,7 +184,22 @@ export default {
 				this.loadDelete = false;
 				this.item = {};
 			}).catch(error => (this.deleteEqDialog = false, this.loadDelete = false, alert(error.response.data.message)));
-		}
+		},
+		confirmPrint(item){
+			this.item = item;
+			this.printDialog = true;
+		},
+		printCSM(){
+			let obj = {id_check: this.item.id, descr: this.item.descr};
+			this.loadDelete = true;
+			this.$http.post('/api/equipment/printer/csm', obj, {responseType: 'blob'})
+			.then(response =>{
+				const file = new Blob([response.data], {type: 'application/pdf'});
+				fs.saveAs(file, 'ЦСМ.pdf');
+				this.loadDelete = this.printDialog = false;
+			}).catch(error => (this.loadDelete = this.printDialog = false, alert(error.response.data.message)));
+
+		},
 	},
 	computed: {
 		idDep(){

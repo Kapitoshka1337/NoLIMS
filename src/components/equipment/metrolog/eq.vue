@@ -18,7 +18,7 @@
 							</v-btn>
 						</template>
 						<v-list dense>
-							<v-list-item>
+							<v-list-item v-on:click="confirmPrint()">
 								<v-list-item-title>ПТС</v-list-item-title>
 							</v-list-item>
 							<v-list-group>
@@ -27,17 +27,17 @@
 										<v-list-item-title>Этикетки</v-list-item-title>
 									</v-list-item-content>
 								</template>
-								<v-list-item>
+								<v-list-item @click="printSticker('sticker', 'large')">
 									<v-list-item-content>
 										<v-list-item-title>Большие</v-list-item-title>
 									</v-list-item-content>
 								</v-list-item>
-								<v-list-item>
+								<v-list-item @click="printSticker('sticker', 'middle')">
 									<v-list-item-content>
 										<v-list-item-title>Средние</v-list-item-title>
 									</v-list-item-content>
 								</v-list-item>
-								<v-list-item>
+								<v-list-item @click="printSticker('sticker', 'tiny')">
 									<v-list-item-content>
 										<v-list-item-title>Маленькие</v-list-item-title>
 									</v-list-item-content>
@@ -97,6 +97,9 @@
 				<v-btn icon @click="editItem(item)"><v-icon>mdi-cog</v-icon></v-btn>
 			</template>
 		</v-data-table>
+		<v-overlay :value="overlay">
+			<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
+		</v-overlay>
 		<v-dialog v-model="dialog_append_verification" max-width="512px">
 			<v-card>
 				<v-card-title>Внесение иформации о пройденной проверке</v-card-title>
@@ -131,6 +134,27 @@
 					<v-spacer></v-spacer>
 					<v-btn color="success" @click="passedVerification()" :loading="passed_verification">Сохранить</v-btn>
 					<v-btn color="error" @click="dialog_append_verification = false">Отмена</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+		<v-dialog dense v-model="printDialog" max-width="512">
+			<v-card>
+				<v-card-title>Формирование ПТС</v-card-title>
+				<v-divider></v-divider>
+				<v-card-text>
+					<v-row>
+						<v-container>
+							<v-row align-content="center">
+								<v-text-field label="Дата проведения" outlined dense type="date" v-model="dateProtocol"></v-text-field>
+							</v-row>
+						</v-container>
+					</v-row>
+				</v-card-text>
+				<v-divider></v-divider>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn color="success" @click="printProtocol()" :loading="loadProtocol">Сохранить</v-btn>
+					<v-btn color="error" @click="printDialog = false">Отмена</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -185,7 +209,11 @@ export default {
 				date_next_check: null,
 				number_document: null,
 				file: null
-			}
+			},
+			overlay: false,
+			printDialog: false,
+			loadProtocol: false,
+			dateProtocol: null
 			//filters: {
 			//	number: [],
 			//	department: [],
@@ -209,7 +237,12 @@ export default {
 		dialog_append_verification(newVal, oldVal){
 			if(newVal === true && this.docType.length <= 0)
 				this.$http.get('/api/equipment/support/documents').then(response => (this.docType = response.data)).catch(error => (alert(error.response.data.message)));
-		}
+		},
+		// overlay(val) {
+		// 	val && setTimeout(() => {
+		// 		this.overlay = false
+		// 	}, 3000)
+		// }
 	},
 	methods: {
 		selectedEquipment(info){
@@ -253,6 +286,39 @@ export default {
 			this.editedItem = Object.assign({}, item);
 			this.dialog_append_verification = true;
 		},
+		printSticker(type = null, size = null) {
+			if(this.selected.length > 0)
+			{
+				let obj = [];
+				for (let item in this.selected)
+					obj.push(this.selected[item].id);
+				let objs = {size: size, item: obj};
+				this.overlay = true;
+				this.$http.post(`/api/equipment/printer/${type}`, objs, {responseType: 'blob'})
+				.then(response =>{
+					const file = new Blob([response.data], {type: 'application/pdf'});
+					fs.saveAs(file, 'Этикетки.pdf');
+					this.overlay = false;
+				}).catch(error => (this.overlay = false, alert(error.response.data.message)));
+			}
+			else alert('Не выбрано оборудование');
+		},
+		confirmPrint(item){
+			if(this.selected.length > 0) this.printDialog = true;
+			else alert('Не выбрано оборудование');
+		},
+		printProtocol() {
+			let obj = [];
+			for (let item in this.selected) obj.push(this.selected[item].id);
+			let objs = {item: obj, date: this.dateProtocol};
+			this.loadProtocol = true;
+			this.$http.post('/api/equipment/printer/protocol', objs, {responseType: 'blob'})
+			.then(response =>{
+				const file = new Blob([response.data], {type: 'application/pdf'});
+				fs.saveAs(file, 'ПТС.pdf');
+				this.loadProtocol = false;
+			}).catch(error => (this.loadProtocol = false, alert(error.response.data.message)));
+		},
 		//returnUniq(column){
 		//	let result = [];
 		//	let resa = [];
@@ -269,16 +335,6 @@ export default {
 		//		resa.push({key: res, value: res, text: res});
 		//	}
 		//	return resa;
-		//},
-		//printInventory(){
-		//	this.isPrint = !this.isPrint;
-		//	this.$http.get('/api/reagent/storage/print/' + this.selectedIdLocation, {responseType: 'blob'})
-		//	.then(response => {
-		//		const file = new Blob([response.data], {type: 'application/pdf'});
-		//		fs.saveAs(file, 'Опись расходных материалов ' + this.todays + '.pdf');
-		//		this.isPrint = !this.isPrint;
-		//	})
-		//	.catch(error => (alert(error), this.isPrint = !this.isPrint));	
 		//}
 	},
 	computed: {
