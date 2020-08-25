@@ -51,7 +51,7 @@ class VerificationController extends Controller
 			foreach ($kits as $kit)
 			{
 				if(!$kit->is_received_before)
-					throw new \Exception('Чтобы "отправить" заявку, необходимо "получить" выбранное оборудование');	
+					throw new \Exception('Для смены статуса заявки, необходимо "получить" выбранное оборудование');	
 			}
 			verifications::where('id', $id)->update(['date_submit' => date('Y-m-d'), 'id_status_check' => 2]);
 		});

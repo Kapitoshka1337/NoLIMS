@@ -88,6 +88,12 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('support')->group(function(){
 			Route::get('documents', 'Equipment\SupportController@docType');
 		});
+		Route::prefix('printer')->group(function(){
+			Route::post('sticker', 'Equipment\PrinterController@sticker');
+			Route::post('table', 'Equipment\PrinterController@table');
+			Route::post('protocol', 'Equipment\PrinterController@protocol');
+			Route::post('csm', 'Equipment\PrinterController@csm');
+		});
 		Route::prefix('equipments')->group(function(){
 			Route::get('{id}', 'Equipment\EquipmentController@view');
 			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
