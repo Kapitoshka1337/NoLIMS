@@ -217,6 +217,7 @@ export default {
     data(){
         return {
             indentificationData: null,
+            indentificationDataCopy: null,
             tableColumn: [
                 { text: 'Пройденная', align: 'start', sortable: false, value: 'date_current_check' },
                 { text: 'Предстоящая', align: 'start', sortable: false, value: 'date_next_check' },
@@ -236,7 +237,24 @@ export default {
         id(newVal, oldVal) {
             if(newVal != oldVal)
                 this.getEquipment();
-        }
+        },
+        indentificationData(){
+            //handler: function (after, before) {
+            //// Return the object that changed
+            //    var vm = this;
+
+            //    let changed = after.filter( function( p, idx ) {
+            //        return Object.keys(p).some( function( prop ) {
+            //            return p[prop] !== vm.$data.indentificationDataCopy[idx][prop];
+            //        })
+            //    })
+            //    // Log it
+            //    vm.setValue();
+            //    console.log(changed)
+            //},
+            //deep: true
+            this.indentificationDataCopy = JSON.parse(JSON.stringify(this.indentificationData.equipment));
+        },
     },
     methods: {
         getEquipment(){

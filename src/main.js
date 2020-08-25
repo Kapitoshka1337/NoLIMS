@@ -8,7 +8,8 @@ import store from './components/store/store.js';
 import 'semantic-ui-css/semantic.min.css';
 import SuiVue from 'semantic-ui-vue';
 //VUETIFY
-import vuetify from './plugins/vuetify';
+import vuetify from './plugins/vuetify.js';
+import MultiFiltersPlugin from './plugins/MultiFilters.js';
 //AXIOS
 import Axios from 'axios';
 import Convert from './components/reagent/convert.js';
@@ -49,6 +50,7 @@ if(token){
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
+Vue.use(MultiFiltersPlugin);
 Vue.component('menu-nav', MenuNav);
 Vue.component('menu-equipment', MenuEquipment);
 
