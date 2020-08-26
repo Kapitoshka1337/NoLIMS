@@ -4,19 +4,83 @@
 			@item-selected="selectedEquipment"
 			dense
 			v-model="selected"
-			:search="search"
 			:headers="gridColumns.tableColumn"
 			:items="gridData"
 			:items-per-page="50"
 			:loading="gridData.length <= 0" 
-			:show-select="true">
+			:show-select="true"
+			:search="search"
+			item-key="id"
+			:custom-filter="filterTags">
+			<template v-slot:header.date_current_check="{header}">
+				{{header.text}}
+				<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+							<v-icon small color="red">mdi-filter-variant</v-icon>
+						</v-btn>
+					</template>
+					<v-card>
+					<v-card-text>
+						<v-container>
+							<v-row>
+								<v-col cols="12">
+									<v-text-field small type="date" dense outlined label="Дата1" v-model="filters.current_start_date"></v-text-field>
+									<v-text-field small type="date" dense outlined label="Дата2" v-model="filters.current_end_date" ></v-text-field>
+								</v-col>
+							</v-row>
+						</v-container>
+					</v-card-text>
+					</v-card>
+				</v-menu>
+			</template>
+			<template v-slot:header.date_next_check="{header}">
+				{{header.text}}
+				<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+							<v-icon small color="red">mdi-filter-variant</v-icon>
+						</v-btn>
+					</template>
+					<v-card>
+					<v-card-text>
+						<v-container>
+							<v-row>
+								<v-col cols="12">
+									<v-text-field small type="date" dense outlined label="Дата1" v-model="filters.next_start_date"></v-text-field>
+									<v-text-field small type="date" dense outlined label="Дата2" v-model="filters.next_end_date" ></v-text-field>
+								</v-col>
+							</v-row>
+						</v-container>
+					</v-card-text>
+					</v-card>
+				</v-menu>
+			</template>
+			<template v-slot:header.tag="{header}">
+				{{header.text}}
+				<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+							<v-icon small color="red">mdi-filter-variant</v-icon>
+						</v-btn>
+					</template>
+					<v-list flat dense>
+						<v-list-item-group multiple v-model="filters.tags">
+							<v-list-item v-for="tag in filters.tag" :key="tag.text" :ripple="false" :value="tag.value">
+								<template v-slot:default="{active}">
+									<v-list-item-action>
+										<v-checkbox :input-value="active" :ripple="false" dense :color="tag.color" :label="tag.text"></v-checkbox>
+									</v-list-item-action>
+								</template>
+							</v-list-item>
+						</v-list-item-group>
+					</v-list>
+				</v-menu>
+			</template>
 			<template v-slot:top>
 				<v-toolbar flat dense>
 					<v-text-field v-model="search" label="Поиск" single-line hide-details></v-text-field>
 					<v-spacer></v-spacer>
-					<!-- <v-btn icon color="orange">
-						<v-icon>mdi-plus</v-icon>
-					</v-btn> -->
 					<v-dialog dense v-model="createDialog" max-width="1256">
 						<template v-slot:activator="{ on, attrs }">
 							<v-btn icon color="orange" v-bind="attrs" v-on="on">
@@ -78,13 +142,6 @@
 							<v-card-title>Поиск</v-card-title>
 							<v-divider></v-divider>
 							<v-card-text>
-								<v-row>
-									<v-col cols="12" md="12">
-										<v-text-field type="date" dense outlined label="Дата1" v-model="start_date" @input="filterStartDate"></v-text-field>
-										<v-text-field type="date" dense outlined label="Дата2" v-model="end_date" @input="filterEndDate"></v-text-field>
-										<!--<v-autocomplete :items="dropdown" :clearable="true" outlined dense label="Вид" v-model="editedItem.doc_type"></v-autocomplete>-->
-									</v-col>
-								</v-row>
 							</v-card-text>
 						</v-card>
 					</v-dialog>
@@ -164,11 +221,13 @@
 				{{ today(item.date_commissioning) }}
 			</template>
 			<template v-slot:item.tag="{ item }">
-				<v-chip color="teal" small text-color="white" v-if="item.is_archive">А</v-chip>
-				<v-chip color="green" small text-color="white" v-if="item.is_working">И</v-chip>
-				<v-chip color="orange" small text-color="white" v-if="item.is_conservation">К</v-chip>
-				<v-chip color="red" small text-color="white" v-if="item.is_repair">Р</v-chip>
-				<v-chip color="purple" small text-color="white" v-if="item.is_check">Ц</v-chip>
+				<v-chip-group>
+					<v-chip color="teal" small text-color="white" v-if="item.is_archive">А</v-chip>
+					<v-chip color="green" small text-color="white" v-if="item.is_working" @click="filterTags">И</v-chip>
+					<v-chip color="orange" small text-color="white" v-if="item.is_conservation">К</v-chip>
+					<v-chip color="red" small text-color="white" v-if="item.is_repair">Р</v-chip>
+					<v-chip color="purple" small text-color="white" v-if="item.is_check">Ц</v-chip>
+				</v-chip-group>
 			</template>
 			<template v-slot:item.actions="{ item }">
 				<v-btn icon @click="editItem(item)"><v-icon>mdi-cog</v-icon></v-btn>
@@ -189,21 +248,19 @@
 				</v-list-item>
 				<v-divider></v-divider>
 				<v-card-text>
-					<!--<v-form>-->
-						<v-row>
-							<v-col cols="12" md="12">
-								<v-autocomplete :items="dropdown" :clearable="true" outlined dense label="Вид загружаемого файла" v-model="editedItem.doc_type"></v-autocomplete>
-								<v-text-field :clearable="true" dense label="Номер документа" outlined v-model="editedItem.number_document"></v-text-field>
-							</v-col>
-							<v-col cols="12" md="6">
-								<input type="date" is="v-text-field" dense label="Пройденна" outlined v-model="editedItem.date_current_check">
-							</v-col>
-							<v-col cols="12" md="6">
-								<input type="date" is="v-text-field" dense label="Предстоит" outlined v-model="editedItem.date_next_check">
-							</v-col>
-							<v-file-input :show-size="true" dense outlined label="Файл" placeholder="Выберите файл" v-model="editedItem.file"></v-file-input>
-						</v-row>
-					<!--</v-form>-->
+					<v-row>
+						<v-col cols="12" md="12">
+							<v-autocomplete :items="dropdown" :clearable="true" outlined dense label="Вид загружаемого файла" v-model="editedItem.doc_type"></v-autocomplete>
+							<v-text-field :clearable="true" dense label="Номер документа" outlined v-model="editedItem.number_document"></v-text-field>
+						</v-col>
+						<v-col cols="12" md="6">
+							<input type="date" is="v-text-field" dense label="Пройденна" outlined v-model="editedItem.date_current_check">
+						</v-col>
+						<v-col cols="12" md="6">
+							<input type="date" is="v-text-field" dense label="Предстоит" outlined v-model="editedItem.date_next_check">
+						</v-col>
+						<v-file-input :show-size="true" dense outlined label="Файл" placeholder="Выберите файл" v-model="editedItem.file"></v-file-input>
+					</v-row>
 				</v-card-text>
 				<v-divider></v-divider>
 				<v-card-actions>
@@ -256,9 +313,9 @@ export default {
 					{ text: 'Оборудование', align: 'start', sortable: true, value: 'equipment' },
 					{ text: 'Модель', align: 'start', sortable: true, value: 'model' },
 					{ text: 'С/Н', align: 'end', sortable: true, value: 'serial_number' },
-					{ text: 'Пройденная', align: 'start', sortable: true, value: 'date_current_check'},
-					{ text: 'Предстоящая', align: 'start', sortable: true, value: 'date_next_check'},
-					{ text: '', align: 'center', sortable: false, value: 'tag', filterable: false },
+					{ text: 'Пройденная', align: 'start', sortable: true, value: 'date_current_check', width: 170, filter: this.filterCurrentDate},
+					{ text: 'Предстоящая', align: 'start', sortable: true, value: 'date_next_check', width: 170, filter: this.filterNextDate},
+					{ text: 'Тег', align: 'center', sortable: false, value: 'tag', width: 100, filter: this.test },
 					{ text: '', align: 'center', sortable: false, value: 'actions', filterable: false }
 				],
 				filterColumn: [
@@ -295,26 +352,21 @@ export default {
 			loadCreate: false,
 			newEquipment: {},
 			filters: {
-				//department: [],
-				//type: [],
-				start_date: null,
-				end_date: null
+				current_start_date: null,
+				current_end_date: null,
+				next_start_date: null,
+				next_end_date: null,
+				tag: [
+					{text: 'Архив', value: 'is_archive', color: 'teal'},
+					{text: 'Используется', value: 'is_working', color: 'green'},
+					{text: 'Консервация', value: 'is_conservation', color: 'orange'},
+					{text: 'Ремонт', value: 'is_repair', color: 'red'},
+					{text: 'ЦСМ', value: 'is_check', color: 'purple'}
+				],
+				tags: []
 			},
-			start_date: null,
-			end_date: null,
-			depLocation: null
-			//dateFilterNext: {
-			//	start: null,
-			//	end: null
-			//},
-			//dateFilterCurrent: {
-			//	start: null,
-			//	end: null
-			//},
-			//dateFilterCommissioning: {
-			//	start: null,
-			//	end: null
-			//}
+			depLocation: null,
+			tag: null
 		}
 	},
 	watch: {
@@ -328,33 +380,21 @@ export default {
 		}
 	},
 	methods: {
-      customFilter(items, filters, filter, headers) {
-        const cf = new this.$MultiFilters(items, filters, filter, headers);
-        cf.registerFilter('start_date', function (start_date, items) {
-          if (start_date === null) return items;
-          return items.filter(item => {
-            return item.date_next_check >= start_date;
-          }, start_date);
-        });
-        cf.registerFilter('end_date', function (end_date, items) {
-          if (end_date === null) return items;
-          return items.filter(item => {
-            return item.date_next_check <= end_date;
-          }, end_date);
-        });
-        return cf.runFilters();
-	  },
-      filterSearch(val) {
-        this.filters = this.$MultiFilters.updateFilters(this.filters, {search: val});
-      },
-	  filterStartDate(val){
-        const timestamp = new Date(val + 'T00:00:00Z').getTime();
-        this.filters = this.$MultiFilters.updateFilters(this.filters, {start_date: val});
-	  },
-	  filterEndDate(val){
-        const timestamp = new Date(val + 'T00:00:00Z').getTime();
-        this.filters = this.$MultiFilters.updateFilters(this.filters, {end_date: val});
-	  },
+		filterCurrentDate(val){
+			if (!this.filters.current_start_date && !this.filters.current_end_date) return true;
+			return val >= this.filters.current_start_date && val <= this.filters.current_end_date;
+			//const timestamp = new Date(val + 'T00:00:00Z').getTime();
+			//this.filters = this.$MultiFilters.updateFilters(this.filters, {start_date: val});
+		},
+		filterNextDate(val){
+			if (!this.filters.next_start_date && !this.filters.next_end_date) return true;
+			return val >= this.filters.next_start_date && val <= this.filters.next_end_date;
+		},
+		filterTags(value, search, item){
+			return this.filters.tags.filter(x => item.hasOwnProperty);
+			//return value != null && search != null && typeof value === 'string' && value.toString().toLocaleUpperCase().indexOf(search) !== -1
+			//console.log(this.filters.tags)
+		},
 		selectedEquipment(info){
 			if(info.value)
 				this.$emit('id', info.item.id);
