@@ -197,7 +197,7 @@ export default {
 				const file = new Blob([response.data], {type: 'application/pdf'});
 				fs.saveAs(file, 'ЦСМ.pdf');
 				this.loadDelete = this.printDialog = false;
-			}).catch(error => (this.loadDelete = this.printDialog = false, alert(error.response.data.message)));
+			}).catch(error => (this.loadDelete = this.printDialog = false, alert('Файл не найден')));
 
 		},
 	},

@@ -7,31 +7,31 @@
                     <v-form>
                         <v-row>
                             <v-col cols="12" md="6">
-                                <v-text-field dense label="Наименование" outlined v-model="indentificationData.equipment.title"></v-text-field>
+                                <v-text-field clearable dense label="Наименование" outlined v-model="indentificationData.equipment.title"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-text-field dense label="Производитель" outlined v-model="indentificationData.equipment.manufacturer"></v-text-field>
+                                <v-text-field clearable dense label="Производитель" outlined v-model="indentificationData.equipment.manufacturer"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="3">
-                                <v-text-field dense label="Инвентарный номер" outlined v-model="indentificationData.equipment.inventory_number"></v-text-field>
+                                <v-text-field clearable dense label="Инвентарный номер" outlined v-model="indentificationData.equipment.inventory_number"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="3">
-                                <v-text-field dense label="Серийный номер" outlined v-model="indentificationData.equipment.serial_number"></v-text-field>
+                                <v-text-field clearable dense label="Серийный номер" outlined v-model="indentificationData.equipment.serial_number"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="3">
-                                <v-text-field dense label="Модель" outlined v-model="indentificationData.equipment.model"></v-text-field>
+                                <v-text-field clearable dense label="Модель" outlined v-model="indentificationData.equipment.model"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="3">
-                                <v-text-field type="date" dense label="Дата изготовления" outlined v-model="indentificationData.equipment.date_create"></v-text-field>
+                                <v-text-field clearable type="date" dense label="Дата изготовления" outlined v-model="indentificationData.equipment.date_create"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="4">
-                                <v-text-field dense label="Номер" outlined v-model="indentificationData.equipment.number"></v-text-field>
+                                <v-text-field clearable dense label="Номер" outlined v-model="indentificationData.equipment.number"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="4">
-                                <v-text-field dense label="ФИФ" outlined v-model="indentificationData.equipment.fif_number"></v-text-field>
+                                <v-text-field clearable dense label="ФИФ" outlined v-model="indentificationData.equipment.fif_number"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="4">
-                                <v-text-field type="date" dense label="Введено в эксплуатацию" outlined v-model="indentificationData.equipment.date_commissioning"></v-text-field>
+                                <v-text-field clearable type="date" dense label="Введено в эксплуатацию" outlined v-model="indentificationData.equipment.date_commissioning"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="12">
                                 <v-textarea :rows="2" :height="100" dense label="Примечание" outlined v-model="indentificationData.equipment.description"></v-textarea>
@@ -60,28 +60,28 @@
                     <v-form>
                         <v-row>
                             <v-col cols="12">
-                                <v-autocomplete :items="dropdown('type')" outlined dense label="Вид" v-model="indentificationData.equipment.id_equipment_type"></v-autocomplete>
+                                <v-autocomplete clearable :items="dropdown('type')" outlined dense label="Вид" v-model="indentificationData.equipment.id_equipment_type"></v-autocomplete>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-autocomplete :items="dropdown('studies')" outlined dense label="Объект исследования" v-model="indentificationData.equipment.id_object_study"></v-autocomplete>
+                                <v-autocomplete clearable :items="dropdown('studies')" outlined dense label="Объект исследования" v-model="indentificationData.equipment.id_object_study"></v-autocomplete>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-autocomplete :items="dropdown('function')" outlined dense label="Функциональное значение" v-model="indentificationData.equipment.id_function_of_use"></v-autocomplete>
+                                <v-autocomplete clearable :items="dropdown('function')" outlined dense label="Функциональное значение" v-model="indentificationData.equipment.id_function_of_use"></v-autocomplete>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-text-field dense label="Диапазон измерений" outlined v-model="indentificationData.equipment.measuring_range"></v-text-field>
+                                <v-text-field clearable dense label="Диапазон измерений" outlined v-model="indentificationData.equipment.measuring_range"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-text-field dense label="Диапазон работы" outlined v-model="indentificationData.equipment.measuring_work"></v-text-field>
+                                <v-text-field clearable dense label="Диапазон работы" outlined v-model="indentificationData.equipment.measuring_work"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-text-field dense label="Точность" outlined v-model="indentificationData.equipment.accuracy"></v-text-field>
+                                <v-text-field clearable dense label="Точность" outlined v-model="indentificationData.equipment.accuracy"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-text-field dense label="Класс точности" outlined v-model="indentificationData.equipment.class_accuracy"></v-text-field>
+                                <v-text-field clearable dense label="Класс точности" outlined v-model="indentificationData.equipment.class_accuracy"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="12">
-                                <v-text-field dense label="Цель использования" outlined v-model="indentificationData.equipment.purpose_of_use"></v-text-field>
+                                <v-text-field clearable dense label="Цель использования" outlined v-model="indentificationData.equipment.purpose_of_use"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="12">
                                 <v-textarea :rows="2" :height="100" dense label="Дополнительные характеристики" outlined v-model="indentificationData.equipment.characteristics"></v-textarea>
@@ -115,7 +115,7 @@
                             {{ item.number_document || "Не указан"}}
                         </template>
                         <template v-slot:item.upload_file_name="{ item }">
-                            {{ item.upload_file_name || "Не загружен"}}
+                            <v-btn color="success" x-small :disabled="!item.upload_file_name" v-on:click="download(item)">Скачать</v-btn>
                         </template>
                     </v-data-table>
                 </v-card-text>
@@ -177,6 +177,17 @@
                 </v-card-title>
             </v-card>
         </v-col>
+        <v-col cols="12">
+            <v-card>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="success" v-on:click="submitUpdate()" :loading="save">Сохранить</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-col>
+		<v-overlay :value="overlay">
+			<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
+		</v-overlay>
     </v-row>
                 
             <!--<sui-form-fields fields="two">
@@ -208,6 +219,8 @@
 </template>
 
 <script>
+import fs from 'file-saver';
+
 export default {
 	props:{
         id: {
@@ -230,7 +243,11 @@ export default {
                 { text: 'Отдел (пришел)', align: 'start', sortable: false, value: 'department' },
                 { text: 'Кабинет (ушел)', align: 'end', sortable: false, value: 'cabinet' },
                 { text: 'Кабинет (пришел)', align: 'end', sortable: false, value: 'last_cabinet' }
-            ]
+            ],
+            changedItem: {},
+            save: false,
+            overlay: false,
+            load: false
         }
     },
     watch: {
@@ -238,27 +255,22 @@ export default {
             if(newVal != oldVal)
                 this.getEquipment();
         },
-        indentificationData(){
-            //handler: function (after, before) {
-            //// Return the object that changed
-            //    var vm = this;
-
-            //    let changed = after.filter( function( p, idx ) {
-            //        return Object.keys(p).some( function( prop ) {
-            //            return p[prop] !== vm.$data.indentificationDataCopy[idx][prop];
-            //        })
-            //    })
-            //    // Log it
-            //    vm.setValue();
-            //    console.log(changed)
-            //},
-            //deep: true
-            this.indentificationDataCopy = JSON.parse(JSON.stringify(this.indentificationData.equipment));
-        },
+        indentificationData: {
+            handler: function(val, old){
+                let ob = this.indentificationDataCopy;
+                let ch = this.changedItem;
+                Object.keys(val.equipment).forEach(function(row){
+                    if(ob[row] != val.equipment[row])
+                        ch[row] = val.equipment[row];
+                });
+            },
+            deep: true
+        }
     },
     methods: {
         getEquipment(){
-			this.$http.get('/api/equipment/equipments/' + this.id).then(response => (this.indentificationData = response.data)).catch(error => (alert(error.response.data.message)));
+            this.overlay = true;
+			this.$http.get('/api/equipment/equipments/' + this.id).then(response => (this.overlay = false,this.indentificationData = response.data, this.indentificationDataCopy = JSON.parse(JSON.stringify(response.data.equipment)))).catch(error => (this.overlay = false, alert(error.response.data.message)));
         },
 		today(date){
 			if(date === null) return;
@@ -272,6 +284,25 @@ export default {
                     result.push({value: str['id'], text: str['title']});
                 return result;
             }
+        },
+        submitUpdate(){
+            if(Object.keys(this.changedItem).length)
+            {
+                this.save = true;
+                this.$http.put(`/api/equipment/equipments/${this.indentificationDataCopy.id}/update/`, this.changedItem)
+                .then(response => (this.save = false)).catch(error => (this.save = false, alert(error.response.data.message)));
+            }
+            else alert('Изменения не вносились');
+        },
+        download(item){
+            this.overlay = true;
+            this.$http.get(`/api/equipment/equipments/file/${item.upload_file_name}`, {responseType: 'blob'})
+            .then(response =>{
+                const file = new Blob([response.data], {type: 'application/pdf'});
+                fs.saveAs(file, item.upload_file_name);
+                this.overlay = false;
+            }).catch(alert('Файл не найден'), this.overlay = false);
+			// this.$http.get('/api/equipment/equipments/' + this.id).then(response => (this.load = false)).catch(error => (this.load = false, alert(error.response.data.message)));       
         }
     },
     created() {
