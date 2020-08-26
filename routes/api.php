@@ -74,6 +74,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::prefix('equipment')->group(function () {
 		Route::prefix('metrolog')->group(function(){
 			Route::get('', 'Equipment\MetrologController@view');
+			Route::post('', 'Equipment\EquipmentController@create');
 		});
 		Route::prefix('verification')->group(function(){
 			Route::get('', 'Equipment\VerificationController@view');
@@ -87,6 +88,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		});
 		Route::prefix('support')->group(function(){
 			Route::get('documents', 'Equipment\SupportController@docType');
+			Route::get('locations', 'Equipment\SupportController@forNewEquipment');
 		});
 		Route::prefix('printer')->group(function(){
 			Route::post('sticker', 'Equipment\PrinterController@sticker');
@@ -97,6 +99,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('equipments')->group(function(){
 			Route::get('{id}', 'Equipment\EquipmentController@view');
 			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
+			Route::put('{id}/update', 'Equipment\EquipmentController@update');
+			Route::get('file/{name}', 'Equipment\EquipmentController@download');
 		});
 	});
 });

@@ -24,7 +24,7 @@ class VerificationController extends Controller
 					'id_status_check' => 1,
 					'date_create' => date('Y-m-d'),
 					'id_user' => auth()->user()->getId()
-    			]
+				]
 			);
 			foreach ($req->all() as $eq)
 			{

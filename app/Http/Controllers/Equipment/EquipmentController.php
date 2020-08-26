@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 //
+use App\Models\Equipment\equipment_equipment;
 use App\Models\Equipment\equipment_equipment_details;
 use App\Models\Equipment\equipment_type;
 use App\Models\Equipment\equipment_function_of_use;
@@ -31,6 +32,14 @@ class EquipmentController extends Controller
 		return response()->json($eq, 200);
 	}
 
+	public function create(Request $req)
+	{
+		// return response()->json($req ,200);
+		DB::transaction(function() use ($req){
+			equipment_equipment::create($req->all());
+		});
+	}
+
 	public function passed(Request $req)
 	{
 		if($req->hasFile('file'))
@@ -38,8 +47,10 @@ class EquipmentController extends Controller
 			DB::beginTransaction();
 			try
 			{
+				//Сохранение файла на сервере
 				$path = $req->file('file')->store('uploads');
 				$filename = pathinfo($path, PATHINFO_BASENAME);
+				//Добавление пройденой проверки
 				equipment_date_check::create([
 					'id_equipment' => $req->input('id_equipment'),
 					'upload_file_name' => $filename,
@@ -63,5 +74,24 @@ class EquipmentController extends Controller
 			DB::commit();
 		}
 		else return response()->json(['message' => "Не загружен файл"], 400);
+	}
+
+	public function update($id, Request $req)
+	{
+		DB::transaction(function() use ($id, $req){
+			equipment_equipment::where('id', $id)->update($req->all());
+		});
+	}
+
+	public function download($name)
+	{
+		try
+		{
+			return Storage::download('uploads'. "\\" .$name);
+		}
+		catch (FileNotFoundException $e)
+		{
+			return response()->json(['message' => 'Файл не найден'] ,200);	
+		}
 	}
 }

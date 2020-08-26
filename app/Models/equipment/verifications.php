@@ -13,6 +13,7 @@ class verifications extends Model
 		'id_department',
 		'date_create',
 		'date_submit',
-		'id_user'
+		'id_user',
+		'claim_check'
 	];
 }

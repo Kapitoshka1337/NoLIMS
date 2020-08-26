@@ -7,6 +7,8 @@ use App\Models\Equipment\equipment_type;
 use App\Models\Equipment\equipment_function_of_use;
 use App\Models\Equipment\equipment_object_study;
 use App\Models\Equipment\equipment_document_type;
+use App\Models\Share\location;
+use App\Models\Share\department;
 
 class SupportController extends Controller
 {
@@ -28,5 +30,10 @@ class SupportController extends Controller
 	public function objectStudies()
 	{
 		return response()->json(equipment_object_study::get(), 200);
+	}
+
+	public function forNewEquipment()
+	{
+		return response()->json(array('locations' => location::get(), 'department' => department::get(), 'type' => equipment_type::get()), 200);
 	}
 }
