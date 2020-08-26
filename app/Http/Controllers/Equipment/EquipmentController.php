@@ -36,7 +36,7 @@ class EquipmentController extends Controller
 	{
 		// return response()->json($req ,200);
 		DB::transaction(function() use ($req){
-			equipment_equipment::create($req->all());
+			equipment_equipment::insert($req->all());
 		});
 	}
 
