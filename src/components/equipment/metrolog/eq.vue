@@ -29,7 +29,7 @@
 							<v-card-text>
 								<v-row>
 									<v-col cols="6" md="6">
-										<v-textarea :rows="2" :height="60" dense label="Оборудование" outlined v-model="newEquipment.equipment"></v-textarea>
+										<v-textarea :rows="2" :height="60" dense label="Оборудование" outlined v-model="newEquipment.title"></v-textarea>
 									</v-col>
 									<v-col cols="6">
 										<v-textarea :rows="2" :height="60" dense label="Производитель" outlined v-model="newEquipment.manufacturer"></v-textarea>
