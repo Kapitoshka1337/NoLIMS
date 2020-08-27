@@ -57,6 +57,8 @@
       <v-app-bar color="primary" dense dark app>
         <v-app-bar-nav-icon v-on:click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Оборудование</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-icon>mdi-exit-to-app</v-icon>
       </v-app-bar>
       <v-main>
         <v-container fluid>

@@ -51,11 +51,11 @@ export default {
           description: 'Описание',
           link: '/reagent'
         },
-        // {
-        //   header: 'Оборудование',
-        //   description: 'Описание',
-        //   link: '/equipment'
-        // }
+        {
+          header: 'Оборудование',
+          description: 'Описание',
+          link: '/equipment'
+        }
       ]
     }
   },

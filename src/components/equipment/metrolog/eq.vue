@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<v-data-table
+		calculate-widths
 			@item-selected="selectedEquipment"
 			dense
 			v-model="selected"
@@ -11,13 +12,77 @@
 			:show-select="true"
 			:search="search"
 			item-key="id"
-			:custom-filter="filterTags">
+			:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus'}">
+			<template v-slot:header.department="{header}">
+				{{header.text}}
+				<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+							<v-icon small :color="filters.department.length ? 'red' : 'blue'">mdi-filter-variant</v-icon>
+						</v-btn>
+					</template>
+					<v-card>
+					<v-card-text>
+						<v-list flat dense>
+							<v-list-item-group multiple v-model="filters.department">
+								<v-list-item v-for="dep in returnUniq('department')" :ripple="false" :value="dep.value">
+									<template v-slot:default="{active}">
+										<v-list-item-action>
+											<v-checkbox :input-value="active" :ripple="false" dense :label="dep.text"></v-checkbox>
+										</v-list-item-action>
+									</template>
+								</v-list-item>
+							</v-list-item-group>
+						</v-list>
+					</v-card-text>
+					</v-card>
+				</v-menu>
+			</template>
+			<template v-slot:header.type="{header}">
+				{{header.text}}
+				<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+							<v-icon small :color="filters.type.length ? 'red' : 'blue'">mdi-filter-variant</v-icon>
+						</v-btn>
+					</template>
+					<v-card>
+					<v-card-text>
+						<v-list flat dense>
+							<v-list-item-group multiple v-model="filters.type">
+								<v-list-item :ripple="false" value="ВО">
+									<template v-slot:default="{active}">
+										<v-list-item-action>
+											<v-checkbox :input-value="active" :ripple="false" dense label="ВО"></v-checkbox>
+										</v-list-item-action>
+									</template>
+								</v-list-item>
+								<v-list-item :ripple="false" value="ИО">
+									<template v-slot:default="{active}">
+										<v-list-item-action>
+											<v-checkbox :input-value="active" :ripple="false" dense label="ИО"></v-checkbox>
+										</v-list-item-action>
+									</template>
+								</v-list-item>
+								<v-list-item :ripple="false" value="СИ">
+									<template v-slot:default="{active}">
+										<v-list-item-action>
+											<v-checkbox :input-value="active" :ripple="false" dense label="СИ"></v-checkbox>
+										</v-list-item-action>
+									</template>
+								</v-list-item>
+							</v-list-item-group>
+						</v-list>
+					</v-card-text>
+					</v-card>
+				</v-menu>
+			</template>
 			<template v-slot:header.date_current_check="{header}">
 				{{header.text}}
 				<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
 					<template v-slot:activator="{ on, attrs }">
 						<v-btn color="indigo" icon v-bind="attrs" v-on="on">
-							<v-icon small color="red">mdi-filter-variant</v-icon>
+							<v-icon small :color="filters.current_start_date ? 'red' : 'blue'">mdi-filter-variant</v-icon>
 						</v-btn>
 					</template>
 					<v-card>
@@ -25,8 +90,8 @@
 						<v-container>
 							<v-row>
 								<v-col cols="12">
-									<v-text-field small type="date" dense outlined label="Дата1" v-model="filters.current_start_date"></v-text-field>
-									<v-text-field small type="date" dense outlined label="Дата2" v-model="filters.current_end_date" ></v-text-field>
+									<v-text-field clearable type="date" dense outlined label="Дата1" v-model="filters.current_start_date"></v-text-field>
+									<v-text-field clearable type="date" dense outlined label="Дата2" v-model="filters.current_end_date" ></v-text-field>
 								</v-col>
 							</v-row>
 						</v-container>
@@ -39,7 +104,7 @@
 				<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
 					<template v-slot:activator="{ on, attrs }">
 						<v-btn color="indigo" icon v-bind="attrs" v-on="on">
-							<v-icon small color="red">mdi-filter-variant</v-icon>
+							<v-icon small :color="filters.next_start_date ? 'red' : 'blue'">mdi-filter-variant</v-icon>
 						</v-btn>
 					</template>
 					<v-card>
@@ -47,8 +112,8 @@
 						<v-container>
 							<v-row>
 								<v-col cols="12">
-									<v-text-field small type="date" dense outlined label="Дата1" v-model="filters.next_start_date"></v-text-field>
-									<v-text-field small type="date" dense outlined label="Дата2" v-model="filters.next_end_date" ></v-text-field>
+									<v-text-field clearable type="date" dense outlined label="Дата1" v-model="filters.next_start_date"></v-text-field>
+									<v-text-field clearable type="date" dense outlined label="Дата2" v-model="filters.next_end_date" ></v-text-field>
 								</v-col>
 							</v-row>
 						</v-container>
@@ -132,19 +197,6 @@
 							</v-card-actions>
 						</v-card>
 					</v-dialog>
-					<v-dialog dense v-model="filterDialog" max-width="600">
-						<template v-slot:activator="{ on, attrs }">
-							<v-btn icon color="teal" v-bind="attrs" v-on="on">
-								<v-icon>mdi-filter</v-icon>
-							</v-btn>
-						</template>
-						<v-card>
-							<v-card-title>Поиск</v-card-title>
-							<v-divider></v-divider>
-							<v-card-text>
-							</v-card-text>
-						</v-card>
-					</v-dialog>
 					<v-menu offset-y :close-on-content-click="false">
 						<template v-slot:activator="{ on, attrs }">
 							<v-btn color="blue" icon v-bind="attrs" v-on="on">
@@ -177,7 +229,7 @@
 									</v-list-item-content>
 								</v-list-item>
 							</v-list-group>
-							<v-list-item>
+							<v-list-item @click="printTable()">
 								<v-list-item-title>Таблица проверок</v-list-item-title>
 							</v-list-item>
 						</v-list>
@@ -309,19 +361,16 @@ export default {
 			selected: [],
 			gridColumns: {
 				tableColumn: [
-					{ text: 'Номер', align: 'start', sortable: true, value: 'number_card', width: 120},
+					{ text: 'Номер', align: 'start', sortable: true, value: 'number'},
+					{ text: 'Отдел', align: 'start', sortable: true, value: 'department', filter: this.filterDepartment},
+					{ text: 'Вид', align: 'start', sortable: true, value: 'type', filter: this.filterType},
 					{ text: 'Оборудование', align: 'start', sortable: true, value: 'equipment' },
-					{ text: 'Модель', align: 'start', sortable: true, value: 'model' },
-					{ text: 'С/Н', align: 'end', sortable: true, value: 'serial_number' },
-					{ text: 'Пройденная', align: 'start', sortable: true, value: 'date_current_check', width: 170, filter: this.filterCurrentDate},
-					{ text: 'Предстоящая', align: 'start', sortable: true, value: 'date_next_check', width: 170, filter: this.filterNextDate},
-					{ text: 'Тег', align: 'center', sortable: false, value: 'tag', width: 100, filter: this.test },
+					// { text: 'Модель', align: 'start', sortable: true, value: 'model' },
+					{ text: 'С/Н', align: 'end', sortable: true, value: 'serial_number'},
+					{ text: 'Пройденная', align: 'start', sortable: true, value: 'date_current_check', filter: this.filterCurrentDate},
+					{ text: 'Предстоящая', align: 'start', sortable: true, value: 'date_next_check', filter: this.filterNextDate},
+					{ text: 'Тег', align: 'center', sortable: false, value: 'tag', filter: this.filterTags },
 					{ text: '', align: 'center', sortable: false, value: 'actions', filterable: false }
-				],
-				filterColumn: [
-					{'number':'Номер'},
-					{'department':'Отдел'},
-					{'type':'Вид'}
 				]
 			},
 			tableColumn: [
@@ -363,7 +412,9 @@ export default {
 					{text: 'Ремонт', value: 'is_repair', color: 'red'},
 					{text: 'ЦСМ', value: 'is_check', color: 'purple'}
 				],
-				tags: []
+				tags: [],
+				type: [],
+				department: []
 			},
 			depLocation: null,
 			tag: null
@@ -390,10 +441,23 @@ export default {
 			if (!this.filters.next_start_date && !this.filters.next_end_date) return true;
 			return val >= this.filters.next_start_date && val <= this.filters.next_end_date;
 		},
-		filterTags(value, search, item){
-			return this.filters.tags.filter(x => item.hasOwnProperty);
+		filterTags(val, srch, item){
+			if(!this.filters.tags.length) return true;
+			console.log(this.filters.tags.map(x => item[x]));
+			// console.log(item['is_archive'])
+			// return this.filters.tags.includes(item)
+			// console.log(item[])
+			// return this.filters.tags.filter(x => item.hasOwnProperty(x));
 			//return value != null && search != null && typeof value === 'string' && value.toString().toLocaleUpperCase().indexOf(search) !== -1
 			//console.log(this.filters.tags)
+		},
+		filterType(val){
+			if(!this.filters.type.length) return true;
+			return this.filters.type.includes(val);
+		},
+		filterDepartment(val){
+			if(!this.filters.department.length) return true;
+			return this.filters.department.includes(val);
 		},
 		selectedEquipment(info){
 			if(info.value)
@@ -468,6 +532,19 @@ export default {
 				this.loadProtocol = false;
 			}).catch(error => (this.loadProtocol = false, alert('Ошибка формирования')));
 		},
+		printTable(){
+			if(this.filters.next_start_date && this.filters.next_end_date)
+			{
+				this.overlay = true;
+				this.$http.post('/api/equipment/printer/table', {start: this.filters.next_start_date, end: this.filters.next_end_date}, {responseType: 'blob'})
+				.then(response =>{
+					const file = new Blob([response.data], {type: 'application/pdf'});
+					fs.saveAs(file, 'Таблица проверок.pdf');
+					this.overlay = false;
+				}).catch(error => (this.overlay = false, alert('Ошибка формирования')));
+			}
+			else alert('Не выбран период предстоящей проверки');
+		},
 		createEq(){
 			this.loadCreate = true;
 			this.$http.post("/api/equipment/metrolog", this.newEquipment, {headers: {'Content-Type': 'application/json'}})
@@ -475,15 +552,6 @@ export default {
 			.catch(error => (this.loadCreate = false, alert(error.response.data.message)));
 
 		},
-        // dropdownCreate(type){
-        //     if(this.depLocation.length > 0)
-        //     {
-        //         let result = [];
-        //         for (let str of this.depLocation[type])
-        //             result.push({value: str.id, text: str.title});
-        //         return result;
-        //     }
-		// },
         dropdownCreate(tp){
             if(this.depLocation)
             {
@@ -492,24 +560,24 @@ export default {
                     result.push({value: str['id'], text: str['title'] || str['cabinet_number']});
                 return result;
             }
-        },
-		//returnUniq(column){
-		//	let result = [];
-		//	let resa = [];
-		//	for (let str of this.gridData)
-		//		if (!result.includes(str[column]))
-		//			result.push(str[column]);
-		//		result = result.slice().sort(function (a, b){
-		//			if(a === b) return 0 ;
-		//			else if (a > b) return 1;
-		//			else return - 1;
-		//		});
-		//	for (let res of result)
-		//	{
-		//		resa.push({key: res, value: res, text: res});
-		//	}
-		//	return resa;
-		//}
+		},
+		returnUniq(column){
+			let result = [];
+			let resa = [];
+			for (let str of this.gridData)
+				if (!result.includes(str[column]))
+					result.push(str[column]);
+				result = result.slice().sort(function (a, b){
+					if(a === b) return 0 ;
+					else if (a > b) return 1;
+					else return - 1;
+				});
+			for (let res of result)
+			{
+				resa.push({value: res, text: res});
+			}
+			return resa;
+		}
 	},
 	computed: {
 		idDep(){

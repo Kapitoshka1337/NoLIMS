@@ -4,11 +4,11 @@ import VueRouter from 'vue-router';
 import App from './App.vue';
 //VUEX
 import store from './components/store/store.js';
+//VUETIFY
+import vuetify from './plugins/vuetify.js';
 //SEMANTIC UI
 import 'semantic-ui-css/semantic.min.css';
 import SuiVue from 'semantic-ui-vue';
-//VUETIFY
-import vuetify from './plugins/vuetify.js';
 //AXIOS
 import Axios from 'axios';
 import Convert from './components/reagent/convert.js';
@@ -57,7 +57,7 @@ var router = new VueRouter({
   routes: [
     { path: '/login', component: Login, meta: { requiresAuth: false, roles: [] } },
     { path: '/singup', component: Singup, meta: { requiresAuth: false, roles: [] } },
-    { path: '/', component: Hub, meta: { requiresAuth: true, roles: [0, 1, 2, 3] } },
+    { path: '/', component: Hub, meta: { requiresAuth: true, roles: [0, 1, 2, 3, 4] } },
     { path: '/reagent', component: Reagent, meta: { requiresAuth: true, roles: [1, 2, 3] },
       children: [
         { path: 'storage', component: Storage, meta: { roles: [1, 2, 3] } },
@@ -72,13 +72,13 @@ var router = new VueRouter({
         { path: 'corrections', component: Corrections, meta: { roles: [2, 3] } }
       ]
     },
-    { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 3] },
+    { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 3, 4] },
       children: [
-        { path: 'metrolog', component: Metrolog, meta: { roles: [1, 2, 3] },
+        { path: 'metrolog', component: Metrolog, meta: { roles: [1, 2, 4] },
           children: [
-            { path: 'equipments', component: MetrologEquipment, meta: { roles: [1, 2, 3] } },
-            { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { roles: [1, 2, 3] } },
-            { path: 'verification', component: MetrologVerification, meta: { roles: [1, 2, 3] } },
+            { path: 'equipments', component: MetrologEquipment, meta: { roles: [1, 2, 4] } },
+            { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { roles: [1, 2, 4] } },
+            { path: 'verification', component: MetrologVerification, meta: { roles: [1, 2, 4] } },
           ]
         },
       ]

@@ -1,7 +1,8 @@
 <template>
 	<v-row>
 		<v-col cols="12">
-			<v-data-table dense :headers="gridColumns.tableColumn" :items="gridData" :items-per-page="50" :loading="gridData.length <= 0">
+			<v-data-table dense :headers="gridColumns.tableColumn" :items="gridData" :items-per-page="50" :loading="gridData.length <= 0" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus'}">
+>
 				<template v-slot:top>
 					<v-toolbar flat>
 						<v-toolbar-title>Управление проверками</v-toolbar-title>
