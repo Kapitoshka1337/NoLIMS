@@ -38,13 +38,30 @@ class PrinterController extends Controller
 
 	public function table(Request $req)
 	{
-		return response()->json($data, 200);
+		$input = public_path() . '/template/plan.jasper';
+		$output = public_path() . '/downloads/';
+		$output2 = public_path() . "\downloads";
+		$options = [
+			'format' => ['pdf'],
+			'params' => ['filter' => "date_next_check BETWEEN '" . $req->input('start') . "' AND '" . $req->input('end') ."'"],
+			'db_connection' => [
+				'driver' => 'generic',
+				'host' => env('DB_HOST'),
+				'port' => env('DB_PORT'),
+				'database' => env('DB_DATABASE'),
+				'username' => env('DB_USERNAME'),
+				'password' => env('DB_PASSWORD'),
+				'jdbc_driver' => env('JDBC_DRIVER'),
+				'jdbc_url' => env('JDBC_URL')
+			]
+		];
+		$jasper = new PHPJasper;
+		$jasper->process($input, $output, $options)->execute();
+		return response()->download($output2 . '\plan.pdf')->deleteFileAfterSend();
 	}
 
 	public function protocol(Request $req)
-	{
-		// return response()->json($req->input('item'),200);
-		$ids = implode(",", $req->input('item'));
+	{		$ids = implode(",", $req->input('item'));
 		$input = public_path() . '/template/protocol.jasper';
 		$output = public_path() . '/downloads/';
 		$output2 = public_path() . "\downloads";
