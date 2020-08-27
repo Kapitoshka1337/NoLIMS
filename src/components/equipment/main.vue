@@ -58,7 +58,10 @@
         <v-app-bar-nav-icon v-on:click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Оборудование</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-icon>mdi-exit-to-app</v-icon>
+        <v-toolbar-title>{{user}} ({{idDep}})</v-toolbar-title>
+        <v-btn icon @click="logout">
+          <v-icon>mdi-exit-to-app</v-icon>
+        </v-btn>
       </v-app-bar>
       <v-main>
         <v-container fluid>
@@ -74,6 +77,20 @@ export default {
     return {
       drawer: false
     }
+  },
+  methods: {
+    logout(){
+      this.$store.dispatch('logout').then(() => {
+      this.$router.push('/login')});
+    }
+  },
+  computed: {
+    user(){
+      return this.$store.getters.name;
+    },
+    idDep(){
+      return this.$store.getters.idDepartment;
+		}
   }
 }
 </script>
