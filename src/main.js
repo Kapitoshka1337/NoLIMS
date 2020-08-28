@@ -58,27 +58,27 @@ var router = new VueRouter({
     { path: '/login', component: Login, meta: { requiresAuth: false, roles: [] } },
     { path: '/singup', component: Singup, meta: { requiresAuth: false, roles: [] } },
     { path: '/', component: Hub, meta: { requiresAuth: true, roles: [0, 1, 2, 3, 4] } },
-    { path: '/reagent', component: Reagent, meta: { requiresAuth: true, roles: [1, 2, 3] },
+    { path: '/reagent', component: Reagent, meta: { requiresAuth: true, roles: [1, 2, 3, 4] },
       children: [
-        { path: 'storage', component: Storage, meta: { roles: [1, 2, 3] } },
-        { path: 'archive', component: Archive,  meta: { roles: [1, 2, 3] } },
-        { path: 'arrivals', component: Arrivals,  meta: { roles: [1, 2, 3] } },
+        { path: 'storage', component: Storage, meta: { roles: [1, 2, 3, 4] } },
+        { path: 'archive', component: Archive,  meta: { roles: [1, 2, 3, 4] } },
+        { path: 'arrivals', component: Arrivals,  meta: { roles: [1, 2, 3, 4] } },
         { path: 'arrivals/create', component: AppendArrivals,  meta: { roles: [2, 3] } }, //ПЕРЕДЕЛАТЬ
         { path: 'moving', component: MovingReq, meta: { roles: [2, 3] } },
         { path: 'moving/history', component: MovingHistory, meta: { roles: [2, 3] } },
-        { path: 'expenses', component: Expenses,  meta: { roles: [1, 2, 3] } },
-        { path: 'writeoff', component: Writreoff,  meta: { roles: [1, 2, 3] } },
-        { path: 'locations', component: Location,  meta: { roles: [1, 2, 3] } },
+        { path: 'expenses', component: Expenses,  meta: { roles: [1, 2, 3, 4] } },
+        { path: 'writeoff', component: Writreoff,  meta: { roles: [1, 2, 3, 4] } },
+        { path: 'locations', component: Location,  meta: { roles: [1, 2, 3, 4] } },
         { path: 'corrections', component: Corrections, meta: { roles: [2, 3] } }
       ]
     },
-    { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 3, 4] },
+    { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [4] },
       children: [
-        { path: 'metrolog', component: Metrolog, meta: { roles: [1, 2, 4] },
+        { path: 'metrolog', component: Metrolog, meta: { roles: [4] },
           children: [
-            { path: 'equipments', component: MetrologEquipment, meta: { roles: [1, 2, 4] } },
-            { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { roles: [1, 2, 4] } },
-            { path: 'verification', component: MetrologVerification, meta: { roles: [1, 2, 4] } },
+            { path: 'equipments', component: MetrologEquipment, meta: { roles: [4] } },
+            { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { roles: [4] } },
+            { path: 'verification', component: MetrologVerification, meta: { roles: [4] } },
           ]
         },
       ]

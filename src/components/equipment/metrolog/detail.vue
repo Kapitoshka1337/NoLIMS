@@ -6,6 +6,9 @@
                 <v-card-text>
                     <v-form>
                         <v-row>
+                            <v-col cols="12" md="12">
+                                <v-text-field clearable dense label="Код оборудования" outlined v-model="indentificationData.equipment.id"></v-text-field>
+                            </v-col>
                             <v-col cols="12" md="6">
                                 <v-text-field clearable dense label="Наименование" outlined v-model="indentificationData.equipment.title"></v-text-field>
                             </v-col>
@@ -62,12 +65,12 @@
                             <v-col cols="12">
                                 <v-autocomplete clearable :items="dropdown('type')" outlined dense label="Вид" v-model="indentificationData.equipment.id_equipment_type"></v-autocomplete>
                             </v-col>
-                            <v-col cols="12" md="6">
+                            <!-- <v-col cols="12" md="6">
                                 <v-autocomplete clearable :items="dropdown('studies')" outlined dense label="Объект исследования" v-model="indentificationData.equipment.id_object_study"></v-autocomplete>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-autocomplete clearable :items="dropdown('function')" outlined dense label="Функциональное значение" v-model="indentificationData.equipment.id_function_of_use"></v-autocomplete>
-                            </v-col>
+                            </v-col> -->
                             <v-col cols="12" md="6">
                                 <v-text-field clearable dense label="Диапазон измерений" outlined v-model="indentificationData.equipment.measuring_range"></v-text-field>
                             </v-col>
@@ -286,10 +289,15 @@ export default {
             }
         },
         submitUpdate(){
+            // this.$http.put('/api/equipment/equipments/update/' + this.indentificationDataCopy.id, this.changedItem).then(response => (alert(response.data)))
             if(Object.keys(this.changedItem).length)
             {
                 this.save = true;
-                this.$http.put(`/api/equipment/equipments/${this.indentificationDataCopy.id}/update/`, this.changedItem)
+				// this.$http.put(`/api/equipment/equipments/update/${this.indentificationDataCopy.id}`, this.changedItem)
+				// .then(response =>{alert(1);
+				// }).catch(error => (alert(error.response.data.message)));
+
+                this.$http.put(`/api/equipment/equipments/update/${this.indentificationDataCopy.id}`, this.changedItem, {headers: {'Content-Type': 'application/json'}})
                 .then(response => (this.save = false)).catch(error => (this.save = false, alert(error.response.data.message)));
             }
             else alert('Изменения не вносились');
@@ -301,7 +309,7 @@ export default {
                 const file = new Blob([response.data], {type: 'application/pdf'});
                 fs.saveAs(file, item.upload_file_name);
                 this.overlay = false;
-            }).catch(alert('Файл не найден'), this.overlay = false);
+            }).catch(error => (alert('Файл не найден'), this.overlay = false));
 			// this.$http.get('/api/equipment/equipments/' + this.id).then(response => (this.load = false)).catch(error => (this.load = false, alert(error.response.data.message)));       
         }
     },

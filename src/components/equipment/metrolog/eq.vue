@@ -417,7 +417,8 @@ export default {
 				department: []
 			},
 			depLocation: null,
-			tag: null
+			tag: null,
+			editedIndex: null
 		}
 	},
 	watch: {
@@ -493,9 +494,11 @@ export default {
 			formData.append('file', this.editedItem.file);
 			this.passed_verification = true;
 			this.$http.post("/api/equipment/equipments/" + this.editedItem.id + "/passed", formData, {headers: {'Content-Type': 'multipart/form-data'}})
-			.then(response => (this.dialog_append_verification = false, this.passed_verification = false, this.selected = [])).catch(error => (this.passed_verification = false, alert(error.response.data.message)));
+			.then(response => (this.dialog_append_verification = false, this.passed_verification = false, this.selected = [],
+			Object.assign(this.gridData[this.editedIndex], this.editedItem))).catch(error => (this.passed_verification = false, alert(error.response.data.message)));
 		},
 		editItem(item) {
+			this.editedIndex = this.gridData.indexOf(item);
 			this.editedItem = Object.assign({}, item);
 			this.dialog_append_verification = true;
 		},
