@@ -33,6 +33,8 @@ class PrinterController extends Controller
 		];
 		$jasper = new PHPJasper;
 		$jasper->process($input, $output, $options)->execute();
+		// $x = $jasper->process($input, $output, $options)->output();
+		// return $x;
 		return response()->download($output2 . "\\" . pathinfo($input, PATHINFO_FILENAME) . '.pdf')->deleteFileAfterSend();
 	}
 

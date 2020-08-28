@@ -99,7 +99,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('equipments')->group(function(){
 			Route::get('{id}', 'Equipment\EquipmentController@view');
 			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
-			Route::put('{id}/update', 'Equipment\EquipmentController@update');
+			Route::put('update/{id}', 'Equipment\EquipmentController@update');
 			Route::get('file/{name}', 'Equipment\EquipmentController@download');
 		});
 	});

@@ -23,8 +23,8 @@ class EquipmentController extends Controller
 		$eq = array(
 			'equipment' => equipment_equipment_details::find($id),
 			'type' => equipment_type::get(),
-			'function' => equipment_function_of_use::get(),
-			'studies' => equipment_object_study::get(),
+			// 'function' => equipment_function_of_use::get(),
+			// 'studies' => equipment_object_study::get(),
 			'history_checks' => equipment_history_date_checks::where('id_equipment', $id)->get(),
 			'history_moving' => equipment_history_movings::where('id_equipment', $id)->get(),
 			'maintance' => equipment_metrolog_list_work_for_equipment::where('id_equipment', $id)->get()
@@ -78,6 +78,7 @@ class EquipmentController extends Controller
 
 	public function update($id, Request $req)
 	{
+		// return response()->json($req ,200);
 		DB::transaction(function() use ($id, $req){
 			equipment_equipment::where('id', $id)->update($req->all());
 		});
