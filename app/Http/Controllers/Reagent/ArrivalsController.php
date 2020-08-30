@@ -21,27 +21,28 @@ class ArrivalsController extends Controller
 	public function create(Request $req)
 	{
 		DB::transaction(function() use ($req){
-			$new_order = new reagent_arrivals();
-			$new_order->num_order = $req->input("number");
-			$new_order->date_order = $req->input("date");
-			$new_order->id_department = auth()->user()->getIdDepartment();
-			$new_order->id_moving_type = 1;
-			$new_order->save();
+			$order = reagent_arrivals::create([
+				'num_order' => $req->input("num_order"),
+				'date_order' => $req->input("date_order"),
+				'id_department' => auth()->user()->getIdDepartment(),
+				'id_moving_type' => 1
+			]);
 			foreach ($req->input('materials') as $material)
 			{
 				$arr[] = array(
-					'id_arrival' => $new_order->id,
-					'date_order' => $new_order->date_order,
+					'id_arrival' => $order['id'],
+					'date_order' => $order['date_order'],
 					'id_material' => $material['id'],
 					'packing_name' => $material['post_name'],
 					'amount' => $material['amount'],
 					'id_location' => $material['id_location'],
 					'shelf_life' => $material['shelf_life'],
 					'date_create' => $material['date_create'],
-					'density' => $material['density']
+					'density' => $material['density'],
+					'description' => $material['description']
 				);
 			}
-			$order_material = reagent_arrival_material::insert($arr);
+			reagent_arrival_material::insert($arr);
 		});
 	}
 

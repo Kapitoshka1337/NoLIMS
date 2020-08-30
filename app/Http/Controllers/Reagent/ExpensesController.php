@@ -30,8 +30,8 @@ class ExpensesController extends Controller
                     'id_department' => auth()->user()->getIdDepartment(),
                     'id_arrival_material' => $req->input('id_arrival'),
                     'id_user' => auth()->user()->getId(),
-                    'amount' => $req->input('amount'),
-                    'date_usage' => $req->input('date'),
+                    'amount' => auth()->user()->getIdDepartment() === 5 ? $req->input('amount') : $req->input('famount'),
+                    'date_usage' => $req->input('date_usage'),
                     'date_record' => date('Y-m-d'),
                     'id_moving_type' => 2
                 ]);
@@ -45,7 +45,7 @@ class ExpensesController extends Controller
             'id_user' => auth()->user()->getId(),
             'id_department' => auth()->user()->getIdDepartment(),
             'id_outgo' => $req->input('id_outgo'),
-            'corrected_amount' => $req->input('corrected_amount'),
+            'corrected_amount' => auth()->user()->getIdDepartment() === 5 ? $req->input('corrected_amount') : $req->input('fcorrected_amount'),
             'reason_correct' => $req->input('reason_correct'),
             'spent_amount' => $req->input('spent_amount'),
             'created_at' => date('Y-m-d'),
@@ -57,13 +57,13 @@ class ExpensesController extends Controller
     public function renewal(Request $req, $id)
     {
         DB::transaction(function() use ($req, $id){
-            reagent_arrival_material::where('id', $id)->update(['shelf_life' => $req['renewal']['date']]);
+            reagent_arrival_material::where('id', $id)->update(['shelf_life' => $req['date_renewal']]);
             expenses::insert([
                 'id_department' => auth()->user()->getIdDepartment(),
                 'id_arrival_material' => $req->input('id_arrival'),
                 'id_user' => auth()->user()->getId(),
                 'amount' => $req->input('amount'),
-                'date_usage' => $req->input('date'),
+                'date_usage' => $req->input('date_usage'),
                 'date_record' => date('Y-m-d'),
                 'id_moving_type' => 4
             ]);

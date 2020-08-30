@@ -76,6 +76,15 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::get('', 'Equipment\MetrologController@view');
 			Route::post('', 'Equipment\EquipmentController@create');
 		});
+		Route::prefix('equipments')->group(function(){
+			Route::get('{id}', 'Equipment\EquipmentController@view');
+			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
+			// Route::delete('{id}/{id_passed}/pdelete', 'Equipment\EquipmentController@deleteVerification');
+			Route::put('{id}/update', 'Equipment\EquipmentController@update');
+			Route::get('file/{name}', 'Equipment\EquipmentController@download');
+			Route::post('{id}/moving', 'Equipment\EquipmentController@moving');
+			Route::post('maintenance', 'Equipment\EquipmentController@maintenance');
+		});
 		Route::prefix('verification')->group(function(){
 			Route::get('', 'Equipment\VerificationController@view');
 			Route::post('', 'Equipment\VerificationController@create');
@@ -89,18 +98,13 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('support')->group(function(){
 			Route::get('documents', 'Equipment\SupportController@docType');
 			Route::get('locations', 'Equipment\SupportController@forNewEquipment');
+			Route::get('maintenances', 'Equipment\SupportController@maintenances');
 		});
 		Route::prefix('printer')->group(function(){
 			Route::post('sticker', 'Equipment\PrinterController@sticker');
 			Route::post('table', 'Equipment\PrinterController@table');
 			Route::post('protocol', 'Equipment\PrinterController@protocol');
 			Route::post('csm', 'Equipment\PrinterController@csm');
-		});
-		Route::prefix('equipments')->group(function(){
-			Route::get('{id}', 'Equipment\EquipmentController@view');
-			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
-			Route::put('update/{id}', 'Equipment\EquipmentController@update');
-			Route::get('file/{name}', 'Equipment\EquipmentController@download');
 		});
 	});
 });

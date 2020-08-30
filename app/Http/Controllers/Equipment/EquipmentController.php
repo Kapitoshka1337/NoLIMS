@@ -15,6 +15,8 @@ use App\Models\Equipment\equipment_history_date_checks;
 use App\Models\Equipment\equipment_history_movings;
 use App\Models\Equipment\equipment_metrolog_list_work_for_equipment;
 use App\Models\Equipment\equipment_date_check;
+use App\Models\Equipment\equipment_history_date_check;
+use App\Models\Equipment\equipment_list_work_maintenance;
 
 class EquipmentController extends Controller
 {
@@ -34,7 +36,6 @@ class EquipmentController extends Controller
 
 	public function create(Request $req)
 	{
-		// return response()->json($req ,200);
 		DB::transaction(function() use ($req){
 			equipment_equipment::insert($req->all());
 		});
@@ -76,9 +77,37 @@ class EquipmentController extends Controller
 		else return response()->json(['message' => "Не загружен файл"], 400);
 	}
 
+	//Удаление проверки
+	// public function deleteVerification($id, $id_passed)
+	// {
+	// 	// $obj = equipment_date_check::where('id', $id_passed)->get();
+	// 	// return response()->json($obj[0]->id_equipment, 200);
+	// 	DB::transaction(function() use ($id, $id_passed){
+	// 		$obj = equipment_date_check::where('id_equipment', $id)->get();
+	// 		if($obj[0]['id'] === $id_passed)
+	// 			$obj[0]->delete();
+	// 		else
+	// 			equipment_history_date_check::where('id', $id_passed)->delete();
+	// 	});
+	// 	// return response()->json(['id' => $id, 'id_passed' => $id_passed],200);
+	// }
+
+	public function moving($id, Request $req)
+	{
+		DB::transaction(function() use($id, $req){
+			equipment_equipment::where('id', $id)->update($req->all());
+		});
+	}
+
+	public function maintenance(Request $req)
+	{
+		DB::transaction(function() use($req){
+			equipment_list_work_maintenance::insert($req->all());
+		});
+	}
+
 	public function update($id, Request $req)
 	{
-		// return response()->json($req ,200);
 		DB::transaction(function() use ($id, $req){
 			equipment_equipment::where('id', $id)->update($req->all());
 		});

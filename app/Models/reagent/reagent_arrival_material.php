@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models\Reagent;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +17,7 @@ class reagent_arrival_material extends Model
         'shelf_life',
         'date_create',
         'density',
-        'archive'
+        'archive',
+        'description'
     ];
 }

@@ -8,6 +8,7 @@ use App\Models\Equipment\verifications;
 use App\Models\Equipment\view_verifications;
 use App\Models\Equipment\equipment_kit_equipment;
 use App\Models\Equipment\equipment_kits;
+use App\Models\Equipment\equipment_equipment;
 
 class VerificationController extends Controller
 {
@@ -44,16 +45,17 @@ class VerificationController extends Controller
 		return response()->json($arr_mat, 200);
 	}
 
-	public function play($id)
+	public function play($id, Request $req)
 	{
-		DB::transaction(function() use($id){
+		DB::transaction(function() use($id, $req){
 			$kits = equipment_kit_equipment::where('id_checks', $id)->get();
 			foreach ($kits as $kit)
 			{
 				if(!$kit->is_received_before)
-					throw new \Exception('Для смены статуса заявки, необходимо "получить" выбранное оборудование');	
+					throw new \Exception('Для смены статуса заявки, необходимо "получить" подготавливаемое оборудование');	
 			}
-			verifications::where('id', $id)->update(['date_submit' => date('Y-m-d'), 'id_status_check' => 2]);
+			verifications::where('id', $id)->update(['date_submit' => date('Y-m-d'), 'id_status_check' => 2, 'claim_check' => $req->input('claim_check')]);
+			equipment_equipment::whereIn('id', $kits->pluck('id_equipment')->toArray())->update(['is_check' => 1]);
 		});
 	}
 
@@ -69,7 +71,9 @@ class VerificationController extends Controller
 		DB::transaction(function() use($id, $check){
 			if(!verifications::where('id', $check)->get()[0]['date_submit'])
 				throw new \Exception('Для смены статуса оборудования, необходимо "отправить" заявку');
+			$kit = equipment_kit_equipment::where('id', $id)->get()->pluck('id_equipment')->toArray();
 			equipment_kit_equipment::where('id', $id)->update(['is_received_after' => true]);
+			equipment_equipment::where('id', $kit[0])->update(['is_check' => false]);
 			verifications::where('id', $check)->update(['id_status_check' => 3]);
 		});
 	}
