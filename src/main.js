@@ -4,11 +4,11 @@ import VueRouter from 'vue-router';
 import App from './App.vue';
 //VUEX
 import store from './components/store/store.js';
-//VUETIFY
-import vuetify from './plugins/vuetify.js';
 //SEMANTIC UI
 import 'semantic-ui-css/semantic.min.css';
 import SuiVue from 'semantic-ui-vue';
+//VUETIFY
+import vuetify from './plugins/vuetify.js';
 //AXIOS
 import Axios from 'axios';
 import Convert from './components/reagent/convert.js';
@@ -30,7 +30,6 @@ import MovingReq from "./components/reagent/moving/request.vue";
 import MovingHistory from "./components/reagent/moving/history.vue";
 import Location from "./components/reagent/location/index.vue";
 //EQUIPMENT
-import MenuEquipment from './components/equipment/menu.vue';
 import Equipment from "./components/equipment/main.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
 import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
@@ -50,7 +49,6 @@ if(token){
 Vue.use(SuiVue);
 Vue.use(VueRouter);
 Vue.component('menu-nav', MenuNav);
-Vue.component('menu-equipment', MenuEquipment);
 
 var router = new VueRouter({
   mode: 'history',

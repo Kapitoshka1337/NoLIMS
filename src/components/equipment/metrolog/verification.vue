@@ -2,7 +2,6 @@
 	<v-row>
 		<v-col cols="12">
 			<v-data-table dense :headers="gridColumns.tableColumn" :items="gridData" :items-per-page="50" :loading="gridData.length <= 0" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus'}">
->
 				<template v-slot:top>
 					<v-toolbar flat>
 						<v-toolbar-title>Управление проверками</v-toolbar-title>
@@ -18,7 +17,10 @@
 					<v-btn small icon color="orange" v-on:click="selectedRow(item)"><v-icon>mdi-eye</v-icon></v-btn>
 					<v-btn small icon color="blue" v-on:click="confirmPrint(item)"><v-icon>mdi-printer</v-icon></v-btn>
 					<v-btn small icon color="red" v-on:click="confirmDeleteVerification(item)" v-if="item.id_status_check != 2 && item.id_status_check != 3"><v-icon>mdi-delete</v-icon></v-btn>
-					<v-btn small icon color="green" v-if="!item.date_submit" v-on:click="play(item)"><v-icon>mdi-play</v-icon></v-btn>
+					<v-btn small icon color="green" v-if="!item.date_submit" v-on:click="confirmPlay(item)"><v-icon>mdi-play</v-icon></v-btn>
+				</template>
+				<template v-slot:item.claim_check="{item}">
+					{{ item.claim_check || 'Не указан' }}
 				</template>
 			</v-data-table>
 			<v-overlay :value="overlay">
@@ -88,6 +90,27 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
+			<v-dialog dense v-model="playDialog" max-width="512">
+				<v-card>
+					<v-card-title>Отправка оборудования</v-card-title>
+					<v-divider></v-divider>
+					<v-card-text>
+						<v-row>
+							<v-container>
+								<v-row align-content="center">
+									<v-text-field label="Номер квитанции" outlined dense v-model="claim_check"></v-text-field>
+								</v-row>
+							</v-container>
+						</v-row>
+					</v-card-text>
+					<v-divider></v-divider>
+					<v-card-actions>
+						<v-spacer></v-spacer>
+						<v-btn color="success" @click="play()" :loading="loadDelete">Сохранить</v-btn>
+						<v-btn color="error" @click="playDialog = false">Отмена</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
 		</v-col>
 	</v-row>
 </template>
@@ -104,6 +127,7 @@ export default {
 					{ text: 'Сформировано', align: 'start', sortable: true, value: 'date_create',},
 					{ text: 'Отправлено', align: 'start', sortable: true, value: 'date_submit'},
 					{ text: 'Сформировал', align: 'start', sortable: true, value: 'user'},
+					{ text: 'Номер квитанции', align: 'start', sortable: true, value: 'claim_check'},
 					{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false }
 				],
 				filterColumn: [
@@ -122,15 +146,15 @@ export default {
 			gridData: [],
 			verificationInfo: {},
 			gridData1: [],
-			// equipments: false,
-			// plays: false,
 			dialog: false,
 			param: false,
 			deleteVerificationDialog: false,
 			deleteEqDialog: false,
 			printDialog: false,
+			playDialog: false,
 			loadDelete: false,
 			item: {},
+			claim_check: null,
 			check: {},
 			overlay: false
 		}
@@ -151,14 +175,19 @@ export default {
 		submitBefore(item){
 			let param;
 			if(!item.is_received_before && !item.is_received_after) param = 'before';
-			if(item.is_received_before && !item.is_received_after) param = 'after';
+			else if(item.is_received_before && !item.is_received_after) param = 'after';
+			else return;
 			this.param = true;
 			this.$http.put(`/api/equipment/verification/${item.id_checks}/${item.id_kit_row}/${param}`)
 			.then(response => (item[`is_received_${param}`] = true, this.param = false)).catch(error => (this.param = false, alert(error.response.data.message)));
 		},
-		play(item){
-			this.overlay = true;
-			this.$http.put(`/api/equipment/verification/${item.id}/play`).then(response => (item.date_submit = new Date(), item.id_status_check = 2, this.overlay = false)).catch(error => (this.overlay = false, alert(error.response.data.message)));
+		confirmPlay(item){
+			this.item = item;
+			this.playDialog = true;
+		},
+		play(){
+			this.loadDelete = true;
+			this.$http.put(`/api/equipment/verification/${this.item.id}/play`, {claim_check: this.claim_check}).then(response => (this.playDialog = false, this.item.date_submit = new Date(), this.item.id_status_check = 2, this.item.claim_check = this.claim_check, this.loadDelete = false, this.item = {})).catch(error => (this.item = {}, this.loadDelete = false, alert(error.response.data.message)));
 		},
 		confirmDeleteVerification(item){
 			this.item = item;

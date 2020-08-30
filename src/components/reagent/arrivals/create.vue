@@ -1,150 +1,139 @@
 <template>
-    <sui-grid class="padded">
-        <sui-grid-row>
-            <sui-grid-column>
-                <menu-nav></menu-nav>
-            </sui-grid-column>
-        </sui-grid-row>
-        <sui-grid-row>
-            <sui-grid-column>
-                <sui-card class="fluid">
-                    <sui-card-content>
-                        <sui-form>
-                            <sui-form-fields fields="three" inline>
-                                <sui-form-field width="five">
-                                    <label>Заказ №</label>
-                                    <sui-input type="text" v-model="order.number"></sui-input>
-                                </sui-form-field>
-                                <sui-form-field width="three">
-                                    <label>от</label>
-                                    <sui-input type="date" v-model="order.date"></sui-input>
-                                </sui-form-field>
-                            </sui-form-fields>
-                        </sui-form>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-card-group :items-per-row="4">
-                            <sui-card v-for="(material, index) in selectedMaterials" :key="material.id">
-                                <sui-card-content>
-                                    <sui-card-header>{{ material.material }}</sui-card-header>
-                                    <sui-card-meta>{{ material.type }} ({{ material.measure }})</sui-card-meta>
-                                </sui-card-content>
-                                <sui-card-content>            
-                                    <sui-form>
-                                        <sui-form-field>
-                                            <label>Количество</label>
-                                            <input type="number" v-model="material.amount">
-                                        </sui-form-field>
-                                        <sui-form-field>
-                                            <label>Плотность (емкость, вместимость)</label>
-                                            <input type="number" min="1" step="0.1" v-model="material.density">
-                                        </sui-form-field>
-                                        <sui-form-field>
-                                            <label>Местоположение</label>
-                                            <sui-dropdown :options="forDropdown" search selection v-model="material.id_location"></sui-dropdown>
-                                        </sui-form-field>
-                                        <sui-form-field>
-                                            <label>Наименование в накладной</label>
-                                            <textarea cols="30" rows="3" v-model="material.post_name"></textarea>
-                                        </sui-form-field>
-                                        <sui-form-field>
-                                            <label>Дата изготовления</label>
-                                            <input type="date" v-model="material.date_create">
-                                        </sui-form-field>
-                                        <sui-form-field>
-                                            <label>Срок хранения</label>
-                                            <input type="date" v-model="material.shelf_life">
-                                        </sui-form-field>
-                                    </sui-form>
-                                </sui-card-content>
-                                <sui-card-content>
-                                    <sui-button content="Удалить" floated="left" color="red" fluid v-on:click="deleteMaterial(index, material)"></sui-button>
-                                </sui-card-content>
-                            </sui-card>
-                        </sui-card-group>
-                    </sui-card-content>
-                    <sui-card-content>
-                        <sui-button v-bind:loading="isLoadMaterial" icon="search" floated="left" color="yellow" v-on:click="showModal"></sui-button>
-                        <router-link to="/reagent/arrivals" is="sui-button" class="ui right floated orange" content="Отмена"></router-link>
-                        <sui-button v-bind:loading="loading" content="Добавить" floated="right" color="green" v-bind:disabled="!selectedMaterials.length || !order.number || !order.date" v-on:click="submitOrder"></sui-button>
-                    </sui-card-content>
-                </sui-card>
-                <search-material-modal :open="isShowModal" @save="hideModal" @close="closeModal" :material="materials"></search-material-modal>
-            </sui-grid-column>
-        </sui-grid-row>
-    </sui-grid>
+    <v-row>
+        <v-col cols="12">
+            <v-card outlined>
+                <v-card-title>Добавление поступления</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols="6">
+                            <v-text-field outlined dense label="Заказ №" clearable v-model="order.num_order"></v-text-field>
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field type="date" outlined dense label="Дата заказа" clearable v-model="order.date_order"></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <v-row dense justify="start">
+                        <v-col cols="3" v-for="card in selected" :key="card.id">
+                            <v-card class="mx-auto" max-width="400px" outlined>
+                                <v-card-title>{{ card.material }}</v-card-title>
+                                <v-card-subtitle>({{ card.id }}) {{ card.type }} ({{ card.measure }})</v-card-subtitle>
+                                <v-divider></v-divider>
+                                <v-card-text>
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-text-field v-model="card.amount" clearable type="number" outlined dense label="Количество"></v-text-field>
+                                            <v-text-field v-model="card.density" clearable type="number" outlined dense label="Плотность"></v-text-field>
+                                            <v-autocomplete v-model="card.id_location" clearable :items="dropdownLocation" outlined dense label="Местоположение"></v-autocomplete>
+                                            <v-textarea v-model="card.post_name" :rows="2" :height="100" outlined dense label="Наименование в накладной"></v-textarea>
+                                            <v-text-field v-model="card.date_create" clearable type="date" outlined dense label="Дата изготовления"></v-text-field>
+                                            <v-text-field v-model="card.shelf_life" clearable type="date" outlined dense label="Срок хранения"></v-text-field>
+                                            <v-textarea v-model="card.description" :rows="2" :height="100" outlined dense label="Дополнительная информация"></v-textarea>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-text>
+                                <v-divider></v-divider>
+                                <v-card-actions>
+                                    <v-btn block color="error" :ripple="false" @click="deleteMaterial(card)">Удалить</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn color="orange" :ripple="false" @click=loadMaterials() :loading="loading"><v-icon color="white">mdi-magnify</v-icon></v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="success" @click="submitOrder()" :ripple="false" v-bind:disabled="!selected.length || !order.num_order || !order.date_order" :loading="submit">Добавить</v-btn>
+                    <v-btn color="error" :ripple="false" to="/reagent/arrivals">Отмена</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-col>
+        <v-dialog v-model="dialogMaterial" max-width="1256px">
+            <v-card>
+                <v-card-text>
+                    <v-data-table calculate-widths dense item-key="id" v-model="selected"
+                        :headers="tableColumn"
+                        :items="materials"
+                        :items-per-page="50"
+                        :search="search"
+			            :show-select="true"
+                        :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [10, 30, 50, 100], itemsPerPageText: 'Отобразить на странице'}">
+                        <template v-slot:top>
+                            <v-toolbar flat dense>
+                                <v-text-field v-model="search" label="Поиск" clearable single-line hide-details></v-text-field>
+                            </v-toolbar>
+                        </template>
+                    </v-data-table>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="success">ОК</v-btn>
+                    <v-btn color="error" @click="dialogMaterial = false">Отмена</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+    </v-row>
 </template>
 
 <script>
-import SearchMaterialModal from '../modals/search_material.vue';
-
 export default {
-    components: {
-        'search-material-modal': SearchMaterialModal
-    },
     data(){
         return {
-            isShowModal: false,
+            tableColumn: [
+                { text: 'Код', align: 'start', sortable: true, value: 'id'},
+                { text: 'Материал', align: 'start', sortable: true, value: 'material'},
+                { text: 'Тип', align: 'start', sortable: true, value: 'type'},
+                { text: 'Ед.изм.', align: 'start', sortable: true, value: 'measure'}
+            ],
+            search: '',
             materials: [],
-            selectedMaterials: [],
+            selected: [],
             listLocations: [],
             order: {
-                number: '',
-                date: '',
+                num_order: '',
+                date_order: '',
                 materials: null
             },
+            dialogMaterial: false,
             loading: false,
-            isLoadMaterial: false
+            submit: false
         }
     },
-    watch:{
-        selectedMaterials(){
+    computed: {
+        dropdownLocation(){
             if(!this.listLocations.length)
-                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
-        }
-    },
-    computed:{
-        forDropdown(){
-            if(this.listLocations.length)
+                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error.response.data.message)));
+            else
             {
-                let rows = [];
-                for(let item in this.listLocations){
-                    rows.push({
-                        key: this.listLocations[item].id,
-                        value: this.listLocations[item].id,
-                        text: this.listLocations[item].cabinet_number + " " + this.listLocations[item].place + " " + this.listLocations[item].notation
-                    });
-                }
-                return rows;
+                let result = [];
+				for (let str of this.listLocations)
+                    result.push({value: str['id'], text: `${str['cabinet_number']} ${str['place']} ${str['notation']}`});
+                return result;
             }
         }
     },
     methods: {
-        hideModal(data){
-            this.selectedMaterials = [];
-            for(let material in data)
-                this.selectedMaterials.push(data[material]);
-            this.isShowModal = false;
-        },
-        closeModal(){
-            this.isShowModal = false;
-        },
-		showModal(){
-            if(this.materials.length > 0) this.isShowModal = true;
-            else
+        loadMaterials(){
+            if(!this.materials.length)
             {
-                this.isLoadMaterial = !this.isLoadMaterial;
-                this.$http.get('/api/reagent/material').then(response => (this.materials = response.data, this.isShowModal = true, this.isLoadMaterial = !this.isLoadMaterial)).catch(error => (alert(error), this.isLoadMaterial = !this.isLoadMaterial));
+                this.loading = true;
+                this.$http.get('/api/reagent/material').then(response => (this.materials = response.data, this.loading = false, this.dialogMaterial = true)).catch(error => (this.loading = false, alert(error.response.data.message)));
             }
+            else this.dialogMaterial = true;
         },
-		deleteMaterial(index, material) {
-			var idx = this.selectedMaterials.indexOf(material);
-			if (idx > -1) this.selectedMaterials.splice(idx, 1);
+        deleteMaterial(material) {
+            var idx = this.selected.indexOf(material);
+            if (idx > -1) this.selected.splice(idx, 1);
         },
         submitOrder(){
-            this.order.materials = this.selectedMaterials;
-            this.loading = !this.loading;
-            this.$http.post('/api/reagent/arrivals', this.order).then(response => (this.$router.push({path: '/reagent/storage'}), this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));            
+            this.order.materials = this.selected;
+            this.submit = true;
+            this.$http.post('/api/reagent/arrivals', this.order).then(response => (this.$router.push({path: '/reagent/storage'}))).catch(error => (this.submit = false, alert(error.response.data.message)));            
         }
     }
 }

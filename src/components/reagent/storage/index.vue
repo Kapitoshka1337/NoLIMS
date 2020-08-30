@@ -1,269 +1,154 @@
 <template>
-	<sui-grid class="padded">
-		<sui-grid-row>
-			<sui-grid-column>
-				<menu-nav></menu-nav>
-			</sui-grid-column>
-		</sui-grid-row>
-		<sui-grid-row>
-			<sui-grid-column>
-				<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
-				<sui-table selectable compact v-if="gridData.length > 0">
-					<sui-table-header>
-						<sui-table-row>
-							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-									Склад
-									<sui-button v-bind:loading="isPrint" color="blue" size="mini"  icon="print" floated="right" v-on:click="printInventory()" v-bind:disabled="!selectedIdLocation"></sui-button>
-							</sui-table-header-cell>
-						</sui-table-row>
-						<sui-table-row>
-							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-								<sui-form>
-									<sui-form-fields fields="two">
-										<sui-form-field width="fifteen">
-											<sui-input type="text" placeholder="Поиск по КОД / МАТЕРИАЛ" v-model="filterKey"></sui-input>
-										</sui-form-field>
-										<sui-form-field>
-											<sui-dropdown placeholder="Местоположение" search selection :options="dropdownLocations" v-model="selectedIdLocation"></sui-dropdown>
-										</sui-form-field>
-									</sui-form-fields>
-								</sui-form>
-							</sui-table-header-cell>
-						</sui-table-row>
-						<sui-table-row>
-							<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index" @click="sortBy(Object.keys(column)[0])">
-								{{ Object.values(column)[0] }}
-								<i :class="{'icon caret up': (sortColumns[Object.keys(column)[0]] > 0) && Object.keys(column)[0] === sortKey, 'icon caret down': (sortColumns[Object.keys(column)[0]] < 0) && Object.keys(column)[0] === sortKey}"></i>
-							</sui-table-header-cell>
-						</sui-table-row>
-					</sui-table-header>
-					<sui-table-body>
-						<sui-table-row v-for="(material, index) in paginateRows" :key="material.arrival_material_id">
-							<sui-table-cell collapsing>{{ material.material_id }}</sui-table-cell>
-							<sui-table-cell :width="1">{{ today(material.date_order) }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.location }}</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.type }}</sui-table-cell>
-							<sui-table-cell >{{ material.material }} ({{material.density}})</sui-table-cell>
-							<sui-table-cell collapsing>{{ material.order_measure }}</sui-table-cell>
-							<sui-table-cell collapsing
-							v-bind:class="{success: Math.round(material.total) > Math.round((material.amount / 10) * (50 / 10)), caution: Math.round(material.total) <= Math.round((material.amount / 10) * (50 / 10)), danger: Math.round(material.total) <= Math.round((material.amount / 10) * (36 / 10))}"
-							>{{ material.total }} / {{ material.amount }}</sui-table-cell>
-							<sui-table-cell :width="2"
-							v-bind:class="{success: colorShelfLife(material.shelf_life) > 62, caution: colorShelfLife(material.shelf_life) <= 62, danger: colorShelfLife(material.shelf_life) <= 31}"
-							>{{ today(material.shelf_life)  }} <strong> ({{ colorShelfLife(material.shelf_life)  }})</strong> </sui-table-cell>
-							<sui-table-cell collapsing>
-								<sui-button color="red" size="mini" icon="tint" v-on:click="showModal(index)"></sui-button>
-								<sui-button color="yellow" size="mini" icon="edit" v-on:click="showModalEdit(material)"></sui-button>
-								<sui-button v-bind:loading="isToArchive" color="green" size="mini" icon="archive" 
-								v-if="material.total <= 0 || colorShelfLife(material.shelf_life) <= 0" 
-								v-on:click="moveToArchive(material.arrival_material_id)"></sui-button>
-							</sui-table-cell>
-						</sui-table-row>
-					</sui-table-body>
-					<sui-table-footer>
-						<sui-table-row>
-							<sui-table-header-cell :colspan="gridColumns.tableColumn.length + 1">
-								<sui-label >
-									Страница {{ currentPage }} из {{ listPages.length }}
-								</sui-label>
-								<div class="ui icon basic right floated small buttons">
-									<sui-button v-on:click="currentPage = listPages[0]"><i class="icon angle double left"></i></sui-button>
-									<sui-button class="ui button" v-on:click="currentPage--" v-if="currentPage != 1"><i class="icon angle left"></i></sui-button>
-									<sui-form>
-										<sui-form-field>
-											<input type="text" v-bind:value="currentPage">
-										</sui-form-field>
-									</sui-form>
-									<sui-button class="ui button" v-on:click="currentPage++" v-if="currentPage < listPages.length"><i class="icon angle right"></i></sui-button>
-									<sui-button class="ui button" v-on:click="currentPage = listPages.length"><i class="icon angle double right"></i></sui-button>
-								</div>
-							</sui-table-header-cell>
-						</sui-table-row>
-					</sui-table-footer>
-				</sui-table>
-				<expenses-modal :open="isShowModal" @close="hideModal" @success="successExpenses" :material="paginateRows[materialIndex]"></expenses-modal>
-				<edit-modal :open="isShowModalEdit" @close="hideModalEdit" @success="successEdit" :material="material" :locations="listLocations"></edit-modal>
-			</sui-grid-column>
-		</sui-grid-row>
-	</sui-grid>
+	<v-row>
+		<v-col cols="12">
+			<v-data-table dense item-key="matertia_id"
+				:headers="tableColumn"
+				:items="gridData"
+				:items-per-page="50"
+				:loading="gridData.length <= 0"
+				:search="search"
+				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+				<template v-slot:top>
+					<v-toolbar flat dense>
+						<v-toolbar-title>Склад</v-toolbar-title>
+						<v-spacer></v-spacer>
+						<v-text-field v-model="search" label="Поиск КОД/ТИП/МАТЕРИАЛ" clearable single-line hide-details></v-text-field>
+						<v-spacer></v-spacer>
+						<v-btn :ripple="false" icon color="blue"><v-icon>mdi-printer</v-icon></v-btn>
+					</v-toolbar>
+				</template>
+				<template v-slot:item.date_order="{item}">
+					{{ today(item.date_order) }}
+				</template>
+				<template v-slot:item.measure="{item}">
+					{{ idDep === 5 ? item.order_measure : item.measure }}
+				</template>
+				<template v-slot:item.total="{item}">
+					{{ idDep === 5 ? item.total || item.amount : convert(item, 'total') || convert(item, 'amount')}}
+				</template>
+				<template v-slot:item.amount="{item}">
+					{{ idDep === 5 ? item.amount : convert(item, 'amount') }}
+				</template>
+				<template v-slot:item.shelf_life="{item}">
+					{{ today(item.shelf_life) }} <strong>({{colorShelfLife(item.shelf_life)}})</strong>
+				</template>
+				<template v-slot:item.actions="{item}">
+					<v-btn icon small color="red" @click="confirmExepenses(item)"><v-icon>mdi-water</v-icon></v-btn>
+					<v-btn icon small color="orange"><v-icon>mdi-pencil</v-icon></v-btn>
+					<v-btn icon small color="blue"><v-icon>mdi-archive</v-icon></v-btn>
+				</template>
+			</v-data-table>
+		</v-col>
+		<v-dialog dense v-model="dialogExpenses" max-width="700">
+			<v-card>
+				<v-card-title>{{ item.material }} ({{ item.measure }})</v-card-title>
+				<v-card-subtitle>{{ item.material_id }} / {{ today(item.date_order) }}</v-card-subtitle>
+				<v-divider></v-divider>
+				<v-card-text>
+					<v-row>
+						<v-col cols="12">
+							<v-alert dense outlined type="error" v-if="isTime">Расход материала по истечение установленного срока хранения ({{today(item.shelf_life)}}) запрещается</v-alert>
+							<v-alert dense outlined type="warning" v-if="isAmount">Введите протраченное количество</v-alert>
+							<v-alert dense outlined type="warning" v-if="isTotal">Невозможно потратить больше {{ idDep === 5 ? item.total || item.amount : convert(item, 'total') || convert(item, 'amount')}}</v-alert>
+						</v-col>
+					</v-row>
+				</v-card-text>
+				<v-card-text v-if="isTime && isHead">
+					<v-text-field type="date" outlined dense label="Дата продления" v-model="expense.date_renewal"></v-text-field>
+				</v-card-text>
+				<v-card-text>
+					<v-row>
+						<v-col cols="12">
+							<v-text-field type="number" dense outlined clearable label="Потраченное количество" v-model="expense.amount"></v-text-field>
+							<v-text-field type="date" dense outlined clearable label="Дата потребления" v-model="expense.date_usage"></v-text-field>
+						</v-col>
+					</v-row>
+				</v-card-text>
+				<v-divider></v-divider>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn color="success" @click="submitExpenses()" :loading="loadExpenses" v-bind:disabled="(isAmount || isTotal || isTime) && (isAmount || !expense.date_renewal || isTotal)">Потратить</v-btn>
+					<v-btn color="error" @click="dialogExpenses = false">Отмена</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</v-row>
 </template>
 
 <script>
-import ExpensesModal from '../modals/expenses.vue';
-import EditModal from '../modals/edit_material.vue';
 import fs from 'file-saver';
 import unit from '../unit.js';
 
 export default {
-	components: {
-		'expenses-modal': ExpensesModal,
-		'edit-modal': EditModal
-	},
 	data () {
 		return {
-			gridColumns: {
-				tableColumn: [
-					{'material_id':'Код'},
-					{'date_order':'Дата пост.'},
-					{'location':'Местоположение'},
-					{'type':'Тип'},
-					{'material':'Материал'},
-					{'measure':'Ед.изм'},
-					{'total':'Ост./Пост.'},
-					{'shelf_life':'Срок хранения'},
-					{'action':''}
-				],
-				filterColumn: [
-					{'material_id':'Код'},
-					{'type':'Тип'},
-					{'material':'Материал'},
-					{'date_order':'Дата поступления'},
-					{'shelf_life':'Срок хранения'},
-					{'location':'Местоположение'},
-				]
-			},
-			filters: {
-				number: [],
-				department: [],
-				type: [],
-				equipment: [],
-			},
-			seartColumn: [
-				{'material_id': 'material_id'}
+			search: '',
+			tableColumn: [
+				{ text: 'Код', align: 'start', sortable: true, value: 'material_id', width: 60},
+				{ text: 'Дата пост.', align: 'start', sortable: true, value: 'date_order', filterable: false},
+				{ text: 'Местоположение', align: 'start', sortable: true, value: 'location', filterable: false},
+				{ text: 'Тип', align: 'start', sortable: true, value: 'type'},
+				{ text: 'Материал', align: 'start', sortable: true, value: 'material', width: 180},
+				{ text: 'Ед.изм', align: 'start', sortable: true, value: 'measure', filterable: false},
+				{ text: 'Остаток', align: 'start', sortable: true, value: 'total', filterable: false},
+				{ text: 'Поступило', align: 'start', sortable: true, value: 'amount', filterable: false},
+				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life', filterable: false},
+				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false},
 			],
+			dialogExpenses: false,
+			loadExpenses: false,
 			gridData: [],
-			listLocations: [],
-			sortKey: '',
-			sortColumns: Object,
-			currentPage: 1,
-			listPages: [],
-			countPost: 100,
-			isShowModal: false,
-			isShowModalEdit: false,
-			materialIndex: null,
-			material: null,
-			filterKey: '',
-			selectedIdLocation: null,
-			isPrint: false,
-			isToArchive: false,
-			isEdit: false
+			item: {},
+			expense: {
+				amount: null,
+				famount: null,
+				date_usage: new Date().toISOString().split('T')[0],
+				date_renewal: null
+			},
+			url: 'storage/expenses',
 		}
 	},
 	methods: {
-		showModal(index = null){
-			this.materialIndex = index;
-			this.isShowModal = true;
-		},
-		showModalEdit(index = null){
-			if(!this.listLocations.length)
-			{
-				this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error)));
-				this.material = index;
-				this.isShowModalEdit = true;
-			}
-			else
-			{
-				this.material = index;
-				this.isShowModalEdit = true;
-			}
-		},
-		hideModal(){
-			//this.material = {};
-			this.isShowModal = false;
-		},
-		hideModalEdit(){
-			this.material = {};
-			this.isShowModalEdit = false;
-		},
-		successExpenses(expenseAmount, renewaDate){
-			this.isShowModal = false;
-
-			//if(this.material.total === null)
-			//	this.material.total = this.material.amount - expenseAmount;
-			//else
-			//	this.material.total = this.material.total - expenseAmount;
-			
-			//if(renewaDate)
-			//	this.material.shelf_life = renewaDate;
-
-			if(this.gridData[this.materialIndex].total === null)
-				this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].amount - expenseAmount;
-			else
-				this.gridData[this.materialIndex].total = this.gridData[this.materialIndex].total - expenseAmount;
-			
-			if(renewaDate)
-				this.gridData[this.materialIndex].shelf_life = renewaDate;
-		},
-		successEdit(id_loc){
-			this.material.id_location = id_loc.value;
-			this.material.location = id_loc.text;
-			this.isShowModalEdit = false;
-		},
 		getStorage(){
 			this.$http.get('/api/reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
-		sortBy: function (key) {
-			if(key === 'action') return;
-			this.sortKey = key;
-			this.sortColumns[key] = this.sortColumns[key] * -1;
+		confirmExepenses(item){
+			this.item = item;
+			this.dialogExpenses = true;
 		},
-		setPages () {
-			let numOfPage = Math.ceil(this.filteredRows.length / this.countPost);
-			for (let i = 1; i <= numOfPage; i++)
-				this.listPages.push(i);
-		},
-		paginate (rows) {
-			let page = this.currentPage;
-			let curPost = this.countPost;
-			let from = (page * curPost) - curPost;
-			let to = ((page * curPost));
-			return rows.slice(from, to);
+		submitExpenses(){
+			this.expense.id_arrival = this.item.arrival_material_id;
+			this.loadExpenses = true;
+			this.$http.post(`/api/reagent/${this.url}`, this.expense, {headers: {'Content-Type': 'application/json'}})
+			.then(response => {
+					if(this.item.total) this.idDep === 5 ? this.item.total -= this.expense.amount : this.item.total -= this.expense.famount;
+					else this.idDep === 5 ? this.item.total = this.item.amount - this.expense.amount : this.item.total = this.item.amount - this.expense.famount;
+					if(this.expense.date_renewal && this.expense.date_renewal != '') this.item.shelf_life = this.expense.date_renewal;
+					this.loadExpenses = false;
+					this.dialogExpenses = false;
+					this.expense.amount = null;
+				}
+			).catch(error => (this.loadExpenses = false, this.dialogExpenses = false, alert(error.response.data.message)));
 		},
 		today(date){
-			if(date === null) return;
-			let today = new Date(date);
-			return today.toLocaleString().split(',')[0];
-		},
-		setSortColumn(){
-			let sortColumns = {};
-			this.gridColumns.tableColumn.forEach(function (key){
-				Object.keys(key).some(function(row){
-					if (row !== 'action')
-						sortColumns[row] = 1;
-				});
-			});
-			this.sortColumns = sortColumns;
+			return date === null || new Date(date).toLocaleString().split(',')[0];
 		},
 		colorShelfLife(date){
 			let today = new Date();
 			let shelf_life = new Date(date.split(".").reverse().join("-"));
 			return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
 		},
-		moveToArchive(index){
-			this.isToArchive = !this.isToArchive;
-			let material = this.gridData.find(x => x.arrival_material_id === index);
-			this.$http.post("/api/reagent/storage/archive", JSON.stringify({id: material.arrival_material_id}), {
-				headers: {'Content-Type': 'application/json'}}).then( response => (material.archive = 1), this.isToArchive = !this.isToArchive)
-				.catch(error => (alert(error), this.isToArchive = !this.isToArchive));
-		},
-		printInventory(){
-			this.isPrint = !this.isPrint;
-			this.$http.get('/api/reagent/storage/print/' + this.selectedIdLocation, {responseType: 'blob'})
-			.then(response => {
-				const file = new Blob([response.data], {type: 'application/pdf'});
-				fs.saveAs(file, 'Опись расходных материалов ' + this.todays + '.pdf');
-				this.isPrint = !this.isPrint;
-			})
-			.catch(error => (alert(error), this.isPrint = !this.isPrint));	
+		convert(item, param){
+			return this.$convert(item[param]).param(item.density).measure(unit[item.id_order_measure]).to(unit[item.id_measure]);
 		}
 	},
 	watch: {
-		gridData(){
-			this.setSortColumn();
+		'expense.date_renewal': function(newVal, oldVal){
+			if(newVal != '' && newVal != oldVal) this.url = `expenses/${this.item.arrival_material_id}/renewal`;
+			else this.url = 'storage/expenses';
 		},
-		filteredRows() {
-			this.listPages = [];
-			this.setPages();
+		'expense.amount': function(newVal, oldVal){
+			this.expense.famount = this.$convert(newVal).param(this.item.density).measure(unit[this.item.id_measure]).to(unit[this.item.id_order_measure]);
 		}
 	},
 	computed: {
@@ -274,62 +159,18 @@ export default {
 		idDep(){
 			return this.$store.getters.idDepartment;
 		},
-		sortedRows(){
-			let sortKey = this.sortKey;
-			let order = this.sortColumns[sortKey] || 1;
-			let rows = JSON.parse(JSON.stringify(this.gridData));
-			return rows.sort(function (a, b) {
-				a = a[sortKey];
-				b = b[sortKey];
-				if(a === b) return 0 * order;
-				else if (a > b) return 1 * order;
-				else return - 1 * order;
-			})
+		isTime(){
+			return Object.keys(this.item).length && this.colorShelfLife(this.item.shelf_life) <= 0;
 		},
-		searchRows(){
-			let filterKey = this.filterKey;
-			let rows = this.sortedRows;
-			return rows.filter(function(row)
-			{
-				return String(row['material_id']).toLowerCase().indexOf(filterKey) > -1 || String(row['material']).toLowerCase().indexOf(filterKey) > -1;
-			});
+		isAmount(){
+			return this.expense.amount === null || this.expense.amount <= 0;
 		},
-		filteredRows: function () {
-			let rows = JSON.parse(JSON.stringify(this.searchRows));
-			return rows.filter(r =>
-			{
-				if(this.idDep != 5)
-				{
-					r.amount = this.$convert(r.amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
-					r.order_measure = r.measure;
-					if(r.total === null) r.total = r.amount
-					else r.total = this.$convert(r.total).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
-				}
-				return Object.keys(this.filters).every(f =>
-				{
-					if(r.archive === 1) return;
-					if(r.total === null) r.total = r.amount;
-					return this.filters[f].length < 1 || this.filters[f].includes(r[f])
-				});
-			})
+		isTotal(){
+			if(this.item.total) return this.idDep === 5 ? this.item.total - Number(this.expense.amount) < 0 : this.item.total - Number(this.expense.famount) < 0;
+			return this.idDep === 5 ? this.item.amount - Number(this.expense.amount) < 0 : this.item.amount - Number(this.expense.famount) < 0;
 		},
-		paginateRows(){
-			return this.paginate(this.filteredRows);
-		},
-		dropdownLocations(){
-			let result = [];
-			for (let str of this.gridData)
-			{
-				let obj = {key: str['id_location'], value: str['id_location'], text: str['location']};
-				if (!result.includes(obj, 0))
-					result.push(obj);
-				result = result.slice().sort(function (a, b){
-					if(a === b) return 0 ;
-					else if (a > b) return 1;
-					else return - 1;
-				});
-			}
-			return result;
+		isHead(){
+			return this.$store.getters.isRoles === 2;
 		}
 	},
 	created(){
@@ -337,15 +178,3 @@ export default {
 	}
   }
 </script>
-
-<style scoped>
-	.success {
-		background-color: #ddffdd;
-	}
-	.caution {
-		background-color: #ffffcc;
-	}
-	.danger {
-		background-color: #ffdddd;
-	}
-</style>

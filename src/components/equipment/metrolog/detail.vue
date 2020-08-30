@@ -7,7 +7,7 @@
                     <v-form>
                         <v-row>
                             <v-col cols="12" md="12">
-                                <v-text-field clearable dense label="Код оборудования" outlined v-model="indentificationData.equipment.id"></v-text-field>
+                                <v-text-field dense label="Код оборудования" outlined v-model="indentificationData.equipment.id" :readonly="true"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-text-field clearable dense label="Наименование" outlined v-model="indentificationData.equipment.title"></v-text-field>
@@ -89,20 +89,21 @@
                             <v-col cols="12" md="12">
                                 <v-textarea :rows="2" :height="100" dense label="Дополнительные характеристики" outlined v-model="indentificationData.equipment.characteristics"></v-textarea>
                             </v-col>
-                        </v-row>
+                            <v-col cols="10">
+                                <v-chip small color="green" text-color="white">Инструкция по эксплуатации</v-chip>    
+                            </v-col>
+                            <v-col cols="2">
+                                <v-btn small :ripple="false" color="orange" v-bind:disabled="!indentificationData.equipment.id_instrucion">Открыть</v-btn>
+                                <v-btn small :ripple="false" color="red">Изменить</v-btn>
+                            </v-col>
+                            </v-row>
                     </v-form>
                 </v-card-text>
             </v-card>
         </v-col>
         <v-col cols="12">
             <v-card outlined>
-                <v-card-title>
-                    История проверок
-                    <v-spacer></v-spacer>
-					<v-btn icon color="orange">
-						<v-icon>mdi-plus</v-icon>
-					</v-btn>
-                </v-card-title>
+                <v-card-title>История проверок</v-card-title>
                 <v-card-text>
                     <v-data-table dense :headers="tableColumn" :items="indentificationData.history_checks" :items-per-page="5">
                         <template v-slot:item.date_current_check="{ item }">
@@ -129,14 +130,36 @@
                 <v-card-title>
                     Перемещения
                     <v-spacer></v-spacer>
-					<v-btn icon color="orange">
-						<v-icon>mdi-plus</v-icon>
-					</v-btn>
+                    <v-dialog v-model="dialogMoving" max-width="512px">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon color="orange" v-bind="attrs" v-on="on">
+                                <v-icon>mdi-plus</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title>Перемещение</v-card-title>
+                            <v-divider></v-divider>
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-autocomplete :items="dropdownCreate()" v-model="moving.id_department" clearable outlined dense label="Отдел"></v-autocomplete>
+                                        <v-autocomplete :items="filteredLocation" v-model="moving.id_location" clearable outlined dense label="Кабинет"></v-autocomplete>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="success" :loading="loadMoving" @click="submitMoving()">Сохранить</v-btn>
+                                <v-btn color="error" @click="dialogMoving = false">Отмена</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-card-title>
                 <v-card-text>
                     <v-data-table dense :headers="tableColumn1" :items="indentificationData.history_moving" :items-per-page="5">
-                        <template v-slot:item.cabinet="{ item }">
-                            {{ item.cabinet || "Не указан"}}
+                        <template v-slot:item.cabinet_number="{ item }">
+                            {{ item.cabinet_number || "Не указан"}}
                         </template>
                         <template v-slot:item.last_cabinet="{ item }">
                             {{ item.last_cabinet || "Не указан"}}
@@ -174,10 +197,37 @@
                 <v-card-title>
                     Требуемое техническое обслуживание
                     <v-spacer></v-spacer>
-					<v-btn icon color="orange">
-						<v-icon>mdi-plus</v-icon>
-					</v-btn>
+                    <v-dialog v-model="dialogMaintenance" max-width="512px">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon color="orange" v-bind="attrs" v-on="on">
+                                <v-icon>mdi-plus</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title>Техническое обслуживание</v-card-title>
+                            <v-divider></v-divider>
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-autocomplete :items="dropdownCreate1('type')" v-model="main.id_type_maintenance" clearable outlined dense label="Вид ТО"></v-autocomplete>
+                                        <v-autocomplete :items="dropdownCreate1('executor')" v-model="main.id_executor" clearable outlined dense label="Исполнитель"></v-autocomplete>
+                                        <v-text-field v-model="main.periodicity" clearable outlined dense label="Периодичность"></v-text-field>
+                                        <v-autocomplete :items="dropdownCreate1('maintenances')" v-model="main.id_maintenance" :allowOverflow="false" clearable outlined dense label="Техническое обслуживание"></v-autocomplete>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="success" :loading="loadMoving" @click="submitMaintenance()">Сохранить</v-btn>
+                                <v-btn color="error" @click="dialogMaintenance = false">Отмена</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-card-title>
+                <v-card-text>
+                    <v-data-table dense :headers="tableColumn2" :items="indentificationData.maintance" :items-per-page="5"></v-data-table>
+                </v-card-text>
             </v-card>
         </v-col>
         <v-col cols="12">
@@ -192,33 +242,6 @@
 			<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
 		</v-overlay>
     </v-row>
-                
-            <!--<sui-form-fields fields="two">
-                <sui-form-field>
-                    <sui-form-field class="ui green label">Инструкция по эксплуатации</sui-form-field>
-                </sui-form-field>
-                <sui-form-field>
-                    <sui-button size="mini" floated="right" color="red" content="Изменить" v-on:click="showModal('EditInstruction')"></sui-button>
-                    <sui-button v-if="indentificationData.equipment.id_instruction" size="mini" floated="right" color="yellow" content="Открыть"></sui-button>                                    
-                    <a v-if="listDetails.instruction" v-bind:href="'/assets/uploads/' + listDetails.instruction.upload_file" class="ui right floated yellow mini button" target="_blank">Открыть</a>
-                </sui-form-field>
-                <sui-table-header>
-                    <sui-table-row>
-                        <sui-table-header-cell>Вид ТО</sui-table-header-cell>
-                        <sui-table-header-cell>Исполнитель</sui-table-header-cell>
-                        <sui-table-header-cell>Периодичность</sui-table-header-cell>
-                        <sui-table-header-cell>ТО</sui-table-header-cell>
-                        <sui-table-header-cell></sui-table-header-cell>
-                    </sui-table-row>
-                </sui-table-header>
-                <sui-table-body>
-                    <sui-table-row v-for="check in indentificationData.maintance" :key="check">
-                        <sui-table-cell>{{ check.type_maintenance }}</sui-table-cell>
-                        <sui-table-cell>{{ check.executor }}</sui-table-cell>
-                        <sui-table-cell>{{ check.periodicity }}</sui-table-cell>
-                        <sui-table-cell>{{ check.description }}</sui-table-cell>
-                    </sui-table-row>
-                </sui-table-body>-->
 </template>
 
 <script>
@@ -244,13 +267,34 @@ export default {
             tableColumn1: [
                 { text: 'Отдел (ушел)', align: 'start', sortable: false, value: 'last_department' },
                 { text: 'Отдел (пришел)', align: 'start', sortable: false, value: 'department' },
-                { text: 'Кабинет (ушел)', align: 'end', sortable: false, value: 'cabinet' },
-                { text: 'Кабинет (пришел)', align: 'end', sortable: false, value: 'last_cabinet' }
+                { text: 'Кабинет (ушел)', align: 'end', sortable: false, value: 'last_cabinet' },
+                { text: 'Кабинет (пришел)', align: 'end', sortable: false, value: 'cabinet_number' }
+            ],
+            tableColumn2: [
+                { text: 'Вид ТО', align: 'start', sortable: false, value: 'type_maintenance' },
+                { text: 'Исполнитель', align: 'start', sortable: false, value: 'executor' },
+                { text: 'Периодичность', align: 'end', sortable: false, value: 'periodicity' },
+                { text: 'ТО', align: 'end', sortable: false, value: 'title' }
             ],
             changedItem: {},
+            moving: {
+                id_department: null,
+                id_location: null
+            },
+            main: {
+                id_type_maintenance: null,
+                id_executor: null,
+                periodicity: null,
+                id_maintenance: null,
+                id_equipment: null
+            },
+            dataMoving: null,
+            dataMaintenances: null,
             save: false,
             overlay: false,
-            load: false
+            loadMoving: false,
+            dialogMoving: false,
+            dialogMaintenance: false
         }
     },
     watch: {
@@ -268,6 +312,14 @@ export default {
                 });
             },
             deep: true
+        },
+		dialogMoving(newVal, oldVal){
+			if(newVal === true && !this.dataMoving)
+				this.$http.get('/api/equipment/support/locations').then(response => (this.dataMoving = response.data)).catch(error => (alert(error.response.data.message)));
+        },
+		dialogMaintenance(newVal, oldVal){
+			if(newVal === true && !this.dataMaintenances)
+				this.$http.get('/api/equipment/support/maintenances').then(response => (this.dataMaintenances = response.data)).catch(error => (alert(error.response.data.message)));
         }
     },
     methods: {
@@ -289,15 +341,10 @@ export default {
             }
         },
         submitUpdate(){
-            // this.$http.put('/api/equipment/equipments/update/' + this.indentificationDataCopy.id, this.changedItem).then(response => (alert(response.data)))
             if(Object.keys(this.changedItem).length)
             {
                 this.save = true;
-				// this.$http.put(`/api/equipment/equipments/update/${this.indentificationDataCopy.id}`, this.changedItem)
-				// .then(response =>{alert(1);
-				// }).catch(error => (alert(error.response.data.message)));
-
-                this.$http.put(`/api/equipment/equipments/update/${this.indentificationDataCopy.id}`, this.changedItem, {headers: {'Content-Type': 'application/json'}})
+                this.$http.put(`/api/equipment/equipments/${this.indentificationDataCopy.id}/update`, this.changedItem, {headers: {'Content-Type': 'application/json'}})
                 .then(response => (this.save = false)).catch(error => (this.save = false, alert(error.response.data.message)));
             }
             else alert('Изменения не вносились');
@@ -310,10 +357,53 @@ export default {
                 fs.saveAs(file, item.upload_file_name);
                 this.overlay = false;
             }).catch(error => (alert('Файл не найден'), this.overlay = false));
-			// this.$http.get('/api/equipment/equipments/' + this.id).then(response => (this.load = false)).catch(error => (this.load = false, alert(error.response.data.message)));       
+        },
+        dropdownCreate(){
+            if(this.dataMoving)
+            {
+                let result = [];
+                for (let str of this.dataMoving['department'])
+                    result.push({value: str['id'], text: str['title'] || str['cabinet_number']});
+                return result;
+            }
+        },
+        dropdownCreate1(tp){
+            if(this.dataMaintenances)
+            {
+                let result = [];
+                for (let str of this.dataMaintenances[tp])
+                    result.push({value: str['id'], text: str['title']});
+                return result;
+            }
+        },
+        submitMoving(){
+            this.loadMoving = true;
+			this.$http.post(`/api/equipment/equipments/${this.indentificationData.equipment.id}/moving`, this.moving, {headers: {'Content-Type': 'application/json'}})
+			.then(response => (this.loadMoving = false, this.dialogMoving = false, this.getEquipment()))
+			.catch(error => (this.loadMoving = false, alert(error.response.data.message)));
+        },
+        submitMaintenance(){
+            this.main.id_equipment = this.indentificationData.equipment.id;
+            this.loadMoving = true;
+			this.$http.post('/api/equipment/equipments/maintenance', this.main, {headers: {'Content-Type': 'application/json'}})
+			.then(response => (this.loadMoving = false, this.dialogMaintenance = false, this.getEquipment()))
+			.catch(error => (this.loadMoving = false, alert(error.response.data.message)));
         }
     },
-    created() {
+    computed: {
+		filteredLocation(){
+			if(this.dataMoving)
+			{
+				let result = [];
+				this.dataMoving.locations.filter(item => {
+					if(item.id_department === this.moving.id_department)
+						result.push({value: item.id, text: item.cabinet_number});
+				});
+				return result;
+			}
+        }
+    },
+    mounted() {
         this.getEquipment();
     }
 }

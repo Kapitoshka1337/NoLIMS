@@ -1,181 +1,125 @@
-<template>
-	<sui-grid class="padded">
-		<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
-		<sui-grid-row v-if="gridData.length > 0">
-			<sui-grid-column :width="3">
-			<div class="ui fluid card">
-				<div class="content">
-					<div class="center aligned header">
-						<h2>Поиск</h2>
-					</div>
-				</div>
-				<div class="content">
-					<div class="ui form">
-						<div class="field" v-for="(key, index) in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))" :key="index">
-							<label>{{ Object.values(key)[0] }}</label>
-							<sui-dropdown fluid multiple search selection v-model="filters[Object.keys(key)]" :options="returnUniq(Object.keys(key))"></sui-dropdown>
-						</div>
-					</div>
-				</div>
-			</div>
-			</sui-grid-column>
-			<sui-grid-column :width="13">
-				<div class="ui cards">
-					<div class="ui fluid card" v-for="(correct, index) in filteredRows" :key="index">
-						<div class="content">
-							<span v-bind:class="{
-							'ui top attached yellow right label': correct.id_status === 1,
-							'ui top attached green right label': correct.id_status === 2,
-							'ui top attached red right label': correct.id_status === 3
-							}">{{ correct.status }}</span>
-							<div class="header">{{ correct.user }} <span class="right floated">{{ today(correct.created_at) }}</span></div>
-						</div>
-						<div class="content">{{ correct.reason_correct }}</div>
-						<div class="content">
-							<sui-table compact>
-								<sui-table-header>
-									<sui-table-row>
-										<sui-table-header-cell v-for="(column, index) in gridColumns.tableColumn" :key="index">
-											{{ Object.values(column)[0] }}
-										</sui-table-header-cell>
-									</sui-table-row>
-								</sui-table-header>
-								<sui-table-body>
-									<sui-table-row>
-										<sui-table-cell text-align="center" :width="1">{{ correct.id_material }}</sui-table-cell>
-										<sui-table-cell :width="1">{{ today(correct.date_usage) }}</sui-table-cell>
-										<sui-table-cell :width="1">{{ correct.order_measure }}</sui-table-cell>
-										<sui-table-cell text-align="center" :width="2">{{ correct.spent_amount }}</sui-table-cell>
-										<sui-table-cell text-align="center" :width="2">{{ correct.corrected_amount }}</sui-table-cell>
-									</sui-table-row>
-								</sui-table-body>
-							</sui-table>
-						</div>
-						<div class="content">
-							<span class="left floated header">{{ today(correct.date_response) }}</span>
-							<div v-if="correct.id_status === 1">
-								<sui-button v-bind:loading="isDenyLoading" size="mini" content="Отклонить"  color="red" floated="right" v-on:click="deny(index)"></sui-button>
-								<sui-button v-bind:loading="isAllowLoading" size="mini" content="Принять" color="green" floated="right" v-on:click="allow(index)"></sui-button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</sui-grid-column>
-		</sui-grid-row>
-	</sui-grid>
+<template><v-row>
+		<v-col cols="12">
+			<v-data-table calculate-widths dense item-key="id"
+				:headers="tableColumn"
+				:items="gridData"
+				:items-per-page="50"
+				:loading="gridData.length <= 0"
+				:search="search"
+				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+				<template v-slot:top>
+					<v-toolbar flat dense>
+						<v-toolbar-title>Исправления расхода</v-toolbar-title>
+						<v-spacer></v-spacer>
+						<v-text-field v-model="search" label="Поиск " clearable single-line hide-details></v-text-field>
+					</v-toolbar>
+				</template>
+				<template v-slot:item.created_at="{item}">
+					{{today(item.created_at)}}
+				</template>
+				<template v-slot:item.date_response="{item}">
+					{{today(item.date_response)}}
+				</template>
+				<template v-slot:item.actions="{item}">
+					<v-btn icon color="orange" @click="dialogDetail(item)"><v-icon>mdi-eye</v-icon></v-btn>
+				</template>
+			</v-data-table>
+		</v-col>
+		<v-dialog dense v-model="dialog" max-width="574">
+			<v-card>
+				<v-card-title>Запрос № {{ item.id }}</v-card-title>
+				<v-card-text>
+					{{item.reason_correct}}
+				</v-card-text>
+				<v-divider></v-divider>
+				<v-card-text>
+					<v-list dense>
+						<v-list-item two-line>
+							<v-list-item-title>Код материала - {{ item.id_material }}</v-list-item-title>
+						</v-list-item>
+						<v-list-item two-line>
+							<v-list-item-title>Расход ({{item.measure}}) - {{ today(item.date_usage) }}</v-list-item-title>
+						</v-list-item>
+						<v-list-item two-line>
+							<v-list-item-title>Потраченное количество - {{ item.spent_amount }}</v-list-item-title>
+						</v-list-item>
+						<v-list-item two-line>
+							<v-list-item-title>Исправляемое количество - {{ item.corrected_amount }}</v-list-item-title>
+						</v-list-item>
+					</v-list>
+				</v-card-text>
+				<v-divider></v-divider>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn color="success">Принять</v-btn>
+					<v-btn color="error">Отказать</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</v-row>
 </template>
 
 <script>
-import ArrivalModal from '../modals/arrival_material.vue';
 import unit from '../unit.js';
 
 export default {
-	components: {
-		'arrival-modal': ArrivalModal
-	},
 	data () {
 		return {
-			gridColumns: {
-                tableColumn: [
-					{'id_material': 'Код материала'},
-					{'date_usage': 'Дата потр-ия'},
-					{'order_measure': 'Ед. изм'},
-					{'spent_amount': 'Потраченное кол-во'},
-					{'corrected_amount': 'Исправляемое кол-во'}
-				],
-                filterColumn: [
-                    {'created_at':'Дата ошибки'},
-                    {'date_usage':'Дата потребления'}
-                ]
-			},
-			filters: {
-                created_at: [],
-                date_usage: []
-			},
+			tableColumn: [
+				{ text: 'Код', align: 'start', sortable: true, value: 'id'},
+				{ text: 'Сотрудник', align: 'start', sortable: true, value: 'user'},
+				{ text: 'Создано', align: 'start', sortable: true, value: 'created_at'},
+				{ text: 'Отвечено', align: 'start', sortable: true, value: 'date_response'},
+				{ text: 'Статус', align: 'start', sortable: true, value: 'status', },
+				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false}
+			],
 			gridData: [],
-			isDenyLoading: false,
-			isAllowLoading: false
-			//sortKey: '',
-			//sortColumns: Object,
-			//currentPage: 1,
-			//listPages: [],
-			//countPost: 100,
-			//isShowModal: false,
-            // orderIndex: null,
-            // order: {
-            //     order: this.or,
-            //     materials: []
-            // }
-			//filterKey: ''
-			//selectAllMaterials: false,
-			//selectedEquipments: [],
+			dialog: false,
+			item: {}
+//id: 3
+//id_department: 14
+//user: "ТЕСТ"
+//created_at: "2020-08-25 00:00:00"
+//date_usage: "2020-08-20"
+//reason_correct: "ггпогчпо"
+//spent_amount: 1202000
+//corrected_amount: 0.05
+//id_outgo: 92
+//id_material: 12
+//status: "Подтвержден"
+//id_status: 2
+//date_response: "2020-08-25"
+//density: 1
+//id_measure: 2
+//measure: "г"
+//id_order_measure: 4
+//order_measure: "кг"
+			//],
 		}
 	},
 	methods: {
-		//showModal(index = null){
-        //    // this.orderIndex = index;
-        //    this.order.order = this.gridData[index];
-        //    axios.get('/api/reagent/corrections/').then(response => (this.order.materials = response.data, this.isShowModal = true)).catch(error => (alert(error)));
-
-        //},
-		//hideModal(){
-		//	this.isShowModal = false;
-		//},
 		getCorrections(){
 			this.$http.get('/api/reagent/corrections').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
-			//fetch("/api/reagent/storage").then(response => (
-				//response.json().then(data => (this.gridData = data))
-			//)).catch(function(data){alert(data)});
 		},
-		//sortBy: function (key) {
-		//	if(key === 'action') return;
-		//	this.sortKey = key;
-		//	this.sortColumns[key] = this.sortColumns[key] * -1;
-		//},
-		//setPages () {
-		//	let numOfPage = Math.ceil(this.filteredRows.length / this.countPost);
-		//	for (let i = 1; i <= numOfPage; i++)
-		//		this.listPages.push(i);
-		//},
-		//paginate (rows) {
-		//	let page = this.currentPage;
-		//	let curPost = this.countPost;
-		//	let from = (page * curPost) - curPost;
-		//	let to = ((page * curPost));
-		//	return rows.slice(from, to);
-		//},
 		today(date){
 			if(date === null) return;
 			let today = new Date(date);
 			return today.toLocaleString().split(',')[0];
 		},
-		returnUniq(column){
-            let result = [];
-            let resa = [];
-			for (let str of this.gridData)
-				if (!result.includes(str[column]))
-					result.push(str[column]);
-				result = result.slice().sort(function (a, b){
-					if(a === b) return 0 ;
-					else if (a > b) return 1;
-					else return - 1;
-                })
-            for (let res of result)
-            {
-                resa.push({key: res, value: res, text: res});
-            }
-			return resa;
+		dialogDetail(item){
+			this.item = item;
+			this.dialog = true;
 		},
-		allow(index = null){
-			let obj = { id_outgo: this.gridData[index].id_outgo, amount: this.gridData[index].corrected_amount};
-			this.isAllowLoading = !this.isAllowLoading;
-			this.$http.put("/api/reagent/corrections/allow/" + this.gridData[index].id, obj,{
-				headers: {'Content-Type': 'application/json'}})
-				.then(response => (this.gridData[index].id_status = 2,
-				this.gridData[index].status = 'Подтверждена',
-				this.gridData[index].date_response = this.dateToday(),
-				this.isAllowLoading = !this.isAllowLoading)).catch(error => (alert(error.response.data.message), this.isAllowLoading = !this.isAllowLoading));
-		},
+		//allow(index = null){
+		//	let obj = { id_outgo: this.gridData[index].id_outgo, amount: this.gridData[index].corrected_amount};
+		//	this.isAllowLoading = !this.isAllowLoading;
+		//	this.$http.put("/api/reagent/corrections/allow/" + this.gridData[index].id, obj,{
+		//		headers: {'Content-Type': 'application/json'}})
+		//		.then(response => (this.gridData[index].id_status = 2,
+		//		this.gridData[index].status = 'Подтверждена',
+		//		this.gridData[index].date_response = this.dateToday(),
+		//		this.isAllowLoading = !this.isAllowLoading)).catch(error => (alert(error.response.data.message), this.isAllowLoading = !this.isAllowLoading));
+		//},
 		deny(index = null){
 			this.isDenyLoading = !this.isDenyLoading;
 			this.$http.put("/api/reagent/corrections/deny/" + this.gridData[index].id, {
@@ -185,64 +129,10 @@ export default {
 				this.gridData[index].date_response = this.dateToday(),
 				this.isDenyLoading = !this.isDenyLoading)).catch(error => (alert(error.response.data.message), this.isDenyLoading = !this.isDenyLoading));
 		},
-		dateToday(){
-			let today = new Date();
-			return today.toLocaleString().split(',')[0];
-		},
-	},
-	//watch: {
-	//	gridData(){
-	//		this.setSortColumn();
-	//	},
-	//	filteredRows() {
-	//		this.listPages = [];
-	//		this.setPages();
-	//	}
-	//},
-	computed: {
-		filteredRows: function () {
-			//let sortKey = this.sortKey;
-			//let filterKey = this.filterKey && this.filterKey.toLowerCase();
-			//let order = this.sortColumns[sortKey] || 1;
-			let rows = this.gridData;
-			//if (sortKey)
-			//{
-			//	rows = rows.slice().sort(function (a, b) {
-			//		a = a[sortKey];
-			//		b = b[sortKey];
-			//		if(a === b) return 0 * order;
-			//		else if (a > b) return 1 * order;
-			//		else return - 1 * order;
-			//	})
-			//}
-			//if (filterKey)
-			//{
-			//	rows = rows.filter(function(row)
-			//	{
-			//		return Object.keys(row).some(function(key)
-			//		{
-			//			return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);});
-			//	});
-			//}
-			return rows.filter(r =>
-			{
-				if(this.idDep != 5)
-				{
-					r.corrected_amount = this.$convert(r.corrected_amount).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
-					r.order_measure = r.measure;
-					// if(r.total === null) r.total = r.amount
-					// else r.total = this.$convert(r.total).param(r.density).measure(unit[r.id_order_measure]).to(unit[r.id_measure]);
-				}
-				return Object.keys(this.filters).every(f =>
-				{
-					// if(r.total === null) r.total = r.amount;
-						return this.filters[f].length < 1 || this.filters[f].includes(r[f])
-				})
-			})
-        },
-		//paginateRows(){
-		//	return this.paginate(this.filteredRows);
-		//}
+		//dateToday(){
+		//	let today = new Date();
+		//	return today.toLocaleString().split(',')[0];
+		//},
 	},
 	created(){
 		this.getCorrections();

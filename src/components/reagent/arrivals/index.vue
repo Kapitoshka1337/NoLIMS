@@ -1,222 +1,90 @@
 <template>
-	<sui-grid class="padded">
-		<sui-grid-row>
-			<sui-grid-column>
-				<menu-nav></menu-nav>
-			</sui-grid-column>
-		</sui-grid-row>
-		<sui-grid-row>
-			<sui-grid-column :width="3">
-			<div class="ui fluid card">
-				<div class="content">
-					<div class="ui bottom attached buttons">
-						<router-link to="/reagent/arrivals/create" class="ui yellow button">Новое</router-link>
-					</div>
-				</div>
-			</div>
-			<div class="ui fluid card">
-				<div class="content">
-					<div class="center aligned header">
-						<h2>Поиск</h2>
-					</div>
-				</div>
-				<div class="content">
-					<div class="ui form">
-						<div class="field" v-for="(key, index) in gridColumns.filterColumn" v-show="filters.hasOwnProperty(Object.keys(key))" :key="index">
-							<label>{{ Object.values(key)[0] }}</label>
-							<sui-dropdown fluid multiple search selection v-model="filters[Object.keys(key)]" :options="returnUniq(Object.keys(key))"></sui-dropdown>
-						</div>
-					</div>
-				</div>
-			</div>
-			</sui-grid-column>
-			<sui-loader centered v-bind:active="gridData.length <= 0" inline/>
-			<sui-grid-column :width="13" v-if="gridData.length > 0">
-				<div class="ui cards">
-					<div class="ui fluid card" v-for="(order, index) in filteredRows" :key="index">
-						<div class="content">
-							<span v-bind:class="{
-							'ui top attached green right label': order.moving_type === 'Поступление',
-							'ui top attached blue right label': order.moving_type === 'Перевод'
-							}">{{ order.moving_type }}</span>
-							<div class="header">Заказ № {{ order.num_order }} от {{ today(order.date_order) }}</div>
-							<div class="meta">
-								<span class="category">{{ order.department }}</span>
-							</div>
-						</div>
-						<div class="content">
-							<span class="meta">Код: {{ order.id }}</span>
-							<sui-button v-bind:loading="loading" size="mini" content="Поступившие материалы" color="yellow" floated="right" v-on:click="showModal(index)"></sui-button>
-						</div>
-					</div>
-				</div>
-				<arrival-modal :open="isShowModal" @close="hideModal" :order="order"></arrival-modal>
-			</sui-grid-column>
-		</sui-grid-row>
-	</sui-grid>
+	<v-row>
+		<v-col cols="12">
+			<v-data-table calculate-widths dense item-key="id"
+				:headers="tableColumn"
+				:items="gridData"
+				:items-per-page="50"
+				:loading="gridData.length <= 0"
+				:search="search"
+				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+				<template v-slot:top>
+					<v-toolbar flat dense>
+						<v-toolbar-title>Поступления</v-toolbar-title>
+						<v-spacer></v-spacer>
+						<v-text-field v-model="search" label="Поиск " clearable single-line hide-details></v-text-field>
+						<v-spacer></v-spacer>
+						<v-btn small to="/reagent/arrivals/create" :ripple="false" color="orange">Добавить поступление</v-btn>
+					</v-toolbar>
+				</template>
+				<template v-slot:item.date_order="{item}">
+					{{today(item.date_order)}}
+				</template>
+				<template v-slot:item.actions="{item}">
+					<v-btn icon color="orange" @click="confirmOrder(item)"><v-icon>mdi-eye</v-icon></v-btn>
+				</template>
+			</v-data-table>
+		</v-col>
+		<v-overlay :value="overlay">
+			<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
+		</v-overlay>
+		<v-dialog dense v-model="dialogOrder" max-width="1256">
+			<v-card>
+				<v-card-title>Заказ № {{ item.num_order }} от {{ today(item.date_order) }}</v-card-title>
+				<v-divider></v-divider>
+				<v-card-text>
+					<v-data-table calculate-widths dense item-key="id"
+						:headers="tableColumn1"
+						:items="materials"
+						:items-per-page="10"
+						:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+					</v-data-table>
+				</v-card-text>
+			</v-card>
+		</v-dialog>
+	</v-row>
 </template>
 
 <script>
-import ArrivalModal from '../modals/arrival_material.vue'
-
 export default {
-	components: {
-		'arrival-modal': ArrivalModal
-	},
 	data () {
 		return {
-			gridColumns: {
-                tableColumn: [
-                    {'num_order': 'Номер заказа'},
-                    {'date_order': 'Дата заказа'},
-                    {'moving_type': 'Вид поступления'},
-                    {'action': ''},
-                ],
-                filterColumn: [
-                    {'num_order':'Номер заказа'},
-                    {'date_order':'Дата заказа'},
-                    {'moving_type':'Вид поступления'}
-                ]
-			},
-			filters: {
-                num_order: [],
-                date_order: [],
-                moving_type: []
-			},
+			search: '',
+			tableColumn: [
+				{ text: 'Код', align: 'start', sortable: true, value: 'id'},
+				{ text: 'Номер', align: 'start', sortable: true, value: 'num_order'},
+				{ text: 'Дата заказа', align: 'start', sortable: true, value: 'date_order', filterable: false},
+				{ text: 'Операция', align: 'start', sortable: true, value: 'moving_type'},
+				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false}
+			],
+			tableColumn1: [
+				{ text: 'Код', align: 'start', sortable: true, value: 'id_material'},
+				{ text: 'Местоположение', align: 'start', sortable: true, value: 'location'},
+				{ text: 'Тип', align: 'start', sortable: true, value: 'type'},
+				{ text: 'Материал', align: 'start', sortable: true, value: 'material'},
+				{ text: 'Ед.изм', align: 'start', sortable: true, value: 'measure'},
+				{ text: 'Поступило', align: 'start', sortable: true, value: 'amount'},
+				{ text: 'Изготовлен', align: 'start', sortable: true, value: 'shelf_life'},
+				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'date_create'}
+			],
 			gridData: [],
-			sortKey: '',
-			sortColumns: Object,
-			currentPage: 1,
-			listPages: [],
-			countPost: 100,
-			isShowModal: false,
-            // orderIndex: null,
-            order: {
-                order: null,
-                materials: []
-			},
-			loading: false,
-			filterKey: ''
-			//selectAllMaterials: false,
-			//selectedEquipments: [],
+			overlay: false,
+			dialogOrder: false,
+			materials: [],
+			item: {}
 		}
 	},
 	methods: {
-		showModal(index = null){
-            // this.orderIndex = index;
-			this.order.order = this.gridData[index];
-			this.loading = !this.loading;
-            this.$http.get('/api/reagent/arrivals/' + this.gridData[index].id + "/materials").then(response => (this.order.materials = response.data, this.isShowModal = true, this.loading = !this.loading)).catch(error => (alert(error), this.loading = !this.loading));
-            //this.isShowModal = true;
-        },
-		hideModal(){
-			this.isShowModal = false;
-		},
-		//successExpenses(expenseAmount){
-		//	this.isShowModal = false;
-		//	this.gridData[this.orderIndex].total = this.gridData[this.orderIndex].total - expenseAmount;
-		//},
 		getArrivals(){
 			this.$http.get('/api/reagent/arrivals').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
-			//fetch("/api/reagent/storage").then(response => (
-				//response.json().then(data => (this.gridData = data))
-			//)).catch(function(data){alert(data)});
 		},
-		//sortBy: function (key) {
-		//	if(key === 'action') return;
-		//	this.sortKey = key;
-		//	this.sortColumns[key] = this.sortColumns[key] * -1;
-		//},
-		setPages () {
-			let numOfPage = Math.ceil(this.filteredRows.length / this.countPost);
-			for (let i = 1; i <= numOfPage; i++)
-				this.listPages.push(i);
-		},
-		paginate (rows) {
-			let page = this.currentPage;
-			let curPost = this.countPost;
-			let from = (page * curPost) - curPost;
-			let to = ((page * curPost));
-			return rows.slice(from, to);
+		confirmOrder(item){
+			this.item = item;
+			this.overlay = true;
+			this.$http.get(`/api/reagent/arrivals/${item.id}/materials`).then(response => (this.materials = response.data, this.overlay = false, this.dialogOrder = true)).catch(error => (this.overlay = false, alert(error.response.data.message)));
 		},
 		today(date){
-			if(date === null) return;
-			let today = new Date(date);
-			return today.toLocaleString().split(',')[0];
-		},
-		//setSortColumn(){
-		//	let sortColumns = {};
-		//	this.gridColumns.tableColumn.forEach(function (key){
-		//		Object.keys(key).some(function(row){
-		//			if (row !== 'action')
-		//				sortColumns[row] = 1;
-		//		});
-		//	});
-		//	this.sortColumns = sortColumns;
-		//},
-		//ПЕРЕДЕЛАТЬ
-		returnUniq(column){
-            let result = [];
-            let resa = [];
-			for (let str of this.gridData)
-				if (!result.includes(str[column]))
-					result.push(str[column]);
-				result = result.slice().sort(function (a, b){
-					if(a === b) return 0 ;
-					else if (a > b) return 1;
-					else return - 1;
-                })
-            for (let res of result)
-            {
-                resa.push({key: res, value: res, text: res});
-            }
-			return resa;
-        },
-	},
-	watch: {
-		gridData(){
-			this.setSortColumn();
-		},
-		filteredRows() {
-			this.listPages = [];
-			this.setPages();
-		}
-	},
-	computed: {
-		filteredRows: function () {
-			let sortKey = this.sortKey;
-			let filterKey = this.filterKey && this.filterKey.toLowerCase();
-			let order = this.sortColumns[sortKey] || 1;
-			let rows = this.gridData;
-			if (sortKey)
-			{
-				rows = rows.slice().sort(function (a, b) {
-					a = a[sortKey];
-					b = b[sortKey];
-					if(a === b) return 0 * order;
-					else if (a > b) return 1 * order;
-					else return - 1 * order;
-				})
-			}
-			if (filterKey)
-			{
-				rows = rows.filter(function(row)
-				{
-					return Object.keys(row).some(function(key)
-					{
-						return (String(row[key]).toLowerCase().indexOf(filterKey) > -1);});
-				});
-			}
-			return rows.filter(r =>
-			{
-				return Object.keys(this.filters).every(f =>
-				{
-					return this.filters[f].length < 1 || this.filters[f].includes(r[f])
-				})
-			})
-        },
-		paginateRows(){
-			return this.paginate(this.filteredRows);
+			return date === null || new Date(date).toLocaleString().split(',')[0];
 		}
 	},
 	created(){
