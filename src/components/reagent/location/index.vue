@@ -5,7 +5,7 @@
 				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="30"
-				:loading="gridData.length <= 0"
+				:loading="load"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 				<template v-slot:top>
 					<v-toolbar flat dense>
@@ -16,6 +16,9 @@
 				</template>
 				<template v-slot:item.actions="{item}">
 					<v-btn icon color="blue" @click="editedItem(item)"><v-icon>mdi-pencil</v-icon></v-btn>
+				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
 				</template>
 			</v-data-table>
 		</v-col>
@@ -61,7 +64,8 @@ export default {
 			},
 			dialog: false,
 			editedIndex: -1,
-			loading: false
+			loading: false,
+			load: false
 		}
 	},
 	computed: {
@@ -71,7 +75,8 @@ export default {
 	},
 	methods: {
 		getLocation(){
-			this.$http.get('/api/reagent/locations').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.load = true;
+			this.$http.get('/api/reagent/locations').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
 		},
 		editedItem(item){
 			this.editedIndex = this.gridData.indexOf(item);

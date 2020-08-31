@@ -5,7 +5,7 @@
 				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="50"
-				:loading="gridData.length <= 0"
+				:loading="load"
 				:search="search"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 				<template v-slot:top>
@@ -17,6 +17,9 @@
 				</template>
 				<template v-slot:item.actions="{item}">
 					<v-btn x-small color="orange" @click="confirmMoving(item)">Просмотр</v-btn>
+				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
 				</template>
 			</v-data-table>
 		</v-col>
@@ -95,12 +98,14 @@ export default {
 			dialogMoving: false,
 			overlay: false,
 			isDenyLoading: false,
-			isAllowLoading: false
+			isAllowLoading: false,
+			load: false
 		}
 	},
 	methods: {
 		getMovings(){
-			this.$http.get('/api/reagent/moving').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.load = true;
+			this.$http.get('/api/reagent/moving').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
 		},
 		confirmMoving(item){
 			this.item = item;

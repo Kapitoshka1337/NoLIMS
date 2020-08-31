@@ -5,40 +5,40 @@
 				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="50"
-				:loading="gridData.length <= 0"
+				:loading="load"
 				:search="search"
 				:show-select="true"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
-			<template v-for="(col, i) in filters" v-slot:[`header.${i}`]="{ header }">
-				<div style="display: inline-block; padding: 16px 0;">{{ header.text }}</div>
-				<div style="float: right; margin-top: 8px">
-					<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed style="position: absolute; right: 0">
-						<template v-slot:activator="{ on, attrs }">
-							<v-btn color="indigo" icon v-bind="attrs" v-on="on">
-								<v-icon small 
-									:color="activeFilters[header.value] && activeFilters[header.value].length < filters[header.value].length ? 'red' : 'default'">mdi-filter-variant
-								</v-icon>
-							</v-btn>
-						</template>
-						<v-list flat dense>
-							<v-list-item-group v-model="activeFilters[header.value]">
-								<template v-for="(item, i) in filters[header.value]">
-									<v-list-item :key="`${item}`" :value="item" :ripple="false">
-										<template v-slot:default="{ active, toggle }">
-											<v-list-item-action>
-												<v-checkbox :input-value="active" :true-value="item" @click="toggle" color="primary" :ripple="false" dense></v-checkbox>
-											</v-list-item-action>
-											<v-list-item-content> 
-												<v-list-item-title v-text="item"></v-list-item-title>
-											</v-list-item-content>
-										</template>
-									</v-list-item>
-								</template>
-							</v-list-item-group>
-						</v-list>
-					</v-menu>
-				</div>
-			</template>
+				<template v-for="(col, i) in filters" v-slot:[`header.${i}`]="{ header }">
+					<div style="display: inline-block; padding: 16px 0;">{{ header.text }}</div>
+					<div style="float: right; margin-top: 8px">
+						<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed style="position: absolute; right: 0">
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+									<v-icon small 
+										:color="activeFilters[header.value] && activeFilters[header.value].length < filters[header.value].length ? 'red' : 'default'">mdi-filter-variant
+									</v-icon>
+								</v-btn>
+							</template>
+							<v-list flat dense>
+								<v-list-item-group v-model="activeFilters[header.value]">
+									<template v-for="(item, i) in filters[header.value]">
+										<v-list-item :key="`${item}`" :value="item" :ripple="false">
+											<template v-slot:default="{ active, toggle }">
+												<v-list-item-action>
+													<v-checkbox :input-value="active" :true-value="item" @click="toggle" color="primary" :ripple="false" dense></v-checkbox>
+												</v-list-item-action>
+												<v-list-item-content> 
+													<v-list-item-title v-text="item"></v-list-item-title>
+												</v-list-item-content>
+											</template>
+										</v-list-item>
+									</template>
+								</v-list-item-group>
+							</v-list>
+						</v-menu>
+					</div>
+				</template>
 				<template v-slot:top>
 					<v-toolbar flat dense>
 						<v-toolbar-title>Выбор материала для передачи</v-toolbar-title>
@@ -62,6 +62,9 @@
 				</template>
 				<template v-slot:item.shelf_life="{item}">
 					{{ today(item.shelf_life) }} <strong>({{colorShelfLife(item.shelf_life)}})</strong>
+				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
 				</template>
 			</v-data-table>
 		</v-col>
@@ -111,13 +114,13 @@ export default {
 				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life', filterable: false}
 			],
 			tableColumn1: [
-				{ text: 'Место хранения', align: 'start', sortable: true, value: 'location', filterable: false},
-				{ text: 'Тип', align: 'start', sortable: true, value: 'type'},
-				{ text: 'Материал', align: 'start', sortable: true, value: 'material', width: 200},
-				{ text: 'Ед.изм', align: 'start', sortable: true, value: 'measure', filterable: false},
-				{ text: 'Остаток', align: 'start', sortable: true, value: 'total', filterable: false},
-				{ text: 'Запр. кол.', align: 'start', sortable: true, value: 'mamount', filterable: false},
-				{ text: 'Место хранения', align: 'start', sortable: true, value: 'mlocation', filterable: false},
+				{ text: 'Место хранения', align: 'start', sortable: false, value: 'location', filterable: false},
+				{ text: 'Тип', align: 'start', sortable: false, value: 'type'},
+				{ text: 'Материал', align: 'start', sortable: false, value: 'material', width: 200},
+				{ text: 'Ед.изм', align: 'start', sortable: false, value: 'measure', filterable: false},
+				{ text: 'Остаток', align: 'start', sortable: false, value: 'total', filterable: false},
+				{ text: 'Требуется', align: 'start', sortable: false, value: 'mamount', filterable: false},
+				{ text: 'Место хранения', align: 'start', sortable: false, value: 'mlocation', filterable: false},
 			],
 			search: '',
 			selected: [],
@@ -126,7 +129,8 @@ export default {
 			activeFilters: {},
 			dialog: false,
 			loading: false,
-			listLocations: []
+			listLocations: [],
+			load: false
 		}
 	},
 	methods: {
@@ -148,7 +152,8 @@ export default {
 			this.$http.post('/api/reagent/moving', obj).then(response => (this.dialog = false, this.loading = false)).catch(error => (this.loading = false, alert(error.response.data.message)));
 		},
 		getStorageAll(){
-			this.$http.get('/api/reagent/storage/all').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.load = true;
+			this.$http.get('/api/reagent/storage/all').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
 		},
 		today(date){
 			return date === null || new Date(date).toLocaleString().split(',')[0];

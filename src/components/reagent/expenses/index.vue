@@ -5,7 +5,7 @@
 				:headers="gridColumns.tableColumn"
 				:items="gridData"
 				:items-per-page="50"
-				:loading="gridData.length <= 0"
+				:loading="load"
 				:search="search"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 				<template v-slot:top>
@@ -25,6 +25,9 @@
 					<v-btn icon small color="orange" v-if="item.moving_type === 'Продление'"><v-icon>mdi-alert</v-icon></v-btn>
 					<v-btn icon small color="green" v-if="item.moving_type === 'Потребление'" @click="dialogCorrection(item)"><v-icon>mdi-alert-circle</v-icon></v-btn>
 					<v-btn icon small color="blue" v-if="item.moving_type === 'Перевод'"><v-icon>mdi-information-variant</v-icon></v-btn>
+				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
 				</template>
 			</v-data-table>
 		</v-col>
@@ -76,6 +79,7 @@ export default {
 			gridData: [],
 			dialog: false,
 			loading: false,
+			load: false,
 			item: {},
 			correction: {
 				corrected_amount: null,
@@ -91,7 +95,8 @@ export default {
 	},
 	methods: {
 		getExpenses(){
-			this.$http.get('/api/reagent/expenses').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.load = true;
+			this.$http.get('/api/reagent/expenses').then(response => (this.gridData = response.data, this.load = false)).catch(error => (this.load = false, alert(error.response.data.message)));
 		},
 		dialogCorrection(item){
 			this.item = item;

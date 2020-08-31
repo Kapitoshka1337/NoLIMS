@@ -4,7 +4,7 @@
 				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="50"
-				:loading="gridData.length <= 0"
+				:loading="load"
 				:search="search"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 				<template v-slot:top>
@@ -22,6 +22,9 @@
 				</template>
 				<template v-slot:item.actions="{item}">
 					<v-btn icon color="orange" @click="dialogDetail(item)"><v-icon>mdi-eye</v-icon></v-btn>
+				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
 				</template>
 			</v-data-table>
 		</v-col>
@@ -78,12 +81,14 @@ export default {
 			dialog: false,
 			item: {},
 			isDenyLoading: false,
-			isAllowLoading: false
+			isAllowLoading: false,
+			load: false
 		}
 	},
 	methods: {
 		getCorrections(){
-			this.$http.get('/api/reagent/corrections').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.load = true;
+			this.$http.get('/api/reagent/corrections').then(response => (this.gridData = response.data, this.load = false)).catch(error => (this.load = false, alert(error.response.data.message)));
 		},
 		today(date){
 			if(date === null) return;

@@ -27,12 +27,21 @@
                   <v-list-item-title>Метролог</v-list-item-title>
               </template>
               <v-list-item to="/equipment/metrolog/equipments">
+                <v-list-item-icon>
+                  <v-icon color="green">mdi-database</v-icon>
+                </v-list-item-icon>
                   <v-list-item-title>Оборудование</v-list-item-title>
               </v-list-item>
               <v-list-item to="/equipment/metrolog/verification">
+                <v-list-item-icon>
+                  <v-icon color="orange">mdi-beaker-check-outline</v-icon>
+                </v-list-item-icon>
                   <v-list-item-title>Проверки</v-list-item-title>
               </v-list-item>
               <v-list-item link>
+                <v-list-item-icon>
+                  <v-icon color="red">mdi-bug</v-icon>
+                </v-list-item-icon>
                   <v-list-item-title>Ремонт</v-list-item-title>
               </v-list-item>
               <v-list-group sub-group no-action>

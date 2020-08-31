@@ -5,7 +5,7 @@
 				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="50"
-				:loading="gridData.length <= 0"
+				:loading="load"
 				:search="search"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 				<template v-slot:top>
@@ -23,12 +23,15 @@
 				<template v-slot:item.actions="{item}">
 					<v-btn x-small color="orange" @click="confirmOrder(item)">Просмотр</v-btn>
 				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
+				</template>
 			</v-data-table>
 		</v-col>
 		<v-overlay :value="overlay">
 			<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
 		</v-overlay>
-		<v-dialog dense v-model="dialogOrder" max-width="1256">
+		<v-dialog dense v-model="dialogOrder" max-width="1512px">
 			<v-card>
 				<v-card-title>Заказ № {{ item.num_order }} от {{ today(item.date_order) }}</v-card-title>
 				<v-divider></v-divider>
@@ -40,6 +43,10 @@
 						:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 					</v-data-table>
 				</v-card-text>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn color="success" @click="dialogOrder = false">Закрыть</v-btn>
+				</v-card-actions>
 			</v-card>
 		</v-dialog>
 	</v-row>
@@ -70,13 +77,15 @@ export default {
 			gridData: [],
 			overlay: false,
 			dialogOrder: false,
+			load: false,
 			materials: [],
 			item: {}
 		}
 	},
 	methods: {
 		getArrivals(){
-			this.$http.get('/api/reagent/arrivals').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.load = true;
+			this.$http.get('/api/reagent/arrivals').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
 		},
 		confirmOrder(item){
 			this.item = item;

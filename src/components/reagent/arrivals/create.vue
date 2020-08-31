@@ -19,8 +19,12 @@
                     <v-row dense justify="start">
                         <v-col cols="3" v-for="card in selected" :key="card.id">
                             <v-card class="mx-auto" max-width="400px" outlined>
-                                <v-card-title>{{ card.material }}</v-card-title>
-                                <v-card-subtitle>({{ card.id }}) {{ card.type }} ({{ card.measure }})</v-card-subtitle>
+                                <v-list-item two-line>
+                                    <v-list-item-content>
+                                        <v-list-item-title class="text-md-body-1">{{ card.material }}</v-list-item-title>
+                                        <v-list-item-subtitle>({{ card.id }}) {{ card.type }} ({{ card.measure }})</v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
                                 <v-divider></v-divider>
                                 <v-card-text>
                                     <v-row>

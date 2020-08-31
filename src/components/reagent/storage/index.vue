@@ -5,7 +5,7 @@
 				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="50"
-				:loading="gridData.length <= 0"
+				:loading="load"
 				:search="search"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 				<template v-slot:top>
@@ -35,7 +35,10 @@
 				<template v-slot:item.actions="{item}">
 					<v-btn icon small color="red" @click="confirmExepenses(item)"><v-icon>mdi-water</v-icon></v-btn>
 					<v-btn icon small color="orange" @click="confirmDetail(item)"><v-icon>mdi-pencil</v-icon></v-btn>
-					<v-btn icon small color="blue" @click="moveToArchive(item)" v-if="item.total <= 0 || colorShelfLife(item.shelf_life) <= 0"><v-icon>mdi-archive</v-icon></v-btn>
+					<v-btn icon small color="blue" @click="moveToArchive(item)" v-if="item.total != null && item.total <= 0 || colorShelfLife(item.shelf_life) <= 0"><v-icon>mdi-archive</v-icon></v-btn>
+				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
 				</template>
 			</v-data-table>
 		</v-col>
@@ -134,12 +137,14 @@ export default {
 				date_renewal: null
 			},
 			url: 'storage/expenses',
-			text: ''
+			text: '',
+			load: false
 		}
 	},
 	methods: {
 		getStorage(){
-			this.$http.get('/api/reagent/storage').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
+			this.load = true;
+			this.$http.get('/api/reagent/storage').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
 		},
 		confirmExepenses(item){
 			this.item = item;
@@ -168,7 +173,6 @@ export default {
 			this.loadExpenses = true;
 			this.$http.put(`/api/reagent/arrivals/updloc/${this.item.arrival_material_id}`, {id_location: this.item.id_location, description: this.item.description}, {headers: {'Content-Type': 'application/json'}})
 			.then(response => {
-					// Object.assign(this.gridData[this.editedIndex], this.item);
 					this.gridData[this.editedIndex].id_location = this.item.id_location;
 					this.gridData[this.editedIndex].description = this.item.description;
 					this.gridData[this.editedIndex].location = this.text;
