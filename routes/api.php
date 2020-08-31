@@ -33,7 +33,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::get('all', 'Reagent\StorageController@viewAll');
 			Route::post('expenses', 'Reagent\ExpensesController@create');
 			Route::get('archives', 'Reagent\StorageController@viewArchive');
-			Route::post('archive', 'Reagent\StorageController@toArchive');
+			Route::put('archive/{id}', 'Reagent\StorageController@toArchive');
 			Route::get('print/{id}', 'Reagent\StorageController@print');
 		});
 		Route::prefix('arrivals')->group(function(){

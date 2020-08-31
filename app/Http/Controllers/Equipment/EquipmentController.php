@@ -52,8 +52,7 @@ class EquipmentController extends Controller
 				$path = $req->file('file')->store('uploads');
 				$filename = pathinfo($path, PATHINFO_BASENAME);
 				//Добавление пройденой проверки
-				equipment_date_check::create([
-					'id_equipment' => $req->input('id_equipment'),
+				equipment_date_check::where('id_equipment',$req->input('id_equipment'))->update([
 					'upload_file_name' => $filename,
 					'id_upload_document_type' => $req->input('id_upload_document_type'),
 					'number_document' => $req->input('number_document'),

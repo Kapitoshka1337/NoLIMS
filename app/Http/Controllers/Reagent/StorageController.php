@@ -34,10 +34,10 @@ class StorageController extends Controller
         return response()->json(storage::where('id_department', auth()->user()->getIdDepartment())->where('archive', 1)->get(), 200);   
     }
 
-    public function toArchive(Request $req)
+    public function toArchive($id)
     {
-        DB::transaction(function() use($req){
-            arrival_material::where('id', $req->input('id'))->update(['archive' => 1]);
+        DB::transaction(function() use($id){
+            arrival_material::where('id',$id)->update(['archive' => 1]);
         });
     }
 

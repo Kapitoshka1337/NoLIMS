@@ -55,7 +55,7 @@ class ArrivalsController extends Controller
 	public function updateLocation($id, Request $req)
 	{
 		DB::transaction(function() use($id, $req){
-			reagent_arrival_material::where('id', $id)->update(['id_location' => $req->input('id_location')]);
+			reagent_arrival_material::where('id', $id)->update($req->all());
 		});
 	}
 }

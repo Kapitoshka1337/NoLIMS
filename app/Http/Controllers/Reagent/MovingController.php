@@ -24,12 +24,12 @@ class MovingController extends Controller
 
     public function create(Request $req)
     {
+    	// return response()->json($req, 200);
 		DB::transaction(function() use ($req){
 			$moving = moving::create([
 			        'id_department_from' => auth()->user()->getIdDepartment(),
 			        'id_department_to' => $req->input('id_department_to'),
 			        'id_user' => auth()->user()->getId(),
-			        // 'date_moving' => ,
 			        'created_at' => date('Y-m-d'),
 			        'id_moving_status' => 1
     			]
@@ -102,6 +102,7 @@ class MovingController extends Controller
 	public function denyUpdate($id)
 	{
 		DB::transaction(function() use($id){
+			moving::where('id', $id)->update(['id_moving_status' => 3, 'date_moving' => date('Y-m-d')]);
 		});
 	}
 }

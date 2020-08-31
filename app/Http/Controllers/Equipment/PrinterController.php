@@ -40,12 +40,13 @@ class PrinterController extends Controller
 
 	public function table(Request $req)
 	{
+		$ids = implode(",", $req->input('item'));
 		$input = public_path() . '/template/plan.jasper';
 		$output = public_path() . '/downloads/';
 		$output2 = public_path() . "\downloads";
 		$options = [
 			'format' => ['pdf'],
-			'params' => ['filter' => "date_next_check BETWEEN '" . $req->input('start') . "' AND '" . $req->input('end') ."'"],
+			'params' => ['filter' => "id IN (" . $ids . ")"],
 			'db_connection' => [
 				'driver' => 'generic',
 				'host' => env('DB_HOST'),
@@ -63,7 +64,8 @@ class PrinterController extends Controller
 	}
 
 	public function protocol(Request $req)
-	{		$ids = implode(",", $req->input('item'));
+	{
+		$ids = implode(",", $req->input('item'));
 		$input = public_path() . '/template/protocol.jasper';
 		$output = public_path() . '/downloads/';
 		$output2 = public_path() . "\downloads";
