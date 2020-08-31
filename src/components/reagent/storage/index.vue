@@ -34,8 +34,8 @@
 				</template>
 				<template v-slot:item.actions="{item}">
 					<v-btn icon small color="red" @click="confirmExepenses(item)"><v-icon>mdi-water</v-icon></v-btn>
-					<v-btn icon small color="orange"><v-icon>mdi-pencil</v-icon></v-btn>
-					<v-btn icon small color="blue"><v-icon>mdi-archive</v-icon></v-btn>
+					<v-btn icon small color="orange" @click="confirmDetail(item)"><v-icon>mdi-pencil</v-icon></v-btn>
+					<v-btn icon small color="blue" @click="moveToArchive(item)" v-if="item.total <= 0 || colorShelfLife(item.shelf_life) <= 0"><v-icon>mdi-archive</v-icon></v-btn>
 				</template>
 			</v-data-table>
 		</v-col>
@@ -72,6 +72,30 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
+		<v-dialog dense v-model="dialogDetail" max-width="700">
+			<v-card>
+				<v-card-title>{{ item.material }} ({{ item.measure }})</v-card-title>
+				<v-card-subtitle>{{ item.location }}</v-card-subtitle>
+				<v-divider></v-divider>
+				<v-card-text>
+					<v-row>
+						<v-col cols="12">
+							<v-autocomplete @update:search-input="locationText" v-model="item.id_location" :items="dropdownLocation" outlined dense label="Место хранения"></v-autocomplete>
+							<v-textarea v-model="item.description" :rows="2" :height="100" outlined dense label="Дополнительная информация"></v-textarea>
+						</v-col>
+					</v-row>
+				</v-card-text>
+				<v-divider></v-divider>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn color="success" :loading="loadExpenses" @click="saveDetail()">Сохранить</v-btn>
+					<v-btn color="error" @click="dialogDetail = false">Отмена</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+		<v-overlay :value="overlay">
+			<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
+		</v-overlay>
 	</v-row>
 </template>
 
@@ -95,10 +119,14 @@ export default {
 				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life', filterable: false},
 				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false},
 			],
+			listLocations: [],
 			dialogExpenses: false,
+			dialogDetail: false,
 			loadExpenses: false,
+			overlay: false,
 			gridData: [],
 			item: {},
+			editedIndex: -1,
 			expense: {
 				amount: null,
 				famount: null,
@@ -106,6 +134,7 @@ export default {
 				date_renewal: null
 			},
 			url: 'storage/expenses',
+			text: ''
 		}
 	},
 	methods: {
@@ -115,6 +144,11 @@ export default {
 		confirmExepenses(item){
 			this.item = item;
 			this.dialogExpenses = true;
+		},
+		confirmDetail(item){
+			this.editedIndex = this.gridData.indexOf(item);
+			this.item = Object.assign({}, item);
+			this.dialogDetail = true;
 		},
 		submitExpenses(){
 			this.expense.id_arrival = this.item.arrival_material_id;
@@ -130,6 +164,19 @@ export default {
 				}
 			).catch(error => (this.loadExpenses = false, this.dialogExpenses = false, alert(error.response.data.message)));
 		},
+		saveDetail(){
+			this.loadExpenses = true;
+			this.$http.put(`/api/reagent/arrivals/updloc/${this.item.arrival_material_id}`, {id_location: this.item.id_location, description: this.item.description}, {headers: {'Content-Type': 'application/json'}})
+			.then(response => {
+					// Object.assign(this.gridData[this.editedIndex], this.item);
+					this.gridData[this.editedIndex].id_location = this.item.id_location;
+					this.gridData[this.editedIndex].description = this.item.description;
+					this.gridData[this.editedIndex].location = this.text;
+					this.loadExpenses = false;
+					this.dialogDetail = false;
+				})
+			.catch(error => (this.loadExpenses = false, alert(error.response.data.message)));
+		},
 		today(date){
 			return date === null || new Date(date).toLocaleString().split(',')[0];
 		},
@@ -140,6 +187,16 @@ export default {
 		},
 		convert(item, param){
 			return this.$convert(item[param]).param(item.density).measure(unit[item.id_order_measure]).to(unit[item.id_measure]);
+		},
+		moveToArchive(item){
+            this.editedIndex = this.gridData.indexOf(item);
+			this.overlay = true;
+			this.$http.put(`/api/reagent/storage/archive/${item.arrival_material_id}`, {headers: {'Content-Type': 'application/json'}})
+			.then(response => {this.overlay = false; this.gridData.splice(this.editedIndex, 1);})
+			.catch(error => (this.overlay = false, alert(error.response.data.message)));
+		},
+		locationText(data){
+			this.text = data;
 		}
 	},
 	watch: {
@@ -171,7 +228,18 @@ export default {
 		},
 		isHead(){
 			return this.$store.getters.isRoles === 2;
-		}
+		},
+        dropdownLocation(){
+            if(!this.listLocations.length)
+                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error.response.data.message)));
+            else
+            {
+                let result = [];
+				for (let str of this.listLocations)
+                    result.push({value: str['id'], text: `${str['cabinet_number']} ${str['place']} ${str['notation']}`});
+                return result;
+            }
+        }
 	},
 	created(){
 		this.getStorage();

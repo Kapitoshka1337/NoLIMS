@@ -16,7 +16,6 @@ import Convert from './components/reagent/convert.js';
 import Login from "./components/auth/login.vue";
 import Singup from "./components/auth/singup.vue";
 import Hub from "./components/hub.vue";
-import MenuNav from './components/reagent/menu.vue';
 //REAGENT
 import Reagent from "./components/reagent/main.vue";
 import Corrections from "./components/reagent/correction/index.vue";
@@ -43,12 +42,11 @@ const token = localStorage.getItem('token');
 if(token){
   Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
-//  if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.152';
+if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.152';
 //  else Vue.prototype.$http.defaults.baseURL = 'http://laravel';
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
-Vue.component('menu-nav', MenuNav);
 
 var router = new VueRouter({
   mode: 'history',
@@ -62,7 +60,7 @@ var router = new VueRouter({
         { path: 'archive', component: Archive,  meta: { roles: [1, 2, 3, 4] } },
         { path: 'arrivals', component: Arrivals,  meta: { roles: [1, 2, 3, 4] } },
         { path: 'arrivals/create', component: AppendArrivals,  meta: { roles: [2, 3] } }, //ПЕРЕДЕЛАТЬ
-        { path: 'moving', component: MovingReq, meta: { roles: [2, 3] } },
+        { path: 'moving', component: MovingReq, meta: { roles: [1, 2, 3, 4] } },
         { path: 'moving/history', component: MovingHistory, meta: { roles: [2, 3] } },
         { path: 'expenses', component: Expenses,  meta: { roles: [1, 2, 3, 4] } },
         { path: 'writeoff', component: Writreoff,  meta: { roles: [1, 2, 3, 4] } },

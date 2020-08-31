@@ -51,8 +51,8 @@
 				<v-divider></v-divider>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn color="success">Принять</v-btn>
-					<v-btn color="error">Отказать</v-btn>
+					<v-btn color="success" @click="allow()" :loading="isAllowLoading">Принять</v-btn>
+					<v-btn color="error" @click="deny()" :loading="isDenyLoading">Отказать</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -73,28 +73,12 @@ export default {
 				{ text: 'Статус', align: 'start', sortable: true, value: 'status', },
 				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false}
 			],
+			search: '',
 			gridData: [],
 			dialog: false,
-			item: {}
-//id: 3
-//id_department: 14
-//user: "ТЕСТ"
-//created_at: "2020-08-25 00:00:00"
-//date_usage: "2020-08-20"
-//reason_correct: "ггпогчпо"
-//spent_amount: 1202000
-//corrected_amount: 0.05
-//id_outgo: 92
-//id_material: 12
-//status: "Подтвержден"
-//id_status: 2
-//date_response: "2020-08-25"
-//density: 1
-//id_measure: 2
-//measure: "г"
-//id_order_measure: 4
-//order_measure: "кг"
-			//],
+			item: {},
+			isDenyLoading: false,
+			isAllowLoading: false
 		}
 	},
 	methods: {
@@ -110,29 +94,18 @@ export default {
 			this.item = item;
 			this.dialog = true;
 		},
-		//allow(index = null){
-		//	let obj = { id_outgo: this.gridData[index].id_outgo, amount: this.gridData[index].corrected_amount};
-		//	this.isAllowLoading = !this.isAllowLoading;
-		//	this.$http.put("/api/reagent/corrections/allow/" + this.gridData[index].id, obj,{
-		//		headers: {'Content-Type': 'application/json'}})
-		//		.then(response => (this.gridData[index].id_status = 2,
-		//		this.gridData[index].status = 'Подтверждена',
-		//		this.gridData[index].date_response = this.dateToday(),
-		//		this.isAllowLoading = !this.isAllowLoading)).catch(error => (alert(error.response.data.message), this.isAllowLoading = !this.isAllowLoading));
-		//},
-		deny(index = null){
-			this.isDenyLoading = !this.isDenyLoading;
-			this.$http.put("/api/reagent/corrections/deny/" + this.gridData[index].id, {
-				headers: {'Content-Type': 'application/json'}})
-				.then(response => (this.gridData[index].id_status = 3,
-				this.gridData[index].status = 'Отклонена',
-				this.gridData[index].date_response = this.dateToday(),
-				this.isDenyLoading = !this.isDenyLoading)).catch(error => (alert(error.response.data.message), this.isDenyLoading = !this.isDenyLoading));
+		allow(){
+			this.isAllowLoading = !this.isAllowLoading;
+			this.$http.put(`/api/reagent/corrections/allow/${this.item.id}`, { id_outgo: this.item.id_outgo, amount: this.item.corrected_amount},{headers: {'Content-Type': 'application/json'}})
+				.then(response => (this.dialog = false, this.item.id_status = 2,this.item.status = 'Подтверждена', this.item.date_response = new Date(),
+				this.isAllowLoading = !this.isAllowLoading)).catch(error => (alert(error.response.data.message), this.isAllowLoading = !this.isAllowLoading));
 		},
-		//dateToday(){
-		//	let today = new Date();
-		//	return today.toLocaleString().split(',')[0];
-		//},
+		deny(){
+			this.isDenyLoading = !this.isDenyLoading;
+			this.$http.put(`/api/reagent/corrections/deny/${this.item.id}`, {headers: {'Content-Type': 'application/json'}})
+				.then(response => (this.dialog = false, this.item.id_status = 3, this.item.status = 'Отклонена', this.item.date_response = new Date(),
+				this.isDenyLoading = false)).catch(error => (this.isDenyLoading = false, alert(error.response.data.message)));
+		}
 	},
 	created(){
 		this.getCorrections();

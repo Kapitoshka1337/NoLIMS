@@ -15,46 +15,35 @@
           <v-list dense>
             <v-list-item link to="/equipment">
               <v-list-item-icon>
-                <v-icon>mdi-view-dashboard</v-icon>
+                <v-icon color="purple">mdi-view-dashboard</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Главная</v-list-item-title>
             </v-list-item>
-            <v-list-group prepend-icon="mdi-help-box" no-action>
+            <v-list-group no-action>
               <template v-slot:activator>
-                <v-list-item-content>
+                <v-list-item-icon>
+                  <v-icon color="blue">mdi-pencil-ruler</v-icon>
+                </v-list-item-icon>
                   <v-list-item-title>Метролог</v-list-item-title>
-                </v-list-item-content>
               </template>
               <v-list-item to="/equipment/metrolog/equipments">
-                <v-list-item-content>
                   <v-list-item-title>Оборудование</v-list-item-title>
-                </v-list-item-content>
               </v-list-item>
               <v-list-item to="/equipment/metrolog/verification">
-                <v-list-item-content>
                   <v-list-item-title>Проверки</v-list-item-title>
-                </v-list-item-content>
               </v-list-item>
               <v-list-item link>
-                <v-list-item-content>
                   <v-list-item-title>Ремонт</v-list-item-title>
-                </v-list-item-content>
               </v-list-item>
               <v-list-group sub-group no-action>
                 <template v-slot:activator>
-                  <v-list-item-content>
                     <v-list-item-title>Дополнительно</v-list-item-title>
-                  </v-list-item-content>
                 </template>
                 <v-list-item link>
-                  <v-list-item-content>
                     <v-list-item-title>Инструкции</v-list-item-title>
-                  </v-list-item-content>
                 </v-list-item>
                 <v-list-item link>
-                  <v-list-item-content>
                     <v-list-item-title>ТО</v-list-item-title>
-                  </v-list-item-content>
                 </v-list-item>
               </v-list-group>
             </v-list-group>

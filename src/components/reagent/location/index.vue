@@ -74,7 +74,7 @@ export default {
 			this.$http.get('/api/reagent/locations').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		editedItem(item){
-			this.editedIndex = this.gridData.indexOf(item)
+			this.editedIndex = this.gridData.indexOf(item);
 			this.item = Object.assign({}, item);
 			this.dialog = true;
 		},

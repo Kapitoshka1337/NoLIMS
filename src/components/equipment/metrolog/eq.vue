@@ -509,17 +509,19 @@ export default {
 			}).catch(error => (this.loadProtocol = false, alert('Ошибка формирования')));
 		},
 		printTable(){
-			if(this.filters.next_start_date && this.filters.next_end_date)
+			if(this.selected.length > 0)
 			{
+				let obj = [];
+				for (let item in this.selected) obj.push(this.selected[item].id);
 				this.overlay = true;
-				this.$http.post('/api/equipment/printer/table', {start: this.filters.next_start_date, end: this.filters.next_end_date}, {responseType: 'blob'})
+				this.$http.post('/api/equipment/printer/table', {item: obj}, {responseType: 'blob'})
 				.then(response =>{
 					const file = new Blob([response.data], {type: 'application/pdf'});
 					fs.saveAs(file, 'Таблица проверок.pdf');
 					this.overlay = false;
 				}).catch(error => (this.overlay = false, alert('Ошибка формирования')));
 			}
-			else alert('Не выбран период предстоящей проверки');
+			else alert('Не выбрано оборудование');
 		},
 		createEq(){
 			this.loadCreate = true;

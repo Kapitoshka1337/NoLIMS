@@ -6,7 +6,6 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
-		//status: '',
 		token: localStorage.getItem('token') || '',
 		id_department: localStorage.getItem('id_department') || '',
 		name: localStorage.getItem('name') || '',
@@ -14,29 +13,20 @@ export default new Vuex.Store({
 		user : null
 	},
 	mutations:{
-		//auth_request(state){
-		//	state.status = 'loading';
-		//},
 		auth_success(state, {tkn, usr, id_dep, nm, rls}){
-			//state.status = 'success';
 			state.token = tkn;
 			state.id_department = id_dep;
 			state.name = nm;
 			state.roles = rls;
 			state.user = usr;
 		},
-		//auth_error(state){
-		//	state.status = 'error';
-		//},
 		logout(state){
-			//state.status = '';
 			state.token = '';
 		},
 	},
 	actions:{
 		login({commit}, user){
 			return new Promise((resolve, reject) => {
-			//  commit('auth_request');
 			  axios({url: '/api/auth/login', data: user, method: 'POST' })
 			  .then(response => {
 				const tkn = response.data.token;
@@ -61,7 +51,6 @@ export default new Vuex.Store({
 		},
 		register({commit}, user){
 			return new Promise((resolve, reject) => {
-			//  commit('auth_request');
 			  axios({url: '/api/auth/singup', data: user, method: 'POST' })
 			  .then(response => {
 				const tkn = response.data.token;
@@ -78,7 +67,6 @@ export default new Vuex.Store({
 				resolve(response);
 			  })
 			  .catch(error => {
-				//commit('auth_error', error);
 				localStorage.removeItem('token');
 				reject(error);
 			  })
@@ -98,12 +86,8 @@ export default new Vuex.Store({
 	},
 	getters:{
 		isLoggedIn(state){
-			if(state.token)
-			return true;
+			if(state.token) return true;
 		},
-		//authStatus(state){
-		//	return state.status;
-		//},
 		user(state){
 			return state.user;
 		},

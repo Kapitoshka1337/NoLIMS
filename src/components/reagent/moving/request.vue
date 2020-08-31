@@ -45,7 +45,7 @@
 						<v-spacer></v-spacer>
 						<v-text-field v-model="search" label="Поиск ТИП/МАТЕРИАЛ" clearable single-line hide-details></v-text-field>
 						<v-spacer></v-spacer>
-						<v-btn small :ripple="false" color="success" @click="dialog = true">Сформировать</v-btn>
+						<v-btn small :ripple="false" color="success" @click="dialog = true" v-bind:disabled="isRole === 1|| isRole === 4">Сформировать</v-btn>
 					</v-toolbar>
 				</template>
 				<template v-slot:item.date_order="{item}">
@@ -65,19 +65,27 @@
 				</template>
 			</v-data-table>
 		</v-col>
-		<v-dialog dense v-model="dialog" max-width="1256px">
+		<v-dialog dense v-model="dialog" max-width="1512">
 			<v-card>
 				<v-card-title>Запрашиваемые материалы из {{ activeFilters.department }}</v-card-title>
 				<v-divider></v-divider>
 				<v-card-text>
-					<v-data-table dense :headers="tableColumn1" :items="selected" :show-select="true" v-model="selected" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
->
+					<v-data-table dense :items="selectedDialog" :headers="tableColumn1" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+						<template v-slot:item.total="{item}">
+							{{ idDep === 5 ? item.total || item.amount : convert(item, 'total') || convert(item, 'amount')}}
+						</template>
+						<template v-slot:item.mamount="{item}">
+							<v-text-field type="number" outlined dense v-model="item.mamount"></v-text-field>
+						</template>
+						<template v-slot:item.mlocation="{item}">
+							<v-autocomplete :items="dropdownLocation" clearable v-model="item.mlocation" outlined dense></v-autocomplete>
+						</template>
 					</v-data-table>
 				</v-card-text>
 				<v-divider></v-divider>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn color="success">Отправить</v-btn>
+					<v-btn color="success" @click="submutMoving()" :loading="loading">Отправить</v-btn>
 					<v-btn color="error" @click="dialog = false">Отмена</v-btn>
 				</v-card-actions>
 			</v-card>
@@ -109,33 +117,36 @@ export default {
 				{ text: 'Ед.изм', align: 'start', sortable: true, value: 'measure', filterable: false},
 				{ text: 'Остаток', align: 'start', sortable: true, value: 'total', filterable: false},
 				{ text: 'Запр. кол.', align: 'start', sortable: true, value: 'mamount', filterable: false},
+				{ text: 'Место хранения', align: 'start', sortable: true, value: 'mlocation', filterable: false},
 			],
 			search: '',
 			selected: [],
 			gridData: [],
 			filters: { department: [], type: [] },
 			activeFilters: {},
-			dialog: false
+			dialog: false,
+			loading: false,
+			listLocations: []
 		}
 	},
 	methods: {
-		//submutMoving(){
-		//	let obb = [];
-		//	for(let item of this.selectedMaterials)
-		//	{
-		//		obb.push({
-		//			id_arrival_material: item['arrival_material_id'],
-		//			id_location: item['id_location'],
-		//			amount: this.$convert(item['moving_amount']).param(item['density']).measure(unit[item['id_measure']]).to(unit[item['id_order_measure']])
-		//		});
-		//	}
-		//	let obj = {
-		//		id_department_to: this.selectedMaterials[0].id_department,
-		//		materials: obb
-		//	};
-		//	this.loading = !this.loading;
-		//	this.$http.post('/api/reagent/moving', obj).then(response => (this.open = false, this.loading = !this.loading)).catch(error => (alert(error.response.data.message), this.loading = !this.loading));
-		//},
+		submutMoving(){
+			let obb = [];
+			for(let item of this.selectedDialog)
+			{
+				obb.push({
+					id_arrival_material: item.arrival_material_id,
+					id_location: item.mlocation,
+					amount: this.$convert(item.mamount).param(item.density).measure(unit[item.id_measure]).to(unit[item.id_order_measure])
+				});
+			}
+			let obj = {
+				id_department_to: this.selectedDialog[0].id_department,
+				materials: obb
+			};
+			this.loading = true;
+			this.$http.post('/api/reagent/moving', obj).then(response => (this.dialog = false, this.loading = false)).catch(error => (this.loading = false, alert(error.response.data.message)));
+		},
 		getStorageAll(){
 			this.$http.get('/api/reagent/storage/all').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
@@ -165,6 +176,23 @@ export default {
 		idDep(){
 			return this.$store.getters.idDepartment;
 		},
+		isRole(){
+			return this.$store.getters.isRoles;
+		},
+        dropdownLocation(){
+            if(!this.listLocations.length)
+                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error.response.data.message)));
+            else
+            {
+                let result = [];
+				for (let str of this.listLocations)
+                    result.push({value: str['id'], text: `${str['cabinet_number']} ${str['place']} ${str['notation']}`});
+                return result;
+            }
+		},
+		selectedDialog(){
+			return JSON.parse(JSON.stringify(this.selected));
+		}
 	},
 	created(){
 		this.getStorageAll();

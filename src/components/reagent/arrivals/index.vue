@@ -21,7 +21,7 @@
 					{{today(item.date_order)}}
 				</template>
 				<template v-slot:item.actions="{item}">
-					<v-btn icon color="orange" @click="confirmOrder(item)"><v-icon>mdi-eye</v-icon></v-btn>
+					<v-btn x-small color="orange" @click="confirmOrder(item)">Просмотр</v-btn>
 				</template>
 			</v-data-table>
 		</v-col>
