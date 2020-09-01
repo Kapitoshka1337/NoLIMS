@@ -14,7 +14,7 @@
 						<v-spacer></v-spacer>
 						<v-text-field v-model="search" label="Поиск КОД/ТИП/МАТЕРИАЛ" clearable single-line hide-details></v-text-field>
 						<v-spacer></v-spacer>
-						<v-btn :ripple="false" icon color="blue"><v-icon>mdi-printer</v-icon></v-btn>
+						<v-btn :ripple="false" icon color="blue" @click="dialogPrint = true"><v-icon>mdi-printer</v-icon></v-btn>
 					</v-toolbar>
 				</template>
 				<template v-slot:item.date_order="{item}">
@@ -96,6 +96,26 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
+		<v-dialog dense v-model="dialogPrint" max-width="512">
+			<v-card>
+				<v-card-title>Опись расходных материалов</v-card-title>
+				<v-card-subtitle>Формирование описи</v-card-subtitle>
+				<v-divider></v-divider>
+				<v-card-text>
+					<v-row>
+						<v-col cols="12">
+							<v-autocomplete @update:search-input="locationText" v-model="id_location" :items="dropdownLocation" outlined dense label="Место хранения"></v-autocomplete>
+						</v-col>
+					</v-row>
+				</v-card-text>
+				<v-divider></v-divider>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn color="success" :loading="loadExpenses" @click="printInventory()">ОК</v-btn>
+					<v-btn color="error" @click="dialogPrint = false">Отмена</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 		<v-overlay :value="overlay">
 			<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
 		</v-overlay>
@@ -125,6 +145,7 @@ export default {
 			listLocations: [],
 			dialogExpenses: false,
 			dialogDetail: false,
+			dialogPrint: false,
 			loadExpenses: false,
 			overlay: false,
 			gridData: [],
@@ -138,7 +159,8 @@ export default {
 			},
 			url: 'storage/expenses',
 			text: '',
-			load: false
+			load: false,
+			id_location: null
 		}
 	},
 	methods: {
@@ -201,6 +223,16 @@ export default {
 		},
 		locationText(data){
 			this.text = data;
+		},
+		printInventory(){
+			this.loadExpenses = true;
+			this.$http.get(`/api/reagent/storage/print/${this.id_location}`, {responseType: 'blob'})
+			.then(response => {
+				const file = new Blob([response.data], {type: 'application/pdf'});
+				fs.saveAs(file, 'Опись расходных материалов.pdf');
+								this.loadExpenses = false;
+				this.dialogPrint = false;
+			});
 		}
 	},
 	watch: {

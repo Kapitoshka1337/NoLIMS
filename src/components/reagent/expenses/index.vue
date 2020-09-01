@@ -64,6 +64,7 @@ export default {
 			search: '',
             gridColumns: {
                 tableColumn: [
+					{ text: '№', align: 'start', sortable: true, value: 'id_arrival_material'},
 					{ text: 'Код', align: 'start', sortable: true, value: 'material_id'},
 					{ text: 'Дата пост.', align: 'start', sortable: true, value: 'date_order', filterable: false},
 					{ text: 'Материал', align: 'start', sortable: true, value: 'material'},
