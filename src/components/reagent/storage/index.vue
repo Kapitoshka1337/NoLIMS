@@ -1,7 +1,7 @@
 <template>
 	<v-row>
 		<v-col cols="12">
-			<v-data-table dense item-key="matertia_id"
+			<v-data-table dense item-key="matertial_id"
 				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="50"
@@ -12,10 +12,65 @@
 					<v-toolbar flat dense>
 						<v-toolbar-title>Склад</v-toolbar-title>
 						<v-spacer></v-spacer>
-						<v-text-field v-model="search" label="Поиск КОД/ТИП/МАТЕРИАЛ" clearable single-line hide-details></v-text-field>
+						<v-text-field v-model="search" label="Поиск КОД/МАТЕРИАЛ" clearable single-line hide-details></v-text-field>
 						<v-spacer></v-spacer>
 						<v-btn :ripple="false" icon color="blue" @click="dialogPrint = true"><v-icon>mdi-printer</v-icon></v-btn>
 					</v-toolbar>
+				</template>
+				<template v-for="(col, i) in filters" v-slot:[`header.${i}`]="{ header }">
+					<div style="display: inline-block; padding: 16px 0;">{{ header.text }}</div>
+					<div style="float: right; margin-top: 8px">
+						<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed style="position: absolute; right: 0">
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+									<v-icon small 
+										:color="activeFilters[header.value] && activeFilters[header.value].length < filters[header.value].length ? 'red' : 'default'">mdi-filter-variant
+									</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item-content>
+									<v-select :items="filters[header.value]" v-model="activeFilters[header.value]" :clearable="true" multiple outlined dense>
+										<template v-slot:selection="{ item, index }">
+											<v-chip small v-if="index === 0"><span>{{ item }}</span></v-chip>
+											<span v-if="index === 1" class="grey--text caption">(+{{ activeFilters[header.value].length - 1 }})</span>
+										</template>
+									</v-select>
+								</v-list-item-content>
+								<v-divider></v-divider>
+								<v-row no-gutters>
+									<v-col cols="6">
+										<v-btn text block @click="toggleAll(header.value)" color="success">Выделить всё</v-btn>
+									</v-col>
+									<v-col cols="6">
+										<v-btn text block @click="clearAll(header.value)" color="warning">Снять всё</v-btn>
+									</v-col>
+								</v-row>
+							</v-list>
+						</v-menu>
+					</div>
+				</template>
+				<template v-slot:header.date_order="{header}">
+					{{header.text}}
+					<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+								<v-icon small :color="DateFilters.order_start_date ? 'red' : 'blue'">mdi-filter-variant</v-icon>
+							</v-btn>
+						</template>
+						<v-card>
+						<v-card-text>
+							<v-container>
+								<v-row>
+									<v-col cols="12">
+										<v-text-field clearable type="date" dense outlined label="Дата1" v-model="DateFilters.order_start_date"></v-text-field>
+										<v-text-field clearable type="date" dense outlined label="Дата2" v-model="DateFilters.order_end_date" ></v-text-field>
+									</v-col>
+								</v-row>
+							</v-container>
+						</v-card-text>
+						</v-card>
+					</v-menu>
 				</template>
 				<template v-slot:item.date_order="{item}">
 					{{ today(item.date_order) }}
@@ -29,13 +84,35 @@
 				<template v-slot:item.amount="{item}">
 					{{ idDep === 5 ? item.amount : convert(item, 'amount') }}
 				</template>
+				<template v-slot:header.shelf_life="{header}">
+					{{header.text}}
+					<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+								<v-icon small :color="DateFilters.shelf_start_date ? 'red' : 'blue'">mdi-filter-variant</v-icon>
+							</v-btn>
+						</template>
+						<v-card>
+						<v-card-text>
+							<v-container>
+								<v-row>
+									<v-col cols="12">
+										<v-text-field clearable type="date" dense outlined label="Дата1" v-model="DateFilters.shelf_start_date"></v-text-field>
+										<v-text-field clearable type="date" dense outlined label="Дата2" v-model="DateFilters.shelf_end_date" ></v-text-field>
+									</v-col>
+								</v-row>
+							</v-container>
+						</v-card-text>
+						</v-card>
+					</v-menu>
+				</template>
 				<template v-slot:item.shelf_life="{item}">
 					{{ today(item.shelf_life) }} <strong>({{colorShelfLife(item.shelf_life)}})</strong>
 				</template>
 				<template v-slot:item.actions="{item}">
 					<v-btn icon small color="red" @click="confirmExepenses(item)"><v-icon>mdi-water</v-icon></v-btn>
 					<v-btn icon small color="orange" @click="confirmDetail(item)"><v-icon>mdi-pencil</v-icon></v-btn>
-					<v-btn icon small color="blue" @click="moveToArchive(item)" v-if="item.total != null && item.total <= 0 || colorShelfLife(item.shelf_life) <= 0"><v-icon>mdi-archive</v-icon></v-btn>
+					<v-btn icon small color="blue" @click="moveToArchive(item)" v-if="isRole === 2"><v-icon>mdi-archive</v-icon></v-btn>
 				</template>
 				<template v-slot:no-data>
 					Пока ничего нет :(
@@ -51,7 +128,7 @@
 					<v-row>
 						<v-col cols="12">
 							<v-alert dense outlined type="error" v-if="isTime">Расход материала по истечение установленного срока хранения ({{today(item.shelf_life)}}) запрещается</v-alert>
-							<v-alert dense outlined type="warning" v-if="isAmount">Введите протраченное количество</v-alert>
+							<v-alert dense outlined type="warning" v-if="isAmount">Введите потраченное количество</v-alert>
 							<v-alert dense outlined type="warning" v-if="isTotal">Невозможно потратить больше {{ idDep === 5 ? item.total || item.amount : convert(item, 'total') || convert(item, 'amount')}}</v-alert>
 						</v-col>
 					</v-row>
@@ -132,16 +209,30 @@ export default {
 			search: '',
 			tableColumn: [
 				{ text: 'Код', align: 'start', sortable: true, value: 'material_id', width: 60},
-				{ text: 'Дата пост.', align: 'start', sortable: true, value: 'date_order', filterable: false},
-				{ text: 'Местоположение', align: 'start', sortable: true, value: 'location', filterable: false},
-				{ text: 'Тип', align: 'start', sortable: true, value: 'type'},
+				{ text: 'Дата пост.', align: 'start', sortable: true, value: 'date_order',
+				filter: value => {return !this.DateFilters.order_start_date && !this.DateFilters.order_end_date ? true :
+				value >= this.DateFilters.order_start_date && value <= this.DateFilters.order_end_date}},
+				{ text: 'Местоположение', align: 'start', sortable: true, value: 'location',
+				filter: value => {return this.activeFilters.location ? this.activeFilters.location.includes(value) : true}},
+				{ text: 'Тип', align: 'start', sortable: true, value: 'type',
+				filter: value => {return this.activeFilters.type ? this.activeFilters.type.includes(value) : true}},
 				{ text: 'Материал', align: 'start', sortable: true, value: 'material', width: 180},
 				{ text: 'Ед.изм', align: 'start', sortable: true, value: 'measure', filterable: false},
 				{ text: 'Остаток', align: 'start', sortable: true, value: 'total', filterable: false},
 				{ text: 'Поступило', align: 'start', sortable: true, value: 'amount', filterable: false},
-				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life', filterable: false},
+				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life',
+				filter: value => {return !this.DateFilters.shelf_start_date && !this.DateFilters.shelf_end_date ? true :
+				value >= this.DateFilters.shelf_start_date && value <= this.DateFilters.shelf_end_date}},
 				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false},
 			],
+			filters: { location: [], type: []},
+			activeFilters: {},
+			DateFilters: {
+				order_start_date: null,
+				order_end_date: null,
+				shelf_start_date: null,
+				shelf_end_date: null
+			},
 			listLocations: [],
 			dialogExpenses: false,
 			dialogDetail: false,
@@ -233,6 +324,17 @@ export default {
 								this.loadExpenses = false;
 				this.dialogPrint = false;
 			});
+		},
+		initFilters() {
+			for (let col in this.filters) {
+				this.filters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })}
+			this.activeFilters = Object.assign({}, this.filters)
+		},
+		toggleAll (col) {
+			this.activeFilters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })
+		},
+		clearAll (col) {
+			this.activeFilters[col] = []
 		}
 	},
 	watch: {
@@ -242,6 +344,9 @@ export default {
 		},
 		'expense.amount': function(newVal, oldVal){
 			this.expense.famount = this.$convert(newVal).param(this.item.density).measure(unit[this.item.id_measure]).to(unit[this.item.id_order_measure]);
+		},
+		gridData(){
+			this.initFilters();
 		}
 	},
 	computed: {
@@ -251,6 +356,9 @@ export default {
 		},
 		idDep(){
 			return this.$store.getters.idDepartment;
+		},
+		isRole(){
+			return this.$store.getters.isRoles;
 		},
 		isTime(){
 			return Object.keys(this.item).length && this.colorShelfLife(this.item.shelf_life) <= 0;

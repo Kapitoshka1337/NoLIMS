@@ -21,7 +21,7 @@
 					{{today(item.date_response)}}
 				</template>
 				<template v-slot:item.actions="{item}">
-					<v-btn icon color="orange" @click="dialogDetail(item)"><v-icon>mdi-eye</v-icon></v-btn>
+					<v-btn x-small color="orange" @click="dialogDetail(item)">Просмотр</v-btn>
 				</template>
 				<template v-slot:no-data>
 					Пока ничего нет :(

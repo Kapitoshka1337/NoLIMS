@@ -2,7 +2,7 @@
 	<v-row>
 		<v-col cols="12">
 			<v-data-table calculate-widths dense item-key="id"
-				:headers="gridColumns.tableColumn"
+				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="50"
 				:loading="load"
@@ -14,6 +14,114 @@
 						<v-spacer></v-spacer>
 						<v-text-field v-model="search" label="Поиск КОД/МАТЕРИАЛ" clearable single-line hide-details></v-text-field>
 					</v-toolbar>
+				</template>
+				<template v-for="(col, i) in filters" v-slot:[`header.${i}`]="{ header }">
+					<div style="display: inline-block; padding: 16px 0;">{{ header.text }}</div>
+					<div style="float: right; margin-top: 8px">
+						<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed style="position: absolute; right: 0">
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+									<v-icon small 
+										:color="activeFilters[header.value] && activeFilters[header.value].length < filters[header.value].length ? 'red' : 'default'">mdi-filter-variant
+									</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item-content>
+									<v-select :items="filters[header.value]" v-model="activeFilters[header.value]" :clearable="true" multiple outlined dense>
+										<template v-slot:selection="{ item, index }">
+											<v-chip small v-if="index === 0"><span>{{ item }}</span></v-chip>
+											<span v-if="index === 1" class="grey--text caption">(+{{ activeFilters[header.value].length - 1 }})</span>
+										</template>
+									</v-select>
+								</v-list-item-content>
+								<v-divider></v-divider>
+								<v-row no-gutters>
+									<v-col cols="6">
+										<v-btn text block @click="toggleAll(header.value)" color="success">Выделить всё</v-btn>
+									</v-col>
+									<v-col cols="6">
+										<v-btn text block @click="clearAll(header.value)" color="warning">Снять всё</v-btn>
+									</v-col>
+								</v-row>
+							</v-list>
+						</v-menu>
+					</div>
+				</template>
+				<template v-slot:header.date_order="{header}">
+					{{header.text}}
+					<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+								<v-icon small :color="DateFilters.order_start_date ? 'red' : 'blue'">mdi-filter-variant</v-icon>
+							</v-btn>
+						</template>
+						<v-card>
+						<v-card-text>
+							<v-container>
+								<v-row>
+									<v-col cols="12">
+										<v-text-field clearable type="date" dense outlined label="Дата1" v-model="DateFilters.order_start_date"></v-text-field>
+										<v-text-field clearable type="date" dense outlined label="Дата2" v-model="DateFilters.order_end_date" ></v-text-field>
+									</v-col>
+								</v-row>
+							</v-container>
+						</v-card-text>
+						</v-card>
+					</v-menu>
+				</template>
+				<template v-slot:item.date_order="{item}">
+					{{ today(item.date_order) }}
+				</template>
+				<template v-slot:header.date_usage="{header}">
+					{{header.text}}
+					<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+								<v-icon small :color="DateFilters.usage_start_date ? 'red' : 'blue'">mdi-filter-variant</v-icon>
+							</v-btn>
+						</template>
+						<v-card>
+						<v-card-text>
+							<v-container>
+								<v-row>
+									<v-col cols="12">
+										<v-text-field clearable type="date" dense outlined label="Дата1" v-model="DateFilters.usage_start_date"></v-text-field>
+										<v-text-field clearable type="date" dense outlined label="Дата2" v-model="DateFilters.usage_end_date" ></v-text-field>
+									</v-col>
+								</v-row>
+							</v-container>
+						</v-card-text>
+						</v-card>
+					</v-menu>
+				</template>
+				<template v-slot:item.date_usage="{item}">
+					{{ today(item.date_usage) }}
+				</template>
+				<template v-slot:header.date_record="{header}">
+					{{header.text}}
+					<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+								<v-icon small :color="DateFilters.record_start_date ? 'red' : 'blue'">mdi-filter-variant</v-icon>
+							</v-btn>
+						</template>
+						<v-card>
+						<v-card-text>
+							<v-container>
+								<v-row>
+									<v-col cols="12">
+										<v-text-field clearable type="date" dense outlined label="Дата1" v-model="DateFilters.record_start_date"></v-text-field>
+										<v-text-field clearable type="date" dense outlined label="Дата2" v-model="DateFilters.record_end_date" ></v-text-field>
+									</v-col>
+								</v-row>
+							</v-container>
+						</v-card-text>
+						</v-card>
+					</v-menu>
+				</template>
+				<template v-slot:item.date_record="{item}">
+					{{ today(item.date_record) }}
 				</template>
 				<template v-slot:item.measure="{item}">
 					{{ idDep === 5 ? item.order_measure : item.measure }}
@@ -62,22 +170,37 @@ export default {
 	data () {
 		return {
 			search: '',
-            gridColumns: {
-                tableColumn: [
-					{ text: '№', align: 'start', sortable: true, value: 'id_arrival_material'},
-					{ text: 'Код', align: 'start', sortable: true, value: 'material_id'},
-					{ text: 'Дата пост.', align: 'start', sortable: true, value: 'date_order', filterable: false},
-					{ text: 'Материал', align: 'start', sortable: true, value: 'material'},
-					{ text: 'Ед.изм', align: 'start', sortable: true, value: 'measure', filterable: false},
-					{ text: 'Кол.', align: 'start', sortable: true, value: 'amount_outgo', filterable: false},
-					{ text: 'Сотрудник', align: 'start', sortable: true, value: 'user', filterable: false},
-					{ text: 'Потрачено', align: 'start', sortable: true, value: 'date_usage', filterable: false},
-					{ text: 'Добавлено', align: 'start', sortable: true, value: 'date_record', filterable: false},
-					{ text: 'Операция', align: 'start', sortable: true, value: 'moving_type', filterable: false},
-					{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false}
-                ]
-            },
+			tableColumn: [
+				{ text: '№', align: 'start', sortable: true, value: 'id_arrival_material'},
+				{ text: 'Код', align: 'start', sortable: true, value: 'material_id'},
+				{ text: 'Дата пост.', align: 'start', sortable: true, value: 'date_order',
+			filter: value => {return !this.DateFilters.order_start_date && !this.DateFilters.order_end_date ? true :
+			value >= this.DateFilters.order_start_date && value <= this.DateFilters.order_end_date}},
+				{ text: 'Материал', align: 'start', sortable: true, value: 'material'},
+				{ text: 'Ед.изм', align: 'start', sortable: true, value: 'measure', filterable: false},
+				{ text: 'Кол.', align: 'start', sortable: true, value: 'amount_outgo', filterable: false},
+				{ text: 'Сотрудник', align: 'start', sortable: true, value: 'user',
+			filter: value => {return this.activeFilters.user ? this.activeFilters.user.includes(value) : true}},
+				{ text: 'Потрачено', align: 'start', sortable: true, value: 'date_usage',
+				filter: value => {return !this.DateFilters.usage_start_date && !this.DateFilters.usage_end_date ? true :
+				value >= this.DateFilters.usage_start_date && value <= this.DateFilters.usage_end_date}},
+				{ text: 'Добавлено', align: 'start', sortable: true, value: 'date_record',
+			filter: value => {return !this.DateFilters.record_start_date && !this.DateFilters.record_end_date ? true :
+			value >= this.DateFilters.record_start_date && value <= this.DateFilters.record_end_date}},
+				{ text: 'Операция', align: 'start', sortable: true, value: 'moving_type', filter: value => {return this.activeFilters.moving_type ? this.activeFilters.moving_type.includes(value) : true}},
+				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false}
+			],
 			gridData: [],
+			filters: { moving_type: [], user: []},
+			activeFilters: {},
+			DateFilters: {
+				order_start_date: null,
+				order_end_date: null,
+				usage_start_date: null,
+				usage_end_date: null,
+				record_start_date: null,
+				record_end_date: null
+			},
 			dialog: false,
 			loading: false,
 			load: false,
@@ -92,12 +215,18 @@ export default {
 	watch: {
 		'correction.corrected_amount': function(newVal, oldVal){
 			this.correction.fcorrected_amount = this.$convert(newVal).param(this.item.density).measure(unit[this.item.id_measure]).to(unit[this.item.id_order_measure]);
+		},
+		gridData(){
+			this.initFilters();
 		}
 	},
 	methods: {
 		getExpenses(){
 			this.load = true;
 			this.$http.get('/api/reagent/expenses').then(response => (this.gridData = response.data, this.load = false)).catch(error => (this.load = false, alert(error.response.data.message)));
+		},
+		today(date){
+			return date === null || new Date(date).toLocaleString().split(',')[0];
 		},
 		dialogCorrection(item){
 			this.item = item;
@@ -112,6 +241,17 @@ export default {
 			this.loading = true;
 			this.$http.post("/api/reagent/expenses/correct", this.correction, {headers: {'Content-Type': 'application/json'}})
 			.then(response => (this.loading = false, this.dialog = false)).catch(error => (this.loading = false, alert(error.response.data.message)));
+		},
+		initFilters() {
+			for (let col in this.filters) {
+				this.filters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })}
+			this.activeFilters = Object.assign({}, this.filters)
+		},
+		toggleAll (col) {
+			this.activeFilters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })
+		},
+		clearAll (col) {
+			this.activeFilters[col] = []
 		}
 	},
 	computed: {

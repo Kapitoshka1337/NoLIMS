@@ -5,7 +5,7 @@
 			@item-selected="selectedEquipment"
 			dense
 			v-model="selected"
-			:headers="gridColumns.tableColumn"
+			:headers="tableColumn"
 			:items="gridData"
 			:items-per-page="50"
 			:loading="gridData.length <= 0" 
@@ -24,31 +24,25 @@
 								</v-icon>
 							</v-btn>
 						</template>
-						<v-list flat dense>
-							<v-list-item-group multiple v-model="activeFilters[header.value]">
-								<template v-for="(item, i) in filters[header.value]">
-									<v-list-item :key="`${item}`" :value="item" :ripple="false">
-										<template v-slot:default="{ active, toggle }">
-											<v-list-item-action>
-												<v-checkbox :input-value="active" :true-value="item" @click="toggle" color="primary" :ripple="false" dense></v-checkbox>
-											</v-list-item-action>
-											<v-list-item-content> 
-												<v-list-item-title v-text="item"></v-list-item-title>
-											</v-list-item-content>
+							<v-list dense>
+								<v-list-item-content>
+									<v-select :items="filters[header.value]" v-model="activeFilters[header.value]" :clearable="true" multiple outlined dense>
+										<template v-slot:selection="{ item, index }">
+											<v-chip small v-if="index === 0"><span>{{ item }}</span></v-chip>
+											<span v-if="index === 1" class="grey--text caption">(+{{ activeFilters[header.value].length - 1 }})</span>
 										</template>
-									</v-list-item>
-								</template>
-							</v-list-item-group>
-							<v-divider></v-divider>
-							<v-row no-gutters>
-								<v-col cols="6">
-									<v-btn text block @click="toggleAll(header.value)" color="success">Выделить всё</v-btn>
-								</v-col>
-								<v-col cols="6">
-									<v-btn text block @click="clearAll(header.value)" color="warning">Снять всё</v-btn>
-								</v-col>
-							</v-row>
-						</v-list>
+									</v-select>
+								</v-list-item-content>
+								<v-divider></v-divider>
+								<v-row no-gutters>
+									<v-col cols="6">
+										<v-btn text block @click="toggleAll(header.value)" color="success">Выделить всё</v-btn>
+									</v-col>
+									<v-col cols="6">
+										<v-btn text block @click="clearAll(header.value)" color="warning">Снять всё</v-btn>
+									</v-col>
+								</v-row>
+							</v-list>
 					</v-menu>
 				</div>
 			</template>
@@ -219,7 +213,7 @@
 							<v-card-title>Подготавливаемое оборудование на проверку</v-card-title>
 							<v-divider></v-divider>
 							<v-card-text>
-								<v-data-table dense :headers="tableColumn" :items="selected" :show-select="true" v-model="selected">
+								<v-data-table dense :headers="tableColumn1" :items="selected" :show-select="true" v-model="selected">
 									<template v-slot:item.date_current_check="{ item }">
 										{{ today(item.date_current_check) }}
 									</template>
@@ -334,20 +328,22 @@ export default {
 			verification: false,
 			passed_verification: false,
 			selected: [],
-			gridColumns: {
-				tableColumn: [
-					{ text: 'Номер', align: 'start', sortable: true, value: 'number'},
-					{ text: 'Отдел', align: 'start', sortable: true, value: 'department', filter: value => {return this.activeFilters.department ? this.activeFilters.department.includes(value) : true}},
-					{ text: 'Вид', align: 'start', sortable: true, value: 'type', filter: value => {return this.activeFilters.type ? this.activeFilters.type.includes(value) : true}},
-					{ text: 'Оборудование', align: 'start', sortable: true, value: 'equipment' },
-					{ text: 'С/Н', align: 'end', sortable: true, value: 'serial_number'},
-					{ text: 'Пройденная', align: 'start', sortable: true, value: 'date_current_check', filter: this.filterCurrentDate},
-					{ text: 'Предстоящая', align: 'start', sortable: true, value: 'date_next_check', filter: this.filterNextDate},
-					{ text: 'Тег', align: 'center', sortable: false, value: 'tag', filter: this.filterTags},
-					{ text: '', align: 'center', sortable: false, value: 'actions', filterable: false }
-				]
-			},
 			tableColumn: [
+				{ text: 'Номер', align: 'start', sortable: true, value: 'number'},
+				{ text: 'Отдел', align: 'start', sortable: true, value: 'department', filter: value => {return this.activeFilters.department ? this.activeFilters.department.includes(value) : true}},
+				{ text: 'Вид', align: 'start', sortable: true, value: 'type', filter: value => {return this.activeFilters.type ? this.activeFilters.type.includes(value) : true}},
+				{ text: 'Оборудование', align: 'start', sortable: true, value: 'equipment' },
+				{ text: 'С/Н', align: 'end', sortable: true, value: 'serial_number'},
+				{ text: 'Пройденная', align: 'start', sortable: true, value: 'date_current_check',
+			filter: value => {return !this.DateFilters.current_start_date && !this.DateFilters.current_end_date ? true :
+			value >= this.DateFilters.current_start_date && value <= this.DateFilters.current_end_date}},
+				{ text: 'Предстоящая', align: 'start', sortable: true, value: 'date_next_check',
+			filter: value => {return !this.DateFilters.next_start_date && !this.DateFilters.next_end_date ? true :
+			value >= this.DateFilters.next_start_date && value <= this.DateFilters.next_end_date}},
+				{ text: 'Тег', align: 'center', sortable: false, value: 'tag', filter: this.filterTags},
+				{ text: '', align: 'center', sortable: false, value: 'actions', filterable: false }
+			],
+			tableColumn1: [
 				{ text: 'Номер', align: 'start', sortable: false, value: 'number_card', width: 120},
 				{ text: 'Оборудование', align: 'start', sortable: false, value: 'equipment' },
 				{ text: 'Модель', align: 'start', sortable: false, value: 'model' },
@@ -418,14 +414,6 @@ export default {
 		},
 		clearAll (col) {
 			this.activeFilters[col] = []
-		},
-		filterCurrentDate(val){
-			if (!this.DateFilters.current_start_date && !this.DateFilters.current_end_date) return true;
-			return val >= this.DateFilters.current_start_date && val <= this.DateFilters.current_end_date;
-		},
-		filterNextDate(val){
-			if (!this.DateFilters.next_start_date && !this.DateFilters.next_end_date) return true;
-			return val >= this.DateFilters.next_start_date && val <= this.DateFilters.next_end_date;
 		},
 		filterTags(val, srch, item){
 			if(!this.DateFilters.tags.length) return true;

@@ -204,10 +204,14 @@
     table.set('kg', {
         match: 'kg',
         kub: function(val, par) {
+            //let precision_number = Math.pow(10, 4);
+            //return Math.round(((val / par) * 1000) * precision_number) / precision_number;
             return parseFloat(((val / par) * 1000).toFixed(4))
+            //return ((val / par) * 1000) % 2 ? Math.round((val / par) * 1000) : parseFloat(((val / par) * 1000).toFixed(4))
+            //return ((val / par) * 1000) % 2 ? parseFloat(((val / par) * 1000).toFixed(4)) : Math.round((val / par) * 1000)
         },
         g: function(val){
-            return val * 1000
+            return parseFloat((val * 1000).toFixed(4))
         },
         kg: function(val){
             return val
@@ -217,7 +221,7 @@
     table.set('kub', {
         match: 'kub',
         kg: function(val, par) {
-            return (val * par) / 1000
+            return parseFloat(((val * par) / 1000).toFixed(4))
         },
         dm: function(val){
             return val / 1000
@@ -233,7 +237,7 @@
     table.set('g', {
         match: 'g',
         kg: function(val) {
-            return val / 1000
+            return parseFloat((val / 1000).toFixed(4))
         },
         g: function(val) {
             return val
