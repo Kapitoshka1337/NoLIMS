@@ -11,8 +11,7 @@ class WriteoffController extends Controller
 {
 	public function view(Request $req)
 	{
-		// return response()->json($req, 200);
-		$writeoff = writeoff::select('*', DB::raw('ROUND(SUM(total), 1) as total'))->where('id_department', auth()->user()->getIdDepartment())->whereBetween('date_usage', [$req->input('start'), $req->input('end')])->groupBy('date_order')->groupBy('id_material')->get();
+		$writeoff = writeoff::select('id_department','id_material', 'date_order', 'date_usage', 'material', 'id_measure', 'measure', 'id_order_measure','order_measure', 'density', 'amount', 'total', 'packing_name',DB::raw('SUM(total) as total'))->where('id_department', auth()->user()->getIdDepartment())->whereBetween('date_usage', [$req->input('start'), $req->input('end')])->groupBy('date_order')->groupBy('id_material')->get();
 		return response()->json($writeoff, 200);
 	}
 }
