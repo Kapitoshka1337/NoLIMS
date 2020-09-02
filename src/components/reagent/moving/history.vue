@@ -52,7 +52,7 @@
 					{{today(item.created_at)}}
 				</template>
 				<template v-slot:item.date_moving="{item}">
-					{{today(item.date_moving)}}
+					{{today(item.date_moving) || ""}}
 				</template>
 				<template v-slot:item.actions="{item}">
 					<v-btn x-small color="orange" @click="confirmMoving(item)">Просмотр</v-btn>
@@ -82,11 +82,10 @@
 						{{ idDep === 5 ? item.measure : item.order_measure }}
 					</template>
 					<template v-slot:item.total="{item}">
-						{{ idDep === 5 && item.total === null ? item.amount : item.total === null ? convert(item, 'amount') : item.total}}
-						<!-- {{ idDep === 5 ? convert(item, 'total') || convert(item, 'arrival_amount') : item.total || item.arrival_amount }} -->
+						{{ idDep === 5 || item.total === null ? item.arrival_amount : item.total === null ? convert(item, 'arrival_amount') : item.total}}
 					</template>
 					<template v-slot:item.amount="{item}">
-						{{ idDep === 5 ? convert(item, 'amount') :item.amount }}
+						{{ idDep === 5 ? convert(item, 'amount') : item.amount }}
 					</template>
 					<template v-slot:item.date_create="{item}">
 						{{today(item.date_create)}}
@@ -163,7 +162,7 @@ export default {
 			.catch(error => (this.overlay = false, alert(error.response.data.message)));
 		},
 		today(date){
-			return date === null || new Date(date).toLocaleString().split(',')[0];
+			return date === null ? false : new Date(date).toLocaleString().split(',')[0];
 		},
 		allow(){
 			this.isAllowLoading = true;

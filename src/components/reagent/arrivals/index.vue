@@ -128,8 +128,8 @@ export default {
 				{ text: 'Материал', align: 'start', sortable: true, value: 'material'},
 				{ text: 'Ед.изм', align: 'start', sortable: true, value: 'measure'},
 				{ text: 'Поступило', align: 'start', sortable: true, value: 'amount'},
-				{ text: 'Изготовлен', align: 'start', sortable: true, value: 'shelf_life'},
-				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'date_create'}
+				{ text: 'Изготовлен', align: 'start', sortable: true, value: 'date_create'},
+				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life'}
 			],
 			gridData: [],
 			filters: { moving_type: []},

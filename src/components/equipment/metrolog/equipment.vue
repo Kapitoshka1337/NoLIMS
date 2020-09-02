@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import equipment from './eq.vue';
-import detail from './detail.vue';
+import equipment from './equipment/index.vue';
+import detail from './detail/index.vue';
 
 export default {
 	components: {

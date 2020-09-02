@@ -20,6 +20,9 @@
 				<template v-slot:item.date_order="{item}">
 					{{ today(item.date_order) }}
 				</template>
+				<template v-slot:item.material="{item}">
+					{{ item.material}} ({{item.density}})
+				</template>
 				<template v-slot:item.total="{item}">
 					{{ parseFloat((item.total).toFixed(4)) || parseFloat((item.amount).toFixed(4)) }}
 				</template>

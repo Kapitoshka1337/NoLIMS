@@ -32,8 +32,9 @@ import Location from "./components/reagent/location/index.vue";
 import Equipment from "./components/equipment/main.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
 import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
-import MetrologEquipmentDetails from "./components/equipment/metrolog/detail.vue";
-import MetrologVerification from "./components/equipment/metrolog/verification.vue";
+import MetrologEquipmentDetails from "./components/equipment/metrolog/detail/index.vue";
+import MetrologVerification from "./components/equipment/metrolog/verification/index.vue";
+import MetrologInstructions from "./components/equipment/metrolog/instructions/index.vue";
 
 
 Vue.prototype.$http = Axios;
@@ -75,6 +76,7 @@ var router = new VueRouter({
             { path: 'equipments', component: MetrologEquipment, meta: { roles: [4] } },
             { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { roles: [4] } },
             { path: 'verification', component: MetrologVerification, meta: { roles: [4] } },
+            { path: 'instructions', component: MetrologInstructions, meta: { roles: [4] } },
           ]
         },
       ]

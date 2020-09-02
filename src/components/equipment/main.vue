@@ -38,7 +38,7 @@
                 </v-list-item-icon>
                   <v-list-item-title>Проверки</v-list-item-title>
               </v-list-item>
-              <v-list-item link>
+              <v-list-item>
                 <v-list-item-icon>
                   <v-icon color="red">mdi-bug</v-icon>
                 </v-list-item-icon>
@@ -48,10 +48,16 @@
                 <template v-slot:activator>
                     <v-list-item-title>Дополнительно</v-list-item-title>
                 </template>
-                <v-list-item link>
+                <v-list-item to="/equipment/metrolog/instructions">
+                    <v-list-item-icon>
+                      <v-icon color="green">mdi-file-sync-outline</v-icon>
+                    </v-list-item-icon>
                     <v-list-item-title>Инструкции</v-list-item-title>
                 </v-list-item>
                 <v-list-item link>
+                    <v-list-item-icon>
+                      <v-icon color="orange">mdi-format-list-checkbox</v-icon>
+                    </v-list-item-icon>
                     <v-list-item-title>ТО</v-list-item-title>
                 </v-list-item>
               </v-list-group>
