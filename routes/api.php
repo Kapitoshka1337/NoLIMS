@@ -81,6 +81,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
 			// Route::delete('{id}/{id_passed}/pdelete', 'Equipment\EquipmentController@deleteVerification');
 			Route::put('{id}/update', 'Equipment\EquipmentController@update');
+			Route::put('{id}/{inst}/iupdate', 'Equipment\EquipmentController@iupdate');
 			Route::get('file/{name}', 'Equipment\EquipmentController@download');
 			Route::post('{id}/moving', 'Equipment\EquipmentController@moving');
 			Route::post('maintenance', 'Equipment\EquipmentController@maintenance');
@@ -99,6 +100,12 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::get('documents', 'Equipment\SupportController@docType');
 			Route::get('locations', 'Equipment\SupportController@forNewEquipment');
 			Route::get('maintenances', 'Equipment\SupportController@maintenances');
+		});
+		Route::prefix('instructions')->group(function(){
+			Route::get('', 'Equipment\InstructionsController@view');
+			Route::post('', 'Equipment\InstructionsController@create');
+			Route::post('{id}/update', 'Equipment\InstructionsController@update');
+			Route::get('file/{id}', 'Equipment\InstructionsController@download');
 		});
 		Route::prefix('printer')->group(function(){
 			Route::post('sticker', 'Equipment\PrinterController@sticker');

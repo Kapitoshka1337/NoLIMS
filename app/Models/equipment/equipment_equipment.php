@@ -31,7 +31,6 @@ class equipment_equipment extends Model
 		'is_conservation',
 		'is_repair',
 		'is_check',
-		'is_working',
-		'id_instruction'
+		'is_working'
 	];
 }

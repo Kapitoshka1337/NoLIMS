@@ -112,6 +112,13 @@ class EquipmentController extends Controller
 		});
 	}
 
+	public function iupdate($id, $inst)
+	{
+		DB::transaction(function() use ($id, $inst){
+			equipment_equipment::where('id', $id)->update(['id_instruction' => $inst]);
+		});
+	}
+
 	public function download($name)
 	{
 		try
