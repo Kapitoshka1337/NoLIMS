@@ -48,6 +48,12 @@
 						</v-menu>
 					</div>
 				</template>
+				<template v-slot:item.created_at="{item}">
+					{{today(item.created_at)}}
+				</template>
+				<template v-slot:item.date_moving="{item}">
+					{{today(item.date_moving)}}
+				</template>
 				<template v-slot:item.actions="{item}">
 					<v-btn x-small color="orange" @click="confirmMoving(item)">Просмотр</v-btn>
 				</template>
@@ -76,7 +82,8 @@
 						{{ idDep === 5 ? item.measure : item.order_measure }}
 					</template>
 					<template v-slot:item.total="{item}">
-						{{ idDep === 5 ? convert(item, 'total') || convert(item, 'arrival_amount') : item.total || item.arrival_amount }}
+						{{ idDep === 5 && item.total === null ? item.amount : item.total === null ? convert(item, 'amount') : item.total}}
+						<!-- {{ idDep === 5 ? convert(item, 'total') || convert(item, 'arrival_amount') : item.total || item.arrival_amount }} -->
 					</template>
 					<template v-slot:item.amount="{item}">
 						{{ idDep === 5 ? convert(item, 'amount') :item.amount }}
@@ -107,12 +114,14 @@ export default {
 		return {
 			tableColumn: [
 				{ text: 'Код', align: 'start', sortable: true, value: 'id'},
+				{ text: 'Запрос', align: 'start', sortable: true, value: 'created_at'},
 				{ text: 'Получатель', align: 'start', sortable: true, value: 'dep_from',
 				filter: value => {return this.activeFilters.dep_from ? this.activeFilters.dep_from.includes(value) : true}},
 				{ text: 'Запросил', align: 'start', sortable: true, value: 'user',
 				filter: value => {return this.activeFilters.user ? this.activeFilters.user.includes(value) : true}},
 				{ text: 'Отправитель', align: 'start', sortable: true, value: 'dep_to',
 				filter: value => {return this.activeFilters.dep_to ? this.activeFilters.dep_to.includes(value) : true}},
+				{ text: 'Передано', align: 'start', sortable: true, value: 'date_moving'},
 				{ text: 'Статус', align: 'start', sortable: true, value: 'status',
 				filter: value => {return this.activeFilters.status ? this.activeFilters.status.includes(value) : true}},
 				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false}

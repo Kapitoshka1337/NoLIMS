@@ -55,7 +55,7 @@
 					{{ idDep === 5 ? item.order_measure : item.measure }}
 				</template>
 				<template v-slot:item.total="{item}">
-					{{ idDep === 5 ? item.total || item.amount : convert(item, 'total') || convert(item, 'amount')}}
+					{{ idDep === 5 && item.total === null ? item.amount : item.total === null ? convert(item, 'amount') : item.total}}
 				</template>
 				<template v-slot:item.amount="{item}">
 					{{ idDep === 5 ? item.amount : convert(item, 'amount') }}

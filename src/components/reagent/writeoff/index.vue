@@ -6,10 +6,13 @@
 				:items="gridData"
 				:items-per-page="50"
 				:loading="loading"
+				:search="search"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 				<template v-slot:top>
 					<v-toolbar flat dense>
 						<v-toolbar-title>Отчет расхода за период</v-toolbar-title>
+						<v-spacer></v-spacer>
+						<v-text-field v-model="search" label="Поиск" clearable single-line hide-details></v-text-field>
 						<v-spacer></v-spacer>
 						<v-btn :ripple="false" small color="primary" @click="dialog = true">Период</v-btn>
 					</v-toolbar>
@@ -56,13 +59,14 @@ export default {
 			tableColumn: [
 				{ text: 'Код', align: 'start', sortable: true, value: 'id_material'},
 				{ text: 'Дата пост.', align: 'start', sortable: true, value: 'date_order', filterable: false},
-				{ text: 'Материал', align: 'start', sortable: true, value: 'material', filterable: false},
-				{ text: 'Накладная', align: 'start', sortable: true, value: 'packing_name', filterable: false},
+				{ text: 'Материал', align: 'start', sortable: true, value: 'material'},
+				{ text: 'Накладная', align: 'start', sortable: true, value: 'packing_name'},
 				{ text: 'Ед.изм', align: 'start', sortable: true, value: 'order_measure', filterable: false},
 				{ text: 'Потрачено', align: 'start', sortable: true, value: 'total'},
 				{ text: 'Поступило', align: 'start', sortable: true, value: 'amount'}
 			],
 			gridData: [],
+			search: '',
 			dialog: false,
 			loading: false,
 			period: {
