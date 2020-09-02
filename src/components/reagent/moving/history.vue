@@ -15,6 +15,39 @@
 						<v-text-field v-model="search" label="Поиск " clearable single-line hide-details></v-text-field>
 					</v-toolbar>
 				</template>
+				<template v-for="(col, i) in filters" v-slot:[`header.${i}`]="{ header }">
+					<div style="display: inline-block; padding: 16px 0;">{{ header.text }}</div>
+					<div style="float: right; margin-top: 8px">
+						<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed style="position: absolute; right: 0">
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn color="indigo" icon v-bind="attrs" v-on="on">
+									<v-icon small 
+										:color="activeFilters[header.value] && activeFilters[header.value].length < filters[header.value].length ? 'red' : 'default'">mdi-filter-variant
+									</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item-content>
+									<v-select :items="filters[header.value]" v-model="activeFilters[header.value]" :clearable="true" multiple outlined dense>
+										<template v-slot:selection="{ item, index }">
+											<v-chip small v-if="index === 0"><span>{{ item }}</span></v-chip>
+											<span v-if="index === 1" class="grey--text caption">(+{{ activeFilters[header.value].length - 1 }})</span>
+										</template>
+									</v-select>
+								</v-list-item-content>
+								<v-divider></v-divider>
+								<v-row no-gutters>
+									<v-col cols="6">
+										<v-btn text block @click="toggleAll(header.value)" color="success">Выделить всё</v-btn>
+									</v-col>
+									<v-col cols="6">
+										<v-btn text block @click="clearAll(header.value)" color="warning">Снять всё</v-btn>
+									</v-col>
+								</v-row>
+							</v-list>
+						</v-menu>
+					</div>
+				</template>
 				<template v-slot:item.actions="{item}">
 					<v-btn x-small color="orange" @click="confirmMoving(item)">Просмотр</v-btn>
 				</template>
@@ -74,10 +107,14 @@ export default {
 		return {
 			tableColumn: [
 				{ text: 'Код', align: 'start', sortable: true, value: 'id'},
-				{ text: 'Получатель', align: 'start', sortable: true, value: 'dep_from'},
-				{ text: 'Запросил', align: 'start', sortable: true, value: 'user'},
-				{ text: 'Отправитель', align: 'start', sortable: true, value: 'dep_to', filterable: false},
-				{ text: 'Статус', align: 'start', sortable: true, value: 'status'},
+				{ text: 'Получатель', align: 'start', sortable: true, value: 'dep_from',
+				filter: value => {return this.activeFilters.dep_from ? this.activeFilters.dep_from.includes(value) : true}},
+				{ text: 'Запросил', align: 'start', sortable: true, value: 'user',
+				filter: value => {return this.activeFilters.user ? this.activeFilters.user.includes(value) : true}},
+				{ text: 'Отправитель', align: 'start', sortable: true, value: 'dep_to',
+				filter: value => {return this.activeFilters.dep_to ? this.activeFilters.dep_to.includes(value) : true}},
+				{ text: 'Статус', align: 'start', sortable: true, value: 'status',
+				filter: value => {return this.activeFilters.status ? this.activeFilters.status.includes(value) : true}},
 				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false}
 			],
 			tableColumn1: [
@@ -92,6 +129,8 @@ export default {
 				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life'},
 			],
 			gridData: [],
+			filters: { dep_from: [], user: [], dep_to: [], status: []},
+			activeFilters: {},
 			materials: [],
 			item: {},
 			search: '',
@@ -140,6 +179,22 @@ export default {
 		},
 		convert(item, param){
 			return this.$convert(item[param]).param(item.density).measure(unit[item.id_order_measure]).to(unit[item.id_measure]);
+		},
+		initFilters() {
+			for (let col in this.filters) {
+				this.filters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })}
+			this.activeFilters = Object.assign({}, this.filters)
+		},
+		toggleAll (col) {
+			this.activeFilters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })
+		},
+		clearAll (col) {
+			this.activeFilters[col] = []
+		}
+	},
+	watch: {
+		gridData(){
+			this.initFilters();
 		}
 	},
 	computed: {

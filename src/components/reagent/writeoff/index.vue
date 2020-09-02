@@ -14,6 +14,12 @@
 						<v-btn :ripple="false" small color="primary" @click="dialog = true">Период</v-btn>
 					</v-toolbar>
 				</template>
+				<template v-slot:item.date_order="{item}">
+					{{ today(item.date_order) }}
+				</template>
+				<template v-slot:item.total="{item}">
+					{{ parseFloat((item.total).toFixed(4)) || parseFloat((item.amount).toFixed(4)) }}
+				</template>
 			</v-data-table>
 		</v-col>
 		<v-dialog dense v-model="dialog" max-width="700">
@@ -48,12 +54,13 @@ export default {
 	data () {
 		return {
 			tableColumn: [
-				{ text: 'Код', align: 'start', sortable: true, value: 'material_id'},
+				{ text: 'Код', align: 'start', sortable: true, value: 'id_material'},
 				{ text: 'Дата пост.', align: 'start', sortable: true, value: 'date_order', filterable: false},
 				{ text: 'Материал', align: 'start', sortable: true, value: 'material', filterable: false},
 				{ text: 'Накладная', align: 'start', sortable: true, value: 'packing_name', filterable: false},
 				{ text: 'Ед.изм', align: 'start', sortable: true, value: 'order_measure', filterable: false},
-				{ text: 'Потрачено | Поступило', align: 'start', sortable: true, value: 'total'}
+				{ text: 'Потрачено', align: 'start', sortable: true, value: 'total'},
+				{ text: 'Поступило', align: 'start', sortable: true, value: 'amount'}
 			],
 			gridData: [],
 			dialog: false,
@@ -62,6 +69,11 @@ export default {
 				start: null,
 				end: null
 			}
+		}
+	},
+	computed: {
+		idDep(){
+			return this.$store.getters.idDepartment;
 		}
 	},
 	methods: {
@@ -78,6 +90,12 @@ export default {
 			this.$http.post('/api/reagent/writeoff', this.period, {headers: {'Content-Type': 'application/json'}})
 			.then(response => {this.loading = false; this.dialog = false; this.gridData = response.data;})
 			.catch(error => (this.loading = false, alert(error.response.data.message)));
+		},
+		today(date){
+			return date === null || new Date(date).toLocaleString().split(',')[0];
+		},
+		convert(item, param){
+			return this.$convert(item[param]).param(item.density).measure(unit[item.id_order_measure]).to(unit[item.id_measure]);
 		}
 	}
   }

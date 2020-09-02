@@ -75,6 +75,9 @@
 				<template v-slot:item.date_order="{item}">
 					{{ today(item.date_order) }}
 				</template>
+				<template v-slot:item.material="{item}">
+					{{ item.material }} ({{ item.density }})
+				</template>
 				<template v-slot:item.measure="{item}">
 					{{ idDep === 5 ? item.order_measure : item.measure }}
 				</template>
@@ -162,6 +165,7 @@
 						<v-col cols="12">
 							<v-autocomplete @update:search-input="locationText" v-model="item.id_location" :items="dropdownLocation" outlined dense label="Место хранения"></v-autocomplete>
 							<v-textarea v-model="item.description" :rows="2" :height="100" outlined dense label="Дополнительная информация"></v-textarea>
+							<v-textarea v-model="item.packing_name" :rows="2" :height="100" outlined dense label="Накладная"></v-textarea>
 						</v-col>
 					</v-row>
 				</v-card-text>
@@ -284,10 +288,11 @@ export default {
 		},
 		saveDetail(){
 			this.loadExpenses = true;
-			this.$http.put(`/api/reagent/arrivals/updloc/${this.item.arrival_material_id}`, {id_location: this.item.id_location, description: this.item.description}, {headers: {'Content-Type': 'application/json'}})
+			this.$http.put(`/api/reagent/arrivals/updloc/${this.item.arrival_material_id}`, {id_location: this.item.id_location, description: this.item.description, packing_name: this.item.packing_name}, {headers: {'Content-Type': 'application/json'}})
 			.then(response => {
 					this.gridData[this.editedIndex].id_location = this.item.id_location;
 					this.gridData[this.editedIndex].description = this.item.description;
+					this.gridData[this.editedIndex].packing_name = this.item.packing_name;
 					this.gridData[this.editedIndex].location = this.text;
 					this.loadExpenses = false;
 					this.dialogDetail = false;
