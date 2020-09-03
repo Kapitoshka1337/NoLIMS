@@ -15,7 +15,7 @@
           <v-list dense>
             <v-list-item to="/equipment">
               <v-list-item-icon>
-                <v-icon color="purple">mdi-view-dashboard</v-icon>
+                <v-icon color="orange">mdi-view-dashboard</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Главная</v-list-item-title>
             </v-list-item>
@@ -33,41 +33,24 @@
                   <v-list-item-title>Метролог</v-list-item-title>
               </template>
               <v-list-item to="/equipment/metrolog/equipments">
-                <v-list-item-icon>
-                  <v-icon color="green">mdi-database</v-icon>
-                </v-list-item-icon>
                   <v-list-item-title>Оборудование</v-list-item-title>
               </v-list-item>
               <v-list-item to="/equipment/metrolog/verification">
-                <v-list-item-icon>
-                  <v-icon color="orange">mdi-beaker-check-outline</v-icon>
-                </v-list-item-icon>
                   <v-list-item-title>Проверки</v-list-item-title>
               </v-list-item>
+              <v-list-item to="/equipment/metrolog/instructions">
+                  <v-list-item-title>Инструкции</v-list-item-title>
+              </v-list-item>
+              <v-list-item to="/equipment/metrolog/maintenances">
+                  <v-list-item-title>ТО</v-list-item-title>
+              </v-list-item>
+            </v-list-group>
               <v-list-item to="/equipment/metrolog/repair">
                 <v-list-item-icon>
                   <v-icon color="red">mdi-bug</v-icon>
                 </v-list-item-icon>
                   <v-list-item-title>Ремонт</v-list-item-title>
               </v-list-item>
-              <v-list-group sub-group no-action>
-                <template v-slot:activator>
-                    <v-list-item-title>Дополнительно</v-list-item-title>
-                </template>
-                <v-list-item to="/equipment/metrolog/instructions">
-                    <v-list-item-icon>
-                      <v-icon color="green">mdi-file-sync-outline</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Инструкции</v-list-item-title>
-                </v-list-item>
-                <v-list-item to="/equipment/metrolog/maintenances">
-                    <v-list-item-icon>
-                      <v-icon color="orange">mdi-format-list-checkbox</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>ТО</v-list-item-title>
-                </v-list-item>
-              </v-list-group>
-            </v-list-group>
           </v-list>
         </v-navigation-drawer>
         <v-app-bar color="primary" dense dark app>

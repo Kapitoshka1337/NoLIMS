@@ -201,12 +201,13 @@ export default {
                 { text: 'Оборудование', align: 'start', sortable: true, value: 'equipment'},
                 { text: 'Кабинет', align: 'start', sortable: true, value: 'cabinet_number'},
                 { text: 'Инициатор', align: 'start', sortable: true, value: 'user', filter: value => {return this.activeFilters.user ? this.activeFilters.user.includes(value) : true}},
-                { text: 'Исполнитель', align: 'start', sortable: true, value: 'executor', filter: value => {return this.activeFilters.executor ? this.activeFilters.executor.includes(value) : true}},
+                { text: 'Принял', align: 'start', sortable: true, value: 'accepted', filter: value => {return this.activeFilters.accepted ? this.activeFilters.accepted.includes(value) : true}},
+                { text: 'Выполнил', align: 'start', sortable: true, value: 'executor', filter: value => {return this.activeFilters.executor ? this.activeFilters.executor.includes(value) : true}},
                 { text: '', align: 'start', sortable: false, value: 'actions', filterable: false }
             ],
             search: '',
             gridData: [],
-			filters: { status: [], equipment: [], user: [], executor: []},
+			filters: { status: [], equipment: [], user: [], accepted: [], executor: []},
             activeFilters: {},
 			DateFilters: {
 				request_start_date: null,
@@ -253,6 +254,7 @@ export default {
             this.dialog = true;
         },
         allow(){
+			this.loadingAllow = true;
             this.$http.put(`/api/equipment/repair/${this.item.id}/allow`, {headers: {'Content-Type': 'application/json'}})
             .then(response => {this.loadingAllow = false; this.dialog = false; this.getRepairs();})
             .catch(error => (this.loadingAllow = false, alert(error.response.data.message)));

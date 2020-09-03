@@ -148,24 +148,38 @@
         </v-col>
         <v-col cols="12">
             <v-card outlined>
+                <v-card-title>
+                    История ремонта
+                </v-card-title>
+                <v-card-text>
+                    <v-data-table dense :headers="tableColumn3" :items="indentificationData.history_repair" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+                        <template v-slot:no-data>
+                            Пока ничего нет :(
+                        </template>
+                    </v-data-table>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <v-card outlined>
                 <v-card-title>Условия работы</v-card-title>
                 <v-card-text>
                     <v-row>
-                        <!--<v-col cols="4">
-                            <v-text-field dense label="Влажность" outlined v-model="indentificationData.condition_working.humidity"></v-text-field>
+                        <v-col cols="4">
+                            <v-text-field readonly dense label="Влажность" outlined v-model="indentificationData.condition_working.humidity"></v-text-field>
                         </v-col>
                         <v-col cols="4">
-                            <v-text-field dense label="Давление" outlined v-model="indentificationData.condition_working.pressure"></v-text-field>
+                            <v-text-field readonly dense label="Давление" outlined v-model="indentificationData.condition_working.pressure"></v-text-field>
                         </v-col>
                         <v-col cols="4">
-                            <v-text-field dense label="Температура" outlined v-model="indentificationData.condition_working.temperature"></v-text-field>
+                            <v-text-field readonly dense label="Температура" outlined v-model="indentificationData.condition_working.temperature"></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <v-text-field dense label="Напряжение" outlined v-model="indentificationData.condition_working.voltage"></v-text-field>
+                            <v-text-field readonly dense label="Напряжение" outlined v-model="indentificationData.condition_working.voltage"></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <v-text-field dense label="Ток" outlined v-model="indentificationData.condition_working.amperage"></v-text-field>
-                        </v-col>-->
+                            <v-text-field readonly dense label="Ток" outlined v-model="indentificationData.condition_working.amperage"></v-text-field>
+                        </v-col>
                     </v-row>
                 </v-card-text>
             </v-card>
@@ -217,6 +231,14 @@ export default {
                 { text: 'Исполнитель', align: 'start', sortable: false, value: 'executor' },
                 { text: 'Периодичность', align: 'end', sortable: false, value: 'periodicity' },
                 { text: 'ТО', align: 'end', sortable: false, value: 'title' }
+            ],
+            tableColumn3: [
+                { text: 'Статус', align: 'start', sortable: false, value: 'status' },
+                { text: 'Проблема', align: 'start', sortable: false, value: 'problem' },
+                { text: 'Решение', align: 'start', sortable: false, value: 'request_report' },
+                { text: 'Инициатор', align: 'end', sortable: false, value: 'user' },
+                { text: 'Принял', align: 'end', sortable: false, value: 'accepted' },
+                { text: 'Выполнил', align: 'end', sortable: false, value: 'executor' }
             ],
             dataMoving: null,
             dataMaintenances: null,
