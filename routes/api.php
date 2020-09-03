@@ -107,6 +107,18 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::post('{id}/update', 'Equipment\InstructionsController@update');
 			Route::get('file/{id}', 'Equipment\InstructionsController@download');
 		});
+		Route::prefix('maintenances')->group(function(){
+			Route::get('', 'Equipment\MaintenancesController@view');
+			Route::post('', 'Equipment\MaintenancesController@create');
+			Route::put('{id}', 'Equipment\MaintenancesController@update');
+		});
+		Route::prefix('repair')->group(function(){
+			Route::get('', 'Equipment\RepairController@view');
+			Route::post('{id}', 'Equipment\RepairController@create');
+			Route::put('{id}/allow', 'Equipment\RepairController@allow');
+			Route::put('{id}/deny', 'Equipment\RepairController@deny');
+			Route::put('{id}/finish', 'Equipment\RepairController@finish');
+		});
 		Route::prefix('printer')->group(function(){
 			Route::post('sticker', 'Equipment\PrinterController@sticker');
 			Route::post('table', 'Equipment\PrinterController@table');
