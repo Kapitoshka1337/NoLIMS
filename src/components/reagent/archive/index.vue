@@ -73,6 +73,9 @@
 				<template v-slot:item.date_order="{item}">
 					{{ today(item.date_order) }}
 				</template>
+				<template v-slot:item.material="{item}">
+					{{ item.material }} ({{ item.density }})
+				</template>
 				<template v-slot:item.measure="{item}">
 					{{ idDep === 5 ? item.order_measure : item.measure }}
 				</template>

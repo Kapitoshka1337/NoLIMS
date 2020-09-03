@@ -78,6 +78,9 @@
 					<template v-slot:item.id_material="{item}">
 						{{item.id_material}} / {{today(item.date_order)}}
 					</template>
+					<template v-slot:item.material="{item}">
+						{{ item.material }} ({{ item.density }})
+					</template>
 					<template v-slot:item.measure="{item}">
 						{{ idDep === 5 ? item.measure : item.order_measure }}
 					</template>

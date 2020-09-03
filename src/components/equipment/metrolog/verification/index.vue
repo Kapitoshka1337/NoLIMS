@@ -1,10 +1,12 @@
 <template>
 	<v-row>
 		<v-col cols="12">
-			<v-data-table dense :headers="gridColumns.tableColumn" :items="gridData" :items-per-page="50" :loading="gridData.length <= 0" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus'}">
+			<v-data-table dense :search="search" :headers="tableColumn" :items="gridData" :items-per-page="50" :loading="gridData.length <= 0" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus'}">
 				<template v-slot:top>
 					<v-toolbar flat>
 						<v-toolbar-title>Управление проверками</v-toolbar-title>
+						<v-spacer></v-spacer>
+						<v-text-field v-model="search" label="Поиск" clearable single-line hide-details></v-text-field>
 					</v-toolbar>
 				</template>
 				<template v-slot:item.date_create="{ item }">
@@ -31,9 +33,9 @@
 					<v-card-title>{{header}}</v-card-title>
 					<v-divider></v-divider>
 					<v-card-text>
-						<v-data-table dense :headers="tableColumn" :items="gridData1">
+						<v-data-table dense :headers="tableColumn1" :items="gridData1">
 							<template v-slot:item.actions="{ item }">
-								<v-btn small icon v-bind:color="item.is_received_before && !item.is_received_after ? 'orange': item.is_received_before && item.is_received_after ? 'green' : 'red'" v-on:click="submitBefore(item)" :loading="param"><v-icon>mdi-check</v-icon></v-btn>
+								<v-btn small icon v-bind:color="item.is_received_before && !item.is_received_after ? 'orange': item.is_received_before && item.is_received_after ? 'green' : 'red'" v-on:click="submitBefore(item)" :loading="param"><v-icon>mdi-checkbox-marked</v-icon></v-btn>
 								<v-btn small icon color="red" v-on:click="confirmDeleteEq(item)" v-if="item.id_status_check != 2 && item.id_status_check != 3"><v-icon>mdi-delete</v-icon></v-btn>
 							</template>
 						</v-data-table>
@@ -121,28 +123,22 @@ import fs from 'file-saver';
 export default {
 	data () {
 		return {
-			gridColumns: {
-				tableColumn: [
-					{ text: '№', align: 'start', sortable: true, value: 'id'},
-					{ text: 'Сформировано', align: 'start', sortable: true, value: 'date_create',},
-					{ text: 'Отправлено', align: 'start', sortable: true, value: 'date_submit'},
-					{ text: 'Сформировал', align: 'start', sortable: true, value: 'user'},
-					{ text: 'Номер квитанции', align: 'start', sortable: true, value: 'claim_check'},
-					{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false }
-				],
-				filterColumn: [
-					{'number':'Номер'},
-					{'department':'Отдел'},
-					{'type':'Вид'}
-				]
-			},
 			tableColumn: [
+				{ text: '№', align: 'start', sortable: true, value: 'id'},
+				{ text: 'Сформировано', align: 'start', sortable: true, value: 'date_create', filterable: false},
+				{ text: 'Отправлено', align: 'start', sortable: true, value: 'date_submit', filterable: false},
+				{ text: 'Сформировал', align: 'start', sortable: true, value: 'user'},
+				{ text: 'Номер квитанции', align: 'start', sortable: true, value: 'claim_check'},
+				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false }
+			],
+			tableColumn1: [
 				{ text: 'Номер', align: 'start', sortable: false, value: 'number', width: 120},
 				{ text: 'Оборудование', align: 'start', sortable: false, value: 'equipment' },
 				{ text: 'Модель', align: 'start', sortable: false, value: 'model'},
 				{ text: 'С/Н', align: 'end', sortable: false, value: 'serial_number', filterable: false },
 				{ text: '', align: 'center', sortable: false, value: 'actions', filterable: false, width: 100}
 			],
+			search: '',
 			gridData: [],
 			verificationInfo: {},
 			gridData1: [],

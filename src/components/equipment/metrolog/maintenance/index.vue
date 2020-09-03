@@ -1,17 +1,20 @@
 <template>
 	<v-row>
 		<v-col cols="12">
-			<v-data-table calculate-widths dense item-key="matertia_id"
+			<v-data-table calculate-widths dense item-key="id"
 				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="30"
 				:loading="load"
+				:search="search"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 				<template v-slot:top>
 					<v-toolbar flat dense>
-						<v-toolbar-title>Места хранения</v-toolbar-title>
+						<v-toolbar-title>Техническое обслуживание</v-toolbar-title>
 						<v-spacer></v-spacer>
-						<v-btn :ripple="false" small color="orange" @click="dialog = true">Добавить местоположение</v-btn>
+						<v-text-field v-model="search" label="Поиск" clearable single-line hide-details></v-text-field>
+						<v-spacer></v-spacer>
+						<v-btn :ripple="false" small color="orange" @click="dialog = true">Добавить ТО</v-btn>
 					</v-toolbar>
 				</template>
 				<template v-slot:item.actions="{item}">
@@ -29,9 +32,7 @@
 				<v-card-text>
 					<v-row>
 						<v-col cols="12">
-							<v-text-field dense outlined clearable label="Кабинет" v-model="item.cabinet_number"></v-text-field>
-							<v-text-field dense outlined clearable label="Место(мебель, техника)" v-model="item.place"></v-text-field>
-							<v-text-field dense outlined clearable label="Полка" v-model="item.notation" ></v-text-field>
+							<v-text-field dense outlined clearable label="Описание" v-model="item.title"></v-text-field>
 						</v-col>
 					</v-row>
 				</v-card-text>
@@ -51,17 +52,19 @@ export default {
 	data () {
 		return {
 			tableColumn: [
-				{ text: 'Кабинет', align: 'start', sortable: true, value: 'cabinet_number'},
-				{ text: 'Место (мебель)', align: 'start', sortable: true, value: 'place'},
-				{ text: 'Полка', align: 'start', sortable: true, value: 'notation'},
+				{ text: 'Описание', align: 'start', sortable: true, value: 'title'},
 				{ text: '', align: 'start', sortable: false, value: 'actions'}
 			],
 			gridData: [],
 			item: {
-				cabinet_number: null,
-				place: null,
-				notation: null
+                id: null,
+				title: null
+            },
+			defaultItem: {
+                id: null,
+				title: null
 			},
+			search: '',
 			dialog: false,
 			editedIndex: -1,
 			loading: false,
@@ -70,19 +73,19 @@ export default {
 	},
 	computed: {
 		formTitle(){
-			return this.editedIndex === -1 ? 'Новое местоположение' : 'Редактирование местоположения'
+			return this.editedIndex === -1 ? 'Новое ТО' : 'Редактирование ТО'
 		}
-	},
+    },
     watch: {
         dialog (val) {
             val || this.close()
         },
     },
 	methods: {
-		getLocation(){
+		getMaintenances(){
 			this.load = true;
-			this.$http.get('/api/reagent/locations').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
-		},
+			this.$http.get('/api/equipment/maintenances').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
+        },
         close () {
             this.dialog = false;
             this.$nextTick(() => {
@@ -99,21 +102,21 @@ export default {
 			if(this.editedIndex > -1)
 			{
 				this.loading = true;
-				this.$http.put(`/api/reagent/locations/${this.item.id}`, this.item, {headers: {'Content-Type': 'application/json'}})
+				this.$http.put(`/api/equipment/maintenances/${this.item.id}`, this.item, {headers: {'Content-Type': 'application/json'}})
 				.then(response => {this.loading = false; this.dialog = false; Object.assign(this.gridData[this.editedIndex], this.item); this.editedItem = -1;})
 				.catch(error => (this.loading = false, alert(error.response.data.message)));
 			}
 			else
 			{
 				this.loading = true;
-				this.$http.post("/api/reagent/locations", this.item, {headers: {'Content-Type': 'application/json'}})
+				this.$http.post("/api/equipment/maintenances", this.item, {headers: {'Content-Type': 'application/json'}})
 				.then(response => {this.loading = false; this.dialog = false; this.gridData.push(this.item); this.editedItem = -1;})
 				.catch(error => (this.loading = false, alert(error.response.data.message)));
 			}
 		}
 	},
 	created(){
-		this.getLocation();
+		this.getMaintenances();
 	}
   }
 </script>

@@ -49,7 +49,7 @@ export default {
 		},
 		login(){
 			this.loading = !this.loading;
-			this.$store.dispatch('login', this.user).then(() => this.$router.push('/'), this.loading = !this.loading).catch(error => alert(error.response.data.message), this.loading = !this.loading);
+			this.$store.dispatch('login', this.user).then(() => this.$router.push('/'), this.loading = !this.loading).catch(error => (this.loading = !this.loading, alert(error.response.data.message)), this.loading = !this.loading);
 		}
 	},
 	computed: {

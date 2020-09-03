@@ -13,11 +13,17 @@
           </v-list-item>
           <v-divider></v-divider>
           <v-list dense>
-            <v-list-item link to="/equipment">
+            <v-list-item to="/equipment">
               <v-list-item-icon>
                 <v-icon color="purple">mdi-view-dashboard</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Главная</v-list-item-title>
+            </v-list-item>
+            <v-list-item to="/equipment/department/equipments">
+              <v-list-item-icon>
+                <v-icon color="green">mdi-factory</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Отделы</v-list-item-title>
             </v-list-item>
             <v-list-group no-action>
               <template v-slot:activator>
@@ -38,7 +44,7 @@
                 </v-list-item-icon>
                   <v-list-item-title>Проверки</v-list-item-title>
               </v-list-item>
-              <v-list-item>
+              <v-list-item to="/equipment/metrolog/repair">
                 <v-list-item-icon>
                   <v-icon color="red">mdi-bug</v-icon>
                 </v-list-item-icon>
@@ -54,7 +60,7 @@
                     </v-list-item-icon>
                     <v-list-item-title>Инструкции</v-list-item-title>
                 </v-list-item>
-                <v-list-item link>
+                <v-list-item to="/equipment/metrolog/maintenances">
                     <v-list-item-icon>
                       <v-icon color="orange">mdi-format-list-checkbox</v-icon>
                     </v-list-item-icon>

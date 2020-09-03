@@ -30,11 +30,16 @@ import MovingHistory from "./components/reagent/moving/history.vue";
 import Location from "./components/reagent/location/index.vue";
 //EQUIPMENT
 import Equipment from "./components/equipment/main.vue";
+import Department from "./components/equipment/department/index.vue";
+import DepartmentEquipment from "./components/equipment/department/equipment.vue";
+import DepartmentEquipmentDetails from "./components/equipment/department/detail/index.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
 import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
 import MetrologEquipmentDetails from "./components/equipment/metrolog/detail/index.vue";
 import MetrologVerification from "./components/equipment/metrolog/verification/index.vue";
+import MetrologRepair from "./components/equipment/metrolog/repair/index.vue";
 import MetrologInstructions from "./components/equipment/metrolog/instructions/index.vue";
+import MetrologMaintenance from "./components/equipment/metrolog/maintenance/index.vue";
 
 
 Vue.prototype.$http = Axios;
@@ -69,14 +74,22 @@ var router = new VueRouter({
         { path: 'corrections', component: Corrections, meta: { roles: [2, 3] } }
       ]
     },
-    { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [4] },
+    { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 4] },
       children: [
+        { path: 'department', component: Department, meta: { roles: [1, 2, 4] },
+          children: [
+            { path: 'equipments', component: DepartmentEquipment, meta: { roles: [1, 2, 4] } },
+            { path: 'equipments/:id', props: true, name: 'details', component: DepartmentEquipmentDetails, meta: { roles: [1, 2, 4] } }
+          ]
+        },
         { path: 'metrolog', component: Metrolog, meta: { roles: [4] },
           children: [
             { path: 'equipments', component: MetrologEquipment, meta: { roles: [4] } },
             { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { roles: [4] } },
             { path: 'verification', component: MetrologVerification, meta: { roles: [4] } },
+            { path: 'repair', component: MetrologRepair, meta: { roles: [4] } },
             { path: 'instructions', component: MetrologInstructions, meta: { roles: [4] } },
+            { path: 'maintenances', component: MetrologMaintenance, meta: { roles: [4] } },
           ]
         },
       ]

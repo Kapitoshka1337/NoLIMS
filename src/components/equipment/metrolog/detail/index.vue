@@ -58,7 +58,12 @@
         </v-col>
         <v-col cols="12">
             <v-card outlined>
-                <v-card-title>Характеристики</v-card-title>
+                <v-card-title>
+                    Характеристики
+                    <v-spacer></v-spacer>
+                    <v-chip color="success">±</v-chip>
+                    <v-chip color="success">°</v-chip>
+                </v-card-title>
                 <v-card-text>
                     <v-form>
                         <v-row>
@@ -431,7 +436,19 @@ export default {
             this.loadMoving = true;
             this.$http.put(`/api/equipment/equipments/${this.indentificationData.equipment.id}/${this.id_instruction}/iupdate`, {headers: {'Content-Type': 'application/json'}})
             .then(response => (this.loadMoving = false, this.dialogSetIstruction = false, this.getEquipment())).catch(error => (this.loadMoving = false, alert(error.response.data.message)));
-        }
+        },
+		addPlus(){
+			if(!this.indentificationData.equipment.accuracy)
+				this.indentificationData.equipment.accuracy = '' + String.fromCharCode(177);
+			else
+				this.indentificationData.equipment.accuracy += String.fromCharCode(177);
+		},
+		addTemp(){
+			if(!this.indentificationData.equipment.accuracy)
+				this.indentificationData.equipment.accuracy = '' + String.fromCharCode(176);
+			else
+				this.indentificationData.equipment.accuracy += String.fromCharCode(176);
+		},
     },
     computed: {
 		filteredLocation(){

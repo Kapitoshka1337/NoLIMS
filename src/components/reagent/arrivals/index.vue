@@ -96,6 +96,9 @@
 						:items="materials"
 						:items-per-page="10"
 						:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+					<template v-slot:item.material="{item}">
+						{{ item.material }} ({{ item.density }})
+					</template>
 					</v-data-table>
 				</v-card-text>
 				<v-card-actions>

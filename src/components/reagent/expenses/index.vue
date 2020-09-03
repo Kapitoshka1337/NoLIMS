@@ -73,6 +73,9 @@
 				<template v-slot:item.date_order="{item}">
 					{{ today(item.date_order) }}
 				</template>
+				<template v-slot:item.material="{item}">
+					{{ item.material }} ({{ item.density }})
+				</template>
 				<template v-slot:header.date_usage="{header}">
 					{{header.text}}
 					<v-menu :close-on-content-click="false" :nudge-width="200" offset-y transition="slide-y-transition" left fixed>
