@@ -16,7 +16,9 @@ use App\Models\Equipment\equipment_history_movings;
 use App\Models\Equipment\equipment_metrolog_list_work_for_equipment;
 use App\Models\Equipment\equipment_date_check;
 use App\Models\Equipment\equipment_history_date_check;
+use App\Models\Equipment\equipment_history_repair;
 use App\Models\Equipment\equipment_list_work_maintenance;
+use App\Models\Equipment\equipment_condition_working;
 
 class EquipmentController extends Controller
 {
@@ -27,8 +29,10 @@ class EquipmentController extends Controller
 			'type' => equipment_type::get(),
 			// 'function' => equipment_function_of_use::get(),
 			// 'studies' => equipment_object_study::get(),
+			'history_repair' => equipment_history_repair::where('id_equipment', $id)->get(),
 			'history_checks' => equipment_history_date_checks::where('id_equipment', $id)->get(),
 			'history_moving' => equipment_history_movings::where('id_equipment', $id)->get(),
+			'condition_working' => equipment_condition_working::where('id_equipment', $id)->get(),
 			'maintance' => equipment_metrolog_list_work_for_equipment::where('id_equipment', $id)->get()
 		);
 		return response()->json($eq, 200);

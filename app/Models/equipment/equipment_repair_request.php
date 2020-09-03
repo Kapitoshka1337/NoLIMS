@@ -16,6 +16,7 @@ class equipment_repair_request extends Model
 		'date_request',
 		'date_start',
 		'date_end',
+		'accepted',
 		'executor',
 		'request_report'
 	];
