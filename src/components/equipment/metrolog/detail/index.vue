@@ -165,6 +165,29 @@
         <v-col cols="12">
             <v-card outlined>
                 <v-card-title>
+                    История ремонта
+                </v-card-title>
+                <v-card-text>
+                    <v-data-table dense :headers="tableColumn3" :items="indentificationData.history_repair" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+                        <template v-slot:item.date_request="{ item }">
+                            {{ today(item.date_request) }}
+                        </template>
+                        <template v-slot:item.date_start="{ item }">
+                            {{ today(item.date_start) }}
+                        </template>
+                        <template v-slot:item.date_end="{ item }">
+                            {{ today(item.date_end) }}
+                        </template>
+                        <template v-slot:no-data>
+                            Пока ничего нет :(
+                        </template>
+                    </v-data-table>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <v-card outlined>
+                <v-card-title>
                     Перемещения
                     <v-spacer></v-spacer>
                     <v-dialog v-model="dialogMoving" max-width="512px">
@@ -211,20 +234,6 @@
         <v-col cols="12">
             <v-card outlined>
                 <v-card-title>
-                    История ремонта
-                </v-card-title>
-                <v-card-text>
-                    <v-data-table dense :headers="tableColumn3" :items="indentificationData.history_repair" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
-                        <template v-slot:no-data>
-                            Пока ничего нет :(
-                        </template>
-                    </v-data-table>
-                </v-card-text>
-            </v-card>
-        </v-col>
-        <v-col cols="12">
-            <v-card outlined>
-                <v-card-title>
                     Условия работы
                     <v-spacer></v-spacer>
                     <v-btn x-small color="success" v-on:click="submitUpdateCondition()" :loading="saveCondition">Сохранить условия работы</v-btn>
@@ -241,10 +250,10 @@
                             <v-text-field clearable dense label="Температура" outlined v-model="indentificationData.condition_working.temperature"></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <v-text-field clearable dense label="Напряжение" outlined v-model="indentificationData.condition_working.voltage"></v-text-field>
+                            <v-text-field clearable dense label="Напряжение" type="number" outlined v-model="indentificationData.condition_working.voltage"></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <v-text-field clearable dense label="Ток" outlined v-model="indentificationData.condition_working.amperage"></v-text-field>
+                            <v-text-field clearable dense label="Ток" type="number" outlined v-model="indentificationData.condition_working.amperage"></v-text-field>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -332,6 +341,9 @@ export default {
             ],
             tableColumn3: [
                 { text: 'Статус', align: 'start', sortable: false, value: 'status' },
+                { text: 'Запрос', align: 'start', sortable: false, value: 'date_request' },
+                { text: 'Принято', align: 'start', sortable: false, value: 'date_start' },
+                { text: 'Завершено', align: 'start', sortable: false, value: 'date_end' },
                 { text: 'Проблема', align: 'start', sortable: false, value: 'problem' },
                 { text: 'Решение', align: 'start', sortable: false, value: 'request_report' },
                 { text: 'Инициатор', align: 'end', sortable: false, value: 'user' },
@@ -418,6 +430,11 @@ export default {
                 .then(response => (this.save = false)).catch(error => (this.save = false, alert(error.response.data.message)));
             }
             else alert('Изменения не вносились');
+        },
+        submitUpdateCondition(){
+            this.saveCondition = true;
+            this.$http.put(`/api/equipment/equipments/${this.indentificationData.equipment.id}/cupdate`, this.indentificationData.condition_working, {headers: {'Content-Type': 'application/json'}})
+            .then(response => (this.saveCondition = false)).catch(error => (this.saveCondition = false, alert(error.response.data.message)));
         },
         download(item = null){
             this.overlay = true;

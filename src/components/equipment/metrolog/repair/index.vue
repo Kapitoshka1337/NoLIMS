@@ -125,12 +125,17 @@
 				<v-card>
 					<v-card-title>Заявка на ремонт № {{ item.id }}</v-card-title>
 					<v-divider></v-divider>
+					<v-card-title>Проблема</v-card-title>
 					<v-card-text>
-                        {{ item.problem }}
+						{{ item.problem }}
 					</v-card-text>
-                    <v-card-text v-if="item.request_report">
-                        {{item.request_report}}
-                    </v-card-text>
+					<v-divider></v-divider>
+					<div v-if="item.request_report">
+						<v-card-title>Отчет о ремонте</v-card-title>
+	                    <v-card-text>
+	                        {{item.request_report}}
+	                    </v-card-text>
+					</div>
 					<v-divider></v-divider>
 					<v-card-actions>
 						<v-spacer></v-spacer>

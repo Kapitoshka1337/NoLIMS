@@ -45,7 +45,7 @@
                   <v-list-item-title>ТО</v-list-item-title>
               </v-list-item>
             </v-list-group>
-              <v-list-item to="/equipment/metrolog/repair">
+              <v-list-item to="/equipment/repair">
                 <v-list-item-icon>
                   <v-icon color="red">mdi-bug</v-icon>
                 </v-list-item-icon>
