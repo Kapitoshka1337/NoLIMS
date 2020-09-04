@@ -19,7 +19,7 @@ class RepairController extends Controller
 	{
 		DB::transaction(function() use($id, $req){
 			if(equipment_equipment::where('id', $id)->get()[0]['is_repair'])
-				throw new \Exception('Невозможно отправить заявку на ремонт. По причине нахождения оборудовния в ремонте');
+				throw new \Exception('Невозможно отправить заявку на ремонт. По причине нахождения оборудования в ремонте');
 			else
 				equipment_repair_request::insert([
 					'id_equipment' => $id,

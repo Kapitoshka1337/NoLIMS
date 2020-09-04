@@ -81,6 +81,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
 			// Route::delete('{id}/{id_passed}/pdelete', 'Equipment\EquipmentController@deleteVerification');
 			Route::put('{id}/update', 'Equipment\EquipmentController@update');
+			Route::put('{id}/cupdate', 'Equipment\EquipmentController@cupdate');
 			Route::put('{id}/{inst}/iupdate', 'Equipment\EquipmentController@iupdate');
 			Route::get('file/{name}', 'Equipment\EquipmentController@download');
 			Route::post('{id}/moving', 'Equipment\EquipmentController@moving');
