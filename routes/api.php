@@ -79,7 +79,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('equipments')->group(function(){
 			Route::get('{id}', 'Equipment\EquipmentController@view');
 			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
-			// Route::delete('{id}/{id_passed}/pdelete', 'Equipment\EquipmentController@deleteVerification');
 			Route::put('{id}/update', 'Equipment\EquipmentController@update');
 			Route::put('{id}/cupdate', 'Equipment\EquipmentController@cupdate');
 			Route::put('{id}/{inst}/iupdate', 'Equipment\EquipmentController@iupdate');
@@ -101,6 +100,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::get('documents', 'Equipment\SupportController@docType');
 			Route::get('locations', 'Equipment\SupportController@forNewEquipment');
 			Route::get('maintenances', 'Equipment\SupportController@maintenances');
+			Route::get('today', 'Equipment\SupportController@dashboard');
 		});
 		Route::prefix('instructions')->group(function(){
 			Route::get('', 'Equipment\InstructionsController@view');
@@ -125,6 +125,36 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			Route::post('table', 'Equipment\PrinterController@table');
 			Route::post('protocol', 'Equipment\PrinterController@protocol');
 			Route::post('csm', 'Equipment\PrinterController@csm');
+		});
+	});
+	Route::prefix('gz')->group(function () {
+		Route::prefix('index')->group(function(){
+			Route::get('', 'Gz\IndexController@view');
+			Route::post('', 'Gz\IndexController@create');
+		});
+		Route::prefix('plan')->group(function(){
+			Route::get('{id}', 'Gz\PlanController@view');
+			Route::post('', 'Gz\PlanController@create');
+			Route::post('quarter', 'Gz\PlanController@quarter_create');
+			Route::post('update', 'Gz\PlanController@update');
+		});
+		Route::prefix('animals')->group(function(){
+			Route::get('', 'Gz\AnimalController@view');
+			Route::post('', 'Gz\AnimalController@create');
+			Route::put('{id}', 'Gz\AnimalController@update');
+		});
+		Route::prefix('methods')->group(function(){
+			Route::get('', 'Gz\MethodController@view');
+			Route::post('', 'Gz\MethodController@post');
+			Route::put('{id}', 'Gz\MethodController@update');
+		});
+		Route::prefix('report')->group(function(){
+			Route::get('', 'Gz\ReportController@view');
+		});
+		Route::prefix('support')->group(function(){
+			Route::get('create', 'Gz\SupportController@create');
+			Route::get('ycreate', 'Gz\SupportController@ycreate');
+			Route::get('vetstations', 'Gz\SupportController@vetstations');
 		});
 	});
 });

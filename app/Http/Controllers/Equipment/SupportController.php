@@ -10,6 +10,7 @@ use App\Models\Equipment\equipment_document_type;
 use App\Models\Equipment\equipment_type_maintenance;
 use App\Models\Equipment\equipment_executor;
 use App\Models\Equipment\equipment_list_maintenance;
+use App\Models\Equipment\equipment_total_check;
 use App\Models\Share\location;
 use App\Models\Share\department;
 
@@ -48,5 +49,10 @@ class SupportController extends Controller
 			'type' => equipment_type_maintenance::get()
 		);
 		return response()->json($eq, 200);
+	}
+
+	public function dashboard()
+	{
+		return response()->json(equipment_total_check::whereBetween('date_next_check', [date('Y-m-01'), date('Y-m-t')])->get() ,200);
 	}
 }
