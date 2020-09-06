@@ -24,6 +24,9 @@
 				<template v-slot:item.claim_check="{item}">
 					{{ item.claim_check || 'Не указан' }}
 				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
+				</template>
 			</v-data-table>
 			<v-overlay :value="overlay">
 				<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
@@ -160,8 +163,7 @@ export default {
 			this.$http.get('/api/equipment/verification').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		today(date){
-			if(date === null) return;
-			return new Date(date).toLocaleString().split(',')[0];
+			return date === null || new Date(date).toLocaleString().split(',')[0];
 		},
 		selectedRow(data){
 			this.verificationInfo = data;

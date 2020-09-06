@@ -290,8 +290,7 @@ export default {
 			this.$http.get('/api/equipment/metrolog').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		today(date){
-			if(date === null) return;
-			return new Date(date).toLocaleString().split(',')[0];
+			return date === null || new Date(date).toLocaleString().split(',')[0];
 		},
 		editItem(item) {
 			this.editedIndex = this.gridData.indexOf(item);

@@ -72,6 +72,11 @@ export default {
 				title: null,
 				file: null
 			},
+			defaultItem: {
+				number: null,
+				title: null,
+				file: null
+			},
 			dialog: false,
 			editedIndex: -1,
 			loading: false,
@@ -99,6 +104,13 @@ export default {
 			this.item = Object.assign({}, item);
 			this.dialog = true;
 		},
+        close() {
+            this.dialog = false;
+            this.$nextTick(() => {
+                this.item = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+            })
+        },
 		submit(){
 			if(this.editedIndex > -1)
 			{
@@ -108,7 +120,7 @@ export default {
 				formData.append('file', this.item.file);
 				this.loading = true;
 				this.$http.post(`/api/equipment/instructions/${this.gridData[this.editedIndex].id}/update`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
-				.then(response => (this.loading = false, this.dialog = false, this.editedIndex = -1, this.getInstructions())).catch(error => (this.loading = false, alert(error.response.data.message)));
+				.then(response => (this.loading = false, this.dialog = false, this.close(), this.getInstructions())).catch(error => (this.loading = false, alert(error.response.data.message)));
 			}
 			else
 			{

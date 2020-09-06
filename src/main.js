@@ -29,7 +29,8 @@ import MovingReq from "./components/reagent/moving/request.vue";
 import MovingHistory from "./components/reagent/moving/history.vue";
 import Location from "./components/reagent/location/index.vue";
 //EQUIPMENT
-import Equipment from "./components/equipment/main.vue";
+import Equipment from "./components/equipment/index.vue";
+import EquipmentMain from "./components/equipment/main.vue";
 import Department from "./components/equipment/department/index.vue";
 import DepartmentEquipment from "./components/equipment/department/equipment.vue";
 import DepartmentEquipmentDetails from "./components/equipment/department/detail/index.vue";
@@ -40,7 +41,13 @@ import MetrologVerification from "./components/equipment/metrolog/verification/i
 import MetrologRepair from "./components/equipment/metrolog/repair/index.vue";
 import MetrologInstructions from "./components/equipment/metrolog/instructions/index.vue";
 import MetrologMaintenance from "./components/equipment/metrolog/maintenance/index.vue";
-
+//GZ
+import GzMain from "./components/gz/main.vue";
+import GzIndex from "./components/gz/index/index.vue";
+import GzAnimal from "./components/gz/animal/index.vue";
+import GzMethods from "./components/gz/methods/index.vue";
+import GzPlan from "./components/gz/plan/index.vue";
+import GzReport from "./components/gz/report/index.vue";
 
 Vue.prototype.$http = Axios;
 Vue.prototype.$convert = Convert;
@@ -49,7 +56,6 @@ if(token){
   Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
 if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.156';
-//  else Vue.prototype.$http.defaults.baseURL = 'http://laravel';
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
@@ -76,6 +82,7 @@ var router = new VueRouter({
     },
     { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 4, 5] },
       children: [
+        { path: 'main', component: EquipmentMain, meta: { roles: [1, 2, 4, 5] } },
         { path: 'department', component: Department, meta: { roles: [1, 2, 4, 5] },
           children: [
             { path: 'equipments', component: DepartmentEquipment, meta: { roles: [1, 2, 4, 5] } },
@@ -92,6 +99,15 @@ var router = new VueRouter({
           ]
         },
         { path: 'repair', component: MetrologRepair, meta: { roles: [4, 5] } },
+      ]
+    },
+    { path: '/gz', component: GzMain, meta: { requiresAuth: true, roles: [6] },
+      children: [
+        { path: 'index', component: GzIndex, meta: { roles: [6] } },
+        { path: 'animals', component: GzAnimal, meta: { roles: [6] } },
+        { path: 'methods', component: GzMethods, meta: { roles: [6] } },
+        { path: 'report', component: GzReport, meta: { roles: [6] } },
+        { path: 'plan', component: GzPlan, meta: { roles: [6] } },
       ]
     },
     {
@@ -116,7 +132,7 @@ router.beforeEach((to, from, next) => {
     {
       return next();
     }
-    else alert('У вас нет доступа!');
+    else {alert('У вас нет доступа!')}
   }
   else
   {

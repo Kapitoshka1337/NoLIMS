@@ -10,7 +10,8 @@ export default new Vuex.Store({
 		id_department: localStorage.getItem('id_department') || '',
 		name: localStorage.getItem('name') || '',
 		roles: +localStorage.getItem('roles') || 0,
-		user : null
+		user : null,
+		reportKey: null
 	},
 	mutations:{
 		auth_success(state, {tkn, usr, id_dep, nm, rls}){
@@ -23,6 +24,9 @@ export default new Vuex.Store({
 		logout(state){
 			state.token = '';
 		},
+		enterKey(state, key){
+			state.reportKey = key;
+		}
 	},
 	actions:{
 		login({commit}, user){
@@ -82,6 +86,9 @@ export default new Vuex.Store({
 			  delete axios.defaults.headers.common['Authorization'];
 			  resolve();
 			})
+		},
+		enterKey({commit}, key){
+			commit('enterKey', key);
 		}
 	},
 	getters:{
@@ -99,6 +106,9 @@ export default new Vuex.Store({
 		},
 		isRoles(state){
 			return state.roles;
+		},
+		key(state){
+			return state.reportKey;
 		}
 	}
 })

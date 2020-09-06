@@ -120,6 +120,9 @@
 				<template v-slot:item.actions="{ item }">
 					<v-btn small icon color="orange" @click="detail(item)"><v-icon>mdi-eye</v-icon></v-btn>
 				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
+				</template>
 			</v-data-table>
 			<v-dialog dense v-model="dialog" max-width="512">
 				<v-card>
@@ -226,6 +229,7 @@ export default {
             dialogFinish: false,
             loading: false,
 			loadingAllow: false,
+			dialogDeny: false,
             item: {},
             report_finish: ''
 		}
@@ -240,8 +244,7 @@ export default {
 			this.$http.get('/api/equipment/repair').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		today(date){
-			if(date === null) return;
-			return new Date(date).toLocaleString().split(',')[0];
+			return date === null || new Date(date).toLocaleString().split(',')[0];
         },
 		initFilters() {
 			for (let col in this.filters) {

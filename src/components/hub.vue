@@ -34,11 +34,11 @@ export default {
   data () {
     return {
       cards: [
-        // {
-        //   header: 'Госзадание',
-        //   description: 'Описание',
-        //   link: '/assignment'
-        // },
+         {
+           header: 'Госзадание',
+           description: 'Описание',
+           link: '/gz/index'
+         },
         // {
         //   header: 'Виварий',
         //   description: 'Описание',
@@ -54,7 +54,7 @@ export default {
           id: 2,
           header: 'Оборудование',
           description: 'Описание',
-          link: '/equipment'
+          link: '/equipment/main'
         }
       ]
     }

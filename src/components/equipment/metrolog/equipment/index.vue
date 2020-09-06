@@ -254,6 +254,9 @@
 				<template v-slot:item.actions="{ item }">
 					<v-btn icon @click="editItem(item)"><v-icon>mdi-cog</v-icon></v-btn>
 				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
+				</template>
 			</v-data-table>
 			<v-overlay :value="overlay">
 				<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
@@ -431,8 +434,7 @@ export default {
 			this.$http.get('/api/equipment/metrolog').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		today(date){
-			if(date === null) return;
-			return new Date(date).toLocaleString().split(',')[0];
+			return date === null || new Date(date).toLocaleString().split(',')[0];
 		},
 		submitVerification(){
 			let request = [];

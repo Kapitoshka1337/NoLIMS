@@ -4,17 +4,15 @@
 			<v-data-table calculate-widths dense item-key="id"
 				:headers="tableColumn"
 				:items="gridData"
-				:items-per-page="30"
+				:items-per-page="50"
 				:loading="load"
 				:search="search"
 				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 				<template v-slot:top>
 					<v-toolbar flat dense>
-						<v-toolbar-title>Техническое обслуживание</v-toolbar-title>
+						<v-toolbar-title>Исследования</v-toolbar-title>
 						<v-spacer></v-spacer>
-						<v-text-field v-model="search" label="Поиск" clearable single-line hide-details></v-text-field>
-						<v-spacer></v-spacer>
-						<v-btn :ripple="false" small color="orange" @click="dialog = true">Добавить ТО</v-btn>
+						<v-btn :ripple="false" small color="orange" @click="dialog = true">Добавить исследование</v-btn>
 					</v-toolbar>
 				</template>
 				<template v-slot:item.actions="{item}">
@@ -32,7 +30,7 @@
 				<v-card-text>
 					<v-row>
 						<v-col cols="12">
-							<v-text-field dense outlined clearable label="Описание" v-model="item.title"></v-text-field>
+							<v-text-field dense outlined clearable label="Исследование" v-model="item.title"></v-text-field>
 						</v-col>
 					</v-row>
 				</v-card-text>
@@ -52,7 +50,7 @@ export default {
 	data () {
 		return {
 			tableColumn: [
-				{ text: 'Описание', align: 'start', sortable: true, value: 'title'},
+				{ text: 'Исследование', align: 'start', sortable: true, value: 'title'},
 				{ text: '', align: 'start', sortable: false, value: 'actions'}
 			],
 			gridData: [],
@@ -73,7 +71,7 @@ export default {
 	},
 	computed: {
 		formTitle(){
-			return this.editedIndex === -1 ? 'Новое ТО' : 'Редактирование ТО'
+			return this.editedIndex === -1 ? 'Добавление исследования' : 'Редактирование'
 		}
     },
     watch: {
@@ -82,9 +80,9 @@ export default {
         },
     },
 	methods: {
-		getMaintenances(){
+		getAnimals(){
 			this.load = true;
-			this.$http.get('/api/equipment/maintenances').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
+			this.$http.get('/api/gz/methods').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
         },
         close () {
             this.dialog = false;
@@ -102,21 +100,21 @@ export default {
 			if(this.editedIndex > -1)
 			{
 				this.loading = true;
-				this.$http.put(`/api/equipment/maintenances/${this.item.id}`, this.item, {headers: {'Content-Type': 'application/json'}})
+				this.$http.put(`/api/gz/methods/${this.item.id}`, this.item, {headers: {'Content-Type': 'application/json'}})
 				.then(response => {this.loading = false; this.dialog = false; Object.assign(this.gridData[this.editedIndex], this.item); this.close();})
 				.catch(error => (this.loading = false, alert(error.response.data.message)));
 			}
 			else
 			{
 				this.loading = true;
-				this.$http.post("/api/equipment/maintenances", this.item, {headers: {'Content-Type': 'application/json'}})
+				this.$http.post("/api/gz/methods", this.item, {headers: {'Content-Type': 'application/json'}})
 				.then(response => {this.loading = false; this.dialog = false; this.gridData.push(this.item); this.close();})
 				.catch(error => (this.loading = false, alert(error.response.data.message)));
 			}
 		}
 	},
 	created(){
-		this.getMaintenances();
+		this.getAnimals();
 	}
   }
 </script>
