@@ -17,6 +17,7 @@
     "semantic-ui-vue": "^0.11.0",
     "typeface-roboto": "0.0.75",
     "vue": "^2.5.11",
+    "vue-flexmonster": "^2.8.14",
     "vue-router": "^3.3.4",
     "vuetify": "^2.3.9",
     "vuex": "^3.5.1",
