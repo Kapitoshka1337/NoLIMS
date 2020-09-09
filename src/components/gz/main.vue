@@ -13,7 +13,7 @@
           </v-list-item>
           <v-divider></v-divider>
           <v-list dense>
-            <v-list-item to="/gz/index">
+            <v-list-item to="/gz">
               <v-list-item-icon>
                 <v-icon color="orange">mdi-view-dashboard</v-icon>
               </v-list-item-icon>
@@ -32,9 +32,6 @@
                 </v-list-item-icon>
                   <v-list-item-title>План</v-list-item-title>
               </template>
-              <v-list-item to="/gz/plan/view">
-                  <v-list-item-title>Просмотр</v-list-item-title>
-              </v-list-item>
               <v-list-item to="/gz/plan">
                   <v-list-item-title>Изменение</v-list-item-title>
               </v-list-item>

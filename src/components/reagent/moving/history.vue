@@ -133,6 +133,7 @@ export default {
 				{ text: 'Место хранения', align: 'start', sortable: true, value: 'location'},
 				{ text: 'Тип', align: 'start', sortable: true, value: 'type'},
 				{ text: 'Материал', align: 'start', sortable: true, value: 'material'},
+				{ text: 'Накладная', align: 'start', sortable: true, value: 'packing_name'},
 				{ text: 'Ед. изм.', align: 'start', sortable: true, value: 'measure', filterable: false},
 				{ text: 'Требуют', align: 'start', sortable: true, value: 'amount'},
 				{ text: 'Остаток', align: 'start', sortable: true, value: 'total'},

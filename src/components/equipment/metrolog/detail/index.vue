@@ -427,7 +427,7 @@ export default {
             {
                 this.save = true;
                 this.$http.put(`/api/equipment/equipments/${this.indentificationDataCopy.id}/update`, this.changedItem, {headers: {'Content-Type': 'application/json'}})
-                .then(response => (this.save = false)).catch(error => (this.save = false, alert(error.response.data.message)));
+                .then(response => (this.save = false, this.indentificationDataCopy = {}, this.changedItem = {})).catch(error => (this.save = false, alert(error.response.data.message)));
             }
             else alert('Изменения не вносились');
         },
@@ -489,7 +489,7 @@ export default {
         updateInst(){
             this.loadMoving = true;
             this.$http.put(`/api/equipment/equipments/${this.indentificationData.equipment.id}/${this.id_instruction}/iupdate`, {headers: {'Content-Type': 'application/json'}})
-            .then(response => (this.loadMoving = false, this.dialogSetIstruction = false, this.getEquipment())).catch(error => (this.loadMoving = false, alert(error.response.data.message)));
+            .then(response => (this.loadMoving = false, this.dialogSetIstruction = false, this.indentificationDataCopy = {}, this.getEquipment())).catch(error => (this.loadMoving = false, alert(error.response.data.message)));
         },
 		addPlus(){
 			if(!this.indentificationData.equipment.accuracy)

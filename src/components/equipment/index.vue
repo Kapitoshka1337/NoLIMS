@@ -13,7 +13,7 @@
           </v-list-item>
           <v-divider></v-divider>
           <v-list dense>
-            <v-list-item to="/equipment/main">
+            <v-list-item to="/equipment">
               <v-list-item-icon>
                 <v-icon color="orange">mdi-view-dashboard</v-icon>
               </v-list-item-icon>

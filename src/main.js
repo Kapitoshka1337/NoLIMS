@@ -65,7 +65,7 @@ var router = new VueRouter({
   routes: [
     { path: '/login', component: Login, meta: { requiresAuth: false, roles: [] } },
     { path: '/singup', component: Singup, meta: { requiresAuth: false, roles: [] } },
-    { path: '/', component: Hub, meta: { requiresAuth: true, roles: [0, 1, 2, 3, 4, 5] } },
+    { path: '/', component: Hub, meta: { requiresAuth: true, roles: [0, 1, 2, 3, 4, 5, 6] } },
     { path: '/reagent', component: Reagent, meta: { requiresAuth: true, roles: [1, 2, 3, 4] },
       children: [
         { path: 'storage', component: Storage, meta: { roles: [1, 2, 3, 4] } },
@@ -82,7 +82,7 @@ var router = new VueRouter({
     },
     { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 4, 5] },
       children: [
-        { path: 'main', component: EquipmentMain, meta: { roles: [1, 2, 4, 5] } },
+        { path: '', component: EquipmentMain, meta: { roles: [1, 2, 4, 5] } },
         { path: 'department', component: Department, meta: { roles: [1, 2, 4, 5] },
           children: [
             { path: 'equipments', component: DepartmentEquipment, meta: { roles: [1, 2, 4, 5] } },
@@ -103,7 +103,7 @@ var router = new VueRouter({
     },
     { path: '/gz', component: GzMain, meta: { requiresAuth: true, roles: [6] },
       children: [
-        { path: 'index', component: GzIndex, meta: { roles: [6] } },
+        { path: '', component: GzIndex, meta: { roles: [6] } },
         { path: 'animals', component: GzAnimal, meta: { roles: [6] } },
         { path: 'methods', component: GzMethods, meta: { roles: [6] } },
         { path: 'report', component: GzReport, meta: { roles: [6] } },

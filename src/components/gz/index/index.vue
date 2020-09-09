@@ -28,7 +28,7 @@
 				<template v-slot:activator="{ on, attrs }">
 				</template>
 				<v-card>
-					<v-card-title>Добавление нового поступления</v-card-title>
+					<v-card-title>Добавление поступления</v-card-title>
 					<v-divider></v-divider>
 					<v-card-text>
 						<v-row>
@@ -60,9 +60,29 @@
 					</v-card-text>
 					<v-divider></v-divider>
 					<v-card-actions>
+						<v-btn color="orange" icon @click="confirmCreateFarm()"><v-icon large>mdi-home-circle-outline</v-icon></v-btn>
 						<v-spacer></v-spacer>
 						<v-btn color="success" v-on:click="submit()" :loading="loading">Сохранить</v-btn>
 						<v-btn color="error" @click="dialog = false">Отмена</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+			<v-dialog dense v-model="dialogFarm" max-width="700">
+				<v-card>
+					<v-card-title>Предприятие</v-card-title>
+					<v-divider></v-divider>
+					<v-card-text>
+						<v-row>
+							<v-col cols="12">
+								<v-text-field dense outlined clearable label="Предприятие" v-model="farm.title"></v-text-field>
+							</v-col>
+						</v-row>
+					</v-card-text>
+					<v-divider></v-divider>
+					<v-card-actions>
+						<v-spacer></v-spacer>
+						<v-btn color="success" @click="submitFarm()" :loading="loading">ОК</v-btn>
+						<v-btn color="error" @click="dialogFarm = false">Отмена</v-btn>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
@@ -94,6 +114,7 @@ export default {
 			gridData: [],
 			supportData: {},
 			dialog: false,
+			dialogFarm: false,
 			form: {
 				id_vetstation: null,
 				id_region: null,
@@ -104,6 +125,10 @@ export default {
 				date_enter: null,
 				place_of_selection: null,
 			},
+			farm: {
+				title: null,
+				id_region: null
+			}
 		}
 	},
 	methods: {
@@ -119,6 +144,14 @@ export default {
 			if(!Object.keys(this.supportData).length)
 				this.getSupport();
 			else this.dialog = true;
+		},
+		confirmCreateFarm(){
+			this.dialogFarm = true;
+		},
+		submitFarm(){
+			this.loading = true;
+			this.farm.id_region = this.form.id_region;
+			this.$http.post('/api/gz/index/farm', this.farm, {headers: {'Content-Type': 'application/json'}}).then(response => (this.loading = false, this.dialogFarm = false, this.getSupport())).catch(error => (this.loading = false, alert(error.response.data.message)));
 		},
 		submit(){
 			this.loading = true;
