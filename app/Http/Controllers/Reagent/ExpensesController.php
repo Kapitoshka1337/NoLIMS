@@ -62,7 +62,7 @@ class ExpensesController extends Controller
                 'id_department' => auth()->user()->getIdDepartment(),
                 'id_arrival_material' => $req->input('id_arrival'),
                 'id_user' => auth()->user()->getId(),
-                'amount' => $req->input('amount'),
+                'amount' => $req->input('famount'),
                 'date_usage' => $req->input('date_usage'),
                 'date_record' => date('Y-m-d'),
                 'id_moving_type' => 4
