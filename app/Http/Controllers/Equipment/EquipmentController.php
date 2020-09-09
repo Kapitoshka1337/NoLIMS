@@ -36,23 +36,6 @@ class EquipmentController extends Controller
 			'maintance' => equipment_metrolog_list_work_for_equipment::where('id_equipment', $id)->get()
 		);
 		return response()->json($eq, 200);
-			$cond = equipment_condition_working::where('id_equipment', $id)->get();
-		// $eq = array(
-		// 	'equipment' => equipment_equipment_details::find($id),
-		// 	'type' => equipment_type::get(),
-		// 	// 'function' => equipment_function_of_use::get(),
-		// 	// 'studies' => equipment_object_study::get(),
-		// 	'history_repair' => equipment_history_repair::where('id_equipment', $id)->get(),
-		// 	'history_checks' => equipment_history_date_checks::where('id_equipment', $id)->get(),
-		// 	'history_moving' => equipment_history_movings::where('id_equipment', $id)->get(),
-		// 	'condition_working' => array(
-		// 		`temperature` => $cond[0]['temperature'],
-		// 		`humidity` => $cond[0]['humidity'],
-		// 		`pressure` => $cond[0]['pressure'],
-		// 		`voltage` => $cond[0]['voltage'],
-		// 		`amperage` => $cond[0]['amperage']
-		// 	),
-		// 	'maintance' => equipment_metrolog_list_work_for_equipment::where('id_equipment', $id)->get()
 	}
 
 	public function create(Request $req)

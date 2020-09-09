@@ -50,4 +50,10 @@ class IndexController extends Controller
 			DB::commit();
 		return response()->json($pp, 200);
 	}
+	public function create_farm(Request $req)
+	{
+		DB::transaction(function() use ($req){
+			gz_farm::insert($req->all());
+		});	
+	}
 }

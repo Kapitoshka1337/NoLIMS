@@ -131,6 +131,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		Route::prefix('index')->group(function(){
 			Route::get('', 'Gz\IndexController@view');
 			Route::post('', 'Gz\IndexController@create');
+			Route::post('farm', 'Gz\IndexController@create_farm');
 		});
 		Route::prefix('plan')->group(function(){
 			Route::get('{id}', 'Gz\PlanController@view');
@@ -145,7 +146,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 		});
 		Route::prefix('methods')->group(function(){
 			Route::get('', 'Gz\MethodController@view');
-			Route::post('', 'Gz\MethodController@post');
+			Route::post('', 'Gz\MethodController@create');
 			Route::put('{id}', 'Gz\MethodController@update');
 		});
 		Route::prefix('report')->group(function(){
