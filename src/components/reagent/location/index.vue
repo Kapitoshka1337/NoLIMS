@@ -100,14 +100,14 @@ export default {
 			{
 				this.loading = true;
 				this.$http.put(`/api/reagent/locations/${this.item.id}`, this.item, {headers: {'Content-Type': 'application/json'}})
-				.then(response => {this.loading = false; this.dialog = false; Object.assign(this.gridData[this.editedIndex], this.item); this.editedItem = -1;})
+				.then(response => {this.loading = false; this.dialog = false; Object.assign(this.gridData[this.editedIndex], this.item); this.close();})
 				.catch(error => (this.loading = false, alert(error.response.data.message)));
 			}
 			else
 			{
 				this.loading = true;
 				this.$http.post("/api/reagent/locations", this.item, {headers: {'Content-Type': 'application/json'}})
-				.then(response => {this.loading = false; this.dialog = false; this.gridData.push(this.item); this.editedItem = -1;})
+				.then(response => {this.loading = false; this.dialog = false; this.gridData.push(this.item); this.close();})
 				.catch(error => (this.loading = false, alert(error.response.data.message)));
 			}
 		}
