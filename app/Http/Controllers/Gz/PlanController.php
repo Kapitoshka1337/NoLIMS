@@ -43,8 +43,6 @@ class PlanController extends Controller
 
 	public function quarter_create(Request $req)
 	{
-		// $method = gz_methodplan::where('id', $req->input('id_method'))->get();
-		// return $method;
 		DB::transaction(function() use ($req){
 			$method = gz_methodplan::where('id', $req->input('id_method'))->get();
 			gz_methodplan::insert([

@@ -55,14 +55,29 @@ class EquipmentController extends Controller
 				//Сохранение файла на сервере
 				$path = $req->file('file')->store('uploads');
 				$filename = pathinfo($path, PATHINFO_BASENAME);
+				$eq = equipment_date_check::where('id_equipment',$req->input('id_equipment'))->get();
 				//Добавление пройденой проверки
-				equipment_date_check::where('id_equipment',$req->input('id_equipment'))->update([
-					'upload_file_name' => $filename,
-					'id_upload_document_type' => $req->input('id_upload_document_type'),
-					'number_document' => $req->input('number_document'),
-					'date_current_check' => $req->input('date_current_check'),
-					'date_next_check' => $req->input('date_next_check')
-				]);
+				if(count($eq))
+				{
+					$eq[0]->update([
+						'upload_file_name' => $filename,
+						'id_upload_document_type' => $req->input('id_upload_document_type'),
+						'number_document' => $req->input('number_document'),
+						'date_current_check' => $req->input('date_current_check'),
+						'date_next_check' => $req->input('date_next_check')
+					]);
+				}
+				else
+				{
+					equipment_date_check::insert([
+						'id_equipment' => $req->input('id_equipment'),
+						'upload_file_name' => $filename,
+						'id_upload_document_type' => $req->input('id_upload_document_type'),
+						'number_document' => $req->input('number_document'),
+						'date_current_check' => $req->input('date_current_check'),
+						'date_next_check' => $req->input('date_next_check')
+					]);
+				}
 			}
 			catch(ValidationException $e)
 			{
