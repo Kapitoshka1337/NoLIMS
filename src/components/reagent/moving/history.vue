@@ -82,13 +82,13 @@
 						{{ item.material }} ({{ item.density }})
 					</template>
 					<template v-slot:item.measure="{item}">
-						{{ idDep === 5 ? item.measure : item.order_measure }}
+						{{ idDep === 5 ? item.order_measure : item.measure }}
 					</template>
 					<template v-slot:item.total="{item}">
-						{{ idDep === 5 || item.total === null ? item.arrival_amount : item.total === null ? convert(item, 'arrival_amount') : item.total}}
+						{{ idDep === 5 ? item.total : convert(item, 'total') }}
 					</template>
 					<template v-slot:item.amount="{item}">
-						{{ idDep === 5 ? convert(item, 'amount') : item.amount }}
+						{{ idDep === 5 ? item.amount : convert(item, 'amount') }}
 					</template>
 					<template v-slot:item.date_create="{item}">
 						{{today(item.date_create)}}

@@ -58,7 +58,7 @@
 					{{ idDep === 5 ? item.order_measure : item.measure }}
 				</template>
 				<template v-slot:item.total="{item}">
-					{{ idDep === 5 ? item.total || item.amount : convert(item, 'total') || convert(item, 'amount')}}
+					{{ idDep === 5 ? item.total : convert(item, 'total') }}
 				</template>
 				<template v-slot:item.amount="{item}">
 					{{ idDep === 5 ? item.amount : convert(item, 'amount') }}
@@ -78,7 +78,7 @@
 				<v-card-text>
 					<v-data-table dense :items="selectedDialog" :headers="tableColumn1" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 						<template v-slot:item.total="{item}">
-							{{ idDep === 5 ? item.total || item.amount : convert(item, 'total') || convert(item, 'amount')}}
+							{{ idDep === 5 ? item.total : convert(item, 'total') }}
 						</template>
 						<template v-slot:item.mamount="{item}">
 							<v-text-field type="number" outlined dense v-model="item.mamount"></v-text-field>
