@@ -1,7 +1,7 @@
 <template>
 	<v-row>
 		<v-col cols="12">
-			<v-data-table dense item-key="matertial_id"
+			<v-data-table dense item-key="arrival_material_id"
 				:headers="tableColumn"
 				:items="gridData"
 				:items-per-page="50"
@@ -143,7 +143,7 @@
 					<v-row>
 						<v-col cols="12">
 							<v-text-field type="number" dense outlined clearable label="Потраченное количество" v-model="expense.amount"></v-text-field>
-							<v-text-field type="date" dense outlined clearable label="Продлить доы" v-model="expense.date_usage"></v-text-field>
+							<v-text-field type="date" dense outlined clearable label="Продлить до" v-model="expense.date_usage"></v-text-field>
 						</v-col>
 					</v-row>
 				</v-card-text>
