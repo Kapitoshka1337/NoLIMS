@@ -82,7 +82,7 @@
 					{{ idDep === 5 ? item.order_measure : item.measure }}
 				</template>
 				<template v-slot:item.total="{item}">
-					{{ idDep === 5 ? item.total : convert(item, 'total') }}
+					{{ idDep === 5 ? parseFloat(item.total.toFixed(4)) : convert(item, 'total') }}
 				</template>
 				<template v-slot:item.amount="{item}">
 					{{ idDep === 5 ? item.amount : convert(item, 'amount') }}
@@ -143,7 +143,7 @@
 					<v-row>
 						<v-col cols="12">
 							<v-text-field type="number" dense outlined clearable label="Потраченное количество" v-model="expense.amount"></v-text-field>
-							<v-text-field type="date" dense outlined clearable label="Дата потребления" v-model="expense.date_usage"></v-text-field>
+							<v-text-field type="date" dense outlined clearable label="Продлить доы" v-model="expense.date_usage"></v-text-field>
 						</v-col>
 					</v-row>
 				</v-card-text>

@@ -80,7 +80,7 @@
 					{{ idDep === 5 ? item.order_measure : item.measure }}
 				</template>
 				<template v-slot:item.total="{item}">
-					{{ idDep === 5 ? item.total : convert(item, 'total') }}
+					{{ idDep === 5 ? parseFloat(item.total.toFixed(4)) : convert(item, 'total') }}
 				</template>
 				<template v-slot:item.amount="{item}">
 					{{ idDep === 5 ? item.amount : convert(item, 'amount') }}

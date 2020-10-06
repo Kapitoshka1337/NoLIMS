@@ -7,7 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 	state: {
 		token: localStorage.getItem('token') || '',
-		id_department: localStorage.getItem('id_department') || '',
+		id_department: +localStorage.getItem('id_department') || '',
 		name: localStorage.getItem('name') || '',
 		roles: +localStorage.getItem('roles') || 0,
 		user : null,
