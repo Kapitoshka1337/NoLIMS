@@ -132,7 +132,7 @@
 						<v-col cols="12">
 							<v-alert dense outlined type="error" v-if="isTime">Расход материала по истечение установленного срока хранения ({{today(item.shelf_life)}}) запрещается</v-alert>
 							<v-alert dense outlined type="warning" v-if="isAmount">Введите потраченное количество</v-alert>
-							<v-alert dense outlined type="warning" v-if="isTotal">Невозможно потратить больше {{ idDep === 5 ? item.total : convert(item, 'total') }}</v-alert>
+							<v-alert dense outlined type="warning" v-if="isTotal">Невозможно потратить больше {{ idDep === 5 ? parseFloat(item.total.toFixed(4)) : convert(item, 'total') }}</v-alert>
 						</v-col>
 					</v-row>
 				</v-card-text>
@@ -375,8 +375,6 @@ export default {
 		},
 		//Проверка на введенное количество и сравненеи с остатком
 		isTotal(){
-			//if(this.item.total) return this.idDep === 5 ? this.item.total - Number(this.expense.amount) < 0 : this.item.total - Number(this.expense.famount) < 0;
-			//return this.idDep === 5 ? this.item.amount - Number(this.expense.amount) < 0 : this.item.amount - Number(this.expense.famount) < 0;
 			return this.idDep === 5 ? this.item.total - Number(this.expense.amount) < 0 : this.item.total - Number(this.expense.famount) < 0;
 		},
 		isHead(){
