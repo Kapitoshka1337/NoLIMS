@@ -365,12 +365,15 @@ export default {
 		isRole(){
 			return this.$store.getters.isRoles;
 		},
+		//Проверка на срок хранения
 		isTime(){
 			return Object.keys(this.item).length && this.colorShelfLife(this.item.shelf_life) <= 0;
 		},
+		//Проверка введенного количества
 		isAmount(){
 			return this.expense.amount === null || this.expense.amount <= 0;
 		},
+		//Проверка на введенное количество и сравненеи с остатком
 		isTotal(){
 			//if(this.item.total) return this.idDep === 5 ? this.item.total - Number(this.expense.amount) < 0 : this.item.total - Number(this.expense.famount) < 0;
 			//return this.idDep === 5 ? this.item.amount - Number(this.expense.amount) < 0 : this.item.amount - Number(this.expense.famount) < 0;
