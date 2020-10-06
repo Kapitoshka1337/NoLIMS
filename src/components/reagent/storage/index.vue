@@ -132,12 +132,12 @@
 						<v-col cols="12">
 							<v-alert dense outlined type="error" v-if="isTime">Расход материала по истечение установленного срока хранения ({{today(item.shelf_life)}}) запрещается</v-alert>
 							<v-alert dense outlined type="warning" v-if="isAmount">Введите потраченное количество</v-alert>
-							<v-alert dense outlined type="warning" v-if="isTotal">Невозможно потратить больше {{ idDep === 5 ? item.total || item.amount : convert(item, 'total') || convert(item, 'amount')}}</v-alert>
+							<v-alert dense outlined type="warning" v-if="isTotal">Невозможно потратить больше {{ idDep === 5 ? item.total : convert(item, 'total') }}</v-alert>
 						</v-col>
 					</v-row>
 				</v-card-text>
 				<v-card-text v-if="isTime && isHead">
-					<v-text-field type="date" outlined dense label="Дата продления" v-model="expense.date_renewal"></v-text-field>
+					<v-text-field type="date" outlined dense label="Продлить до" v-model="expense.date_renewal"></v-text-field>
 				</v-card-text>
 				<v-card-text>
 					<v-row>
@@ -372,8 +372,9 @@ export default {
 			return this.expense.amount === null || this.expense.amount <= 0;
 		},
 		isTotal(){
-			if(this.item.total) return this.idDep === 5 ? this.item.total - Number(this.expense.amount) < 0 : this.item.total - Number(this.expense.famount) < 0;
-			return this.idDep === 5 ? this.item.amount - Number(this.expense.amount) < 0 : this.item.amount - Number(this.expense.famount) < 0;
+			//if(this.item.total) return this.idDep === 5 ? this.item.total - Number(this.expense.amount) < 0 : this.item.total - Number(this.expense.famount) < 0;
+			//return this.idDep === 5 ? this.item.amount - Number(this.expense.amount) < 0 : this.item.amount - Number(this.expense.famount) < 0;
+			return this.idDep === 5 ? this.item.total - Number(this.expense.amount) < 0 : this.item.total - Number(this.expense.famount) < 0;
 		},
 		isHead(){
 			return this.$store.getters.isRoles === 2;
