@@ -207,7 +207,7 @@
             return parseFloat(((val / par) * 1000).toFixed(4))
         },
         g: function(val){
-            return parseFloat((val * 1000).toFixed(4))
+            return parseFloat((val * 1000).toFixed(5))
         },
         kg: function(val){
             return val
@@ -340,7 +340,7 @@
             return val / par
         },
         g: function(val, par) {
-            return val * par
+            return (val * par).toFixed(4)
         },
         flacon: function(val) {
             return val
