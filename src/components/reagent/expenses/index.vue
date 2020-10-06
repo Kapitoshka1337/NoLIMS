@@ -191,7 +191,7 @@ export default {
 			value >= this.DateFilters.record_start_date && value <= this.DateFilters.record_end_date}},
 				{ text: 'Операция', align: 'start', sortable: true, value: 'moving_type', filter: value => {return this.activeFilters.moving_type ? this.activeFilters.moving_type.includes(value) : true}},
 				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false},
-				{ text: '№', align: 'start', sortable: true, value: 'id_arrival_material'}
+				{ text: '№', align: 'start', sortable: true, value: 'id'}
 			],
 			gridData: [],
 			filters: { moving_type: [], user: []},
