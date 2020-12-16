@@ -107,7 +107,7 @@
 					</v-list>
 				</v-card-text>
 				<v-divider></v-divider>
-				<v-card-actions>
+				<v-card-actions  v-if="item.id_status === 1">
 					<v-spacer></v-spacer>
 					<v-btn color="success" @click="allow()" :loading="isAllowLoading">Принять</v-btn>
 					<v-btn color="error" @click="deny()" :loading="isDenyLoading">Отказать</v-btn>

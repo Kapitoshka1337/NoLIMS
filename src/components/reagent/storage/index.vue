@@ -115,7 +115,7 @@
 				<template v-slot:item.actions="{item}">
 					<v-btn icon small color="red" @click="confirmExepenses(item)"><v-icon>mdi-water</v-icon></v-btn>
 					<v-btn icon small color="orange" @click="confirmDetail(item)"><v-icon>mdi-pencil</v-icon></v-btn>
-					<v-btn icon small color="blue" @click="moveToArchive(item)" v-if="isRole === 2"><v-icon>mdi-archive</v-icon></v-btn>
+					<v-btn icon small color="blue" @click="confirmArchive(item)" v-if="isRole === 2 || 3"><v-icon>mdi-archive</v-icon></v-btn>
 				</template>
 				<template v-slot:no-data>
 					Пока ничего нет :(
@@ -197,9 +197,19 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
-		<v-overlay :value="overlay">
-			<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
-		</v-overlay>
+		<v-dialog dense persistent v-model="dialogArchive" max-width="512">
+				<v-card>
+					<v-card-title>Перемещение в архив</v-card-title>
+					<v-card-text><v-icon color="red">mdi-alert</v-icon>Переместить в архив?</v-card-text>
+					<v-card-text>{{ item.material_id }} / {{ today(item.date_order) }}  {{ item.type }} {{ item.material }}</v-card-text>
+					<v-divider></v-divider>
+					<v-card-actions>
+						<v-spacer></v-spacer>
+						<v-btn color="success" @click="moveToArchive()" :loading="loadArchive">Переместить</v-btn>
+						<v-btn color="error" @click="dialogArchive = false">Отмена</v-btn>
+					</v-card-actions>
+				</v-card>
+		</v-dialog>
 	</v-row>
 </template>
 
@@ -241,8 +251,9 @@ export default {
 			dialogExpenses: false,
 			dialogDetail: false,
 			dialogPrint: false,
+			dialogArchive: false,
 			loadExpenses: false,
-			overlay: false,
+			loadArchive: false,
 			gridData: [],
 			item: {},
 			editedIndex: -1,
@@ -271,6 +282,11 @@ export default {
 			this.editedIndex = this.gridData.indexOf(item);
 			this.item = Object.assign({}, item);
 			this.dialogDetail = true;
+		},
+		confirmArchive(item){
+			this.editedIndex = this.gridData.indexOf(item);
+			this.item = Object.assign({}, item);
+			this.dialogArchive = true;
 		},
 		submitExpenses(){
 			this.expense.id_arrival = this.item.arrival_material_id;
@@ -310,12 +326,11 @@ export default {
 		convert(item, param){
 			return this.$convert(item[param]).param(item.density).measure(unit[item.id_order_measure]).to(unit[item.id_measure]);
 		},
-		moveToArchive(item){
-            this.editedIndex = this.gridData.indexOf(item);
-			this.overlay = true;
-			this.$http.put(`/api/reagent/storage/archive/${item.arrival_material_id}`, {headers: {'Content-Type': 'application/json'}})
-			.then(response => {this.overlay = false; this.gridData.splice(this.editedIndex, 1);})
-			.catch(error => (this.overlay = false, alert(error.response.data.message)));
+		moveToArchive(){
+			this.loadArchive = true;
+			this.$http.put(`/api/reagent/storage/archive/${this.item.arrival_material_id}`, {headers: {'Content-Type': 'application/json'}})
+			.then(response => {this.loadArchive = false; this.dialogArchive = false; this.gridData.splice(this.editedIndex, 1);})
+			.catch(error => (this.loadArchive = false, this.dialogArchive = false, alert(error.response.data.message)));
 		},
 		locationText(data){
 			this.text = data;

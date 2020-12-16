@@ -74,11 +74,6 @@
                     </v-data-table>
                 </v-card-text>
                 <v-divider></v-divider>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="success">ОК</v-btn>
-                    <v-btn color="error" @click="dialogMaterial = false">Отмена</v-btn>
-                </v-card-actions>
             </v-card>
         </v-dialog>
     </v-row>
