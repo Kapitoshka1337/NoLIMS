@@ -326,11 +326,18 @@ export default {
 		convert(item, param){
 			return this.$convert(item[param]).param(item.density).measure(unit[item.id_order_measure]).to(unit[item.id_measure]);
 		},
+		closeArchive() {
+			this.dialogArchive = false;
+			this.$nextTick(() => {
+				this.editedItem = Object.assign({}, {})
+				this.editedIndex = -1;
+			})
+		},
 		moveToArchive(){
 			this.loadArchive = true;
 			this.$http.put(`/api/reagent/storage/archive/${this.item.arrival_material_id}`, {headers: {'Content-Type': 'application/json'}})
-			.then(response => {this.loadArchive = false; this.dialogArchive = false; this.gridData.splice(this.editedIndex, 1);})
-			.catch(error => (this.loadArchive = false, this.dialogArchive = false, alert(error.response.data.message)));
+			.then(response => {this.loadArchive = false; this.gridData.splice(this.editedIndex, 1); this.closeArchive(); })
+			.catch(error => (this.loadArchive = false, this.closeArchive(), alert(error.response.data.message)));
 		},
 		locationText(data){
 			this.text = data;
@@ -346,9 +353,15 @@ export default {
 			});
 		},
 		initFilters() {
-			for (let col in this.filters) {
-				this.filters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })}
-			this.activeFilters = Object.assign({}, this.filters)
+			for (let col in this.filters)
+				this.filters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index });
+
+			if(Object.keys(this.activeFilters).length === 0)
+				this.activeFilters = Object.assign({}, this.filters)
+
+			for(let col in this.activeFilters)
+				if(this.filters[col].length === this.activeFilters[col].length)
+					this.activeFilters = Object.assign({}, this.filters)
 		},
 		toggleAll (col) {
 			this.activeFilters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })
