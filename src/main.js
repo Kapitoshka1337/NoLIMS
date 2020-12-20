@@ -17,7 +17,8 @@ import Login from "./components/auth/login.vue";
 import Singup from "./components/auth/singup.vue";
 import Hub from "./components/hub.vue";
 //REAGENT
-import Reagent from "./components/reagent/main.vue";
+import Reagent from "./components/reagent/index.vue";
+import ReagentDashboard from "./components/reagent/main.vue";
 import Corrections from "./components/reagent/correction/index.vue";
 import Storage from "./components/reagent/storage/index.vue";
 import Archive from "./components/reagent/archive/index.vue";
@@ -68,6 +69,7 @@ var router = new VueRouter({
     { path: '/', component: Hub, meta: { requiresAuth: true, roles: [0, 1, 2, 3, 4, 5, 6] } },
     { path: '/reagent', component: Reagent, meta: { requiresAuth: true, roles: [1, 2, 3, 4] },
       children: [
+        { path: '', component: ReagentDashboard, meta: { roles: [1, 2, 3, 4] } },
         { path: 'storage', component: Storage, meta: { roles: [1, 2, 3, 4] } },
         { path: 'archive', component: Archive,  meta: { roles: [1, 2, 3, 4] } },
         { path: 'arrivals', component: Arrivals,  meta: { roles: [1, 2, 3, 4] } },

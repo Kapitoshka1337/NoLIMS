@@ -1,123 +1,109 @@
 <template>
-  <v-row>
-      <v-navigation-drawer v-model="drawer" dark app absolute>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                Реактив
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                БУ УР "УВДЦ"
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider></v-divider>
-          <v-list dense>
-            <v-list-item to="/reagent">
-              <v-list-item-icon>
-                <v-icon color="purple">mdi-view-dashboard</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Главная</v-list-item-title>
-            </v-list-item>
-            <v-list-item to="/reagent/storage">
-              <v-list-item-icon>
-                <v-icon color="green">mdi-package-variant</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Склад</v-list-item-title>
-            </v-list-item>
-            <v-list-item to="/reagent/archive">
-              <v-list-item-icon>
-                <v-icon color="blue">mdi-package-variant-closed</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Архив</v-list-item-title>
-            </v-list-item>
-            <v-list-item to="/reagent/corrections">
-              <v-list-item-icon>
-                <v-icon color="orange">mdi-alert</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Ошибки</v-list-item-title>
-            </v-list-item>
-            <v-list-item to="/reagent/arrivals">
-              <v-list-item-icon>
-                <v-icon color="teal">mdi-package-up</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Поступления</v-list-item-title>
-            </v-list-item>
-            <v-list-item to="/reagent/expenses">
-              <v-list-item-icon>
-                <v-icon color="red">mdi-history</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>История расхода</v-list-item-title>
-            </v-list-item>
-            <v-list-item to="/reagent/locations">
-              <v-list-item-icon>
-                <v-icon color="yellow">mdi-map-marker</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Места хранения</v-list-item-title>
-            </v-list-item>
-            <v-list-item to="/reagent/writeoff">
-              <v-list-item-icon>
-                <v-icon color="orange">mdi-content-copy</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Списание</v-list-item-title>
-            </v-list-item>
-            <v-list-group no-action>
-              <template v-slot:activator>
-                <v-list-item-icon>
-                  <v-icon color="blue">mdi-folder-swap</v-icon>
-                </v-list-item-icon>
-                  <v-list-item-title>Передача</v-list-item-title>
-              </template>
-              <v-list-item to="/reagent/moving">
-                <v-list-item-content>
-                  <v-list-item-title>Запрос</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item to="/reagent/moving/history">
-                <v-list-item-content>
-                  <v-list-item-title>История</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-group>
-          </v-list>
-        </v-navigation-drawer>
-        <v-app-bar color="primary" dense dark app>
-          <v-app-bar-nav-icon v-on:click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <v-toolbar-title>Реактив</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-title>{{user}} ({{idDep}})</v-toolbar-title>
-          <v-btn icon @click="logout">
-            <v-icon>mdi-exit-to-app</v-icon>
-          </v-btn>
-        </v-app-bar>
-        <v-main>
-          <v-container fluid>
-            <router-view></router-view>
-          </v-container>
-        </v-main>
-    </v-row>
+	<v-row>
+		<v-col cols="12" v-for="card in cards" :key="card.id">
+			<v-data-table
+				dense
+				:headers="card.tableColumn"
+				:items="card.content"
+				:items-per-page="10"
+				:loading="load"
+				item-key="id"
+				:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [10, 20], itemsPerPageText: 'Отобразить на странице'}">
+				<template v-slot:top>
+					<v-toolbar flat>
+						<v-toolbar-title>{{card.title}}</v-toolbar-title>
+					</v-toolbar>
+				</template>
+				<template v-slot:item.total="{item}">
+					{{ parseFloat(item.total.toFixed(2)) }}
+				</template>
+				<template v-slot:item.date_order="{item}">
+					{{ today(item.date_order) }}
+				</template>
+				<template v-slot:item.shelf_life="{item}">
+					{{ today(item.shelf_life) }} <strong>({{colorShelfLife(item.shelf_life)}})</strong>
+				</template>
+				<template v-slot:no-data>
+					Пока ничего нет :(
+				</template>
+			</v-data-table>
+		</v-col>
+	</v-row>
 </template>
 
 <script>
+//import unit from './unit.js';
+
 export default {
-  data () {
-    return {
-      drawer: false
-    }
-  },
-  computed:{
-    user(){
-      return this.$store.getters.name;      
-    },
-    idDep(){
-      return this.$store.getters.idDepartment;
+	data(){
+		return {
+			cards: [
+			{
+				id: 'total',
+				title: 'Остаток меньше 40%',
+				tableColumn: [
+					{ text: 'Код', align: 'start', sortable: true, value: 'material_id'},
+					{ text: 'Дата поступления', align: 'start', sortable: true, value: 'date_order'},
+					{ text: 'Местоположение', align: 'start', sortable: true, value: 'location'},
+					{ text: 'Тип', align: 'start', sortable: true, value: 'type'},
+					{ text: 'Материал', align: 'start', sortable: true, value: 'material'},
+					{ text: 'Ед.изм', align: 'start', sortable: true, value: 'order_measure'},
+					{ text: 'Остаток', align: 'start', sortable: true, value: 'total'},
+					{ text: 'Поступило', align: 'start', sortable: true, value: 'amount'},
+					{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life'}
+				],
+				content: []
+			},
+			{
+				id: 'date',
+				title: 'Срок хранения меньше 2 месяцев',
+				tableColumn: [
+					{ text: 'Код', align: 'start', sortable: true, value: 'material_id'},
+					{ text: 'Дата поступления', align: 'start', sortable: true, value: 'date_order'},
+					{ text: 'Местоположение', align: 'start', sortable: true, value: 'location'},
+					{ text: 'Тип', align: 'start', sortable: true, value: 'type'},
+					{ text: 'Материал', align: 'start', sortable: true, value: 'material'},
+					{ text: 'Ед.изм', align: 'start', sortable: true, value: 'order_measure'},
+					{ text: 'Остаток', align: 'start', sortable: true, value: 'total'},
+					{ text: 'Поступило', align: 'start', sortable: true, value: 'amount'},
+					{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life'}
+				],
+				content: []
+			}
+		],
+			gridData: [],
+			load: false,
+		}
+	},
+	watch: {
+		gridData(){
+			Object.keys(this.gridData).forEach(data => {
+				this.cards.forEach(card => {
+					if(data === card.id)
+						card.content = this.gridData[data]
+				})
+			})
+		}
+	},
+	methods: {
+		getToday(){
+			this.load = true;
+			this.$http.get('/api/reagent/dashboard/main').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
 		},
-  },
-  methods:{
-    logout(){
-        this.$store.dispatch('logout').then(() => {
-          this.$router.push('/login')});
-      }
-  }
+		today(date){
+			return date === null || new Date(date).toLocaleString().split(',')[0];
+		},
+		colorShelfLife(date){
+			let today = new Date();
+			let shelf_life = new Date(date.split(".").reverse().join("-"));
+			return Math.ceil((shelf_life.getTime() - today.getTime()) / (1000 * 3600 * 24));
+		},
+		//convert(item, param){
+		//	return this.$convert(item[param]).param(item.density).measure(unit[item.id_order_measure]).to(unit[item.id_measure]);
+		//}
+	},
+	created(){
+		this.getToday();
+	}
 }
 </script>
