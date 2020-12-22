@@ -356,12 +356,14 @@ export default {
 			for (let col in this.filters)
 				this.filters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index });
 
+
 			if(Object.keys(this.activeFilters).length === 0)
 				this.activeFilters = Object.assign({}, this.filters)
 
-			for(let col in this.activeFilters)
-				if(this.filters[col].length === this.activeFilters[col].length)
-					this.activeFilters = Object.assign({}, this.filters)
+			//console.log(Object.keys(this.activeFilters
+			//for(let col in this.activeFilters)
+			//	if(this.filters[col].length === this.activeFilters[col].length)
+			//		this.activeFilters = Object.assign({}, this.filters)
 		},
 		toggleAll (col) {
 			this.activeFilters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })
