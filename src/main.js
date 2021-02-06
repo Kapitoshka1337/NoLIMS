@@ -56,7 +56,8 @@ const token = localStorage.getItem('token');
 if(token){
   Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
-if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.156';
+// if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.156';
+Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.156';
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
