@@ -55,6 +55,14 @@
           <v-toolbar-title>Госзадание</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-title>{{user}} ({{idDep}})</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="dialogGuide = true">
+            <v-icon>mdi-help-circle-outline</v-icon>
+            <guide v-bind:dialog-open="dialogGuide" @close="dialogClose()"></guide>
+          </v-btn>
+          <v-btn icon to="/">
+            <v-icon>mdi-home-circle-outline</v-icon>
+          </v-btn>
           <v-btn icon @click="logout">
             <v-icon>mdi-exit-to-app</v-icon>
           </v-btn>
@@ -68,10 +76,16 @@
 </template>
 
 <script>
+import guide from './../guide/index.vue';
+
 export default {
+  components: {
+    guide: guide
+  },
   data () {
     return {
-      drawer: false
+      drawer: false,
+      dialogGuide: false
     }
   },
   methods: {
@@ -81,6 +95,9 @@ export default {
     },
     prompt(){
       this.$store.dispatch('enterKey', window.prompt('Ключ'));
+    },
+    dialogClose(data){
+      this.dialogGuide = data;
     }
   },
   computed: {

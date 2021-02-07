@@ -66,50 +66,50 @@ var router = new VueRouter({
   routes: [
     { path: '/login', component: Login, meta: { requiresAuth: false, roles: [] } },
     { path: '/singup', component: Singup, meta: { requiresAuth: false, roles: [] } },
-    { path: '/', component: Hub, meta: { requiresAuth: true, roles: [0, 1, 2, 3, 4, 5, 6] } },
-    { path: '/reagent', component: Reagent, meta: { requiresAuth: true, roles: [1, 2, 3, 4] },
+    { path: '/', component: Hub, meta: { name: 'hub', requiresAuth: true, roles: [0, 1, 2, 3, 4, 5, 6] } },
+    { path: '/reagent', component: Reagent, meta: { name: 'reagent', requiresAuth: true, roles: [1, 2, 3, 4] },
       children: [
-        { path: '', component: ReagentDashboard, meta: { roles: [1, 2, 3, 4] } },
-        { path: 'storage', component: Storage, meta: { roles: [1, 2, 3, 4] } },
-        { path: 'archive', component: Archive,  meta: { roles: [1, 2, 3, 4] } },
-        { path: 'arrivals', component: Arrivals,  meta: { roles: [1, 2, 3, 4] } },
-        { path: 'arrivals/create', component: AppendArrivals,  meta: { roles: [2, 3] } }, //ПЕРЕДЕЛАТЬ
-        { path: 'moving', component: MovingReq, meta: { roles: [1, 2, 3, 4] } },
-        { path: 'moving/history', component: MovingHistory, meta: { roles: [2, 3] } },
-        { path: 'expenses', component: Expenses,  meta: { roles: [1, 2, 3, 4] } },
-        { path: 'writeoff', component: Writreoff,  meta: { roles: [1, 2, 3, 4] } },
-        { path: 'locations', component: Location,  meta: { roles: [1, 2, 3, 4] } },
-        { path: 'corrections', component: Corrections, meta: { roles: [2, 3] } }
+        { path: '', component: ReagentDashboard, meta: { name: 'reagent', roles: [1, 2, 3, 4] } },
+        { path: 'storage', component: Storage, meta: { name: 'reagent', roles: [1, 2, 3, 4] } },
+        { path: 'archive', component: Archive,  meta: { name: 'reagent', roles: [1, 2, 3, 4] } },
+        { path: 'arrivals', component: Arrivals,  meta: { name: 'reagent', roles: [1, 2, 3, 4] } },
+        { path: 'arrivals/create', component: AppendArrivals,  meta: { name: 'reagent', roles: [2, 3] } }, //ПЕРЕДЕЛАТЬ
+        { path: 'moving', component: MovingReq, meta: { name: 'reagent', roles: [1, 2, 3, 4] } },
+        { path: 'moving/history', component: MovingHistory, meta: { name: 'reagent', roles: [2, 3] } },
+        { path: 'expenses', component: Expenses,  meta: { name: 'reagent', roles: [1, 2, 3, 4] } },
+        { path: 'writeoff', component: Writreoff,  meta: { name: 'reagent', roles: [1, 2, 3, 4] } },
+        { path: 'locations', component: Location,  meta: { name: 'reagent', roles: [1, 2, 3, 4] } },
+        { path: 'corrections', component: Corrections, meta: { name: 'reagent', roles: [2, 3] } }
       ]
     },
-    { path: '/equipment', component: Equipment, meta: { requiresAuth: true, roles: [1, 2, 4, 5] },
+    { path: '/equipment', component: Equipment, meta: { name: 'equipment', requiresAuth: true, roles: [1, 2, 4, 5] },
       children: [
-        { path: '', component: EquipmentMain, meta: { roles: [1, 2, 4, 5] } },
-        { path: 'department', component: Department, meta: { roles: [1, 2, 4, 5] },
+        { path: '', component: EquipmentMain, meta: { name: 'equipment', roles: [1, 2, 4, 5] } },
+        { path: 'department', component: Department, meta: { name: 'equipment', roles: [1, 2, 4, 5] },
           children: [
-            { path: 'equipments', component: DepartmentEquipment, meta: { roles: [1, 2, 4, 5] } },
-            { path: 'equipments/:id', props: true, name: 'details', component: DepartmentEquipmentDetails, meta: { roles: [1, 2, 4, 5] } }
+            { path: 'equipments', component: DepartmentEquipment, meta: { name: 'equipment', roles: [1, 2, 4, 5] } },
+            { path: 'equipments/:id', props: true, name: 'details', component: DepartmentEquipmentDetails, meta: { name: 'equipment', roles: [1, 2, 4, 5] } }
           ]
         },
-        { path: 'metrolog', component: Metrolog, meta: { roles: [4] },
+        { path: 'metrolog', component: Metrolog, meta: { name: 'equipment', roles: [4] },
           children: [
-            { path: 'equipments', component: MetrologEquipment, meta: { roles: [4] } },
-            { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { roles: [4] } },
-            { path: 'verification', component: MetrologVerification, meta: { roles: [4] } },
-            { path: 'instructions', component: MetrologInstructions, meta: { roles: [4] } },
-            { path: 'maintenances', component: MetrologMaintenance, meta: { roles: [4] } },
+            { path: 'equipments', component: MetrologEquipment, meta: { name: 'equipment', roles: [4] } },
+            { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { name: 'equipment', roles: [4] } },
+            { path: 'verification', component: MetrologVerification, meta: { name: 'equipment', roles: [4] } },
+            { path: 'instructions', component: MetrologInstructions, meta: { name: 'equipment', roles: [4] } },
+            { path: 'maintenances', component: MetrologMaintenance, meta: { name: 'equipment', roles: [4] } },
           ]
         },
-        { path: 'repair', component: MetrologRepair, meta: { roles: [4, 5] } },
+        { path: 'repair', component: MetrologRepair, meta: { name: 'equipment', roles: [4, 5] } },
       ]
     },
-    { path: '/gz', component: GzMain, meta: { requiresAuth: true, roles: [6] },
+    { path: '/gz', component: GzMain, meta: { name: 'gz', requiresAuth: true, roles: [6] },
       children: [
-        { path: '', component: GzIndex, meta: { roles: [6] } },
-        { path: 'animals', component: GzAnimal, meta: { roles: [6] } },
-        { path: 'methods', component: GzMethods, meta: { roles: [6] } },
-        { path: 'report', component: GzReport, meta: { roles: [6] } },
-        { path: 'plan', component: GzPlan, meta: { roles: [6] } },
+        { path: '', component: GzIndex, meta: { name: 'gz', roles: [6] } },
+        { path: 'animals', component: GzAnimal, meta: { name: 'gz', roles: [6] } },
+        { path: 'methods', component: GzMethods, meta: { name: 'gz', roles: [6] } },
+        { path: 'report', component: GzReport, meta: { name: 'gz', roles: [6] } },
+        { path: 'plan', component: GzPlan, meta: { name: 'gz', roles: [6] } },
       ]
     },
     {

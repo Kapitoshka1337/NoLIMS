@@ -4,6 +4,11 @@
       <v-toolbar-title>НеЛИС</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-title>{{user}} ({{idDep}})</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="dialogGuide = true">
+        <v-icon>mdi-help-circle-outline</v-icon>
+        <guide v-bind:dialog-open="dialogGuide" @close="dialogClose()"></guide>
+      </v-btn>
       <v-btn icon @click="logout">
         <v-icon>mdi-exit-to-app</v-icon>
       </v-btn>
@@ -30,7 +35,12 @@
 </template>
 
 <script>
+import guide from './guide/index.vue';
+
 export default {
+  components: {
+    guide: guide
+  },
   data () {
     return {
       cards: [
@@ -51,7 +61,8 @@ export default {
           description: 'Описание',
           link: '/equipment'
         }
-      ]
+      ],
+      dialogGuide: false
     }
   },
   computed:{
@@ -66,7 +77,10 @@ export default {
     logout(){
         this.$store.dispatch('logout').then(() => {
           this.$router.push('/login')});
-      }
+    },
+    dialogClose(data){
+      this.dialogGuide = data;
+    }
   }
 }
 </script>
