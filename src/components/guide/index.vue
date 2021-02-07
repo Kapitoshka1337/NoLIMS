@@ -1,7 +1,7 @@
 <template>
 	<v-dialog dense fullscreen transition="dialog-bottom-transition" v-model="dialogCloseOpen">
 		<v-card>
-			<v-toolbar dark color='primary'>
+			<v-toolbar dense dark color='primary'>
 				<v-toolbar-title>Руководство пользователя</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon @click="dialogClose(false)">
