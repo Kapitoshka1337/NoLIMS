@@ -15,14 +15,17 @@
 				<template v-slot:item.date_submit="{ item }">
 					{{ today(item.date_submit) }}
 				</template>
+				<template v-slot:item.claim_check="{item}">
+					{{ item.claim_check || 'Не указан' }}
+				</template>
+				<template v-slot:item.totals="{ item }">
+					{{ item.cnt_before }} / {{ item.cnt_after }} (<strong>{{ item.cnt_total }}</strong>)
+				</template>
 				<template v-slot:item.actions="{ item }">
 					<v-btn small icon color="orange" v-on:click="selectedRow(item)"><v-icon>mdi-eye</v-icon></v-btn>
 					<v-btn small icon color="blue" v-on:click="confirmPrint(item)"><v-icon>mdi-printer</v-icon></v-btn>
 					<v-btn small icon color="red" v-on:click="confirmDeleteVerification(item)" v-if="item.id_status_check != 2 && item.id_status_check != 3"><v-icon>mdi-delete</v-icon></v-btn>
 					<v-btn small icon color="green" v-if="!item.date_submit" v-on:click="confirmPlay(item)"><v-icon>mdi-play</v-icon></v-btn>
-				</template>
-				<template v-slot:item.claim_check="{item}">
-					{{ item.claim_check || 'Не указан' }}
 				</template>
 				<template v-slot:no-data>
 					Пока ничего нет :(
@@ -132,6 +135,7 @@ export default {
 				{ text: 'Отправлено', align: 'start', sortable: true, value: 'date_submit', filterable: false},
 				{ text: 'Сформировал', align: 'start', sortable: true, value: 'user'},
 				{ text: 'Номер квитанции', align: 'start', sortable: true, value: 'claim_check'},
+				{ text: 'Полученю/Отправлено', align: 'start', sortable: false, value: 'totals', filterable: false },
 				{ text: '', align: 'start', sortable: false, value: 'actions', filterable: false }
 			],
 			tableColumn1: [
@@ -139,6 +143,9 @@ export default {
 				{ text: 'Оборудование', align: 'start', sortable: false, value: 'equipment' },
 				{ text: 'Модель', align: 'start', sortable: false, value: 'model'},
 				{ text: 'С/Н', align: 'end', sortable: false, value: 'serial_number', filterable: false },
+				{ text: 'Подготовка', align: 'end', sortable: false, value: 'date_recieved_before' },
+				{ text: 'Получение', align: 'end', sortable: false, value: 'date_recieved_after' },
+				{ text: 'Отпуск', align: 'end', sortable: false, value: 'date_recieved_department' },
 				{ text: '', align: 'center', sortable: false, value: 'actions', filterable: false, width: 100}
 			],
 			search: '',
@@ -163,7 +170,7 @@ export default {
 			this.$http.get('/api/equipment/verification').then(response => (this.gridData = response.data)).catch(error => (alert(error.response.data.message)));
 		},
 		today(date){
-			return date === null || new Date(date).toLocaleString().split(',')[0];
+			return date === null ? '' : new Date(date).toLocaleString().split(',')[0];
 		},
 		selectedRow(data){
 			this.verificationInfo = data;
@@ -172,12 +179,21 @@ export default {
 		},
 		submitBefore(item){
 			let param;
-			if(!item.is_received_before && !item.is_received_after) param = 'before';
-			else if(item.is_received_before && !item.is_received_after) param = 'after';
-			else return;
+
+			if(!item.is_received_before && !item.is_received_after)
+				param = 'before';
+			else if(item.is_received_before && !item.is_received_after) 
+				param = 'after';
+			else
+				return;
+			
 			this.param = true;
 			this.$http.put(`/api/equipment/verification/${item.id_checks}/${item.id_kit_row}/${param}`)
-			.then(response => (item[`is_received_${param}`] = true, this.param = false)).catch(error => (this.param = false, alert(error.response.data.message)));
+			.then(response => {
+				item[`is_received_${param}`] = true;
+				this.verificationInfo[`cnt_${param}`]++;
+				this.param = false
+			}).catch(error => (this.param = false, alert(error.response.data.message)));
 		},
 		confirmPlay(item){
 			this.item = item;

@@ -263,7 +263,7 @@
 			</v-overlay>
 			<v-dialog v-model="dialog_append_verification" max-width="512px">
 				<v-card>
-					<v-card-title>Внесение иформации о пройденной проверке</v-card-title>
+					<v-card-title>Добавление пройденной проверки</v-card-title>
 					<v-divider></v-divider>
 					<v-list-item two-line>
 						<v-list-item-content>
@@ -274,6 +274,9 @@
 					<v-divider></v-divider>
 					<v-card-text>
 						<v-row>
+							<v-col cols="12" v-if="isTime">
+								<v-alert dense outlined type="warning">Дата предстоящей проверки не может быть меньше пройденной</v-alert>
+							</v-col>
 							<v-col cols="12" md="12">
 								<v-autocomplete :items="dropdown" :clearable="true" outlined dense label="Вид загружаемого файла" v-model="editedItem.doc_type"></v-autocomplete>
 								<v-text-field :clearable="true" dense label="Номер документа" outlined v-model="editedItem.number_document"></v-text-field>
@@ -291,7 +294,7 @@
 					<v-card-actions>
 						<v-card-title>{{ editedItem.number_card }}</v-card-title>
 						<v-spacer></v-spacer>
-						<v-btn color="success" @click="passedVerification()" :loading="passed_verification">Сохранить</v-btn>
+						<v-btn color="success" @click="passedVerification()" :loading="passed_verification" v-bind:disabled="isTime">Сохранить</v-btn>
 						<v-btn color="error" @click="dialog_append_verification = false">Отмена</v-btn>
 					</v-card-actions>
 				</v-card>
@@ -572,6 +575,11 @@ export default {
 				});
 				return result;
 			}
+		},
+		isTime(){
+			let current = new Date(this.editedItem.date_current_check);
+			let next = new Date(this.editedItem.date_next_check);
+			return current.getUTCFullYear() >= next.getUTCFullYear();
 		}
 	},
 	created(){

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<v-row>
 		<v-data-table
 		calculate-widths
 			@item-selected="selectedEquipment"
@@ -313,7 +313,7 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
-	</div>
+	</v-row>
 </template>
 
 <script>

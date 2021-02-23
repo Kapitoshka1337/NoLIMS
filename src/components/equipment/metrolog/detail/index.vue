@@ -427,7 +427,8 @@ export default {
             {
                 this.save = true;
                 this.$http.put(`/api/equipment/equipments/${this.indentificationDataCopy.id}/update`, this.changedItem, {headers: {'Content-Type': 'application/json'}})
-                .then(response => (this.save = false, this.indentificationDataCopy = {}, this.changedItem = {})).catch(error => (this.save = false, alert(error.response.data.message)));
+                .then(response => (this.save = false, this.changedItem = {})).catch(error => (this.save = false, alert(error.response.data.message)));
+                //.then(response => (this.save = false, this.indentificationDataCopy = {}, this.changedItem = {})).catch(error => (this.save = false, alert(error.response.data.message)));
             }
             else alert('Изменения не вносились');
         },

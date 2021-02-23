@@ -19,6 +19,10 @@
 				</template>
 				<template v-slot:item.tag="{ item }">
 					<v-chip-group>
+						<v-chip color="teal" small text-color="white" v-if="item.is_archive">А</v-chip>
+						<v-chip color="green" small text-color="white" v-if="item.is_working">И</v-chip>
+						<v-chip color="orange" small text-color="white" v-if="item.is_conservation">К</v-chip>
+						<v-chip color="red" small text-color="white" v-if="item.is_repair">Р</v-chip>
 						<v-chip color="purple" small text-color="white" v-if="item.is_check">Ц</v-chip>
 					</v-chip-group>
 				</template>
@@ -41,7 +45,8 @@ export default {
 				tableColumn: [
 					{ text: 'Номер', align: 'start', sortable: true, value: 'card_number', width: 120},
 					{ text: 'Оборудование', align: 'start', sortable: true, value: 'equipment'},
-					{ text: 'Предстоящая', align: 'start', sortable: true, value: 'date_next_check'}
+					{ text: 'Предстоящая', align: 'start', sortable: true, value: 'date_next_check'},
+					{ text: 'Тэг', align: 'start', sortable: false, value: 'tag'}
 				],
 				content: []
 			},
