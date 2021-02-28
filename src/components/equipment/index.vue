@@ -19,12 +19,6 @@
               </v-list-item-icon>
               <v-list-item-title>Главная</v-list-item-title>
             </v-list-item>
-            <v-list-item to="/equipment/department/equipments">
-              <v-list-item-icon>
-                <v-icon color="green">mdi-factory</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Отделы</v-list-item-title>
-            </v-list-item>
             <v-list-group no-action>
               <template v-slot:activator>
                 <v-list-item-icon>
@@ -36,7 +30,7 @@
                   <v-list-item-title>Оборудование</v-list-item-title>
               </v-list-item>
               <v-list-item to="/equipment/metrolog/verification">
-                  <v-list-item-title>Проверки</v-list-item-title>
+                  <v-list-item-title>Поверки</v-list-item-title>
               </v-list-item>
               <v-list-item to="/equipment/metrolog/instructions">
                   <v-list-item-title>Инструкции</v-list-item-title>
@@ -44,6 +38,20 @@
               <v-list-item to="/equipment/metrolog/maintenances">
                   <v-list-item-title>ТО</v-list-item-title>
               </v-list-item>
+            </v-list-group>
+            <v-list-group no-action>
+              <template v-slot:activator>
+                <v-list-item-icon>
+                  <v-icon color="yellow">mdi-factory</v-icon>
+                </v-list-item-icon>
+                  <v-list-item-title>Подразделения</v-list-item-title>
+              </template>
+              <v-list-item to="/equipment/department/equipments">
+                  <v-list-item-title>Оборудование</v-list-item-title>
+              </v-list-item>
+              <!--<v-list-item to="/equipment/department/verification">
+                  <v-list-item-title>Поверки</v-list-item-title>
+              </v-list-item>-->
             </v-list-group>
               <v-list-item to="/equipment/repair">
                 <v-list-item-icon>

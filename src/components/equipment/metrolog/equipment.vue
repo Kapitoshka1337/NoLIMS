@@ -6,14 +6,14 @@
 		<equipment @id='inputId'></equipment>
 	</v-tab-item>
 	<v-tab-item>
-		<detail :id="idEquipment"></detail>
+		<detail :id="idEquipment" :allow-save="idRole"></detail>
 	</v-tab-item>
 	</v-tabs>
 </template>
 
 <script>
 import equipment from './equipment/index.vue';
-import detail from './detail/index.vue';
+import detail from '../components/detail/index.vue';
 
 export default {
 	components: {
@@ -28,6 +28,11 @@ export default {
 	methods: {
 		inputId(data){
 			this.idEquipment = data;
+		}
+	},
+	computed: {
+		idRole(){
+			return this.$store.getters.isRoles === 4;
 		}
 	}
 }

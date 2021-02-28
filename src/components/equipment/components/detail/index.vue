@@ -100,7 +100,7 @@
                             <v-col cols="2">
                                 <v-btn small :ripple="false" color="orange" @click="download(item)" v-bind:disabled="!indentificationData.equipment.file_inst">Открыть</v-btn>
                                 <v-dialog v-model="dialogSetIstruction" max-width="512px">
-                                    <template v-slot:activator="{ on, attrs }">
+                                    <template v-slot:activator="{ on, attrs }" v-if="getAllowSave">
                                         <v-btn small :ripple="false" v-bind="attrs" v-on="on" color="red">Изменить</v-btn>
                                     </template>
                                     <v-card>
@@ -127,7 +127,7 @@
                 </v-card-text>
             </v-card>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" v-if="getAllowSave">
             <v-card>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -140,6 +140,15 @@
                 <v-card-title>История проверок</v-card-title>
                 <v-card-text>
                     <v-data-table dense :headers="tableColumn" :items="indentificationData.history_checks" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+                        <template v-slot:item.date_submit="{ item }">
+                            {{ today(item.date_submit) }}
+                        </template>
+                        <template v-slot:item.date_received_after="{ item }">
+                            {{ today(item.date_received_after) }}
+                        </template>
+                        <template v-slot:item.date_received_department="{ item }">
+                            {{ today(item.date_received_department) }}
+                        </template>
                         <template v-slot:item.date_current_check="{ item }">
                             {{ today(item.date_current_check) }}
                         </template>
@@ -190,7 +199,7 @@
                 <v-card-title>
                     Перемещения
                     <v-spacer></v-spacer>
-                    <v-dialog v-model="dialogMoving" max-width="512px">
+                    <v-dialog v-model="dialogMoving" max-width="512px" v-if="getAllowSave">
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn icon color="orange" v-bind="attrs" v-on="on">
                                 <v-icon>mdi-plus</v-icon>
@@ -236,7 +245,7 @@
                 <v-card-title>
                     Условия работы
                     <v-spacer></v-spacer>
-                    <v-btn x-small color="success" v-on:click="submitUpdateCondition()" :loading="saveCondition">Сохранить условия работы</v-btn>
+                    <v-btn v-if="getAllowSave" x-small color="success" v-on:click="submitUpdateCondition()" :loading="saveCondition">Сохранить условия работы</v-btn>
                 </v-card-title>
                 <v-card-text>
                     <v-row>
@@ -264,7 +273,7 @@
                 <v-card-title>
                     Требуемое техническое обслуживание
                     <v-spacer></v-spacer>
-                    <v-dialog v-model="dialogMaintenance" max-width="512px">
+                    <v-dialog v-model="dialogMaintenance" max-width="512px" v-if="getAllowSave">
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn icon color="orange" v-bind="attrs" v-on="on">
                                 <v-icon>mdi-plus</v-icon>
@@ -312,15 +321,17 @@ import fs from 'file-saver';
 
 export default {
 	props:{
-        id: {
-            type: Number
-        }
+        id: Number,
+        allowSave: Boolean
     },
     data(){
         return {
             indentificationData: null,
             indentificationDataCopy: null,
             tableColumn: [
+                { text: 'Отправлено', align: 'start', sortable: false, value: 'date_submit' },
+                { text: 'Получено', align: 'start', sortable: false, value: 'date_received_after' },
+                { text: 'Отдано', align: 'start', sortable: false, value: 'date_received_department' },
                 { text: 'Пройденная', align: 'start', sortable: false, value: 'date_current_check' },
                 { text: 'Предстоящая', align: 'start', sortable: false, value: 'date_next_check' },
                 { text: 'Вид документа', align: 'start', sortable: false, value: 'type_document' },
@@ -410,8 +421,7 @@ export default {
 			this.$http.get('/api/equipment/equipments/' + this.id).then(response => (this.overlay = false,this.indentificationData = response.data, this.indentificationDataCopy = JSON.parse(JSON.stringify(response.data.equipment)))).catch(error => (this.overlay = false, alert(error.response.data.message)));
         },
 		today(date){
-			if(date === null) return;
-			return new Date(date).toLocaleString().split(',')[0];
+            return date === null ? null : new Date(date).toLocaleString().split(',')[0];
         },
         dropdown(tp){
             if(this.indentificationData)
@@ -516,6 +526,9 @@ export default {
 				});
 				return result;
 			}
+        },
+        getAllowSave(){
+            return this.allowSave;
         }
     },
     mounted() {

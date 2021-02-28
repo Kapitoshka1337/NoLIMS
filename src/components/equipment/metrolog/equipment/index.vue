@@ -214,20 +214,24 @@
 								<v-card-title>Подготавливаемое оборудование на проверку</v-card-title>
 								<v-divider></v-divider>
 								<v-card-text>
-									<v-data-table dense :headers="tableColumn1" :items="selected" :show-select="true" v-model="selected">
+									<v-data-table dense :headers="tableColumn1" :items="selected" :show-select="true" v-model="selected" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 										<template v-slot:item.date_current_check="{ item }">
 											{{ today(item.date_current_check) }}
 										</template>
 										<template v-slot:item.date_next_check="{ item }">
 											{{ today(item.date_next_check) }}
 										</template>
+										<template v-slot:no-data>
+											Пока ничего нет :(
+										</template>
 									</v-data-table>
 								</v-card-text>
 								<v-divider></v-divider>
 								<v-card-actions>
+									<!--<v-btn color="primary" @click="dateHandOver()">Срок сдачи {{ prepareDate }}</v-btn>-->
 									<v-spacer></v-spacer>
-									<v-btn color="success" :loading="verification" @click="submitVerification()">Сохранить</v-btn>
-									<v-btn color="error" @click="dialog_verification = false">Отмена</v-btn>
+									<v-btn color="success" :loading="verification" @click="submitVerification()" :disabled="prepareVerification">Подготовить</v-btn>
+									<v-btn color="error" @click="dialog_verification = false">Не подготовливать</v-btn>
 								</v-card-actions>
 							</v-card>
 						</v-dialog>
@@ -261,44 +265,6 @@
 			<v-overlay :value="overlay">
 				<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
 			</v-overlay>
-			<v-dialog v-model="dialog_append_verification" max-width="512px">
-				<v-card>
-					<v-card-title>Добавление пройденной проверки</v-card-title>
-					<v-divider></v-divider>
-					<v-list-item two-line>
-						<v-list-item-content>
-							<v-list-item-title>{{ editedItem.equipment }}</v-list-item-title>
-							<v-list-item-subtitle>{{ editedItem.model }}</v-list-item-subtitle>
-						</v-list-item-content>
-					</v-list-item>
-					<v-divider></v-divider>
-					<v-card-text>
-						<v-row>
-							<v-col cols="12" v-if="isTime">
-								<v-alert dense outlined type="warning">Дата предстоящей проверки не может быть меньше пройденной</v-alert>
-							</v-col>
-							<v-col cols="12" md="12">
-								<v-autocomplete :items="dropdown" :clearable="true" outlined dense label="Вид загружаемого файла" v-model="editedItem.doc_type"></v-autocomplete>
-								<v-text-field :clearable="true" dense label="Номер документа" outlined v-model="editedItem.number_document"></v-text-field>
-							</v-col>
-							<v-col cols="12" md="6">
-								<input type="date" is="v-text-field" dense label="Пройденна" outlined v-model="editedItem.date_current_check">
-							</v-col>
-							<v-col cols="12" md="6">
-								<input type="date" is="v-text-field" dense label="Предстоит" outlined v-model="editedItem.date_next_check">
-							</v-col>
-							<v-file-input :show-size="true" dense outlined label="Файл" placeholder="Выберите файл" v-model="editedItem.file"></v-file-input>
-						</v-row>
-					</v-card-text>
-					<v-divider></v-divider>
-					<v-card-actions>
-						<v-card-title>{{ editedItem.number_card }}</v-card-title>
-						<v-spacer></v-spacer>
-						<v-btn color="success" @click="passedVerification()" :loading="passed_verification" v-bind:disabled="isTime">Сохранить</v-btn>
-						<v-btn color="error" @click="dialog_append_verification = false">Отмена</v-btn>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
 			<v-dialog dense v-model="printDialog" max-width="512">
 				<v-card>
 					<v-card-title>Формирование ПТС</v-card-title>
@@ -320,21 +286,46 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
+			<!--<v-dialog dense v-model="prepare_verification" max-width="512">
+				<v-card>
+					<v-card-title>Срок сдачи оборудования</v-card-title>
+					<v-divider></v-divider>
+					<v-card-text>
+						<v-row>
+							<v-col cols="12">
+								<v-text-field label="Сдать оборудование до" outlined dense type="date" v-model="date_before_hand_over"></v-text-field>
+							</v-col>
+						</v-row>
+					</v-card-text>
+					<v-divider></v-divider>
+					<v-card-actions>
+						<v-spacer></v-spacer>
+						<v-btn color="success" @click="prepare_verification = false">ОК</v-btn>
+						<v-btn color="error" @click="prepare_verification = false">Отмена</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>-->
+			<passed-dialog :visible="showPassed" :equipment="editedItem" @close="closeDialog()"></passed-dialog>
 		</v-col>
 	</v-row>
 </template>
 
 <script>
 import fs from 'file-saver';
+import passedDialog from '../component/PassedVerification.vue';
 
 export default {
+	components:{
+		passedDialog
+	},
 	data () {
 		return {
 			search: '',
-			dialog_verification: false,
-			dialog_append_verification: false,
 			verification: false,
-			passed_verification: false,
+			dialog_verification: false,
+			//prepare_verification: false,
+			date_before_hand_over: null,
+			showPassed: false,
 			selected: [],
 			tableColumn: [
 				{ text: 'Номер', align: 'start', sortable: true, value: 'number'},
@@ -367,7 +358,6 @@ export default {
 				{text: 'ЦСМ', value: 'is_check', color: 'purple'}
 			],
 			gridData: [],
-			docType: [],
 			editedItem: {
 				equipment: null,
 				number_card: null,
@@ -399,10 +389,6 @@ export default {
 		}
 	},
 	watch: {
-		dialog_append_verification(newVal, oldVal){
-			if(newVal === true && this.docType.length <= 0)
-				this.$http.get('/api/equipment/support/documents').then(response => (this.docType = response.data)).catch(error => (alert(error.response.data.message)));
-		},
 		createDialog(newVal, oldVal){
 			if(newVal === true && !this.depLocation)
 				this.$http.get('/api/equipment/support/locations').then(response => (this.depLocation = response.data)).catch(error => (alert(error.response.data.message)));
@@ -439,6 +425,9 @@ export default {
 		today(date){
 			return date === null ? null : new Date(date).toLocaleString().split(',')[0];
 		},
+		//dateHandOver(){
+		//	this.prepare_verification = true;
+		//},
 		submitVerification(){
 			let request = [];
 			for(let i in this.selected)
@@ -448,27 +437,21 @@ export default {
 					id_equipment: this.selected[i].id
 				});
 			}
+			//let obj = {
+			//	date_hand_over: this.date_before_hand_over,
+			//	equipments: request
+			//};
 			this.verification = true;
 			this.$http.post("/api/equipment/verification", JSON.stringify(request), {headers: {'Content-Type': 'application/json'}})
 			.then(response => (this.dialog_verification = false, this.verification = false, this.selected = [])).catch(error => (this.verification = false, alert(error.response.data.message)));
 		},
-		passedVerification(){
-			let formData = new FormData();
-			formData.append('id_equipment', this.editedItem.id);
-			formData.append('date_current_check', this.editedItem.date_current_check);
-			formData.append('date_next_check', this.editedItem.date_next_check);
-			formData.append('id_upload_document_type', this.editedItem.doc_type);
-			formData.append('number_document', this.editedItem.number_document);
-			formData.append('file', this.editedItem.file);
-			this.passed_verification = true;
-			this.$http.post("/api/equipment/equipments/" + this.editedItem.id + "/passed", formData, {headers: {'Content-Type': 'multipart/form-data'}})
-			.then(response => (this.dialog_append_verification = false, this.passed_verification = false, this.selected = [],
-			Object.assign(this.gridData[this.editedIndex], this.editedItem))).catch(error => (this.passed_verification = false, alert(error.response.data.message)));
+		closeDialog(){
+			this.showPassed = false;
 		},
 		editItem(item) {
 			this.editedIndex = this.gridData.indexOf(item);
 			this.editedItem = Object.assign({}, item);
-			this.dialog_append_verification = true;
+			this.showPassed = true;
 		},
 		printSticker(type = null, size = null) {
 			if(this.selected.length > 0)
@@ -580,7 +563,18 @@ export default {
 			let current = new Date(this.editedItem.date_current_check);
 			let next = new Date(this.editedItem.date_next_check);
 			return current.getUTCFullYear() >= next.getUTCFullYear();
-		}
+		},
+		prepareVerification(){
+			return this.selected.length <= 0;
+			//if(this.date_before_hand_over != null && this.selected.length > 0)
+			//	return false;
+			//return true;
+		},
+		//prepareDate(){
+		//	if(this.date_before_hand_over)
+		//		return `(${this.today(this.date_before_hand_over)})`;
+		//	else return '';
+		//}
 	},
 	created(){
 		this.getEquipment();

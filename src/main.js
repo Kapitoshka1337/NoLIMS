@@ -34,10 +34,9 @@ import Equipment from "./components/equipment/index.vue";
 import EquipmentMain from "./components/equipment/main.vue";
 import Department from "./components/equipment/department/index.vue";
 import DepartmentEquipment from "./components/equipment/department/equipment.vue";
-import DepartmentEquipmentDetails from "./components/equipment/department/detail/index.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
 import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
-import MetrologEquipmentDetails from "./components/equipment/metrolog/detail/index.vue";
+import MetrologEquipmentDetails from "./components/equipment/components/detail/index.vue";
 import MetrologVerification from "./components/equipment/metrolog/verification/index.vue";
 import MetrologRepair from "./components/equipment/metrolog/repair/index.vue";
 import MetrologInstructions from "./components/equipment/metrolog/instructions/index.vue";
@@ -88,7 +87,7 @@ var router = new VueRouter({
         { path: 'department', component: Department, meta: { name: 'equipment', roles: [1, 2, 4, 5] },
           children: [
             { path: 'equipments', component: DepartmentEquipment, meta: { name: 'equipment', roles: [1, 2, 4, 5] } },
-            { path: 'equipments/:id', props: true, name: 'details', component: DepartmentEquipmentDetails, meta: { name: 'equipment', roles: [1, 2, 4, 5] } }
+            { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { name: 'equipment', roles: [1, 2, 4, 5] } },
           ]
         },
         { path: 'metrolog', component: Metrolog, meta: { name: 'equipment', roles: [4] },
