@@ -171,7 +171,8 @@
 					</v-chip-group>
 				</template>
 				<template v-slot:item.actions="{ item }">
-					<v-btn icon color="red" @click="editItem(item)"><v-icon>mdi-bug</v-icon></v-btn>
+					<v-btn icon color="blue" @click="editItem(item)"><v-icon>mdi-bug</v-icon></v-btn>
+					<v-btn icon color="orange"><v-icon>mdi-hammer-wrench</v-icon></v-btn>
 				</template>
 			</v-data-table>
 			<v-overlay :value="overlay">

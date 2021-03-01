@@ -41,6 +41,7 @@ import MetrologVerification from "./components/equipment/metrolog/verification/i
 import MetrologRepair from "./components/equipment/metrolog/repair/index.vue";
 import MetrologInstructions from "./components/equipment/metrolog/instructions/index.vue";
 import MetrologMaintenance from "./components/equipment/metrolog/maintenance/index.vue";
+import Calendar from "./components/equipment/components/calendar/index.vue";
 //GZ
 import GzMain from "./components/gz/main.vue";
 import GzIndex from "./components/gz/index/index.vue";
@@ -97,6 +98,7 @@ var router = new VueRouter({
             { path: 'verification', component: MetrologVerification, meta: { name: 'equipment', roles: [4] } },
             { path: 'instructions', component: MetrologInstructions, meta: { name: 'equipment', roles: [4] } },
             { path: 'maintenances', component: MetrologMaintenance, meta: { name: 'equipment', roles: [4] } },
+            { path: 'calendar', component: Calendar, meta: { name: 'equipment', roles: [4] } },
           ]
         },
         { path: 'repair', component: MetrologRepair, meta: { name: 'equipment', roles: [4, 5] } },

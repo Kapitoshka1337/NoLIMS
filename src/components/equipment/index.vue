@@ -15,14 +15,14 @@
           <v-list dense>
             <v-list-item to="/equipment">
               <v-list-item-icon>
-                <v-icon color="orange">mdi-view-dashboard</v-icon>
+                <v-icon color="purple">mdi-view-dashboard</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Главная</v-list-item-title>
             </v-list-item>
             <v-list-group no-action>
               <template v-slot:activator>
                 <v-list-item-icon>
-                  <v-icon color="blue">mdi-pencil-ruler</v-icon>
+                  <v-icon color="green">mdi-pencil-ruler</v-icon>
                 </v-list-item-icon>
                   <v-list-item-title>Метролог</v-list-item-title>
               </template>
@@ -42,7 +42,7 @@
             <v-list-group no-action>
               <template v-slot:activator>
                 <v-list-item-icon>
-                  <v-icon color="yellow">mdi-factory</v-icon>
+                  <v-icon color="blue">mdi-factory</v-icon>
                 </v-list-item-icon>
                   <v-list-item-title>Подразделения</v-list-item-title>
               </template>
@@ -53,6 +53,12 @@
                   <v-list-item-title>Поверки</v-list-item-title>
               </v-list-item>-->
             </v-list-group>
+              <v-list-item to="/equipment/metrolog/calendar">
+                  <v-list-item-icon>
+                    <v-icon color="orange">mdi-calendar-month-outline</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Календарь работ</v-list-item-title>
+              </v-list-item>
               <v-list-item to="/equipment/repair">
                 <v-list-item-icon>
                   <v-icon color="red">mdi-bug</v-icon>
