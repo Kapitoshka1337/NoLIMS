@@ -16,15 +16,15 @@
 				<template v-slot:item.date_submit="{ item }">
 					{{ today(item.date_submit) }}
 				</template>
-				<template v-slot:item.date_hand_over="{ item }">
+				<!--<template v-slot:item.date_hand_over="{ item }">
 					{{ today(item.date_hand_over) }}
-				</template>
+				</template>-->
 				<!--<template v-slot:item.claim_check="{item}">
 					{{ item.claim_check || 'Не указан' }}
 				</template>-->
-				<template v-slot:item.totals="{ item }">
+				<!--<template v-slot:item.totals="{ item }">
 					{{ item.cnt_before }} / {{ item.cnt_after }} (<strong>{{ item.cnt_total }}</strong>)
-				</template>
+				</template>-->
 				<template v-slot:item.actions="{ item }">
 					<v-btn x-small color="orange" v-on:click="selectedVerification(item)">Просмотр</v-btn>
 					<!--<v-btn small icon color="blue" v-on:click="confirmPrint(item)"><v-icon>mdi-printer</v-icon></v-btn>-->

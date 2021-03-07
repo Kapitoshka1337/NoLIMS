@@ -233,6 +233,9 @@
 						<template v-slot:item.last_cabinet="{ item }">
 							{{ item.last_cabinet || "Не указан"}}
 						</template>
+						<template v-slot:item.date_moving="{ item }">
+							{{ today(item.date_moving)}}
+						</template>
 						<template v-slot:no-data>
 							Пока ничего нет :(
 						</template>
@@ -335,9 +338,9 @@ export default {
 			indentificationData: null,
 			indentificationDataCopy: null,
 			tableColumn: [
-				{ text: 'Отправлено', align: 'start', sortable: false, value: 'date_submit' },
-				{ text: 'Получено', align: 'start', sortable: false, value: 'date_received_after' },
-				{ text: 'Отдано', align: 'start', sortable: false, value: 'date_received_department' },
+				//{ text: 'Отправлено', align: 'start', sortable: false, value: 'date_submit' },
+				//{ text: 'Получено', align: 'start', sortable: false, value: 'date_received_after' },
+				//{ text: 'Отдано', align: 'start', sortable: false, value: 'date_received_department' },
 				{ text: 'Пройденная', align: 'start', sortable: false, value: 'date_current_check' },
 				{ text: 'Предстоящая', align: 'start', sortable: false, value: 'date_next_check' },
 				{ text: 'Вид документа', align: 'start', sortable: false, value: 'type_document' },
@@ -345,6 +348,9 @@ export default {
 				{ text: 'Документ', align: 'start', sortable: false, value: 'upload_file_name'}
 			],
 			tableColumn1: [
+				{ text: 'Вид перемещения', align: 'start', sortable: false, value: 'kind' },
+				{ text: 'Тип перемещения', align: 'start', sortable: false, value: 'type' },
+				{ text: 'Дата перемещения', align: 'start', sortable: false, value: 'date_moving' },
 				{ text: 'Отдел (ушел)', align: 'start', sortable: false, value: 'last_department' },
 				{ text: 'Отдел (пришел)', align: 'start', sortable: false, value: 'department' },
 				{ text: 'Кабинет (ушел)', align: 'end', sortable: false, value: 'last_cabinet' },

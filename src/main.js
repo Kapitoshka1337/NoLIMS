@@ -34,6 +34,7 @@ import Equipment from "./components/equipment/index.vue";
 import EquipmentMain from "./components/equipment/main.vue";
 import Department from "./components/equipment/department/index.vue";
 import DepartmentEquipment from "./components/equipment/department/equipment.vue";
+//import DepartmentVerification from "./components/equipment/department/verification/index.vue";
 import Metrolog from "./components/equipment/metrolog/index.vue";
 import MetrologEquipment from "./components/equipment/metrolog/equipment.vue";
 import MetrologEquipmentDetails from "./components/equipment/components/detail/index.vue";
@@ -89,6 +90,7 @@ var router = new VueRouter({
           children: [
             { path: 'equipments', component: DepartmentEquipment, meta: { name: 'equipment', roles: [1, 2, 4, 5] } },
             { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { name: 'equipment', roles: [1, 2, 4, 5] } },
+            //{ path: 'verification', component: DepartmentVerification, meta: { name: 'equipment', roles: [1, 2, 4, 5] } },
           ]
         },
         { path: 'metrolog', component: Metrolog, meta: { name: 'equipment', roles: [4] },
