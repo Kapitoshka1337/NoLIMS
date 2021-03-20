@@ -85,29 +85,29 @@
 		</v-col>
 		<v-dialog dense v-model="dialog" max-width="574">
 			<v-card>
-				<v-card-title>Запрос № {{ item.id }}</v-card-title>
+				<v-card-title>Запрос № {{ selectedItem.id }}</v-card-title>
 				<v-card-text>
-					{{item.reason_correct}}
+					{{selectedItem.reason_correct}}
 				</v-card-text>
 				<v-divider></v-divider>
 				<v-card-text>
 					<v-list dense>
 						<v-list-item two-line>
-							<v-list-item-title>Код материала - {{ item.id_material }}</v-list-item-title>
+							<v-list-item-title>Код материала - {{ selectedItem.id_material }}</v-list-item-title>
 						</v-list-item>
 						<v-list-item two-line>
-							<v-list-item-title>Расход ({{item.measure}}) - {{ today(item.date_usage) }}</v-list-item-title>
+							<v-list-item-title>Расход ({{selectedItem.measure}}) - {{ today(selectedItem.date_usage) }}</v-list-item-title>
 						</v-list-item>
 						<v-list-item two-line>
-							<v-list-item-title>Потраченное количество - {{ item.spent_amount }}</v-list-item-title>
+							<v-list-item-title>Потраченное количество - {{ selectedItem.spent_amount }}</v-list-item-title>
 						</v-list-item>
 						<v-list-item two-line>
-							<v-list-item-title>Исправляемое количество - {{ item.corrected_amount }}</v-list-item-title>
+							<v-list-item-title>Исправляемое количество - {{ selectedItem.corrected_amount }}</v-list-item-title>
 						</v-list-item>
 					</v-list>
 				</v-card-text>
 				<v-divider></v-divider>
-				<v-card-actions  v-if="item.id_status === 1">
+				<v-card-actions  v-if="selectedItem.id_status === 1">
 					<v-spacer></v-spacer>
 					<v-btn color="success" @click="allow()" :loading="isAllowLoading">Принять</v-btn>
 					<v-btn color="error" @click="deny()" :loading="isDenyLoading">Отказать</v-btn>
@@ -144,10 +144,11 @@ export default {
 				create_end_date: null
 			},
 			dialog: false,
-			item: {},
 			isDenyLoading: false,
 			isAllowLoading: false,
-			load: false
+			load: false,
+			selectedItem: {},
+			selectedIndex: null
 		}
 	},
 	watch: {
@@ -166,20 +167,27 @@ export default {
 			return today.toLocaleString().split(',')[0];
 		},
 		dialogDetail(item){
-			this.item = item;
+			this.selectedIndex = this.gridData.indexOf(item);
+			this.selectedItem = Object.assign({}, item);
 			this.dialog = true;
 		},
 		allow(){
-			this.isAllowLoading = !this.isAllowLoading;
-			this.$http.put(`/api/reagent/corrections/allow/${this.item.id}`, { id_outgo: this.item.id_outgo, amount: this.item.corrected_amount},{headers: {'Content-Type': 'application/json'}})
-				.then(response => (this.dialog = false, this.item.id_status = 2,this.item.status = 'Подтверждена', this.item.date_response = new Date(),
-				this.isAllowLoading = !this.isAllowLoading)).catch(error => (alert(error.response.data.message), this.isAllowLoading = !this.isAllowLoading));
+			this.isAllowLoading = true;
+			this.$http.put(`/api/reagent/corrections/allow/${this.selectedItem.id}`, {id_outgo: this.selectedItem.id_outgo, amount: this.selectedItem.corrected_amount}, {headers: {'Content-Type': 'application/json'}})
+			.then(response => {
+				Object.assign(this.gridData[this.selectedIndex], response.data);
+				this.dialog = false;
+				this.isAllowLoading = false;
+			}).catch(error => (alert(error.response.data.message), this.isAllowLoading = false));
 		},
 		deny(){
-			this.isDenyLoading = !this.isDenyLoading;
-			this.$http.put(`/api/reagent/corrections/deny/${this.item.id}`, {headers: {'Content-Type': 'application/json'}})
-				.then(response => (this.dialog = false, this.item.id_status = 3, this.item.status = 'Отклонена', this.item.date_response = new Date(),
-				this.isDenyLoading = false)).catch(error => (this.isDenyLoading = false, alert(error.response.data.message)));
+			this.isDenyLoading = true;
+			this.$http.put(`/api/reagent/corrections/deny/${this.selectedItem.id}`, {headers: {'Content-Type': 'application/json'}})
+				.then(response => {
+					Object.assign(this.gridData[this.selectedIndex], response.data);
+					this.dialog = false;
+					this.isDenyLoading = false;
+				}).catch(error => (alert(error.response.data.message), this.isDenyLoading = false));
 		},
 		initFilters() {
 			for (let col in this.filters) {

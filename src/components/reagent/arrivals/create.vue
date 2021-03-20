@@ -18,32 +18,7 @@
                 <v-card-text>
                     <v-row dense justify="start">
                         <v-col cols="3" v-for="card in selected" :key="card.id">
-                            <v-card class="mx-auto" max-width="400px" outlined>
-                                <v-list-item two-line>
-                                    <v-list-item-content>
-                                        <v-list-item-title class="text-md-body-1">{{ card.material }}</v-list-item-title>
-                                        <v-list-item-subtitle>({{ card.id }}) {{ card.type }} ({{ card.measure }})</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-                                <v-divider></v-divider>
-                                <v-card-text>
-                                    <v-row>
-                                        <v-col cols="12">
-                                            <v-text-field v-model="card.amount" clearable type="number" outlined dense label="Количество"></v-text-field>
-                                            <v-text-field v-model="card.density" clearable type="number" outlined dense label="Плотность"></v-text-field>
-                                            <v-autocomplete v-model="card.id_location" clearable :items="dropdownLocation" outlined dense label="Местоположение"></v-autocomplete>
-                                            <v-textarea v-model="card.post_name" :rows="2" :height="100" outlined dense label="Наименование в накладной"></v-textarea>
-                                            <v-text-field v-model="card.date_create" clearable type="date" outlined dense label="Дата изготовления"></v-text-field>
-                                            <v-text-field v-model="card.shelf_life" clearable type="date" outlined dense label="Срок хранения"></v-text-field>
-                                            <v-textarea v-model="card.description" :rows="2" :height="100" outlined dense label="Дополнительная информация"></v-textarea>
-                                        </v-col>
-                                    </v-row>
-                                </v-card-text>
-                                <v-divider></v-divider>
-                                <v-card-actions>
-                                    <v-btn block color="error" :ripple="false" @click="deleteMaterial(card)">Удалить</v-btn>
-                                </v-card-actions>
-                            </v-card>
+                            <arrival-item :item="card" :locations="dropdownLocation" @delete="deleteMaterial"></arrival-item>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -80,7 +55,12 @@
 </template>
 
 <script>
+import arrivalItem from "../component/arrivalItem.vue";
+
 export default {
+	components:{
+		arrivalItem
+	},
     data(){
         return {
             tableColumn: [
@@ -105,9 +85,7 @@ export default {
     },
     computed: {
         dropdownLocation(){
-            if(!this.listLocations.length)
-                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error.response.data.message)));
-            else
+            if(this.listLocations.length)
             {
                 let result = [];
 				for (let str of this.listLocations)
@@ -117,11 +95,15 @@ export default {
         }
     },
     methods: {
+        loadLocations(){
+            this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error.response.data.message)));
+        },
         loadMaterials(){
             if(!this.materials.length)
             {
                 this.loading = true;
                 this.$http.get('/api/reagent/material').then(response => (this.materials = response.data, this.loading = false, this.dialogMaterial = true)).catch(error => (this.loading = false, alert(error.response.data.message)));
+                this.loadLocations();
             }
             else this.dialogMaterial = true;
         },

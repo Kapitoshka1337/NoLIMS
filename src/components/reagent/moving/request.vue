@@ -76,7 +76,8 @@
 				<v-card-title>Запрашиваемые материалы из {{ activeFilters.department }}</v-card-title>
 				<v-divider></v-divider>
 				<v-card-text>
-					<v-data-table dense :items="selectedDialog" :headers="tableColumn1" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+					<request-item :items="selectedDialog" @is-more="isMoreTotal"></request-item>
+					<!--<v-data-table dense :items="selectedDialog" :headers="tableColumn1" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 						<template v-slot:item.total="{item}">
 							{{ idDep === 5 ? parseFloat(item.total.toFixed(2)) : convert(item, 'total') }}
 						</template>
@@ -86,12 +87,12 @@
 						<template v-slot:item.mlocation="{item}">
 							<v-autocomplete :items="dropdownLocation" clearable v-model="item.mlocation" outlined dense></v-autocomplete>
 						</template>
-					</v-data-table>
+					</v-data-table>-->
 				</v-card-text>
 				<v-divider></v-divider>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn color="success" @click="submutMoving()" :loading="loading">Отправить</v-btn>
+					<v-btn color="success" @click="submutMoving()" :loading="loading" :disabled="disabled">Отправить</v-btn>
 					<v-btn color="error" @click="dialog = false">Отмена</v-btn>
 				</v-card-actions>
 			</v-card>
@@ -101,8 +102,12 @@
 
 <script>
 import unit from '../unit.js';
+import requestItem from '../component/requestItem.vue';
 
 export default {
+	components: {
+		requestItem
+	},
 	data () {
 		return {
 			tableColumn: [
@@ -116,15 +121,15 @@ export default {
 				{ text: 'Поступило', align: 'start', sortable: true, value: 'amount', filterable: false},
 				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life', filterable: false}
 			],
-			tableColumn1: [
-				{ text: 'Место хранения', align: 'start', sortable: false, value: 'location', filterable: false},
-				{ text: 'Тип', align: 'start', sortable: false, value: 'type'},
-				{ text: 'Материал', align: 'start', sortable: false, value: 'material', width: 200},
-				{ text: 'Ед.изм', align: 'start', sortable: false, value: 'measure', filterable: false},
-				{ text: 'Остаток', align: 'start', sortable: false, value: 'total', filterable: false},
-				{ text: 'Требуется', align: 'start', sortable: false, value: 'mamount', filterable: false},
-				{ text: 'Место хранения', align: 'start', sortable: false, value: 'mlocation', filterable: false},
-			],
+			//tableColumn1: [
+			//	{ text: 'Место хранения', align: 'start', sortable: false, value: 'location', filterable: false},
+			//	{ text: 'Тип', align: 'start', sortable: false, value: 'type'},
+			//	{ text: 'Материал', align: 'start', sortable: false, value: 'material', width: 200},
+			//	{ text: 'Ед.изм', align: 'start', sortable: false, value: 'measure', filterable: false},
+			//	{ text: 'Остаток', align: 'start', sortable: false, value: 'total', filterable: false},
+			//	{ text: 'Требуется', align: 'start', sortable: false, value: 'mamount', filterable: false},
+			//	{ text: 'Место хранения', align: 'start', sortable: false, value: 'mlocation', filterable: false},
+			//],
 			search: '',
 			selected: [],
 			gridData: [],
@@ -133,7 +138,8 @@ export default {
 			dialog: false,
 			loading: false,
 			listLocations: [],
-			load: false
+			load: false,
+			disabled: true
 		}
 	},
 	methods: {
@@ -173,6 +179,9 @@ export default {
 			for (let col in this.filters) {
 				this.filters[col] = this.gridData.map((d) => {return d[col] }).filter((value, index, self) => { return self.indexOf(value) === index })}
 			this.activeFilters = Object.assign({}, this.filters)
+		},
+		isMoreTotal(item){
+			this.disabled = item;
 		}
 	},
 	watch: {
@@ -200,7 +209,14 @@ export default {
 		},
 		selectedDialog(){
 			return JSON.parse(JSON.stringify(this.selected));
-		}
+		},
+		//isUp(){
+		//	this.selectedDialog.forEach(element => {
+		//		let amount_m = this.$convert(element.mamount).param(element.density).measure(unit[element.id_measure]).to(unit[element.id_order_measure]);
+				
+		//		return amount_m > element.total;
+		//	});
+		//}
 	},
 	created(){
 		this.getStorageAll();
