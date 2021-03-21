@@ -210,8 +210,18 @@
 							<v-divider></v-divider>
 							<v-card-text>
 								<v-row>
-									<v-col cols="12">
+									<v-col cols="6">
+										<v-autocomplete :items="dropdownCreateKind()" v-model="moving.id_kind" clearable outlined dense label="Вид перемещения"></v-autocomplete>
+									</v-col>
+									<v-col cols="6">
+										<v-autocomplete :items="filteredTypes" v-model="moving.id_moving_type" clearable outlined dense label="Тип перемещения"></v-autocomplete>
+									</v-col>
+								</v-row>
+								<v-row>
+									<v-col cols="6">
 										<v-autocomplete :items="dropdownCreate()" v-model="moving.id_department" clearable outlined dense label="Отдел"></v-autocomplete>
+									</v-col>
+									<v-col cols="6">
 										<v-autocomplete :items="filteredLocation" v-model="moving.id_location" clearable outlined dense label="Кабинет"></v-autocomplete>
 									</v-col>
 								</v-row>
@@ -219,8 +229,8 @@
 							<v-divider></v-divider>
 							<v-card-actions>
 								<v-spacer></v-spacer>
-								<v-btn color="success" :loading="loadMoving" @click="submitMoving()">Сохранить</v-btn>
-								<v-btn color="error" @click="dialogMoving = false">Отмена</v-btn>
+								<v-btn color="success" :loading="loadMoving" @click="submitMoving()">Переместить</v-btn>
+								<v-btn color="error" @click="dialogMoving = false">Не перемещать</v-btn>
 							</v-card-actions>
 						</v-card>
 					</v-dialog>
@@ -376,8 +386,11 @@ export default {
 			changedItem: {},
 			moving: {
 				id_department: null,
-				id_location: null
+				id_location: null,
+				id_moving_type: null,
+				id_kind: null
 			},
+			movings: [],
 			main: {
 				id_type_maintenance: null,
 				id_executor: null,
@@ -416,7 +429,10 @@ export default {
 		},
 		dialogMoving(newVal){
 			if(newVal === true && !this.dataMoving)
+			{
 				this.$http.get('/api/equipment/support/locations').then(response => (this.dataMoving = response.data)).catch(error => (alert(error.response.data.message)));
+				this.$http.get('/api/equipment/support/moving').then(response => (this.movings = response.data)).catch(error => (alert(error.response.data.message)));
+			}
 		},
 		dialogMaintenance(newVal){
 			if(newVal === true && !this.dataMaintenances)
@@ -496,6 +512,15 @@ export default {
 				return result;
 			}
 		},
+		dropdownCreateKind(){
+			if(this.movings.length > 0)
+			{
+				let result = [];
+				for (let str of this.movings)
+					result.push({value: str['id'], text: str['kind']});
+				return result;
+			}
+		},
 		submitMoving(){
 			this.loadMoving = true;
 			this.$http.post(`/api/equipment/equipments/${this.indentificationData.equipment.id}/moving`, this.moving, {headers: {'Content-Type': 'application/json'}})
@@ -535,6 +560,16 @@ export default {
 				this.dataMoving.locations.filter(item => {
 					if(item.id_department === this.moving.id_department)
 						result.push({value: item.id, text: item.cabinet_number});
+				});
+				return result;
+			}
+		},
+		filteredTypes(){
+			if(this.movings.length > 0)
+			{
+				let result = [];
+				this.movings[this.moving.id_kind - 1]['types'].filter(item => {
+					result.push({value: item.id, text: item.type});
 				});
 				return result;
 			}

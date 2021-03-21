@@ -35,7 +35,7 @@
               <v-list-item to="/equipment/metrolog/instructions">
                   <v-list-item-title>Инструкции</v-list-item-title>
               </v-list-item>
-              <v-list-item to="/equipment/metrolog/maintenances">
+              <v-list-item to="/equipment/metrolog/services">
                   <v-list-item-title>ТО</v-list-item-title>
               </v-list-item>
             </v-list-group>

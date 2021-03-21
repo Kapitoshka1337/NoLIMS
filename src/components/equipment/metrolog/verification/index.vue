@@ -42,6 +42,9 @@
 					<v-card-text>
 						<v-data-table dense :headers="tableColumn1" :items="gridData1"
 						:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">>							
+							<template v-slot:item.date_received_before="{ item }">
+								{{ today(item.date_received_before) }}
+							</template>
 							<template v-slot:item.date_received_after="{ item }">
 								{{ today(item.date_received_after) }}
 							</template>
@@ -160,7 +163,8 @@ export default {
 				{ text: 'Оборудование', align: 'start', sortable: false, value: 'equipment' },
 				{ text: 'Модель', align: 'start', sortable: false, value: 'model'},
 				{ text: 'С/Н', align: 'end', sortable: false, value: 'serial_number', filterable: false },
-				{ text: 'Получено', align: 'end', sortable: false, value: 'date_received_after' },
+				{ text: 'Принесли', align: 'end', sortable: false, value: 'date_received_before'},
+				{ text: 'Получено из ЦСМ', align: 'end', sortable: false, value: 'date_received_after'},
 				{ text: 'Отдано', align: 'end', sortable: false, value: 'date_received_department' },
 				{ text: '', align: 'center', sortable: false, value: 'actions', filterable: false, width: 100}
 			],
@@ -200,6 +204,7 @@ export default {
 			kitDefault: {
 				date_received_after: null,
 				date_received_department: null,
+				date_received_before: null,
 				equipment: null,
 				id_checks: null,
 				id_kit_row: null,
@@ -215,6 +220,7 @@ export default {
 			kit: {
 				date_received_after: null,
 				date_received_department: null,
+				date_received_before: null,
 				equipment: null,
 				id_checks: null,
 				id_kit_row: null,
@@ -251,10 +257,11 @@ export default {
 			this.kit = Object.assign({}, item);
 			if(!item.is_received_before && !item.is_received_after)
 				this.submitBefore();
-			else if(item.is_received_before && !item.is_received_after)
-				this.showPassed = true;
 			else if(item.is_received_before && item.is_received_after && !item.is_received_department)
 				this.submitDepartment();
+			else if(item.id_status_check === 2)
+				this.showPassed = true;
+			//else if(item.is_received_before && !item.is_received_after)
 		},
 		submitBefore(){
 			this.param = true;
@@ -322,8 +329,8 @@ export default {
 			this.deleteVerificationDialog = true;
 		},
 		confirmDeleteEq(item){
-			this.checkIndex = this.gridData.indexOf(item);
-			this.check = Object.assign({}, item);
+			this.kitIndex = this.gridData1.indexOf(item);
+			this.kit = Object.assign({}, item);
 			this.deleteEqDialog = true;
 		},
 		deleteVerification(){
@@ -337,8 +344,9 @@ export default {
 		},
 		deleteEq(){
 			this.loadDelete = true;
-			this.$http.delete(`/api/equipment/verification/${this.check.id_kit_row}/edelete`).then(response => {
-				this.gridData1.splice(this.checkIndex, 1);
+			this.$http.delete(`/api/equipment/verification/${this.kit.id_kit_row}/edelete`).then(response => {
+				Object.assign(this.gridData[this.checkIndex], response.data.check);
+				this.gridData1.splice(this.kitIndex, 1);
 				this.deleteEqDialog = false;
 				this.loadDelete = false;
 				this.close();

@@ -26,7 +26,7 @@
 					{{ item.cnt_before }} / {{ item.cnt_after }} (<strong>{{ item.cnt_total }}</strong>)
 				</template>-->
 				<template v-slot:item.actions="{ item }">
-					<v-btn x-small color="orange" v-on:click="selectedVerification(item)">Просмотр</v-btn>
+					<!--<v-btn x-small color="orange" v-on:click="selectedVerification(item)">Просмотр</v-btn>-->
 					<!--<v-btn small icon color="blue" v-on:click="confirmPrint(item)"><v-icon>mdi-printer</v-icon></v-btn>-->
 					<!--<v-btn small icon color="red" v-on:click="confirmDeleteVerification(item)" v-if="item.id_status_check != 2 && item.id_status_check != 3"><v-icon>mdi-delete</v-icon></v-btn>-->
 					<!--<v-btn small icon color="green" v-if="!item.date_submit" v-on:click="confirmPlay(item)"><v-icon>mdi-play</v-icon></v-btn>-->

@@ -76,18 +76,8 @@
 				<v-card-title>Запрашиваемые материалы из {{ activeFilters.department }}</v-card-title>
 				<v-divider></v-divider>
 				<v-card-text>
-					<request-item :items="selectedDialog" @is-more="isMoreTotal"></request-item>
-					<!--<v-data-table dense :items="selectedDialog" :headers="tableColumn1" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
-						<template v-slot:item.total="{item}">
-							{{ idDep === 5 ? parseFloat(item.total.toFixed(2)) : convert(item, 'total') }}
-						</template>
-						<template v-slot:item.mamount="{item}">
-							<v-text-field type="number" outlined dense v-model="item.mamount"></v-text-field>
-						</template>
-						<template v-slot:item.mlocation="{item}">
-							<v-autocomplete :items="dropdownLocation" clearable v-model="item.mlocation" outlined dense></v-autocomplete>
-						</template>
-					</v-data-table>-->
+					<request-item :items="selectedDialog" :locations="dropdownLocation"></request-item>
+					<!--<request-item :items="selectedDialog" :locations="dropdownLocation" @isMore="isMoreTotal"></request-item>-->
 				</v-card-text>
 				<v-divider></v-divider>
 				<v-card-actions>
@@ -121,15 +111,6 @@ export default {
 				{ text: 'Поступило', align: 'start', sortable: true, value: 'amount', filterable: false},
 				{ text: 'Срок хранения', align: 'start', sortable: true, value: 'shelf_life', filterable: false}
 			],
-			//tableColumn1: [
-			//	{ text: 'Место хранения', align: 'start', sortable: false, value: 'location', filterable: false},
-			//	{ text: 'Тип', align: 'start', sortable: false, value: 'type'},
-			//	{ text: 'Материал', align: 'start', sortable: false, value: 'material', width: 200},
-			//	{ text: 'Ед.изм', align: 'start', sortable: false, value: 'measure', filterable: false},
-			//	{ text: 'Остаток', align: 'start', sortable: false, value: 'total', filterable: false},
-			//	{ text: 'Требуется', align: 'start', sortable: false, value: 'mamount', filterable: false},
-			//	{ text: 'Место хранения', align: 'start', sortable: false, value: 'mlocation', filterable: false},
-			//],
 			search: '',
 			selected: [],
 			gridData: [],
@@ -163,6 +144,7 @@ export default {
 		getStorageAll(){
 			this.load = true;
 			this.$http.get('/api/reagent/storage/all').then(response => (this.load = false, this.gridData = response.data)).catch(error => (this.load = false, alert(error.response.data.message)));
+			this.loadLocations();
 		},
 		today(date){
 			return date === null || new Date(date).toLocaleString().split(',')[0];
@@ -182,6 +164,9 @@ export default {
 		},
 		isMoreTotal(item){
 			this.disabled = item;
+		},
+		loadLocations(){
+			this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error.response.data.message)));
 		}
 	},
 	watch: {
@@ -197,26 +182,17 @@ export default {
 			return this.$store.getters.isRoles;
 		},
         dropdownLocation(){
-            if(!this.listLocations.length)
-                this.$http.get('/api/reagent/locations').then(response => (this.listLocations = response.data)).catch(error => (alert(error.response.data.message)));
-            else
-            {
-                let result = [];
+			if(this.listLocations.length)
+			{
+				let result = [];
 				for (let str of this.listLocations)
-                    result.push({value: str['id'], text: `${str['cabinet_number']} ${str['place']} ${str['notation']}`});
-                return result;
-            }
+					result.push({value: str['id'], text: `${str['cabinet_number']} ${str['place']} ${str['notation']}`});
+				return result;
+			}
 		},
 		selectedDialog(){
 			return JSON.parse(JSON.stringify(this.selected));
-		},
-		//isUp(){
-		//	this.selectedDialog.forEach(element => {
-		//		let amount_m = this.$convert(element.mamount).param(element.density).measure(unit[element.id_measure]).to(unit[element.id_order_measure]);
-				
-		//		return amount_m > element.total;
-		//	});
-		//}
+		}
 	},
 	created(){
 		this.getStorageAll();

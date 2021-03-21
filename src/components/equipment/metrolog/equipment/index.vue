@@ -2,7 +2,7 @@
 	<v-row>
 		<v-col cols="12">
 			<v-data-table
-			calculate-widths
+				calculate-widths
 				@item-selected="selectedEquipment"
 				dense
 				v-model="selected"
