@@ -41,7 +41,7 @@ import MetrologEquipmentDetails from "./components/equipment/components/detail/i
 import MetrologVerification from "./components/equipment/metrolog/verification/index.vue";
 import MetrologRepair from "./components/equipment/metrolog/repair/index.vue";
 import MetrologInstructions from "./components/equipment/metrolog/instructions/index.vue";
-import MetrologMaintenance from "./components/equipment/metrolog/maintenance/index.vue";
+import MetrologMaintenance from "./components/equipment/metrolog/services/index.vue";
 import Calendar from "./components/equipment/components/calendar/index.vue";
 //GZ
 import GzMain from "./components/gz/main.vue";
@@ -58,6 +58,7 @@ if(token){
   Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
 if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.156';
+//Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.156';
 
 Vue.use(SuiVue);
 Vue.use(VueRouter);
@@ -99,7 +100,7 @@ var router = new VueRouter({
             { path: 'equipments/:id', props: true, name: 'details', component: MetrologEquipmentDetails, meta: { name: 'equipment', roles: [4] } },
             { path: 'verification', component: MetrologVerification, meta: { name: 'equipment', roles: [4] } },
             { path: 'instructions', component: MetrologInstructions, meta: { name: 'equipment', roles: [4] } },
-            { path: 'maintenances', component: MetrologMaintenance, meta: { name: 'equipment', roles: [4] } },
+            { path: 'services', component: MetrologMaintenance, meta: { name: 'equipment', roles: [4] } },
             { path: 'calendar', component: Calendar, meta: { name: 'equipment', roles: [4] } },
           ]
         },
