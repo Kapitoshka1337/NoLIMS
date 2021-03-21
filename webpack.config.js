@@ -49,6 +49,7 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
+    host: '0.0.0.0',
     proxy: {
       '/api': {
           target: 'http://laravel/api',
