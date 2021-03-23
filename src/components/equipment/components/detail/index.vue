@@ -199,44 +199,10 @@
 				<v-card-title>
 					Перемещения
 					<v-spacer></v-spacer>
-					<v-dialog v-model="dialogMoving" max-width="512px" v-if="getAllowSave">
-						<template v-slot:activator="{ on, attrs }">
-							<v-btn icon color="orange" v-bind="attrs" v-on="on">
-								<v-icon>mdi-plus</v-icon>
-							</v-btn>
-						</template>
-						<v-card>
-							<v-card-title>Перемещение</v-card-title>
-							<v-divider></v-divider>
-							<v-card-text>
-								<v-row>
-									<v-col cols="6">
-										<v-autocomplete :items="dropdownCreateKind()" v-model="moving.id_kind" clearable outlined dense label="Вид перемещения"></v-autocomplete>
-									</v-col>
-									<v-col cols="6">
-										<v-autocomplete :items="filteredTypes" v-model="moving.id_moving_type" clearable outlined dense label="Тип перемещения"></v-autocomplete>
-									</v-col>
-								</v-row>
-								<v-row>
-									<v-col cols="6">
-										<v-autocomplete :items="dropdownCreate()" v-model="moving.id_department" clearable outlined dense label="Отдел"></v-autocomplete>
-									</v-col>
-									<v-col cols="6">
-										<v-autocomplete :items="filteredLocation" v-model="moving.id_location" clearable outlined dense label="Кабинет"></v-autocomplete>
-									</v-col>
-								</v-row>
-							</v-card-text>
-							<v-divider></v-divider>
-							<v-card-actions>
-								<v-spacer></v-spacer>
-								<v-btn color="success" :loading="loadMoving" @click="submitMoving()">Переместить</v-btn>
-								<v-btn color="error" @click="dialogMoving = false">Не перемещать</v-btn>
-							</v-card-actions>
-						</v-card>
-					</v-dialog>
+					<v-btn icon color="orange" v-on:click="dialogMoving = true"><v-icon>mdi-plus</v-icon></v-btn>
 				</v-card-title>
 				<v-card-text>
-					<v-data-table dense :headers="tableColumn1" :items="indentificationData.history_moving" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
+					<v-data-table dense :headers="tableColumn1" :items="indentificationData.history_moving" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [10, 30, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 						<template v-slot:item.cabinet_number="{ item }">
 							{{ item.cabinet_number || "Не указан"}}
 						</template>
@@ -332,13 +298,19 @@
 		<v-overlay :value="overlay">
 			<v-progress-circular indeterminate size="64" color="yellow"></v-progress-circular>
 		</v-overlay>
+		<!--<modal-moving :visible="showPassed" :equipment="kit" @close="closeDialog()" @submit="submitAfter"></modal-moving>-->
+		<modal-moving :visible="dialogMoving" :equipment="indentificationData.equipment" @close="closeDialog()" @submit="acceptedMoving"></modal-moving>
 	</v-row>
 </template>
 
 <script>
 import fs from 'file-saver';
+import modalMoving from './component/movingModal.vue';
 
 export default {
+	components:{
+		modalMoving
+	},
 	props:{
 		id: Number,
 		allowSave: Boolean
@@ -427,13 +399,6 @@ export default {
 			},
 			deep: true
 		},
-		dialogMoving(newVal){
-			if(newVal === true && !this.dataMoving)
-			{
-				this.$http.get('/api/equipment/support/locations').then(response => (this.dataMoving = response.data)).catch(error => (alert(error.response.data.message)));
-				this.$http.get('/api/equipment/support/moving').then(response => (this.movings = response.data)).catch(error => (alert(error.response.data.message)));
-			}
-		},
 		dialogMaintenance(newVal){
 			if(newVal === true && !this.dataMaintenances)
 				this.$http.get('/api/equipment/support/services').then(response => (this.dataMaintenances = response.data)).catch(error => (alert(error.response.data.message)));
@@ -444,6 +409,9 @@ export default {
 		}
 	},
 	methods: {
+		closeDialog(){
+			this.dialogMoving = false;
+		},
 		getEquipment(){
 			this.overlay = true;
 			this.$http.get('/api/equipment/equipments/' + this.id).then(response => (this.overlay = false,this.indentificationData = response.data, this.indentificationDataCopy = JSON.parse(JSON.stringify(response.data.equipment)))).catch(error => (this.overlay = false, alert(error.response.data.message)));
@@ -485,15 +453,6 @@ export default {
 				this.overlay = false;
 			}).catch(error => (alert('Файл не найден'), this.overlay = false));
 		},
-		dropdownCreate(){
-			if(this.dataMoving)
-			{
-				let result = [];
-				for (let str of this.dataMoving['department'])
-					result.push({value: str['id'], text: str['title'] || str['cabinet_number']});
-				return result;
-			}
-		},
 		dropdownCreate1(tp){
 			if(this.dataMaintenances)
 			{
@@ -511,21 +470,6 @@ export default {
 					result.push({value: str['id'], text: `${str['number']} ${str['title']}`});
 				return result;
 			}
-		},
-		dropdownCreateKind(){
-			if(this.movings.length > 0)
-			{
-				let result = [];
-				for (let str of this.movings)
-					result.push({value: str['id'], text: str['kind']});
-				return result;
-			}
-		},
-		submitMoving(){
-			this.loadMoving = true;
-			this.$http.post(`/api/equipment/equipments/${this.indentificationData.equipment.id}/moving`, this.moving, {headers: {'Content-Type': 'application/json'}})
-			.then(response => (this.loadMoving = false, this.dialogMoving = false, this.getEquipment()))
-			.catch(error => (this.loadMoving = false, alert(error.response.data.message)));
 		},
 		submitMaintenance(){
 			this.main.id_equipment = this.indentificationData.equipment.id;
@@ -551,6 +495,9 @@ export default {
 			else
 				this.indentificationData.equipment.accuracy += String.fromCharCode(176);
 		},
+		acceptedMoving(data){
+			this.indentificationData.history_moving = data.history_moving;
+		}
 	},
 	computed: {
 		filteredLocation(){
@@ -560,16 +507,6 @@ export default {
 				this.dataMoving.locations.filter(item => {
 					if(item.id_department === this.moving.id_department)
 						result.push({value: item.id, text: item.cabinet_number});
-				});
-				return result;
-			}
-		},
-		filteredTypes(){
-			if(this.movings.length > 0)
-			{
-				let result = [];
-				this.movings[this.moving.id_kind - 1]['types'].filter(item => {
-					result.push({value: item.id, text: item.type});
 				});
 				return result;
 			}

@@ -259,7 +259,7 @@ export default {
 				this.submitBefore();
 			else if(item.is_received_before && item.is_received_after && !item.is_received_department)
 				this.submitDepartment();
-			else if(item.id_status_check === 2)
+			else if(item.id_status_check === 2 || 3)
 				this.showPassed = true;
 			//else if(item.is_received_before && !item.is_received_after)
 		},

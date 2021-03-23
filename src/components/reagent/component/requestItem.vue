@@ -57,18 +57,18 @@ export default {
 		//}
 	},
 	watch: {
-		items(newVal){
-			if(!newVal.length)
-			{
-				this.badItems = [];
-				this.$emit('isMore', true);
-			}
-			else
-			{
-				this.badItems = Array.from(this.items);
-				this.$emit('isMore', false);
-			}
-		},
+		//items(newVal){
+		//	if(!newVal.length)
+		//	{
+		//		this.badItems = [];
+		//		this.$emit('isMore', true);
+		//	}
+		//	else
+		//	{
+		//		this.badItems = Array.from(this.items);
+		//		this.$emit('isMore', false);
+		//	}
+		//},
 		//badItems(newVal, oldVal){
 		//	console.log(`new: ${newVal.length} old:${oldVal.length}`);
 		//	if(!newVal.length && !oldVal.length)

@@ -54,6 +54,7 @@
 					:events="events"
 					:event-color="getEventColor"
 					:type="type"
+					interval-count="32"
 					@click:event="showEvent"
 					@click:more="viewDay"
 					@click:date="viewDay"
@@ -77,6 +78,27 @@
 						</v-card-actions>
 					</v-card>
 				</v-menu>
+				<v-dialog dense v-model="playDialog" max-width="512">
+					<v-card>
+						<v-card-title>Отправка оборудования</v-card-title>
+						<v-divider></v-divider>
+						<v-card-text>
+							<v-row>
+								<v-container>
+									<v-row align-content="center">
+										<v-text-field label="Номер квитанции" outlined dense></v-text-field>
+									</v-row>
+								</v-container>
+							</v-row>
+						</v-card-text>
+						<v-divider></v-divider>
+						<v-card-actions>
+							<v-spacer></v-spacer>
+							<v-btn color="success">Отправить</v-btn>
+							<v-btn color="error" @click="playDialog = false">Отмена</v-btn>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
 			</v-sheet>
 		</v-col>
 	</v-row>
@@ -99,7 +121,8 @@ export default {
 			selectedOpen: false,
 			events: [],
 			preEvents: [],
-			overlay: false
+			overlay: false,
+			playDialog: false
 		}
 	},
 	mounted(){
@@ -114,7 +137,8 @@ export default {
 			this.$http.get('/api/equipment/calendar').then(response => (this.preEvents = response.data, this.overlay = false)).catch(error => (alert(error.response.data.message), this.overlay = false));
 		},
 		viewDay({ date }){
-			this.focus = date
+			this.focus = date;
+			//this.playDialog = true;
 			this.type = 'day'
 		},
 		getEventColor(event){

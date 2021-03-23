@@ -82,7 +82,7 @@
 				<v-divider></v-divider>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn color="success" @click="submutMoving()" :loading="loading" :disabled="disabled">Отправить</v-btn>
+					<v-btn color="success" @click="submutMoving()" :loading="loading">Отправить</v-btn>
 					<v-btn color="error" @click="dialog = false">Отмена</v-btn>
 				</v-card-actions>
 			</v-card>

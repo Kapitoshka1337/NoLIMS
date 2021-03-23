@@ -41,8 +41,14 @@ export default {
 			if(newVal === '' || newVal === null) this.Item.amount = "0";
 		},
 		'item.density': function(newVal){
-			if(newVal === '' || newVal === null) this.Item.density = "0";
-		}
+			if(newVal === '' || newVal === null) this.Item.density = "1";
+		},
+		//'item.date_create': function(newVal){
+		//	if(newVal === '' || newVal === null) this.Item.date_create = ''
+		//},
+		//'item.shelf_life': function(newVal){
+			
+		//}
 	},
 	computed: {
 		Item(){
