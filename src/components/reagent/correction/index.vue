@@ -1,4 +1,5 @@
-<template><v-row>
+<template>
+	<v-row>
 		<v-col cols="12">
 			<v-data-table calculate-widths dense item-key="id"
 				:headers="tableColumn"

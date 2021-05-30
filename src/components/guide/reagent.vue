@@ -11,102 +11,53 @@
 			<v-tab><v-icon left color="orange">mdi-content-copy</v-icon>Списание</v-tab>
 			<v-tab><v-icon left color="blue">mdi-folder-swap</v-icon>Передача</v-tab>
 			<v-tab-item>
-				<v-card flat>
-					<v-card-text>
-						<p>global</p>
-					</v-card-text>
-				</v-card>
+				<main-page></main-page>
 			</v-tab-item>
 			<v-tab-item>
-				<v-card flat>
-					<v-card-text>
-						<p>storage</p>
-					</v-card-text>
-				</v-card>
+				<storage></storage>
 			</v-tab-item>
 			<v-tab-item>
-				<v-card flat>
-					<v-card-text>
-						<p>archive</p>
-					</v-card-text>
-				</v-card>
+				<archive></archive>
 			</v-tab-item>
 			<v-tab-item>
-				<v-card flat>
-					<v-card-text>
-						<p>errors</p>
-					</v-card-text>
-				</v-card>
+				<errors></errors>
 			</v-tab-item>
 			<v-tab-item>
-				<v-card flat>
-					<v-card-text>
-						<p>arrivals</p>
-					</v-card-text>
-				</v-card>
+				<arrivals></arrivals>
 			</v-tab-item>
 			<v-tab-item>
-				<v-card flat>
-					<v-card-text>
-						<p>history expenses</p>
-					</v-card-text>
-				</v-card>
+				<expenses></expenses>
 			</v-tab-item>
 			<v-tab-item>
-				<v-card flat>
-					<v-card-text>
-						<p>locations</p>
-					</v-card-text>
-				</v-card>
+				<locations></locations>
 			</v-tab-item>
 			<v-tab-item>
-				<v-card flat>
-					<v-card-text>
-						<p>writeoff</p>
-					</v-card-text>
-				</v-card>
+				<writeoff></writeoff>
 			</v-tab-item>
 			<v-tab-item>
-				<v-tabs fixed-tabs>
-					<v-tab>Запрос</v-tab>
-					<v-tab>История</v-tab>
-					<v-tab-item>
-						<v-card>
-							<v-card-text>
-								Запрос
-								<v-carousel>
-									<v-carousel-item>
-										<v-img :src="reagent" max-height="512" max-width="1024"></v-img>
-									</v-carousel-item>
-									<v-carousel-item>
-										<v-img :src="request" max-height="512" max-width="1024"></v-img>
-									</v-carousel-item>
-								</v-carousel>
-							</v-card-text>
-						</v-card>
-					</v-tab-item>
-					<v-tab-item>
-						<v-card>
-							<v-card-text>
-								История
-							</v-card-text>
-						</v-card>
-					</v-tab-item>
-				</v-tabs>
+				<moving></moving>
 			</v-tab-item>
 		</v-tabs>
 	</v-col>
 </template>
 
 <script>
-import request from './../../assets/request.png';
-import reagent from './../../assets/reagent.gif';
+import mainPage from './components/main.vue';
+import storage from './components/storage.vue';
+import archive from './components/archive.vue';
+import errors from './components/errors.vue';
+import arrivals from './components/arrivals.vue';
+import expenses from './components/expenses.vue';
+import locations from './components/locations.vue';
+import writeoff from './components/writeoff.vue';
+import moving from './components/moving.vue';
 
 export default {
+	components: {
+		mainPage, storage, archive, errors, arrivals, expenses, locations, writeoff, moving
+	},
 	data(){
-		return {
-			request, reagent
-		}
+		return {}
 	}
 }
 </script>
