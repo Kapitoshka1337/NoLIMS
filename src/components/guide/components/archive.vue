@@ -1,12 +1,9 @@
 <template>
 	<v-card flat>
 		<v-card-title>
-			Склад
+			Архив
 		</v-card-title>
 		<v-card-text>
-			<v-card-title>
-				Архив
-			</v-card-title>
 			<v-card-text>
 				Раздел меню <strong>Архив</strong> отображает поступившие материалы у которых истек срок хранения или закончилось количество необходимое для выполнения исследований.
 			</v-card-text>
