@@ -69,7 +69,8 @@
 			</v-dialog>
 			<v-dialog dense v-model="dialogFarm" max-width="700">
 				<v-card>
-					<v-card-title>Предприятие</v-card-title>
+					<v-card-title>Добавление предприятия</v-card-title>
+					<v-card-subtitle v-if="filteredVetstation.length && filteredRegions.length">Ветстанция: {{ filteredVetstation[0].title }} Район: {{ filteredRegions[0].title }}</v-card-subtitle>
 					<v-divider></v-divider>
 					<v-card-text>
 						<v-row>
@@ -81,7 +82,7 @@
 					<v-divider></v-divider>
 					<v-card-actions>
 						<v-spacer></v-spacer>
-						<v-btn color="success" @click="submitFarm()" :loading="loading">ОК</v-btn>
+						<v-btn color="success" @click="submitFarm()" :loading="loading" :disabled="disableFarm" >ОК</v-btn>
 						<v-btn color="error" @click="dialogFarm = false">Отмена</v-btn>
 					</v-card-actions>
 				</v-card>
@@ -127,7 +128,7 @@ export default {
 			},
 			farm: {
 				title: null,
-				id_region: null
+				//id_region: null
 			}
 		}
 	},
@@ -151,7 +152,7 @@ export default {
 		submitFarm(){
 			this.loading = true;
 			this.farm.id_region = this.form.id_region;
-			this.$http.post('/api/gz/index/farm', this.farm, {headers: {'Content-Type': 'application/json'}}).then(response => (this.loading = false, this.dialogFarm = false, this.getSupport())).catch(error => (this.loading = false, alert(error.response.data.message)));
+			this.$http.post('/api/gz/index/farm', this.farm, {headers: {'Content-Type': 'application/json'}}).then(response => (this.loading = false, this.dialogFarm = false, this.farm.title = null, this.farm.id_region = null, this.getSupport())).catch(error => (this.loading = false, alert(error.response.data.message)));
 		},
 		submit(){
 			this.loading = true;
@@ -167,6 +168,16 @@ export default {
 		},
 		filteredMethod(){
 			return Object.keys(this.supportData).length ? this.supportData.method.filter(r => { return r.vt_id === this.form.id_vetstation && r.animal_id === this.form.id_animal }) : false;
+		},
+		filteredVetstation(){
+			return Object.keys(this.supportData).length ? this.supportData.vetstation.filter(r => { return r.id === this.form.id_vetstation }) : false;
+		},
+		filteredRegions(){
+			return Object.keys(this.supportData).length ? this.supportData.region.filter(r => { return r.id === this.form.id_region }) : false;
+		},
+		disableFarm()
+		{
+			return this.farm.title == null || this.form.id_region == null || this.farm.title == '' || this.form.id_region == '';
 		}
     },
 	created(){
