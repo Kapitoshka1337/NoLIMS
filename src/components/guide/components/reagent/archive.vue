@@ -5,7 +5,7 @@
 		</v-card-title>
 		<v-card-text>
 			<v-card-text>
-				Раздел меню <strong>Архив</strong> отображает поступившие материалы у которых истек срок хранения или закончилось количество необходимое для выполнения исследований.
+				Раздел меню <strong>Архив</strong> отображает поступившие материалы у которых истек срок хранения или полностью израсходованных.
 			</v-card-text>
 			<v-card-title>
 				Пример содержания страницы "Архив".
@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import unit from '../../reagent/unit.js';
+import unit from '../../../reagent/unit.js';
 
 export default {
 	data () {

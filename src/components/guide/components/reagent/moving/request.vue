@@ -125,8 +125,8 @@
 </template>
 
 <script>
-import unit from '../../../reagent/unit.js';
-import requestItem from '../../../reagent/component/requestItem.vue';
+import unit from '../../../../reagent/unit.js';
+import requestItem from '../../../../reagent/component/requestItem.vue';
 
 export default {
 	components: {

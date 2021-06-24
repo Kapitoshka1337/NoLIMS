@@ -40,7 +40,7 @@ export default {
 			cards: [
 			{
 				id: 'total',
-				title: 'Остаток меньше 40%',
+				title: 'Остаток менее 40%',
 				tableColumn: [
 					{ text: 'Код', align: 'start', sortable: true, value: 'material_id'},
 					{ text: 'Дата поступления', align: 'start', sortable: true, value: 'date_order'},
@@ -56,7 +56,7 @@ export default {
 			},
 			{
 				id: 'date',
-				title: 'Срок хранения меньше 2 месяцев',
+				title: 'Срок хранения менее 2 месяцев',
 				tableColumn: [
 					{ text: 'Код', align: 'start', sortable: true, value: 'material_id'},
 					{ text: 'Дата поступления', align: 'start', sortable: true, value: 'date_order'},

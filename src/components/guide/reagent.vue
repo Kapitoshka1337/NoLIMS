@@ -42,15 +42,15 @@
 </template>
 
 <script>
-import mainPage from './components/main.vue';
-import storage from './components/storage.vue';
-import archive from './components/archive.vue';
-import errors from './components/errors.vue';
-import arrivals from './components/arrivals.vue';
-import expenses from './components/expenses.vue';
-import locations from './components/locations.vue';
-import writeoff from './components/writeoff.vue';
-import moving from './components/moving.vue';
+import mainPage from './components/reagent/main.vue';
+import storage from './components/reagent/storage.vue';
+import archive from './components/reagent/archive.vue';
+import errors from './components/reagent/errors.vue';
+import arrivals from './components/reagent/arrivals.vue';
+import expenses from './components/reagent/expenses.vue';
+import locations from './components/reagent/locations.vue';
+import writeoff from './components/reagent/writeoff.vue';
+import moving from './components/reagent/moving.vue';
 
 export default {
 	components: {
