@@ -143,7 +143,7 @@
 					<v-row>
 						<v-col cols="12">
 							<v-text-field type="number" dense outlined clearable label="Потраченное количество" v-model="expense.amount"></v-text-field>
-							<v-text-field type="date" dense outlined clearable label="Продлить до" v-model="expense.date_usage"></v-text-field>
+							<v-text-field type="date" dense outlined clearable label="Дата расхода" v-model="expense.date_usage"></v-text-field>
 						</v-col>
 					</v-row>
 				</v-card-text>
@@ -165,7 +165,8 @@
 						<v-col cols="12">
 							<v-autocomplete @update:search-input="locationText" v-model="item.id_location" :items="dropdownLocation" outlined dense label="Место хранения"></v-autocomplete>
 							<v-textarea v-model="item.description" :rows="2" :height="100" outlined dense label="Дополнительная информация"></v-textarea>
-							<v-textarea v-model="item.packing_name" :rows="2" :height="100" outlined dense label="Накладная"></v-textarea>
+							<v-textarea v-model="item.packing_name" :rows="2" :height="100" outlined dense label="Наименование в накладной"></v-textarea>
+							<v-textarea v-model="item.storage_conditions" :rows="2" :height="100" outlined dense label="Условия хранения"></v-textarea>
 						</v-col>
 					</v-row>
 				</v-card-text>
@@ -304,12 +305,18 @@ export default {
 		},
 		saveDetail(){
 			this.loadExpenses = true;
-			this.$http.put(`/api/reagent/arrivals/updloc/${this.item.arrival_material_id}`, {id_location: this.item.id_location, description: this.item.description, packing_name: this.item.packing_name}, {headers: {'Content-Type': 'application/json'}})
+			this.$http.put(`/api/reagent/arrivals/updloc/${this.item.arrival_material_id}`, {
+					id_location: this.item.id_location, 
+					description: this.item.description, 
+					packing_name: this.item.packing_name,
+					storage_conditions: this.item.storage_conditions
+				}, {headers: {'Content-Type': 'application/json'}})
 			.then(response => {
 					this.gridData[this.editedIndex].id_location = this.item.id_location;
 					this.gridData[this.editedIndex].description = this.item.description;
 					this.gridData[this.editedIndex].packing_name = this.item.packing_name;
 					this.gridData[this.editedIndex].location = this.text;
+					this.gridData[this.editedIndex].storage_conditions = this.item.storage_conditions;
 					this.loadExpenses = false;
 					this.dialogDetail = false;
 				})

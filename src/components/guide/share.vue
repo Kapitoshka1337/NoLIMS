@@ -26,7 +26,7 @@
 							<p>
 								<h5>Шапка сайта</h5>
 								<v-icon color="primary">mdi-menu</v-icon> - Отображает содержание раздела. <br>
-								<v-icon color="primary">mdi-help-circle-outline</v-icon> - Справка по ЛИС.<br>
+								<v-icon color="primary">mdi-help-circle-outline</v-icon> - Справка.<br>
 								<v-icon color="primary">mdi-home-circle-outline</v-icon> - Возвращает в проводник системы.<br>
 								<v-icon color="primary">mdi-exit-to-app</v-icon> - Выход из учетной записи.
 							</p>

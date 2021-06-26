@@ -16,6 +16,7 @@
 					<v-textarea v-model="Item.post_name" :rows="2" :height="100" outlined dense label="Наименование в накладной"></v-textarea>
 					<v-text-field v-model="Item.date_create" type="date" outlined dense label="Дата изготовления"></v-text-field>
 					<v-text-field v-model="Item.shelf_life" type="date" outlined dense label="Срок хранения"></v-text-field>
+					<v-text-field v-model="Item.storage_conditions" type="text" outlined dense label="Условия хранения"></v-text-field>
 					<v-textarea v-model="Item.description" :rows="2" :height="100" outlined dense label="Дополнительная информация"></v-textarea>
 				</v-col>
 			</v-row>
@@ -42,13 +43,7 @@ export default {
 		},
 		'item.density': function(newVal){
 			if(newVal === '' || newVal === null) this.Item.density = "1";
-		},
-		//'item.date_create': function(newVal){
-		//	if(newVal === '' || newVal === null) this.Item.date_create = ''
-		//},
-		//'item.shelf_life': function(newVal){
-			
-		//}
+		}
 	},
 	computed: {
 		Item(){

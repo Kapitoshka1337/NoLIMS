@@ -22,7 +22,7 @@
 								:footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Отобразить на странице'}">
 								<template v-slot:top>
 									<v-toolbar flat dense>
-										<v-toolbar-title>Склад</v-toolbar-title>
+										<v-toolbar-title>Архивные материалы</v-toolbar-title>
 										<v-spacer></v-spacer>
 										<v-text-field v-model="storageTable.search" label="Поиск КОД/МАТЕРИАЛ" clearable single-line hide-details></v-text-field>
 										<v-spacer></v-spacer>
