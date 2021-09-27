@@ -1,0 +1,4 @@
+interface IEquipmentVO
+{
+    characteristics: string;
+}

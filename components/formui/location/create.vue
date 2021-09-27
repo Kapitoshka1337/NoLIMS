@@ -1,0 +1,101 @@
+<template>
+	<v-dialog dense v-model="getVisible" max-width="512px" @input="closeDialog()">
+		<v-form>
+            <v-card>
+                <v-card-title>Местоположение</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <v-form>
+                        <v-row no-gutters>
+                            <v-col cols="12">
+                                <v-text-field dense label="Имя" outlined v-model="location.name"></v-text-field>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-text-field dense label="Кабинет" outlined v-model="location.numberRoom"></v-text-field>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-text-field dense label="Место хранения" outlined v-model="location.storage"></v-text-field>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-text-field dense label="Примечание" outlined v-model="location.notation"></v-text-field>
+                            </v-col>
+                            <v-col cols="12">
+                                <department @select="getDepartmentId" :show-view="false" :show-create="false"></department>
+                            </v-col>
+                        </v-row>
+                    </v-form>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="success" @click="submit()" :loading="loadingBtn" :disabled="Validation">ОК</v-btn>
+                    <v-btn color="error" v-on:click="closeDialog()">Отмена</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-form>
+	</v-dialog>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Watch, Emit, Vue } from "nuxt-property-decorator"
+import Department from '../department/view.vue'
+
+@Component({ components: { Department } })
+export default class DialogCreateLocation extends Vue
+{
+    loading: boolean = false
+    loadingBtn: boolean = false
+    loadSelect: boolean = false
+
+    public location = {} as ILocation
+
+    @Prop({default: false}) visible!: boolean
+
+    closeDialog(value: any){
+        this.$emit('close', value);
+        this.loading = false;
+        this.location = {} as ILocation;
+    };
+
+    getDepartmentId (value: number)
+    {
+        this.location.departmentId = value;
+    }
+
+    async submit(){
+        try
+        {
+            this.loadingBtn = true
+            await this.$axios.post("api/v1/location", this.location)
+            this.$toast.success("Местоположение успешно добавлено.")
+            this.loadingBtn = false
+            this.$emit("save", true)
+            this.closeDialog(false)
+        }
+        catch (e)
+        {
+            this.$toast.error("Ошибка во время выполнения.");
+            this.loadingBtn = false
+        }
+    };
+
+    get Validation(): boolean
+    {
+        if (Object.keys(this.location).length <=0)
+            return true
+
+        if (this.location.name == "")
+            return true;
+
+        return false;
+    }
+
+    get getVisible() {
+        return this.visible;
+    };
+
+    set getVisible(value: any) {
+        this.closeDialog(value);
+    };
+}
+</script>

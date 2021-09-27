@@ -1,0 +1,4 @@
+interface IType
+{
+    name: string;
+}
