@@ -147,10 +147,8 @@ export default class EquipmentDetails extends Vue
 
     tableColumnMoving: Array<object> = [
       { text: 'Дата перемещения', align: 'start', sortable: false, value: 'movingDate' },
-      { text: 'Предстоящая', align: 'start', sortable: false, value: 'nextCheck' },
-      { text: 'Вид документа', align: 'start', sortable: false, value: 'documentKind.name' },
-      { text: '№ документа', align: 'start', sortable: false, value: 'numberDocument' },
-      { text: 'Документ', align: 'start', sortable: false, value: 'fileId' }
+      { text: 'Прошлый отдел', align: 'start', sortable: false, value: 'currentDepartment.name' },
+      { text: 'Текущий отдел', align: 'start', sortable: false, value: 'nextDepartment.name' }
     ]
 
     gridData: Object = {}

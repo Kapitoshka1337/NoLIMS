@@ -59,6 +59,12 @@
                     </template>
                     <span>Отправить на поверку</span>
                 </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn v-bind="attrs" v-on="on" icon @click="updateLocation()"><v-icon>mdi-map-marker</v-icon></v-btn>
+                    </template>
+                    <span>Сменить местоположение</span>
+                </v-tooltip>
                 <v-divider inset vertical></v-divider>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom>
@@ -298,5 +304,9 @@ export default class EquipmentView extends Vue {
             this.$toast.error("Ошибка во время выполнения.");
         }
     }
+
+  updateLocation() {
+    this.$toast.info("Перемещние находится в разработке.");
+  }
 }
 </script>

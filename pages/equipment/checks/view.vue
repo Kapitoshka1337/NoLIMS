@@ -88,6 +88,21 @@
                                 <v-text-field type="date" dense label="Предстоящая поверка от" outlined v-model="filterBy.nextCheckStart"></v-text-field>
                                 <v-text-field type="date" dense label="Предстоящая поверка по" outlined v-model="filterBy.nextCheckEnd"></v-text-field>
                           </v-col>
+                          <v-col cols="9">
+                                <v-text-field dense label="Имя оборудования" outlined v-model="filterBy.equipmentName"></v-text-field>
+                          </v-col>
+                          <v-col cols="9">
+                                <v-text-field dense label="Модель" outlined v-model="filterBy.equipmentModel"></v-text-field>
+                          </v-col>
+                          <v-col cols="9">
+                                <v-text-field dense label="Серийный номер" outlined v-model="filterBy.equipmentSerialNumber"></v-text-field>
+                          </v-col>
+                          <v-col cols="10">
+                                <type @select-id="getTypeId" :show-view="true"></type>
+                          </v-col>
+                          <v-col cols="10">
+                                <department @select-id="getDepartmentId" :show-view="true"></department>
+                          </v-col>
                       </v-row>
                   </v-form>
               </v-card-text>
@@ -104,13 +119,17 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
-import FileSaver from 'file-saver'
+import FileSaver from 'file-saver';
+import Type from '../../../components/formui/type/view.vue';
+import Department from '../../../components/formui/department/view.vue';
 
-@Component
+@Component({ components: { Type, Department } })
 export default class ChecksView extends Vue {
     tableColumn: Array<object> = [
         { text: 'Пройденная', align: 'start', sortable: true, value: 'currentCheck'},
         { text: 'Предстоящая', align: 'start', sortable: true, value: 'nextCheck'},
+        { text: 'Подразделение', align: 'start', sortable: true, value: 'equipment.department' },
+        { text: 'Номер', align: 'start', sortable: true, value: 'equipment.number' },
         { text: 'Оборудование', align: 'start', sortable: true, value: 'equipment.name'},
         { text: 'Вид', align: 'start', sortable: true, value: 'equipment.type'},
         { text: 'Модель', align: 'start', sortable: true, value: 'equipment.model'},
@@ -157,6 +176,14 @@ export default class ChecksView extends Vue {
             this.$toast.error("Ошибка во время загрузки поверок.");
             this.load = false
         }
+    }
+
+    getTypeId(value: number) {
+      this.filterBy.typeId = value
+    }
+
+    getDepartmentId(value: number) {
+      this.filterBy.departmentId = value
     }
 
     computedFilter() : string
