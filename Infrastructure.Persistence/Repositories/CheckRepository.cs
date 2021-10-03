@@ -22,15 +22,16 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<int> CountAsync(Parameter filter)
         {
-            return await _repository.FilterDateCheck(filter).CountAsync();
+            return await _repository.FilterChecks(filter).CountAsync();
         }
 
         public async Task<IReadOnlyList<Check>> GetPagedReponseAsync(Parameter filter)
         {
             var equipments = await _repository
                 .Include(e => e.Equipment).ThenInclude(e => e.Type)
+                .Include(e => e.Equipment).ThenInclude(e => e.Department)
                 .Include(e => e.DocumentKind)
-                .FilterDateCheck(filter)
+                .FilterChecks(filter)
                 .Sort(filter.SortBy)
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize)

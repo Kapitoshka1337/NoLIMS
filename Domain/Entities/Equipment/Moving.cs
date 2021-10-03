@@ -10,11 +10,11 @@ namespace Domain.Entities.Equipment
         public int EquipmentId { get; set; }
         public int CurrentDepartmentId { get; set; }
 
-        //[ForeignKey("CurrentDepartmentId")]
+        [ForeignKey("CurrentDepartmentId")]
         public Department CurrentDepartment { get; set; }
         public int NextDepartmentId { get; set; }
 
-        //[ForeignKey("NextDepartmentId")]
+        [ForeignKey("NextDepartmentId")]
         public Department NextDepartment { get; set; }
         public int? CurrentLocationId { get; set; }
         public int? NextLocationId { get; set; }

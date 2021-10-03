@@ -115,7 +115,7 @@ namespace Infrastructure.Persistence.Extension
             return owners;
         }
 
-        public static IQueryable<Check> FilterDateCheck(this IQueryable<Check> owners, Application.Features.Check.GetAll.Parameter request)
+        public static IQueryable<Check> FilterChecks(this IQueryable<Check> owners, Application.Features.Check.GetAll.Parameter request)
         {
             if (!owners.Any())
                 return owners;
@@ -155,6 +155,46 @@ namespace Infrastructure.Persistence.Extension
                     expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
                 expr.And("NextCheck", DynamicExpressions.FilterOperator.LessThanOrEqual, request.NextCheckEnd);
+            }
+
+            if (request.DepartmentId != null)
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+
+                expr.And("Equipment.DepartmentId", DynamicExpressions.FilterOperator.Equals, request.DepartmentId);
+            }
+
+            if (request.TypeId != null)
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+
+                expr.And("Equipment.TypeId", DynamicExpressions.FilterOperator.Equals, request.TypeId);
+            }
+
+            if (!string.IsNullOrEmpty(request.EquipmentName))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+
+                expr.And("Equipment.Name", DynamicExpressions.FilterOperator.Contains, request.EquipmentName);
+            }
+
+            if (!string.IsNullOrEmpty(request.EquipmentModel))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+
+                expr.And("Equipment.Model", DynamicExpressions.FilterOperator.Contains, request.EquipmentModel);
+            }
+
+            if (!string.IsNullOrEmpty(request.EquipmentSerialNumber))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+
+                expr.And("Equipment.SerialNumber", DynamicExpressions.FilterOperator.Contains, request.EquipmentSerialNumber);
             }
 
             if (expr != null)

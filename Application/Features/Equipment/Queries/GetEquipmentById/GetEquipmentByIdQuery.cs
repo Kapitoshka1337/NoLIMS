@@ -8,6 +8,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Application.Features.Equipment.Queries.GetEquipmentById
 {
@@ -52,22 +53,36 @@ namespace Application.Features.Equipment.Queries.GetEquipmentById
 
     public class GetProductByIdQueryHandler : IRequestHandler<GetEquipmentByIdQuery, Response<EquipmentDetail>>
     {
-        private readonly IEquipmentRepositoryAsync _equipmentRepositoryAsync;
+        private readonly IEquipmentRepositoryAsync _equipmentRepository;
+        private readonly ICheckRepository _checkRepository;
+        private readonly IMovingRepository _movingRepository;
         private readonly IMapper _mapper;
 
-        public GetProductByIdQueryHandler(IEquipmentRepositoryAsync equipmentRepository, IMapper mapper)
+        public GetProductByIdQueryHandler(IEquipmentRepositoryAsync equipmentRepository, ICheckRepository checkRepository, IMovingRepository movingRepository, IMapper mapper)
         {
-            _equipmentRepositoryAsync = equipmentRepository;
+            _equipmentRepository = equipmentRepository;
+            _checkRepository = checkRepository;
+            _movingRepository = movingRepository;
             _mapper = mapper;
         }
         public async Task<Response<EquipmentDetail>> Handle(GetEquipmentByIdQuery query, CancellationToken cancellationToken)
         {
-            var equipment = await _equipmentRepositoryAsync.GetByIdAsync(query.Id);
+            var equipment = await _equipmentRepository.GetByIdAsync(query.Id);
 
             if (equipment == null)
                 throw new ApiException($"Оборудование с ИД \"{query.Id}\" не найдено.");
 
+            var checks = await _checkRepository.GetAllAsync();
+            var checksEq = checks.Where(c => c.EquipmentId == query.Id);
+            var checksDto = _mapper.Map<IEnumerable<CheckDto>>(checksEq);
+
+            var movings = await _movingRepository.GetAllAsync();
+            var movingsEq = movings.Where(c => c.EquipmentId == query.Id);
+            var movingsDto = _mapper.Map< IEnumerable<MovingDto>>(movingsEq);
+
             var equipmentViewModel = _mapper.Map<EquipmentDetail>(equipment);
+            equipmentViewModel.Checks = checksDto;
+            equipmentViewModel.Movings = movingsDto;
 
             return new Response<EquipmentDetail>(equipmentViewModel);
         }
