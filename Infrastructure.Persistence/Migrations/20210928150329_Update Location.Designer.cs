@@ -3,15 +3,17 @@ using System;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210928150329_Update Location")]
+    partial class UpdateLocation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -297,42 +299,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Manufacturers");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Equipment.Moving", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("CurrentDepartmentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("CurrentLocationId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("EquipmentId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("MovingDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("NextDepartmentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("NextLocationId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurrentDepartmentId");
-
-                    b.HasIndex("EquipmentId");
-
-                    b.HasIndex("NextDepartmentId");
-
-                    b.ToTable("Movings");
                 });
 
             modelBuilder.Entity("Domain.Entities.Equipment.Status", b =>
@@ -781,31 +747,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("File");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Equipment.Moving", b =>
-                {
-                    b.HasOne("Domain.Entities.Base.Department", "CurrentDepartment")
-                        .WithMany()
-                        .HasForeignKey("CurrentDepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Equipment.Equipment", null)
-                        .WithMany("Movings")
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Base.Department", "NextDepartment")
-                        .WithMany()
-                        .HasForeignKey("NextDepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CurrentDepartment");
-
-                    b.Navigation("NextDepartment");
-                });
-
             modelBuilder.Entity("Domain.Entities.Equipment.Status", b =>
                 {
                     b.HasOne("Domain.Entities.Equipment.Equipment", "Equipment")
@@ -904,8 +845,6 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Equipment.Equipment", b =>
                 {
                     b.Navigation("Checks");
-
-                    b.Navigation("Movings");
 
                     b.Navigation("Status");
                 });

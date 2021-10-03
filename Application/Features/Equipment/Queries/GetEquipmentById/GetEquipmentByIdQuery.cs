@@ -29,6 +29,7 @@ namespace Application.Features.Equipment.Queries.GetEquipmentById
         public int? TypeId { get; set; }
         public virtual IEnumerable<Status> Status { get; set; }
         public virtual IEnumerable<CheckDto> Checks { get; set; }
+        public virtual IEnumerable<MovingDto> Movings { get; set; }
 
         public string FifNumber { get; set; }
         // СИ Точность.

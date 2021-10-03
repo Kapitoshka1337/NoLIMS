@@ -70,6 +70,7 @@ namespace Application.Mappings
             CreateMap<Domain.Entities.Equipment.Check, Application.Features.Check.GetAll.ViewModel>();
             CreateMap<Domain.Entities.Equipment.Type, Application.Features.Type.GetAll.ViewModel>();
             CreateMap<Domain.Entities.Equipment.DocumentKind, Application.DTOs.Equipment.DocumentKindDto>();
+            CreateMap<Domain.Entities.Equipment.Moving, Application.DTOs.Equipment.MovingDto>();
 
             // Оборудование. Поверки. Domain --> DTO
             CreateMap<CreateVerificationCommand, Application.DTOs.Equipment.Verification.VerificationDto>();

@@ -29,5 +29,6 @@ namespace Domain.Entities.Equipment
         public Type Type { get; set; }
         public virtual IEnumerable<Status> Status { get; set; }
         public virtual IEnumerable<Check> Checks { get; set; }
+        public virtual IEnumerable<Moving> Movings { get; set; }
     }
 }

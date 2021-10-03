@@ -47,6 +47,9 @@ namespace Infrastructure.Persistence.Contexts
         public DbSet<VerificationStatus>  VerificationStatus { get; set; }
         public DbSet<Check>  Checks { get; set; }
         public DbSet<DocumentKind> DocumentKinds { get; set; }
+        public DbSet<Moving> Movings { get; set; }
+
+        // Файловое хранилище.
         public DbSet<File> Files { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

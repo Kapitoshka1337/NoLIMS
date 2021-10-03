@@ -28,6 +28,7 @@ namespace Infrastructure.Persistence.Repositories
             return await _equipments
                 .Include(e => e.Status)
                 .Include(e => e.Checks).ThenInclude(c => c.DocumentKind)
+                .Include(e => e.Movings)
                 .Where(e => e.Id == id)
                 .FirstOrDefaultAsync();
         }
@@ -37,6 +38,7 @@ namespace Infrastructure.Persistence.Repositories
             var equipments = await _equipments
                 .Include(e => e.Department)
                 .Include(e => e.Location)
+                .Include(e => e.Movings).ThenInclude(m => m.CurrentDepartment)
                 .Include(e => e.Manufacturer)
                 .Include(e => e.Type)
                 .Include(e => e.Status)
