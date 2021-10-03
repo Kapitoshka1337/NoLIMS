@@ -7,7 +7,6 @@ using Application.DTOs.Role;
 using Domain.Entities.Role;
 using AutoMapper;
 using Application.Features.Role.GetAll;
-using Application.DTOs.Permission;
 using Application.Features.Role.Update;
 using Application.Features.Role.Grant;
 using Application.Features.Role.Invoke;
