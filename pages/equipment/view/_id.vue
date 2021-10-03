@@ -8,7 +8,6 @@
                         <v-tab>Характеристики</v-tab>
                         <v-tab>Поверки</v-tab>
                         <v-tab>Перемещения</v-tab>
-                        <v-tab>Ремонт</v-tab>
                         <v-tab>Техническое обслуживание</v-tab>
                         <v-tab-item>
                             <v-card-text>
@@ -101,14 +100,16 @@
                             </v-card-text>
                         </v-tab-item>
                         <v-tab-item>
-                            <v-card-text>
-                                Перемещения
-                            </v-card-text>
-                        </v-tab-item>
-                        <v-tab-item>
-                            <v-card-text>
-                                Ремонт
-                            </v-card-text>
+                          <v-card-text>
+                            <v-data-table dense :headers="tableColumnMoving" :items="gridData.movings" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Количество записей'}">
+                              <template v-slot:item.movingDate="{ item }">
+                                {{ formatDate(item.movingDate) }}
+                              </template>
+                              <template v-slot:no-data>
+                                Пока ничего нет :(
+                              </template>
+                            </v-data-table>
+                          </v-card-text>
                         </v-tab-item>
                         <v-tab-item>
                             <v-card-text>
@@ -142,6 +143,14 @@ export default class EquipmentDetails extends Vue
         { text: 'Вид документа', align: 'start', sortable: false, value: 'documentKind.name' },
         { text: '№ документа', align: 'start', sortable: false, value: 'numberDocument' },
         { text: 'Документ', align: 'start', sortable: false, value: 'fileId'}
+    ]
+
+    tableColumnMoving: Array<object> = [
+      { text: 'Дата перемещения', align: 'start', sortable: false, value: 'movingDate' },
+      { text: 'Предстоящая', align: 'start', sortable: false, value: 'nextCheck' },
+      { text: 'Вид документа', align: 'start', sortable: false, value: 'documentKind.name' },
+      { text: '№ документа', align: 'start', sortable: false, value: 'numberDocument' },
+      { text: 'Документ', align: 'start', sortable: false, value: 'fileId' }
     ]
 
     gridData: Object = {}
