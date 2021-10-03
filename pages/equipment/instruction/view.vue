@@ -38,6 +38,12 @@
                     </template>
                     <span>Создать инструкцию</span>
                 </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn v-bind="attrs" v-on="on" icon v-can:edit="'instruction'" @click="dialogEdit()"><v-icon>mdi-circle-edit-outline</v-icon></v-btn>
+                    </template>
+                    <span>Изменить инструкцию</span>
+                </v-tooltip>
                 <v-divider inset vertical></v-divider>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom>
@@ -47,6 +53,14 @@
                     <span>Фильтрация</span>
                 </v-tooltip>
             </v-toolbar>
+        </template>
+        <template #item.actions="{ item }">
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn v-bind="attrs" v-on="on" icon v-can:view="'file'" @click="download(item)"><v-icon>mdi-download</v-icon></v-btn>
+                </template>
+                <span>Экспортировать</span>
+            </v-tooltip>
         </template>
       </v-data-table>
       <v-navigation-drawer v-model="drawer" absolute right temporary width="512">
@@ -80,6 +94,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import CreateInstruction from '../../../components/formui/instruction/create.vue'
+import FileSaver from 'file-saver'
 
 @Component({ components: { CreateInstruction } })
 export default class InstructionView extends Vue {
@@ -98,7 +113,8 @@ export default class InstructionView extends Vue {
     showDialogCreate: boolean = false
 
     closeDialog(value: boolean){
-        this.showDialogCreate = false;
+      this.showDialogCreate = false;
+      this.getData();
     }
 
     save (value: boolean)
@@ -167,6 +183,33 @@ export default class InstructionView extends Vue {
             url = `api/v1/instruction?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}&sortBy=${this.options.sortBy[0]} ${this.options.sortDesc[0] ? "desc" : ""}`;
         
         return url
+    }
+
+    dialogEdit() {
+      if (this.selected == null || this.selected.length <= 0) {
+        this.$toast.info("Не выбрана инструкция для редакирования.");
+        return;
+      }
+    }
+
+    download(item: any) {
+      try {
+        if (item.fileId == null) {
+          this.$toast.info("Отсутствует документ для экспорта.");
+          return;
+        }
+
+        this.$toast.info("Начат экспорт файла.");
+        this.$axios.get(`/api/file/download/?fileId=${item.fileId}`, { responseType: 'blob' })
+          .then(response => {
+            const fl = new Blob([response.data], { type: response.data['type'] });
+            FileSaver.saveAs(fl, "Документ");
+            this.$toast.success("Файл успешно экспортирован.");
+          })
+      }
+      catch (e) {
+        this.$toast.error("Ошибка во время экспорта файла.");
+      }
     }
 
     submitFilter(){

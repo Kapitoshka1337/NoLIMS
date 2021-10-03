@@ -66,7 +66,7 @@ export default class DialogCreateInstruction extends Vue
             catch (e)
             {
                 this.loading = false;
-                this.$toast.success("Ошибка во время загрузки файла.")
+                this.$toast.error("Ошибка во время загрузки файла.");
             }
         }
     }
