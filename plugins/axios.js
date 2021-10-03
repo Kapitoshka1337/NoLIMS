@@ -1,16 +1,12 @@
-export default function ({ $axios, redirect }) {
-    $axios.onRequest(config => {
-      console.log('Making request to ' + config.url)
-    })
+export default function ({ $axios, redirect, store }) {
+    $axios.onRequest(config => {})
   
     $axios.onError(error => {
-      const code = parseInt(error.response && error.response.status)
-      if (code === 400) {
-          {
-              console.log("Error")
-              console.log(error.response.data['Message'])
-          }
-        // redirect('/400')
-      }
-    })
-  }
+        //const code = parseInt(error.response && error.response.status)
+      if (error.response)
+        store.$toast.error(error.response.data['Message']);
+      else
+        store.$toast.error(error);
+          // redirect('/400')
+      })
+}
