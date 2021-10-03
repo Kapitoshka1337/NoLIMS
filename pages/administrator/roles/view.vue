@@ -52,9 +52,6 @@
                 </v-tooltip>
             </v-toolbar>
         </template>
-        <!-- <template #item.actions="{ item }">
-          <v-btn icon><v-icon>mdi-circle-edit-outline</v-icon></v-btn>
-        </template> -->
       </v-data-table>
       <v-navigation-drawer v-model="drawer" absolute right temporary></v-navigation-drawer>
       <role :visible="showCreateRole" @close="closeDialogRole"></role>
