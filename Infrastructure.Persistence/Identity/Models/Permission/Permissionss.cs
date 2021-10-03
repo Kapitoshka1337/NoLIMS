@@ -2,16 +2,10 @@
 {
     public static class Permissionss
     {
-        public static class Products
-        {
-            public const string Add = "products.add";
-            public const string Edit = "products.edit";
-            public const string Delete = "products.delete";
-            public const string View = "products.view";
-        }
-
         public static class Roles
         {
+            public const int Id = 1;
+            public const string Resource = "administrator";
             public const string Add = "roles.add";
             public const string Edit = "roles.edit";
             public const string Delete = "roles.delete";
@@ -20,6 +14,8 @@
 
         public static class Permissions
         {
+            public const int Id = 2;
+            public const string Resource = "administrator";
             public const string Add = "permissions.add";
             public const string Edit = "permissions.edit";
             public const string Delete = "permissions.delete";
@@ -28,6 +24,8 @@
 
         public static class UserRole
         {
+            public const int Id = 3;
+            public const string Resource = "administrator";
             public const string Add = "userrole.add";
             public const string Edit = "userrole.edit";
             public const string Delete = "userrole.delete";
@@ -36,6 +34,8 @@
 
         public static class User
         {
+            public const int Id = 4;
+            public const string Resource = "user";
             public const string Add = "user.add";
             public const string Edit = "user.edit";
             public const string Delete = "user.delete";
@@ -43,6 +43,8 @@
         }
         public static class Equipment
         {
+            public const int Id = 5;
+            public const string Resource = "equipment";
             public const string Add = "equipment.add";
             public const string Edit = "equipment.edit";
             public const string Delete = "equipment.delete";
@@ -50,14 +52,18 @@
         }
         public static class Verification
         {
-            public const string Add = "Verification.add";
-            public const string Edit = "Verification.edit";
-            public const string Delete = "Verification.delete";
-            public const string View = "Verification.view";
+            public const int Id = 6;
+            public const string Resource = "equipment";
+            public const string Add = "verification.add";
+            public const string Edit = "verification.edit";
+            public const string Delete = "verification.delete";
+            public const string View = "verification.view";
         }
 
         public static class DocumentKind
         {
+            public const int Id = 7;
+            public const string Resource = "equipment";
             public const string Add = "documentkind.add";
             public const string Edit = "documentkind.edit";
             public const string Delete = "documentkind.delete";
@@ -66,6 +72,8 @@
 
         public static class Manufacturer
         {
+            public const int Id = 8;
+            public const string Resource = "equipment";
             public const string Add = "manufacturer.add";
             public const string Edit = "manufacturer.edit";
             public const string Delete = "manufacturer.delete";
@@ -74,6 +82,8 @@
 
         public static class Department
         {
+            public const int Id = 9;
+            public const string Resource = "equipment";
             public const string Add = "department.add";
             public const string Edit = "department.edit";
             public const string Delete = "department.delete";
@@ -82,6 +92,8 @@
 
         public static class Location
         {
+            public const int Id = 10;
+            public const string Resource = "equipment";
             public const string Add = "location.add";
             public const string Edit = "location.edit";
             public const string Delete = "location.delete";
@@ -90,6 +102,8 @@
 
         public static class Instruction
         {
+            public const int Id = 11;
+            public const string Resource = "equipment";
             public const string Add = "instruction.add";
             public const string Edit = "instruction.edit";
             public const string Delete = "instruction.delete";
@@ -98,6 +112,8 @@
 
         public static class File
         {
+            public const int Id = 12;
+            public const string Resource = "equipment";
             public const string Add = "file.add";
             public const string Edit = "file.edit";
             public const string Delete = "file.delete";
@@ -106,6 +122,8 @@
 
         public static class Checks
         {
+            public const int Id = 13;
+            public const string Resource = "equipment";
             public const string Add = "checks.add";
             public const string Edit = "checks.edit";
             public const string Delete = "checks.delete";
@@ -114,6 +132,8 @@
 
         public static class Type
         {
+            public const int Id = 14;
+            public const string Resource = "equipment";
             public const string Add = "type.add";
             public const string Edit = "type.edit";
             public const string Delete = "type.delete";

@@ -1,8 +1,7 @@
-﻿namespace Application.DTOs.Permission
+﻿namespace Application.Features.Role.Update
 {
-    public class RoleClaimsViewModel
+    public class UpdateInput
     {
-        public int Id { get; set; }
         public string Type { get; set; }
         public string Value { get; set; }
         public string Resources { get; set; }

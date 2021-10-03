@@ -45,6 +45,7 @@ namespace Infrastructure.Persistence
             services.AddTransient<IInstructionRepository, InstructionRepository>();
             services.AddTransient<ITypeRepository, TypeRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IRoleClaimRepository, RoleClaimRepository>();
             services.AddTransient<IReportServices, ReportServices>();
 
             #endregion

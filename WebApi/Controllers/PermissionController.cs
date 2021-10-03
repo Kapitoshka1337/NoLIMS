@@ -26,25 +26,23 @@ namespace WebApi.Controllers
         [Authorize(Policy = PolicyTypes.Permissions.View)]
         public async Task<ActionResult> GetAll()
         {
-            var model = new PermissionViewModel();
-            var allPermissions = new List<RoleClaimsViewModel>();
+            var model = new AccessPermissionViewModel();
+            var allPermissions = new List<AccessRoleClaimsViewModel>();
             allPermissions.GetPermissions(typeof(Permissionss));
-
-            model.RoleId = null;
             model.Claims = allPermissions;
 
             return Ok(model);
         }
 
-        [HttpGet("{roleId:int}")]
+        [HttpGet("byrole")]
         [Authorize(Policy = PolicyTypes.Permissions.View)]
-        public async Task<ActionResult> GetByRoleId(string roleId)
+        public async Task<ActionResult> GetByRoleId([FromQuery] int roleId)
         {
             var model = new PermissionViewModel();
             var allPermissions = new List<RoleClaimsViewModel>();
             allPermissions.GetPermissions(typeof(Permissionss));
 
-            var role = await _roleManager.FindByIdAsync(roleId);
+            var role = await _roleManager.FindByIdAsync(roleId.ToString());
             var claims = await _roleManager.GetClaimsAsync(role);
             var allClaimValues = allPermissions.Select(a => a.Value).ToList();
             var roleClaimValues = claims.Select(a => a.Value).ToList();
@@ -58,9 +56,9 @@ namespace WebApi.Controllers
                 }
             }
 
-            model.RoleId = roleId;
+            model.RoleId = roleId.ToString();
             model.Claims = allPermissions;
-            
+
             return Ok(model);
         }
 

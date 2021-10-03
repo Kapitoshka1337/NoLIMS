@@ -28,14 +28,10 @@ namespace Infrastructure.Identity.Seeds
 
             if (adminClaims.Count <= 0)
             {
-                RoleClaim Add = new RoleClaim() { RoleId = adminRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Products.Add, Resource = typeof(Permissionss.Products).Name.ToLower() };
-                RoleClaim Delete = new RoleClaim() { RoleId = adminRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Products.Delete, Resource = typeof(Permissionss.Products).Name.ToLower() };
-                RoleClaim Edit = new RoleClaim() { RoleId = adminRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Products.Edit, Resource = typeof(Permissionss.Products).Name.ToLower() };
-                RoleClaim View = new RoleClaim() { RoleId = adminRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Products.View, Resource = typeof(Permissionss.Products).Name.ToLower() };
+                RoleClaim Add = new RoleClaim() { RoleId = adminRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.File.Add, Resource = typeof(Permissionss.File).Name.ToLower() };
+                RoleClaim View = new RoleClaim() { RoleId = adminRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.File.View, Resource = typeof(Permissionss.File).Name.ToLower() };
 
                 await db.Set<RoleClaim>().AddAsync(Add);
-                await db.Set<RoleClaim>().AddAsync(Delete);
-                await db.Set<RoleClaim>().AddAsync(Edit);
                 await db.Set<RoleClaim>().AddAsync(View);
                 await db.SaveChangesAsync();
             }

@@ -7,6 +7,10 @@ using Application.DTOs.Role;
 using Domain.Entities.Role;
 using AutoMapper;
 using Application.Features.Role.GetAll;
+using Application.DTOs.Permission;
+using Application.Features.Role.Update;
+using Application.Features.Role.Grant;
+using Application.Features.Role.Invoke;
 
 namespace WebApi.Controllers
 {
@@ -37,15 +41,25 @@ namespace WebApi.Controllers
             return Ok(await _roleManager.CreateAsync(new Role(request.Name)));
         }
 
-        [HttpPost("update/{id:int}")]
+        [HttpPost("update")]
         [Authorize(Policy = PolicyTypes.Roles.Edit)]
-        public async Task<IActionResult> Put(int id, [FromQuery]string request)
+        public async Task<IActionResult> Put(Update query)
         {
-            var role = await _roleManager.FindByIdAsync(id.ToString());
+            return Ok(await Mediator.Send(query));
+        }
 
-            role.Name = request;
+        [HttpPost("grant")]
+        [Authorize(Policy = PolicyTypes.Roles.Edit)]
+        public async Task<IActionResult> Grant(Grant query)
+        {
+            return Ok(await Mediator.Send(query));
+        }
 
-            return Ok(await _roleManager.UpdateAsync(role));
+        [HttpPost("invoke")]
+        [Authorize(Policy = PolicyTypes.Roles.Edit)]
+        public async Task<IActionResult> Invoke(Invoke query)
+        {
+            return Ok(await Mediator.Send(query));
         }
 
         [HttpPost("delete/{id:int}")]

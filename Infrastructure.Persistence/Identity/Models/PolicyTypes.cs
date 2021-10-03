@@ -2,14 +2,6 @@
 {
    public static class PolicyTypes
    {
-        public static class Products
-        {
-            public const string Add = "permission.products.add";
-            public const string Edit = "permission.products.edit";
-            public const string Delete = "permission.products.delete";
-            public const string View = "permission.products.view";
-        }
-
         public static class Roles
         {
             public const string Add = "permission.roles.add";

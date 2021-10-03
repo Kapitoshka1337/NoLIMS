@@ -47,10 +47,6 @@ namespace Infrastructure.Identity
                 //foreach (var permission in Permissions.Products)
                 //{
                 //options.AddPolicy(permission.Name, policy => policy.Requirements.Add(new PermissionRequirement(permission)));
-                options.AddPolicy(PolicyTypes.Products.Add, policy => policy.Requirements.Add(new PermissionRequirement(Permissionss.Products.Add)));
-                options.AddPolicy(PolicyTypes.Products.Delete, policy => policy.Requirements.Add(new PermissionRequirement(Permissionss.Products.Delete)));
-                options.AddPolicy(PolicyTypes.Products.Edit, policy => policy.Requirements.Add(new PermissionRequirement(Permissionss.Products.Edit)));
-                options.AddPolicy(PolicyTypes.Products.View, policy => policy.Requirements.Add(new PermissionRequirement(Permissionss.Products.View)));
                 //}
             });
 

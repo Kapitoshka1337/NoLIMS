@@ -12,6 +12,7 @@ using Application.Features.Equipment.Queries.GetEquipmentById;
 using Application.Features.Instruction;
 using Application.Features.Manufacturer;
 using Application.Features.Manufacturer.GetAll;
+using Application.Features.Role.Grant;
 using Application.Features.Storage;
 using Application.Features.Verification;
 using Application.Features.Verification.GetAllVerification;
@@ -142,6 +143,9 @@ namespace Application.Mappings
             CreateMap<Instruction, Application.DTOs.Equipment.Instruction>();
             CreateMap<Application.Features.Instruction.GetAll.Query, Application.Features.Instruction.GetAll.Parameter>().ReverseMap();
             CreateMap<Domain.Entities.Equipment.Instruction, Application.Features.Instruction.GetAll.ViewModel>().ReverseMap();
+
+            CreateMap<Grant, Application.DTOs.Role.RoleClaimDto>();
+            CreateMap<Application.DTOs.Role.RoleClaimDto, Domain.Entities.Role.RoleClaim>();
         }
     }
 }
