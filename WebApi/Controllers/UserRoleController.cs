@@ -32,14 +32,14 @@ namespace WebApi.Controllers
 
         [HttpPost("grant")]
         [Authorize(Policy = PolicyTypes.UserRole.Edit)]
-        public async Task<IActionResult> Grant(Grant query)
+        public async Task<IActionResult> Grant(GrantUserRole query)
         {
             return Ok(await Mediator.Send(query));
         }
 
         [HttpPost("invoke")]
         [Authorize(Policy = PolicyTypes.UserRole.Edit)]
-        public async Task<IActionResult> Invoke(Invoke query)
+        public async Task<IActionResult> Invoke(InvokeUserRole query)
         {
             return Ok(await Mediator.Send(query));
         }
