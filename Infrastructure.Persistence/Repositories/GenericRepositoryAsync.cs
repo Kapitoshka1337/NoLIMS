@@ -11,7 +11,7 @@ namespace Infrastructure.Persistence.Repository
 {
     public class GenericRepositoryAsync<T> : IGenericRepositoryAsync<T> where T : class
     {
-        private readonly ApplicationDbContext _dbContext;
+        protected readonly ApplicationDbContext _dbContext;
 
         public GenericRepositoryAsync(ApplicationDbContext dbContext)
         {
@@ -60,7 +60,7 @@ namespace Infrastructure.Persistence.Repository
                  .ToListAsync();
         }
 
-        public async Task<int> CountAsync()
+        public virtual async Task<int> CountAsync()
         {
             return await _dbContext.Set<T>().CountAsync();
         }

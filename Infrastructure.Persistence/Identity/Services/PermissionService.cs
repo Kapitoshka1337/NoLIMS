@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities.Role;
-using Infrastructure.Identity.Models.User;
+using Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;

@@ -2,9 +2,7 @@
 using Application.Wrappers;
 using Domain.Entities.Role;
 using Domain.Settings;
-using Infrastructure.Identity.Models;
-using Infrastructure.Identity.Models.Permisson;
-using Infrastructure.Identity.Models.User;
+using Domain.Entities.User;
 using Infrastructure.Identity.Permission;
 using Infrastructure.Identity.Services;
 using Infrastructure.Persistence.Contexts;

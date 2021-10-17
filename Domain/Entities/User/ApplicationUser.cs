@@ -1,9 +1,8 @@
-﻿using Application.DTOs.Account;
-using Domain.Entities.Base;
+﻿using Domain.Entities.Base;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 
-namespace Infrastructure.Identity.Models.User
+namespace Domain.Entities.User
 {
     public class ApplicationUser : IdentityUser<int>
     {
@@ -12,11 +11,11 @@ namespace Infrastructure.Identity.Models.User
         public string LastName { get; set; }
         public int DepartmentId { get; set; }
         public Department Department { get; set; }
-        public List<RefreshToken> RefreshTokens { get; set; }
+        //public List<RefreshToken> RefreshTokens { get; set; }
 
-        public bool OwnsToken(string token)
-        {
-            return this.RefreshTokens?.Find(x => x.Token == token) != null;
-        }
+        //public bool OwnsToken(string token)
+        //{
+        //    return this.RefreshTokens?.Find(x => x.Token == token) != null;
+        //}
     }
 }

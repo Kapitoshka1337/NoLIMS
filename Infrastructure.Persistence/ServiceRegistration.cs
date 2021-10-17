@@ -3,6 +3,8 @@ using Application.Interfaces.Repositories.Base;
 using Application.Interfaces.Repositories.Equipment;
 using Application.Interfaces.Repositories.Instruction;
 using Application.Interfaces.Repositories.Storage;
+using Application.Interfaces.Repositories.User;
+using Application.Interfaces.Repositories.UserRole;
 using Infrastructure.Persistence.Contexts;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Persistence.Repository;
@@ -44,7 +46,9 @@ namespace Infrastructure.Persistence
             services.AddTransient<ILocationRepository, LocationRepository>();
             services.AddTransient<IInstructionRepository, InstructionRepository>();
             services.AddTransient<ITypeRepository, TypeRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IUserRoleRepository, UserRoleRepository>();
             services.AddTransient<IRoleClaimRepository, RoleClaimRepository>();
             services.AddTransient<IReportServices, ReportServices>();
 

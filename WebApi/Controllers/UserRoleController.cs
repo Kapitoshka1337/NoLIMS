@@ -1,7 +1,9 @@
-﻿using Application.DTOs.Role;
+﻿using Application.Features.UserRole.GetAll;
+using Application.Features.UserRole.Grant;
+using Application.Features.UserRole.Invoke;
 using Domain.Entities.Role;
 using Infrastructure.Identity.Models;
-using Infrastructure.Identity.Models.User;
+using Domain.Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +11,8 @@ using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserRoleController : ControllerBase
+    [ApiVersion("1.0")]
+    public class UserRoleController : BaseApiController
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<Role> _roleManager;
@@ -24,42 +25,55 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Authorize(Policy = PolicyTypes.UserRole.View)]
-        public async Task<IActionResult> GetAll(int userId)
+        public async Task<IActionResult> GetAll([FromQuery] Query query)
         {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-            return Ok(await _userManager.GetRolesAsync(user));
+            return Ok(await Mediator.Send(query));
         }
 
-        [HttpPost("add")]
-        [Authorize(Policy = PolicyTypes.UserRole.Add)]
-        public async Task<IActionResult> Add(UserRoleRequest request)
-        {
-            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-            var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
-
-            return Ok(await _userManager.AddToRoleAsync(user, role.Name));
-        }
-
-        [HttpPost("update")]
+        [HttpPost("grant")]
         [Authorize(Policy = PolicyTypes.UserRole.Edit)]
-        public async Task<IActionResult> Put(UserRoleUpdateRequest request)
+        public async Task<IActionResult> Grant(Grant query)
         {
-            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-            var oldRole = await _roleManager.FindByIdAsync(request.OldRoleId.ToString());
-            var newRole = await _roleManager.FindByIdAsync(request.NewRoleId.ToString());
-            var result = await _userManager.RemoveFromRoleAsync(user, oldRole.Name);
-
-            return Ok(await _userManager.AddToRoleAsync(user, newRole.Name));
+            return Ok(await Mediator.Send(query));
         }
 
-        [HttpPost("delete")]
-        [Authorize(Policy = PolicyTypes.UserRole.Delete)]
-        public async Task<IActionResult> Delete(UserRoleRequest request)
+        [HttpPost("invoke")]
+        [Authorize(Policy = PolicyTypes.UserRole.Edit)]
+        public async Task<IActionResult> Invoke(Invoke query)
         {
-            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-            var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
-            
-            return Ok(await _userManager.RemoveFromRoleAsync(user, role.Name));
+            return Ok(await Mediator.Send(query));
         }
+
+        //[HttpPost("add")]
+        //[Authorize(Policy = PolicyTypes.UserRole.Add)]
+        //public async Task<IActionResult> Add(UserRoleRequest request)
+        //{
+        //    var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+        //    var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
+
+        //    return Ok(await _userManager.AddToRoleAsync(user, role.Name));
+        //}
+
+        //[HttpPost("update")]
+        //[Authorize(Policy = PolicyTypes.UserRole.Edit)]
+        //public async Task<IActionResult> Put(UserRoleUpdateRequest request)
+        //{
+        //    var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+        //    var oldRole = await _roleManager.FindByIdAsync(request.OldRoleId.ToString());
+        //    var newRole = await _roleManager.FindByIdAsync(request.NewRoleId.ToString());
+        //    var result = await _userManager.RemoveFromRoleAsync(user, oldRole.Name);
+
+        //    return Ok(await _userManager.AddToRoleAsync(user, newRole.Name));
+        //}
+
+        //[HttpPost("delete")]
+        //[Authorize(Policy = PolicyTypes.UserRole.Delete)]
+        //public async Task<IActionResult> Delete(UserRoleRequest request)
+        //{
+        //    var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+        //    var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
+
+        //    return Ok(await _userManager.RemoveFromRoleAsync(user, role.Name));
+        //}
     }
 }

@@ -3,7 +3,7 @@ using Application.DTOs.User;
 using Application.Interfaces;
 using Application.Wrappers;
 using Domain.Entities.Role;
-using Infrastructure.Identity.Models.User;
+using Domain.Entities.User;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

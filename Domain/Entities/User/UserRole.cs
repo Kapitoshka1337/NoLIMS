@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace Domain.Entities.User
 {
-    public class UserToken : IdentityUserToken<int>
+    public class UserRole : IdentityUserRole<int>
     {
     }
 }

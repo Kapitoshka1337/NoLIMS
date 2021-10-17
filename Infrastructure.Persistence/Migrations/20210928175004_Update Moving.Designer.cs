@@ -486,7 +486,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Files");
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.ApplicationUser", b =>
+            modelBuilder.Entity("Domain.Entities.User.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -566,7 +566,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.UserClaim", b =>
+            modelBuilder.Entity("Domain.Entities.User.UserClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -589,7 +589,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("UserClaims");
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.UserLogin", b =>
+            modelBuilder.Entity("Domain.Entities.User.UserLogin", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("text");
@@ -610,7 +610,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("UserLogins");
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.UserRole", b =>
+            modelBuilder.Entity("Domain.Entities.User.UserRole", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -625,7 +625,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.UserToken", b =>
+            modelBuilder.Entity("Domain.Entities.User.UserToken", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -689,7 +689,7 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Application.DTOs.Account.RefreshToken", b =>
                 {
-                    b.HasOne("Infrastructure.Identity.Models.User.ApplicationUser", null)
+                    b.HasOne("Domain.Entities.User.ApplicationUser", null)
                         .WithMany("RefreshTokens")
                         .HasForeignKey("ApplicationUserId");
                 });
@@ -825,7 +825,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.ApplicationUser", b =>
+            modelBuilder.Entity("Domain.Entities.User.ApplicationUser", b =>
                 {
                     b.HasOne("Domain.Entities.Base.Department", "Department")
                         .WithMany()
@@ -836,25 +836,25 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.UserClaim", b =>
+            modelBuilder.Entity("Domain.Entities.User.UserClaim", b =>
                 {
-                    b.HasOne("Infrastructure.Identity.Models.User.ApplicationUser", null)
+                    b.HasOne("Domain.Entities.User.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.UserLogin", b =>
+            modelBuilder.Entity("Domain.Entities.User.UserLogin", b =>
                 {
-                    b.HasOne("Infrastructure.Identity.Models.User.ApplicationUser", null)
+                    b.HasOne("Domain.Entities.User.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.UserRole", b =>
+            modelBuilder.Entity("Domain.Entities.User.UserRole", b =>
                 {
                     b.HasOne("Domain.Entities.Role.Role", null)
                         .WithMany()
@@ -862,16 +862,16 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Infrastructure.Identity.Models.User.ApplicationUser", null)
+                    b.HasOne("Domain.Entities.User.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.UserToken", b =>
+            modelBuilder.Entity("Domain.Entities.User.UserToken", b =>
                 {
-                    b.HasOne("Infrastructure.Identity.Models.User.ApplicationUser", null)
+                    b.HasOne("Domain.Entities.User.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -892,7 +892,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.Models.User.ApplicationUser", b =>
+            modelBuilder.Entity("Domain.Entities.User.ApplicationUser", b =>
                 {
                     b.Navigation("RefreshTokens");
                 });

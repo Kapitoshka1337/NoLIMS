@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Microsoft.AspNetCore.Identity;
-using Infrastructure.Identity.Models.User;
+using Domain.Entities.User;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Persistence.Contexts;
 using Domain.Entities.Role;

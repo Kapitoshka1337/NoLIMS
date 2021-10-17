@@ -146,6 +146,12 @@ namespace Application.Mappings
 
             CreateMap<Grant, Application.DTOs.Role.RoleClaimDto>();
             CreateMap<Application.DTOs.Role.RoleClaimDto, Domain.Entities.Role.RoleClaim>();
+
+            // Пользователи
+            CreateMap<Application.Features.User.Create, DTOs.Account.RegisterRequest>();
+            CreateMap<DTOs.Account.RegisterRequest, Domain.Entities.User.ApplicationUser>().ReverseMap();
+            CreateMap<Domain.Entities.User.ApplicationUser, Application.Features.User.GetAll.ViewModel>().ReverseMap();
+            CreateMap<Application.Features.User.GetAll.Query, Application.Features.User.GetAll.Parameter>().ReverseMap();
         }
     }
 }

@@ -4,7 +4,7 @@ using Application.Interfaces;
 using Application.Wrappers;
 using Domain.Settings;
 using Infrastructure.Identity.Helpers;
-using Infrastructure.Identity.Models.User;
+using Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -79,7 +79,7 @@ namespace Infrastructure.Identity.Services
             return new Response<AuthenticationResponse>(response, $"Пользователь с учетной записью '{user.UserName}' авторизован.");
         }
 
-        public async Task<Response<string>> RegisterAsync(RegisterRequest request, string origin)
+        public async Task<Response<string>> RegisterAsync(RegisterRequest request)
         {
             var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
 
@@ -98,17 +98,24 @@ namespace Infrastructure.Identity.Services
                 EmailConfirmed = true
             };
 
-            var result = await _userManager.CreateAsync(user, request.Password);
-                
-            if (result.Succeeded)
+            try
             {
-                await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
+                var result = await _userManager.CreateAsync(user, request.Password);
 
-                return new Response<string>(user.Id.ToString(), message: $"Пользователь с учетной записью '{request.UserName}' успешно зарегистрирован.");
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
+                    return new Response<string>(user.Id.ToString(), message: $"Пользователь с учетной записью '{request.UserName}' успешно зарегистрирован.");
+                }
+                else
+                {
+                    throw new ApiException($"{result.Errors}");
+                }
+
             }
-            else
+            catch(Exception ex)
             {
-                throw new ApiException($"{result.Errors}");
+                throw new ApiException($"{ex.Message}");
             }
         }
 

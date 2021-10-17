@@ -41,6 +41,7 @@
             public const string Delete = "user.delete";
             public const string View = "user.view";
         }
+
         public static class Equipment
         {
             public const int Id = 5;
@@ -138,6 +139,31 @@
             public const string Edit = "type.edit";
             public const string Delete = "type.delete";
             public const string View = "type.view";
+        }
+
+        public static class Index
+        {
+            public const int Id = 15;
+            public const string Resource = "index";
+            public const string loginView = "login.view";
+            public const string userView = "user.view";
+        }
+
+        public static class Login
+        {
+            public const int Id = 16;
+            public const string Resource = "login";
+            public const string indexView = "index.view";
+        }
+
+        public static class UserAdmin
+        {
+            public const int Id = 17;
+            public const string Resource = "administrator";
+            public const string Add = "user.add";
+            public const string Edit = "user.edit";
+            public const string Delete = "user.delete";
+            public const string View = "user.view";
         }
     }
 }

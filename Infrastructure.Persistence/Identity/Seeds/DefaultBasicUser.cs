@@ -1,5 +1,5 @@
 ﻿using Application.Enums;
-using Infrastructure.Identity.Models.User;
+using Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;

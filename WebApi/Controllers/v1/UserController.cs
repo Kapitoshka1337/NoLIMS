@@ -1,33 +1,38 @@
-﻿using Application.Interfaces;
+﻿using Application.Features.User;
+using Application.Features.User.GetAll;
+using Application.Interfaces;
+using AutoMapper;
 using Infrastructure.Identity.Models;
-using Infrastructure.Identity.Models.User;
+using Domain.Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.v1
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    [ApiVersion("1.0")]
+    public class UserController : BaseApiController
     {
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserController(IUserService userService, UserManager<ApplicationUser> userManager)
+        public UserController(IUserService userService, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _userService = userService;
             _userManager= userManager;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Authorize(Policy = PolicyTypes.User.View)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] Parameter filter)
         {
-            return Ok(await _userManager.Users.Select(u => new { u.Id, u.UserName }).ToListAsync());
+            var query = _mapper.Map<Query>(filter);
+
+            return Ok(await Mediator.Send(query));
         }
 
         [HttpGet("info")]
@@ -37,6 +42,13 @@ namespace WebApi.Controllers
             var userId = HttpContext.User.Claims.Where(c => c.Type == "uid").Select(c => c.Value).FirstOrDefault().ToString();
             
             return Ok(await _userService.GetPermission(int.Parse(userId)));
+        }
+
+        [HttpPost]
+        [Authorize(Policy = PolicyTypes.User.Add)]
+        public async Task<IActionResult> Post(Create command)
+        {
+            return Ok(await Mediator.Send(command));
         }
     }
 }

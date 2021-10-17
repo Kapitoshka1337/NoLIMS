@@ -5,7 +5,7 @@ using Domain.Entities.Equipment;
 using Domain.Entities.Equipment.Verification;
 using Domain.Entities.Role;
 using Domain.Entities.Storage;
-using Infrastructure.Identity.Models.User;
+using Domain.Entities.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Contexts
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
+    public class ApplicationDbContext : IdentityDbContext<Domain.Entities.User.ApplicationUser, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
         private readonly IDateTimeService _dateTime;
         private readonly IAuthenticatedUserService _authenticatedUser;
@@ -82,7 +82,7 @@ namespace Infrastructure.Persistence.Contexts
 
             base.OnModelCreating(builder);
 
-            builder.Entity<ApplicationUser>(entity =>
+            builder.Entity<Domain.Entities.User.ApplicationUser>(entity =>
             {
                 entity.ToTable("User");
             });
