@@ -96,7 +96,7 @@ export default {
        endpoints: {
          login: { url: 'api/account/login', method: 'post', propertyName: "data.jwToken"},
          logout: false,
-         user: { url: 'api/user/info', method: 'get'}
+         user: { url: 'api/v1/user/info', method: 'get'}
        }
      }
     },

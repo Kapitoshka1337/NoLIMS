@@ -6,6 +6,7 @@
         dense
         v-model="selected"
         :show-select="true"
+        :single-select="true"
         :headers="tableColumn"
         :items="gridData"
         :items-per-page="50"
@@ -23,7 +24,7 @@
         }">
         <template #top>
             <v-toolbar color="white" flat>
-                <v-toolbar-title style="margin-right: 10px">Роли</v-toolbar-title>
+                <v-toolbar-title style="margin-right: 10px">Сотрудники</v-toolbar-title>
                 <v-divider inset vertical></v-divider>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -34,15 +35,15 @@
                 <v-divider inset vertical></v-divider>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" icon v-can:add="'roles'" @click="showCreateRole = true"><v-icon>mdi-plus</v-icon></v-btn>
+                    <v-btn v-bind="attrs" v-on="on" icon v-can:add="'user'" @click="showCreateRole = true"><v-icon>mdi-plus</v-icon></v-btn>
                     </template>
-                    <span>Создать роль</span>
+                    <span>Создать сотрудника</span>
                 </v-tooltip>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-btn v-bind="attrs" v-on="on" icon v-can:edit="'roles'" @click="dialogEdit"><v-icon>mdi-circle-edit-outline</v-icon></v-btn>
+                        <v-btn v-bind="attrs" v-on="on" icon v-can:edit="'user'" @click="dialogEdit"><v-icon>mdi-circle-edit-outline</v-icon></v-btn>
                     </template>
-                    <span>Изменить роль</span>
+                    <span>Изменить сотрудника</span>
                 </v-tooltip>
                 <v-divider inset vertical></v-divider>
                 <v-spacer></v-spacer>
@@ -56,23 +57,25 @@
         </template>
       </v-data-table>
       <v-navigation-drawer v-model="drawer" absolute right temporary></v-navigation-drawer>
-      <role :visible="showCreateRole" @close="closeDialogRole"></role>
-      <role-edit :visible="showEditRole" @close="closeDialogRoleEdit" :role="getRole"></role-edit>
+      <user :visible="showCreateRole" @close="closeDialogRole"></user>
+      <user-edit :visible="showEditRole" @close="closeDialogRoleEdit" :user="getRole"></user-edit>
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
-import Role from '../../../components/modal/create/role.vue'
-import RoleEdit from '../../../components/modal/edit/role.vue'
+import User from '../../../components/modal/create/user.vue';
+import UserEdit from '../../../components/modal/edit/user.vue';
 
-@Component({ components: { Role, RoleEdit } })
-export default class RolesView extends Vue {
+@Component({ components: { User, UserEdit } })
+export default class UserView extends Vue {
     tableColumn: Array<object> = [
-        { text: 'ИД', align: 'start', sortable: true, value: 'id'},
-        { text: 'Имя', align: 'start', sortable: false, value: 'name'},
-        { text: '', align: 'end', sortable: false, value: 'actions'}
+      { text: 'ИД', align: 'start', sortable: true, value: 'id'},
+      { text: 'Имя', align: 'start', sortable: true, value: 'firstName'},
+      { text: 'Фамилия', align: 'start', sortable: true, value: 'middleName'},
+      { text: 'Отчество', align: 'start', sortable: true, value: 'lastName' },
+      { text: 'Учетная запись', align: 'start', sortable: true, value: 'userName'},
     ]
     gridData: Array<object> = []
     selected: Array<object> = []
@@ -102,7 +105,7 @@ export default class RolesView extends Vue {
     {
       if (this.selected == null || this.selected.length <= 0)
       {
-          this.$toast.info("Не выбрана роль для редакирования.");
+          this.$toast.info("Не выбран сотрудник для редакирования.");
           return;
       }
 
@@ -135,11 +138,11 @@ export default class RolesView extends Vue {
                 }
             );
             this.load = false
-            this.$toast.success("Поверки успешно загружены.");
+            this.$toast.success("Сотрудники успешно загружены.");
         }
         catch (e)
         {
-            this.$toast.error("Ошибка во время загрузки поверок.");
+            this.$toast.error("Ошибка во время загрузки сотрудников.");
             this.load = false
         }
     }
@@ -164,9 +167,9 @@ export default class RolesView extends Vue {
         let url = ''
 
         if (this.options.sortBy.length <= 0)
-            url = `api/v1/roles?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}`;
+            url = `api/v1/user?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}`;
         else
-            url = `api/v1/roles?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}&sortBy=${this.options.sortBy[0]} ${this.options.sortDesc[0] ? "desc" : ""}`;
+          url = `api/v1/user?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}&sortBy=${this.options.sortBy[0]} ${this.options.sortDesc[0] ? "desc" : ""}`;
         
         return url
     }

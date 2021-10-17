@@ -17,7 +17,7 @@
             </v-card-text>
             <v-card-actions class="pa-5">
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="Login()" :loading="load">Вход</v-btn>
+                <v-btn color="primary" @click="onSubmit()" :loading="load">Вход</v-btn>
             </v-card-actions>
         </v-card>
     </v-col>
@@ -35,7 +35,7 @@ export default class Auth extends Vue {
     error: string = ""
     load: boolean = false
 
-    Login() {
+    onSubmit() {
       try {
         this.load = true;
         let response = this.$auth.loginWith('local', { data: { userName: this.login, password: this.password } })

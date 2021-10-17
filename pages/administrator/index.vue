@@ -27,7 +27,7 @@
 import { Component, Vue } from "nuxt-property-decorator"
 
 @Component
-export default class ProductCover extends Vue
+export default class AdministratorCover extends Vue
 {
     cards: Array<object> = [
         {
