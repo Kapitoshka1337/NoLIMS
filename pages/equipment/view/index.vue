@@ -46,7 +46,7 @@
                             <v-list-item-title>Вспомогательное</v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="showCreateEquipmentIO = true">
-                            <v-list-item-title>Исследовательское</v-list-item-title>
+                            <v-list-item-title>Испытательное</v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="showCreateEquipmentCI = true">
                             <v-list-item-title>Средство измерения</v-list-item-title>

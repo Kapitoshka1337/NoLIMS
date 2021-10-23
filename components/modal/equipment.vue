@@ -110,15 +110,20 @@ export default class DialogCreateEquipmentVo extends Vue
         {
             this.loading = true;
             this.equipment.typeId = 1;
-            this.$axios.post('/api/v1/equipment/vo', this.equipment).then()
-            this.loading = false
-            this.$toast.success("Вспомогательное оборудование добавлено.");
-            this.closeDialog(true);
+            this.$axios.post('/api/v1/equipment/vo', this.equipment).then(response => {
+              this.loading = false;
+              this.$toast.success("Вспомогательное оборудование добавлено.");
+              this.closeDialog(true);
+            }).catch(error => {
+              this.closeDialog(false);
+              this.$toast.error("Ошибка во время добавление вспомогательного оборудования.");
+              this.loading = false;
+            })
         }
         catch (e)
         {
             this.closeDialog(false);
-            this.$toast.error("Ошибка во время добавление оборудования.");
+            this.$toast.error("Ошибка во время добавление вспомогательного оборудования.");
             this.loading = false
         }
     };

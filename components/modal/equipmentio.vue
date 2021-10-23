@@ -112,15 +112,20 @@ export default class DialogCreateEquipmentIo extends Vue
         {
             this.loading = true;
             this.equipment.typeId = 2;
-            this.$axios.post('/api/v1/equipment/io', this.equipment).then()
-            this.loading = false
-            this.closeDialog(true);
-            this.$toast.success("Исследовательское оборудование добавлено.");
+            this.$axios.post('/api/v1/equipment/io', this.equipment).then(reponse => {
+              this.loading = false;
+              this.closeDialog(true);
+              this.$toast.success("Испытательное оборудование добавлено.");
+            }).catch(error => {
+              this.closeDialog(false);
+              this.$toast.error("Ошибка во время добавление испытательного оборудования.");
+              this.loading = false;
+            })
         }
         catch (e)
         {
             this.closeDialog(false);
-            this.$toast.error("Ошибка во время добавление оборудования.");
+            this.$toast.error("Ошибка во время добавление испытательного оборудования.");
             this.loading = false
         }
     };

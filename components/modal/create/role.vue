@@ -46,10 +46,15 @@ export default class DialogCreateRole extends Vue
         try
         {
             this.loading = true;
-            this.$axios.post('/api/v1/roles', this.role).then()
-            this.loading = false
-            this.$toast.success("Роль успешно создана.");
-            this.closeDialog(true);
+            this.$axios.post('/api/v1/roles', this.role).then(reponse => {
+              this.loading = false;
+              this.$toast.success("Роль успешно создана.");
+              this.closeDialog(true);
+            }).catch(error => {
+              this.closeDialog(false);
+              this.$toast.error("Ошибка во время создания роли.");
+              this.loading = false;
+            })
         }
         catch (e)
         {

@@ -118,15 +118,20 @@ export default class DialogCreateEquipmentCi extends Vue
         {
             this.loading = true;
             this.equipment.typeId = 3;
-            this.$axios.post('/api/v1/equipment/si', this.equipment).then()
-            this.loading = false
-            this.closeDialog(true);
-            this.$toast.success("Средство измерения добавлено.");
+            this.$axios.post('/api/v1/equipment/si', this.equipment).then(response => {
+              this.loading = false;
+              this.closeDialog(true);
+              this.$toast.success("Средство измерения добавлено.");
+            }).catch(error => {
+              this.closeDialog(false);
+              this.$toast.error("Ошибка во время добавление средства измерения.");
+              this.loading = false;
+            })
         }
         catch (e)
         {
             this.closeDialog(false);
-            this.$toast.error("Ошибка во время добавление оборудования.");
+            this.$toast.error("Ошибка во время добавление средства измерения.");
             this.loading = false
         }
     };
