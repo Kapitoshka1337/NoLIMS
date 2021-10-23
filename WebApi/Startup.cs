@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using WebApi.Extensions;
+using WebApi.Helpers;
 using WebApi.Services;
 
 namespace WebApi

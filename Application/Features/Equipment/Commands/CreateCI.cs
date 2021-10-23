@@ -19,11 +19,11 @@ namespace Application.Features.Equipment.Commands
         public DateTime DateCommissioning { get; set; }
         public string InventoryNumber { get; set; }
         public string Description { get; set; }
-        public int ManufacturerId { get; set; }
+        public int? ManufacturerId { get; set; }
         public int DepartmentId { get; set; }
-        public int LocationId { get; set; }
+        public int? LocationId { get; set; }
         public int TypeId { get; set; }
-        public int InstructionId { get; set; }
+        public int? InstructionId { get; set; }
         public string FifNumber { get; set; }
         public string Accuracy { get; set; }
         public string ClassAccuracy { get; set; }
@@ -44,14 +44,7 @@ namespace Application.Features.Equipment.Commands
         {
             var equipmentDto = _mapper.Map<DTOs.Equipment.EquipmentCI>(request);
             var equipmentBase = _mapper.Map<Domain.Entities.Equipment.EquipmentCI>(equipmentDto);
-            try
-            {
-                await _genericRepositoryAsync.AddAsync(equipmentBase);
-            }
-            catch (Exception ex)
-            {
-
-            }
+            await _genericRepositoryAsync.AddAsync(equipmentBase);
 
             return new Response<int>(equipmentBase.Id);
         }

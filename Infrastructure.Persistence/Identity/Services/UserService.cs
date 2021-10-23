@@ -30,12 +30,7 @@ namespace Infrastructure.Identity.Services
         public async Task<Response<UserPermissionResponse>> GetPermission(int userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
-
             var moduleClaims = new List<ModuleClaimViewModel>();
-            //var allPermissions = new List<RoleClaim>();
-            //var policy = typeof(Permissionss);
-            //allPermissions.GetPermissions(policy);
-
             var roles = await _userManager.GetRolesAsync(user);
 
             foreach (var role in roles)
@@ -43,15 +38,7 @@ namespace Infrastructure.Identity.Services
                 var roleName = await _roleManager.FindByNameAsync(role);
                 // Права роли.
                 var claims = await _db.Set<RoleClaim>().Where(c => c.RoleId == roleName.Id).ToListAsync();
-                //var claims = await _roleManager.GetClaimsAsync(roleName);
                 var groupClaims = claims.GroupBy(c => c.Resource);
-                // Значение всех прав.
-                //var allClaimValues = allPermissions.Select(a => a.Value).ToList();
-                // Значение прав роли.
-                //var roleClaimValues = claims.Select(a => a.ClaimValue).ToList();
-                // Разрешенные прав
-                //var authorizedClaims = allClaimValues.Intersect(roleClaimValues).ToList();
-                //var authorizedClaims = allPermissions.Intersect(claims).ToList();
 
                 foreach (var group in groupClaims)
                 {
@@ -60,15 +47,28 @@ namespace Infrastructure.Identity.Services
                         Permissions = new Dictionary<string, bool>()
                     };
 
-                    foreach (var item in group)
+                    if (moduleClaims.Any(m => m.Module == group.Key))
                     {
-                        //var operation = item.ClaimValue.Replace(group.Key + ".", string.Empty);
-                        var operation = item.ClaimValue;
-                        moduleClaim.Permissions.Add(operation, true);
-                    }
+                        var innerClaim = moduleClaims.Where(m => m.Module == group.Key).First();
 
-                    moduleClaim.Module = group.Key;
-                    moduleClaims.Add(moduleClaim);
+                        foreach (var item in group)
+                        {
+                            if (!innerClaim.Permissions.Any(p =>  p.Key == item.ClaimValue && p.Value == true))
+                            {
+                                innerClaim.Permissions.Add(item.ClaimValue, true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in group)
+                        {
+                            moduleClaim.Permissions.Add(item.ClaimValue, true);
+                        }
+
+                        moduleClaim.Module = group.Key;
+                        moduleClaims.Add(moduleClaim);
+                    }
                 }
             }
 
