@@ -28,6 +28,7 @@ namespace Application.DTOs.Account
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
 
+        [Required]
         public int DepartmentId { get; set; }
     }
 }
