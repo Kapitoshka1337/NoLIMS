@@ -1,4 +1,5 @@
-﻿using Application.Filters;
+﻿using Application.Features.User.GetAll;
+using Application.Filters;
 using Application.Interfaces.Repositories.User;
 using Domain.Entities.User;
 using Infrastructure.Persistence.Contexts;
@@ -24,6 +25,11 @@ namespace Infrastructure.Persistence.Repositories
             return await _dbContext.Users.Filter(filter).CountAsync();
         }
 
+        public async Task<int> CountAsync(Parameter filter)
+        {
+            return await _dbContext.Users.FilterUser(filter).CountAsync();
+        }
+
         public async Task<ApplicationUser> Find(Expression<Func<ApplicationUser, bool>> predicate)
         {
             var claims = await _dbContext.Users.Where(predicate).ToListAsync();
@@ -34,8 +40,19 @@ namespace Infrastructure.Persistence.Repositories
         public async override Task<IReadOnlyList<ApplicationUser>> GetPagedReponseAsync(RequestParameter filter)
         {
             return await _dbContext.Users
-                .Sort(filter.SortBy)
                 .Filter(filter)
+                .Sort(filter.SortBy)
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<ApplicationUser>> GetPagedReponseAsync(Parameter filter)
+        {
+            return await _dbContext.Users
+                .FilterUser(filter)
+                .Sort(filter.SortBy)
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize)
                 .AsNoTracking()

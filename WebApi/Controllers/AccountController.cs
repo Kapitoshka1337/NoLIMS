@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Application.DTOs.Account;
 using Application.Interfaces;
+using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +47,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("reset-password")]
+        [Authorize(Policy = PolicyTypes.User.Edit)]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
         {
             

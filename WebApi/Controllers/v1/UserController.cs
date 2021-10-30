@@ -3,12 +3,11 @@ using Application.Features.User.GetAll;
 using Application.Interfaces;
 using AutoMapper;
 using Infrastructure.Identity.Models;
-using Domain.Entities.User;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Features.User.Update;
 
 namespace WebApi.Controllers.v1
 {
@@ -17,12 +16,10 @@ namespace WebApi.Controllers.v1
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserController(IUserService userService, UserManager<ApplicationUser> userManager, IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
-            _userManager= userManager;
             _mapper = mapper;
         }
 
@@ -49,6 +46,20 @@ namespace WebApi.Controllers.v1
         public async Task<IActionResult> Post(Create command)
         {
             return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("update")]
+        [Authorize(Policy = PolicyTypes.User.Edit)]
+        public async Task<IActionResult> Update(UpdateUser query)
+        {
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpPost("delete")]
+        [Authorize(Policy = PolicyTypes.User.Delete)]
+        public async Task<IActionResult> Delete(DeleteUser query)
+        {
+            return Ok(await Mediator.Send(query));
         }
     }
 }

@@ -10,6 +10,7 @@ using Application.Features.Role.GetAll;
 using Application.Features.Role.Update;
 using Application.Features.Role.Grant;
 using Application.Features.Role.Invoke;
+using Application.Features.Role.Delete;
 
 namespace WebApi.Controllers
 {
@@ -61,17 +62,11 @@ namespace WebApi.Controllers
             return Ok(await Mediator.Send(query));
         }
 
-        [HttpPost("delete/{id:int}")]
+        [HttpPost("delete")]
         [Authorize(Policy = PolicyTypes.Roles.Delete)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(DeleteRole query)
         {
-            var role = await _roleManager.FindByIdAsync(id.ToString());
-
-            if (role != null)
-                if (role.IsSystem)
-                    return Conflict();
-
-            return Ok(await _roleManager.DeleteAsync(role));
+            return Ok(await Mediator.Send(query));
         }
     }
 }

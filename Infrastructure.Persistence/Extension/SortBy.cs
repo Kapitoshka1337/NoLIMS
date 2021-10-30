@@ -1,6 +1,7 @@
 ﻿using Application.Features.Verification.GetAllVerification;
 using Domain.Entities.Equipment;
 using Domain.Entities.Equipment.Verification;
+using Domain.Entities.User;
 using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -26,6 +27,57 @@ namespace Infrastructure.Persistence.Extension
                 return DynamicExpressions.FilterOperator.LessThanOrEqual;
 
             return DynamicExpressions.FilterOperator.Equals;
+        }
+
+        public static IQueryable<ApplicationUser> FilterUser(this IQueryable<ApplicationUser> owners, Application.Features.User.GetAll.Parameter request)
+        {
+            if (!owners.Any())
+                return owners;
+
+            if (request == null)
+                return owners;
+
+            DynamicExpressions.DynamicFilterBuilder<ApplicationUser> expr = null;
+
+            if (!string.IsNullOrEmpty(request.FirstName))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<ApplicationUser>();
+
+                expr.And("FirstName", DynamicExpressions.FilterOperator.Contains, request.FirstName);
+            }
+
+            if (!string.IsNullOrEmpty(request.MiddleName))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<ApplicationUser>();
+
+                expr.And("MiddleName", DynamicExpressions.FilterOperator.Contains, request.MiddleName);
+            }
+
+            if (!string.IsNullOrEmpty(request.LastName))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<ApplicationUser>();
+
+                expr.And("LastName", DynamicExpressions.FilterOperator.Contains, request.LastName);
+            }
+
+            if (request.DepartmentId > 0)
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<ApplicationUser>();
+
+                expr.And("DepartmentId", DynamicExpressions.FilterOperator.Equals, request.DepartmentId);
+            }
+
+            if (expr != null)
+            {
+                var buildedExpr = expr.Build();
+                return owners.Where(buildedExpr);
+            }
+
+            return owners;
         }
 
         public static IQueryable<Instruction> FilterInstruction(this IQueryable<Instruction> owners, Application.Features.Instruction.GetAll.Parameter request)

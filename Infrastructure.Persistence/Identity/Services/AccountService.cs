@@ -109,7 +109,7 @@ namespace Infrastructure.Identity.Services
                 }
                 else
                 {
-                    throw new ApiException($"{result.Errors}");
+                    throw new ApiException($"{result.Errors.FirstOrDefault()}");
                 }
 
             }
@@ -232,16 +232,20 @@ namespace Infrastructure.Identity.Services
 
         public async Task<Response<string>> ResetPassword(ResetPasswordRequest model)
         {
-            var account = await _userManager.FindByEmailAsync(model.Email);
-            if (account == null) throw new ApiException($"No Accounts Registered with {model.Email}.");
-            var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password);
+            var account = await _userManager.FindByIdAsync(model.UserId);
+
+            if (account == null) throw new ApiException($"Пользователя с ИД {model.UserId} не существует.");
+
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(account);
+            var result = await _userManager.ResetPasswordAsync(account, resetToken, model.Password);
+            
             if(result.Succeeded)
             {
-                return new Response<string>(model.Email, message: $"Password Resetted.");
+                return new Response<string>(model.UserId, message: $"Пароль изменен.");
             }
             else
             {
-                throw new ApiException($"Error occured while reseting the password.");
+                throw new ApiException($"Ошибка при изменении пароля.");
             }
         }
     }

@@ -3,7 +3,6 @@ using Application.Interfaces.Repositories.Equipment;
 using Application.Wrappers;
 using AutoMapper;
 using MediatR;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,18 +12,18 @@ namespace Application.Features.Role.Update
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public IList<UpdateInput> Claims { get; set; }
+        //public IList<UpdateInput> Claims { get; set; }
     }
 
     public class UpdateHandler : IRequestHandler<Update, Response<bool>>
     {
         private readonly IRoleRepository _roleRepository;
-        private readonly IRoleClaimRepository _roleClaimRepository;
+        //private readonly IRoleClaimRepository _roleClaimRepository;
         private readonly IMapper _mapper;
 
-        public UpdateHandler(IRoleRepository roleRepository, IRoleClaimRepository roleClaimRepository, IMapper mapper)
+        public UpdateHandler(IRoleRepository roleRepository, IMapper mapper)
         {
-            _roleClaimRepository = roleClaimRepository;
+            //_roleClaimRepository = roleClaimRepository;
             _roleRepository = roleRepository;
             _mapper = mapper;
         }
@@ -36,25 +35,9 @@ namespace Application.Features.Role.Update
                 throw new ApiException($"Роль с ИД \"{command.Id}\" не найдена.");
 
             role.Name = command.Name;
+            role.NormalizedName = command.Name;
 
             await _roleRepository.UpdateAsync(role);
-
-            //if (command.Claims != null)
-            //{
-            //    foreach (var claim in command.Claims)
-            //    {
-            //        var findedClaim = await _roleClaimRepository.Find(c => c.RoleId == command.Id && c.ClaimType == claim.Type && c.ClaimValue == claim.Value);
-
-            //        if (findedClaim == null)
-            //        {
-            //            findedClaim.ClaimType = claim.Type;
-            //            findedClaim.ClaimValue = claim.Value;
-            //            findedClaim.Resource = claim.Resources;
-
-            //            var addedClaim = await _roleClaimRepository.AddAsync(findedClaim);
-            //        }
-            //    }
-            //}
 
             return new Response<bool>(true);
         }

@@ -14,6 +14,10 @@ namespace Application.Features.User.GetAll
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public string SortBy { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public int DepartmentId { get; set; }
     }
 
     public class QueryHandler : IRequestHandler<Query, PagedResponse<IEnumerable<ViewModel>>>

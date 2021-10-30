@@ -14,6 +14,7 @@ namespace Application.Features.Role.GetAll
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public string SortBy { get; set; }
+        public string Name { get; set; }
     }
 
     public class QueryHandler : IRequestHandler<Query, PagedResponse<IEnumerable<ViewModel>>>

@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.Interfaces.Repositories.User;
 using Application.Wrappers;
 using AutoMapper;
 using MediatR;
