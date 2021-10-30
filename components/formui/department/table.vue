@@ -95,7 +95,7 @@ export default class DepartmentTable extends Vue {
     }
 
     closeDialog(value: any){
-        this.$emit('close', value);
+      this.$emit('close', value);
     };
 
     get getVisible() {

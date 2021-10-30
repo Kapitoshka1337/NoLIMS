@@ -6,7 +6,6 @@
             БУ УР УВДЦ
           </v-card-title>
             <v-card-text>
-              <p>123Pa$$word!</p>
                 <v-form ref="form" @keyup.native.enter="onSubmit">
                     <v-text-field name="userNameOrEmail" type="text" v-model="login" label="Логин"></v-text-field>
                     <v-text-field name="password" type="password" v-model="password" label="Пароль"></v-text-field>

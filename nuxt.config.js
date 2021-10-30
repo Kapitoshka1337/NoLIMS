@@ -6,10 +6,10 @@ export default {
   target: "static",
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - Client',
-    title: 'Client',
+    titleTemplate: '%s - НеЛИС',
+    title: 'УВДЦ',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'ru'
     },
     meta: [
       { charset: 'utf-8' },

@@ -6,15 +6,28 @@
       <v-tabs fixed-tabs>
         <v-tab>Сотрудник</v-tab>
         <v-tab>Роли</v-tab>
+        <v-tab>Учетная запись</v-tab>
         <v-tab-item>
           <v-container>
-            <v-form>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field clearable dense label="Имя" outlined v-model="editRole.firstName"></v-text-field>
-                </v-col>
-              </v-row>
-            </v-form>
+            <v-card flat>
+              <v-card-text>
+                <v-form>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field dense label="Фамилия" outlined v-model="editUser.middleName"></v-text-field>
+                      <v-text-field dense label="Имя" outlined v-model="editUser.firstName"></v-text-field>
+                      <v-text-field dense label="Отчество" outlined v-model="editUser.lastName"></v-text-field>
+                      <department @select-id="getDepartmentId" :show-view="true" :existed-id="editUser.departmentId"></department>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="success" @click="submitUpdate()" :loading="loading">ОК</v-btn>
+                <v-btn color="error" v-on:click="closeDialog()">Отмена</v-btn>
+              </v-card-actions>
+            </v-card>
           </v-container>
         </v-tab-item>
         <v-tab-item>
@@ -38,21 +51,38 @@
             </v-data-table>
           </v-container>
         </v-tab-item>
+        <v-tab-item>
+          <v-container>
+            <v-card flat>
+              <v-card-text>
+                <v-form>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field dense label="Учетная запись" outlined v-model="editUser.userName" :disabled="true"></v-text-field>
+                      <v-text-field type="password" dense label="Пароль" outlined v-model="editUser.password"></v-text-field>
+                      <v-text-field type="password" dense label="Подтверждение пароля" outlined v-model="editUser.confirmPassword"></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="success" @click="submitReset()" :loading="loading">ОК</v-btn>
+                <v-btn color="error" v-on:click="closeDialog()">Отмена</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-container>
+        </v-tab-item>
       </v-tabs>
-      <v-divider></v-divider>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="success" @click="submit()" :loading="loading" :disabled="getValidation">ОК</v-btn>
-        <v-btn color="error" v-on:click="closeDialog()">Отмена</v-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
   import { Component, Prop, Vue, Watch } from "nuxt-property-decorator"
+  import Department from '../../formui/department/view.vue';
 
-  @Component
+  @Component({ components: { Department } })
   export default class DialogEditUer extends Vue {
     tableColumn: Array<object> = [
       { text: 'ИД', align: 'start', sortable: true, value: 'id' },
@@ -62,7 +92,7 @@
     load: boolean = false
     gridData: Array<object> = []
     selected: Array<object> = []
-    public editRole: IUser = { firstName: "" }
+    public editUser: IUser = { firstName: "" }
 
     @Prop({ default: false }) visible!: boolean
     @Prop({ type: Object as () => IUser }) user!: IUser
@@ -71,7 +101,13 @@
       this.$emit('close', value);
       this.loading = false;
       this.selected = []
+      this.user = {}
+      this.editUser = {}
     };
+
+    getDepartmentId(value: number) {
+      this.editUser.departmentId = value
+    }
 
     grantInvoke(item: any) {
       let obj = {}
@@ -120,26 +156,57 @@
       }
     }
 
-    //submit() {
-    //  try {
-    //    this.loading = true;
-    //    this.$axios.post('/api/v1/userrole/grant', {}).then(response => {
-    //      this.loading = false;
-    //      this.$toast.success("Права доступа назначены.");
-    //    });
-    //  }
-    //  catch (e) {
-    //    this.$toast.error("Ошибка во время назначения прав доступа.");
-    //    this.loading = false
-    //  }
-    //}
+    submitUpdate() {
+      try {
+        let obj = {};
+        obj.id = this.editUser.id;
+        obj.middleName = this.editUser.middleName;
+        obj.firstName = this.editUser.firstName;
+        obj.lastName = this.editUser.lastName;
+        obj.departmentId = this.editUser.departmentId;
+
+        this.loading = true;
+        this.$axios.post('/api/v1/user/update', obj).then(response => {
+          this.loading = false;
+          this.$toast.success("Пользователь успешно изменен.");
+          this.closeDialog(true);
+        }).catch(error => {
+          this.$toast.error("Ошибка во время изменения пользователя.");
+          this.loading = false
+        });
+      }
+      catch (e) {
+        this.$toast.error("Ошибка во время изменения пользователя.");
+        this.loading = false
+      }
+    }
+
+    submitReset() {
+      try {
+        this.loading = true;
+        this.$axios.post('/api/account/reset-password', { userId: this.editUser.id.toString(), password: this.editUser.password, confirmPassword: this.editUser.confirmPassword }).then(response => {
+          this.loading = false;
+          this.$toast.success("Пароль успешно изменен.");
+          this.closeDialog(true);
+        }).catch(error => {
+          this.$toast.error("Ошибка во время изменения пароля.");
+          this.loading = false
+        });
+      }
+      catch (e) {
+        this.$toast.error("Ошибка во время изменения пароля.");
+        this.loading = false
+      }
+    }
 
     @Watch("user")
     getUser(newVal: IUser) {
       if (newVal) {
-        this.editRole.firstName = this.user.firstName
-        this.editRole.id = this.user.id
-        return this.editRole
+        this.editUser.id = this.user.id;
+        this.editUser.middleName = this.user.middleName;
+        this.editUser.firstName = this.user.firstName;
+        this.editUser.lastName = this.user.lastName;
+        this.editUser.departmentId = this.user.departmentId;
       }
     }
 
@@ -161,7 +228,7 @@
     }
 
     get getValidation() {
-      return this.editRole.name == null || this.editRole.name === ""
+      return this.editUser.name == null || this.editUser.name === ""
     }
 
     get getVisible() {

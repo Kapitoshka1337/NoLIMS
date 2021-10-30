@@ -8,8 +8,8 @@
                     <v-form>
                       <v-row>
                         <v-col cols="12">
-                          <v-text-field dense label="Имя" outlined v-model="user.firstName"></v-text-field>
                           <v-text-field dense label="Фамилия" outlined v-model="user.middleName"></v-text-field>
+                          <v-text-field dense label="Имя" outlined v-model="user.firstName"></v-text-field>
                           <v-text-field dense label="Отчество" outlined v-model="user.lastName"></v-text-field>
                           <v-text-field dense label="Учетная запись" outlined v-model="user.userName"></v-text-field>
                           <v-text-field type="password" dense label="Пароль" outlined v-model="user.password"></v-text-field>
@@ -46,7 +46,7 @@ export default class DialogCreateUser extends Vue
     closeDialog(value: any){
         this.$emit('close', value);
         this.loading = false;
-        this.user = {} as IUser
+      this.user = {} as IUser
     };
 
     getDepartmentId(value: number) {
@@ -56,7 +56,7 @@ export default class DialogCreateUser extends Vue
     submit(){
         try
         {
-            this.loading = true;
+          this.loading = true;
           this.$axios.post('/api/v1/user', this.user).then(response => {
             this.loading = false
             this.$toast.success("Пользователь успешно создан.");

@@ -8,13 +8,22 @@
         <v-tab>Права доступа</v-tab>
         <v-tab-item>
           <v-container>
-            <v-form>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field clearable dense label="Имя" outlined v-model="editRole.name"></v-text-field>
-                </v-col>
-              </v-row>
-            </v-form>
+            <v-card flat>
+              <v-card-text>
+                <v-form>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field clearable dense label="Имя" outlined v-model="editRole.name"></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="success" @click="submit()" :loading="loading" :disabled="getValidation">ОК</v-btn>
+                <v-btn color="error" v-on:click="closeDialog()">Отмена</v-btn>
+              </v-card-actions>
+            </v-card>
           </v-container>
         </v-tab-item>
         <v-tab-item>
@@ -39,12 +48,6 @@
           </v-container>
         </v-tab-item>
       </v-tabs>
-      <v-divider></v-divider>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="success" @click="submit()" :loading="loading" :disabled="getValidation">ОК</v-btn>
-        <v-btn color="error" v-on:click="closeDialog()">Отмена</v-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -56,6 +59,7 @@
   export default class DialogEditRole extends Vue {
     tableColumn: Array<object> = [
       { text: 'ИД', align: 'start', sortable: true, value: 'id' },
+      { text: 'Ресурс', align: 'start', sortable: true, value: 'resources' },
       { text: 'Значение', align: 'start', sortable: true, value: 'value' }
     ]
     loading: boolean = false
@@ -118,13 +122,17 @@
     submit() {
       try {
         this.loading = true;
-        this.$axios.post('/api/v1/roles/grant', {}).then(response => {
+        this.$axios.post('/api/v1/roles/update', { id: this.editRole.id, name: this.editRole.name }).then(response => {
           this.loading = false;
-          this.$toast.success("Права доступа назначены.");
-        });
+          this.$toast.success("Роль успешно обновлена.");
+          this.closeDialog(true);
+        }).cathc(error => {
+          this.$toast.error("Ошибка во время обновления роли.");
+          this.loading = false
+        })
       }
       catch (e) {
-        this.$toast.error("Ошибка во время назначения прав доступа.");
+        this.$toast.error("Ошибка во время обновления роли.");
         this.loading = false
       }
     }

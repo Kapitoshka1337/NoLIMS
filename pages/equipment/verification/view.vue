@@ -262,7 +262,7 @@ import csmDialog from '../../../components/modal/csm.vue';
         ));
       }
       catch (e) {
-        this.$toast.error("Ошибка во время выполенения.");
+        this.$toast.error("Ошибка во время выполнения.");
       }
     }
 
@@ -357,7 +357,7 @@ import csmDialog from '../../../components/modal/csm.vue';
         ));
       }
       catch (e) {
-        this.$toast.error("Ошибка во время выполенения.");
+        this.$toast.error("Ошибка во время выполнения.");
       }
     }
 
