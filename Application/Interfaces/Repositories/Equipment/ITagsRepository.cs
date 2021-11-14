@@ -2,7 +2,7 @@
 
 namespace Application.Interfaces.Repositories.Equipment
 {
-    public interface ITypeRepository : IGenericRepositoryAsync<Type>
+    public interface ITagsRepository : IGenericRepositoryAsync<Tags>
     {
     }
 }

@@ -47,6 +47,9 @@
             public const string Edit = "permission.verification.edit";
             public const string Delete = "permission.verification.delete";
             public const string View = "permission.verification.view";
+            public const string Play = "permission.verification.play";
+            public const string Return = "permission.verification.return";
+            public const string Reset = "permission.verification.reset";
         }
 
         public static class DocumentKind

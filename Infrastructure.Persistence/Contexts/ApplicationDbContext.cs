@@ -41,7 +41,7 @@ namespace Infrastructure.Persistence.Contexts
         public DbSet<EquipmentCI> EquipmentCIs { get; set; }
         public DbSet<Type> Types { get; set; }
         public DbSet<Manufacturer>  Manufacturers { get; set; }
-        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Tags> Tags { get; set; }
         public DbSet<Instruction> Instructions { get; set; }
         public DbSet<Verification>  Verifications { get; set; }
         public DbSet<VerificationStatus>  VerificationStatus { get; set; }

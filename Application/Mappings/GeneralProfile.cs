@@ -54,7 +54,8 @@ namespace Application.Mappings
             CreateMap<Application.DTOs.Equipment.EquipmentCI, Domain.Entities.Equipment.EquipmentCI>();
             CreateMap<Application.DTOs.Equipment.Manufacturer, Domain.Entities.Equipment.Manufacturer>();
             CreateMap<Application.DTOs.Equipment.Type, Domain.Entities.Equipment.Type>();
-            CreateMap<Application.DTOs.Equipment.Status, Domain.Entities.Equipment.Status>();
+            CreateMap<Application.DTOs.Equipment.Status, Domain.Entities.Equipment.EquipmentStatus>();
+            CreateMap<Application.DTOs.Equipment.TagsDto, Domain.Entities.Equipment.Tags>();
             CreateMap<Application.DTOs.Equipment.CheckDto, Domain.Entities.Equipment.Check>();
             CreateMap<Application.DTOs.Equipment.Instruction, Domain.Entities.Equipment.Instruction>();
 
@@ -65,7 +66,9 @@ namespace Application.Mappings
             CreateMap<Domain.Entities.Equipment.EquipmentCI, EquipmentDetail>();
             CreateMap<Domain.Entities.Equipment.Manufacturer, Application.DTOs.Equipment.Manufacturer>();
             CreateMap<Domain.Entities.Equipment.Type, Application.DTOs.Equipment.Type>();
-            CreateMap<Domain.Entities.Equipment.Status, Application.DTOs.Equipment.Status>();
+            CreateMap<Domain.Entities.Equipment.Tags, Application.DTOs.Equipment.TagsDto>();
+            CreateMap<Domain.Entities.Equipment.Tags, Application.Features.Tags.GetAll.ViewModel>();
+            CreateMap<Application.Features.Tags.GetAll.Query, Application.Features.Tags.GetAll.Parameter>();
             CreateMap<Domain.Entities.Equipment.Instruction, Application.DTOs.Equipment.Instruction>();
             CreateMap<Domain.Entities.Equipment.Check, Application.DTOs.Equipment.CheckDto>();
             CreateMap<Domain.Entities.Equipment.Check, Application.Features.Check.GetAll.ViewModel>();
@@ -76,7 +79,6 @@ namespace Application.Mappings
             // Оборудование. Поверки. Domain --> DTO
             CreateMap<CreateVerificationCommand, Application.DTOs.Equipment.Verification.VerificationDto>();
             CreateMap<EqVal, Application.DTOs.Equipment.Verification.VerificationDto>();
-            CreateMap<UpdateVerificationCommand, Domain.Entities.Equipment.Verification.Verification>();
             CreateMap<Domain.Entities.Equipment.Verification.Verification, Application.DTOs.Equipment.Verification.VerificationDto>();
             CreateMap<Application.DTOs.Equipment.Verification.VerificationDto, Domain.Entities.Equipment.Verification.Verification>();
             CreateMap<GetAllVerificationQuery, GetAllVerificationParameter>().ReverseMap();
@@ -96,6 +98,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department.Name))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.Name))
                 .ForMember(dest => dest.Manufacturer, opt => opt.MapFrom(src => src.Manufacturer.Name))
+                .ForMember(dest => dest.Tag, opt => opt.MapFrom(src => src.Tag.Name))
                 .ReverseMap();
 
             CreateMap<Domain.Entities.Equipment.Equipment, EqViewModel>()
@@ -120,7 +123,7 @@ namespace Application.Mappings
             CreateMap<CreateManufacturerCommand, Application.DTOs.Equipment.Manufacturer>();
             CreateMap<Application.DTOs.Equipment.Manufacturer, Manufacturer>();
             CreateMap<Manufacturer, Application.DTOs.Equipment.Manufacturer>();
-            CreateMap<GetAllManufacturerQuery, GetAllManufacturerParameter>();
+            CreateMap<GetAllManufacturerQuery, GetAllManufacturerParameter>().ReverseMap();
             CreateMap<Domain.Entities.Equipment.Manufacturer, GetAllManufacturerViewModel>().ReverseMap();
 
             // Подразделения.

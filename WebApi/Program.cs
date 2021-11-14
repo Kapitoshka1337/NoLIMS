@@ -10,6 +10,8 @@ using Domain.Entities.User;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Persistence.Contexts;
 using Domain.Entities.Role;
+using Infrastructure.Persistence.Repositories;
+using Application.Interfaces.Repositories.Equipment;
 
 namespace WebApi
 {
@@ -17,10 +19,7 @@ namespace WebApi
     {
         public async static Task Main(string[] args)
         {
-            //Read Configuration from appSettings
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
-            //Initialize Logger
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
             var host = CreateHostBuilder(args).Build();
 
@@ -34,7 +33,9 @@ namespace WebApi
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<Role>>();
                     var db = services.GetRequiredService<ApplicationDbContext>();
+                    var tags = services.GetRequiredService<ITagsRepository>();
 
+                    await Infrastructure.Persistence.Seeds.DefaultTags.SeedAsync(tags);
                     await Infrastructure.Identity.Seeds.DefaultRoles.SeedAsync(userManager, roleManager, db);
                     await Infrastructure.Identity.Seeds.DefaultUser.SeedAsync(userManager, roleManager);
             
@@ -54,10 +55,11 @@ namespace WebApi
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .UseSerilog() //Uses Serilog instead of default .NET Logger
+            .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    //webBuilder.UseUrls("http://0.0.0.0:9001");
                 });
     }
 }

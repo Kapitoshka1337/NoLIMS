@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Application.DTOs.Equipment
 {
@@ -18,7 +17,7 @@ namespace Application.DTOs.Equipment
         public int DepartmentId { get; set; }
         public int? LocationId { get; set; }
         public int TypeId { get; set; }
+        public int? TagId { get; set; }
         public int? InstructionId { get; set; }
-        public IEnumerable<Status> Status { get; set; }
     }
 }

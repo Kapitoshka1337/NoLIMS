@@ -26,7 +26,7 @@ namespace Infrastructure.Persistence.Repositories
         public override async Task<Equipment> GetByIdAsync(int id)
         {
             return await _equipments
-                .Include(e => e.Status)
+                .Include(e => e.Tag)
                 .Where(e => e.Id == id)
                 .FirstOrDefaultAsync();
         }
@@ -39,9 +39,9 @@ namespace Infrastructure.Persistence.Repositories
                 .Include(e => e.Movings).ThenInclude(m => m.CurrentDepartment)
                 .Include(e => e.Manufacturer)
                 .Include(e => e.Type)
-                .Include(e => e.Status)
+                .Include(e => e.Tag)
                 .OrderBy(e => e.Id)
-                .Filter(filter)
+                .FilterEquipment(filter)
                 .Sort(filter.SortBy)
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize)
@@ -53,7 +53,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<int> CountAsync(GetAllEquipmentParameter filter)
         {
-            return await _equipments.Filter(filter).CountAsync();
+            return await _equipments.FilterEquipment(filter).CountAsync();
         }
     }
 }

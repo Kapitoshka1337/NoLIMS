@@ -3,15 +3,17 @@ using System;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211114102449_AddTableTagsUpdStatus")]
+    partial class AddTableTagsUpdStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,9 +189,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("SerialNumber")
                         .HasColumnType("text");
 
-                    b.Property<int?>("TagId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("TypeId")
                         .HasColumnType("integer");
 
@@ -201,13 +200,36 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ManufacturerId");
 
-                    b.HasIndex("TagId");
-
                     b.HasIndex("TypeId");
 
                     b.ToTable("Equipment");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Equipment");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Equipment.EquipmentStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("EquipmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Value")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EquipmentId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("EquipmentStatuses");
                 });
 
             modelBuilder.Entity("Domain.Entities.Equipment.Instruction", b =>
@@ -707,10 +729,6 @@ namespace Infrastructure.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ManufacturerId");
 
-                    b.HasOne("Domain.Entities.Equipment.Tags", "Tag")
-                        .WithMany()
-                        .HasForeignKey("TagId");
-
                     b.HasOne("Domain.Entities.Equipment.Type", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId")
@@ -723,9 +741,26 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Navigation("Manufacturer");
 
-                    b.Navigation("Tag");
-
                     b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Equipment.EquipmentStatus", b =>
+                {
+                    b.HasOne("Domain.Entities.Equipment.Equipment", "Equipment")
+                        .WithMany("Status")
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Equipment.Tags", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Equipment");
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Domain.Entities.Equipment.Instruction", b =>
@@ -855,6 +890,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Checks");
 
                     b.Navigation("Movings");
+
+                    b.Navigation("Status");
                 });
 #pragma warning restore 612, 618
         }

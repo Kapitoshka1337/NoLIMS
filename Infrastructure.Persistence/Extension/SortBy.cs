@@ -29,6 +29,81 @@ namespace Infrastructure.Persistence.Extension
             return DynamicExpressions.FilterOperator.Equals;
         }
 
+        public static IQueryable<Equipment> FilterEquipment(this IQueryable<Equipment> owners, Application.Features.Equipment.Queries.GetAllEquipment.GetAllEquipmentParameter request)
+        {
+            if (!owners.Any())
+                return owners;
+
+            if (request == null)
+                return owners;
+
+            DynamicExpressions.DynamicFilterBuilder<Equipment> expr = null;
+
+            if (!string.IsNullOrEmpty(request.Name))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
+
+                expr.And("Name", DynamicExpressions.FilterOperator.Contains, request.Name);
+            }
+
+            if (!string.IsNullOrEmpty(request.Number))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
+
+                expr.And("Number", DynamicExpressions.FilterOperator.Contains, request.Number);
+            }
+
+            if (!string.IsNullOrEmpty(request.Model))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
+
+                expr.And("Model", DynamicExpressions.FilterOperator.Contains, request.Model);
+            }
+
+            if (!string.IsNullOrEmpty(request.SerialNumber))
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
+
+                expr.And("SerialNumber", DynamicExpressions.FilterOperator.Contains, request.SerialNumber);
+            }
+
+            if (request.DepartmentId.HasValue)
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
+
+                expr.And("DepartmentId", DynamicExpressions.FilterOperator.Equals, request.DepartmentId.Value);
+            }
+
+            if (request.TypeId.HasValue)
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
+
+                expr.And("TypeId", DynamicExpressions.FilterOperator.Equals, request.TypeId.Value);
+            }
+
+            if (request.TagId.HasValue)
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
+
+                expr.And("TagId.Value", DynamicExpressions.FilterOperator.Equals, request.TagId.Value);
+            }
+
+            if (expr != null)
+            {
+                var buildedExpr = expr.Build();
+                return owners.Where(buildedExpr);
+            }
+
+            return owners;
+        }
+
         public static IQueryable<ApplicationUser> FilterUser(this IQueryable<ApplicationUser> owners, Application.Features.User.GetAll.Parameter request)
         {
             if (!owners.Any())

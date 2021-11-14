@@ -59,6 +59,9 @@
             public const string Edit = "verification.edit";
             public const string Delete = "verification.delete";
             public const string View = "verification.view";
+            public const string Play = "verification.play";
+            public const string Return = "verification.return";
+            public const string Reset = "verification.reset";
         }
 
         public static class DocumentKind

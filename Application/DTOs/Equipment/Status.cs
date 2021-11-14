@@ -2,7 +2,9 @@
 {
     public class Status : BaseDto
     {
-        public string Name { get; set; }
-        public string Value { get; set; }
+        public int EquipmentId { get; set; }
+        public int TagId { get; set; }
+        public TagsDto Tag { get; set; }
+        public bool Value { get; set; }
     }
 }

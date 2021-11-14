@@ -2,6 +2,7 @@
 using Domain.Entities.Base;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Equipment
 {
@@ -15,7 +16,9 @@ namespace Domain.Entities.Equipment
         public string PurposeOfUse { get; set; }
         public string Model { get; set; }
         public string SerialNumber { get; set; }
+        [Column(TypeName="Date")]
         public DateTime? DateCreate { get; set; }
+        [Column(TypeName="Date")]
         public DateTime? DateCommissioning { get; set; }
         public string InventoryNumber { get; set; }
         public string Description { get; set; }
@@ -27,7 +30,8 @@ namespace Domain.Entities.Equipment
         public Location Location { get; set; }
         public int TypeId { get; set; }
         public Type Type { get; set; }
-        public virtual IEnumerable<Status> Status { get; set; }
+        public int? TagId { get; set; }
+        public Tags Tag { get; set; }
         public virtual IEnumerable<Check> Checks { get; set; }
         public virtual IEnumerable<Moving> Movings { get; set; }
     }

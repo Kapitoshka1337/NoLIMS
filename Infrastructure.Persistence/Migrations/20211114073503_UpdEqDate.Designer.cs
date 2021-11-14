@@ -3,15 +3,17 @@ using System;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211114073503_UpdEqDate")]
+    partial class UpdEqDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,9 +189,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("SerialNumber")
                         .HasColumnType("text");
 
-                    b.Property<int?>("TagId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("TypeId")
                         .HasColumnType("integer");
 
@@ -200,8 +199,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("LocationId");
 
                     b.HasIndex("ManufacturerId");
-
-                    b.HasIndex("TagId");
 
                     b.HasIndex("TypeId");
 
@@ -302,19 +299,27 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Movings");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Equipment.Tags", b =>
+            modelBuilder.Entity("Domain.Entities.Equipment.Status", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int?>("EquipmentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.HasIndex("EquipmentId");
+
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("Domain.Entities.Equipment.Type", b =>
@@ -707,10 +712,6 @@ namespace Infrastructure.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ManufacturerId");
 
-                    b.HasOne("Domain.Entities.Equipment.Tags", "Tag")
-                        .WithMany()
-                        .HasForeignKey("TagId");
-
                     b.HasOne("Domain.Entities.Equipment.Type", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId")
@@ -722,8 +723,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("Manufacturer");
-
-                    b.Navigation("Tag");
 
                     b.Navigation("Type");
                 });
@@ -762,6 +761,15 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("CurrentDepartment");
 
                     b.Navigation("NextDepartment");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Equipment.Status", b =>
+                {
+                    b.HasOne("Domain.Entities.Equipment.Equipment", "Equipment")
+                        .WithMany("Status")
+                        .HasForeignKey("EquipmentId");
+
+                    b.Navigation("Equipment");
                 });
 
             modelBuilder.Entity("Domain.Entities.Equipment.Verification.Verification", b =>
@@ -855,6 +863,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Checks");
 
                     b.Navigation("Movings");
+
+                    b.Navigation("Status");
                 });
 #pragma warning restore 612, 618
         }

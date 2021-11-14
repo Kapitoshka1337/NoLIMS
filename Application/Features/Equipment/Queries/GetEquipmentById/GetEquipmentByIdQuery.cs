@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.Features.Equipment.Queries.GetEquipmentById
 {
@@ -28,7 +29,7 @@ namespace Application.Features.Equipment.Queries.GetEquipmentById
         public int? DepartmentId { get; set; }
         //public Location Location { get; set; }
         public int? TypeId { get; set; }
-        public virtual IEnumerable<Status> Status { get; set; }
+        public int? TagId { get; set; }
         public virtual IEnumerable<CheckDto> Checks { get; set; }
         public virtual IEnumerable<MovingDto> Movings { get; set; }
 

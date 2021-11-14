@@ -14,6 +14,9 @@ namespace Application.Features.Manufacturer.GetAll
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public string SortBy { get; set; }
+        public string Name { get; set; }
+        public string Country { get; set; }
+        public string City { get; set; }
     }
 
     public class GetAllManufacturerQueryHandler : IRequestHandler<GetAllManufacturerQuery, PagedResponse<IEnumerable<GetAllManufacturerViewModel>>>

@@ -40,5 +40,10 @@ namespace Infrastructure.Persistence.Repositories
 
             return equipments;
         }
+
+        public override async Task<IReadOnlyList<Check>> GetAllAsync()
+        {
+            return await _repository.Include(e => e.DocumentKind).ToListAsync();
+        }
     }
 }

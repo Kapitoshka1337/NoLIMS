@@ -42,15 +42,22 @@ namespace WebApi.Controllers.v1
         }
 
         [HttpPost("reset")]
-        [Authorize(Policy = PolicyTypes.Verification.Edit)]
+        [Authorize(Policy = PolicyTypes.Verification.Reset)]
         public async Task<IActionResult> Put(ResetCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
 
         [HttpPost("play")]
-        [Authorize(Policy = PolicyTypes.Verification.Add)]
+        [Authorize(Policy = PolicyTypes.Verification.Play)]
         public async Task<IActionResult> Play(PlayVerificationCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("return")]
+        [Authorize(Policy = PolicyTypes.Verification.Return)]
+        public async Task<IActionResult> ReturnToDepartment(ReturnVerificationCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

@@ -21,7 +21,7 @@ namespace Application.Features.Equipment.Queries.GetAllEquipment
         public string Department { get; set; }
         public Location Location { get; set; }
         public string Type { get; set; }
-        public virtual IEnumerable<Status> Status { get; set; }
+        public string Tag { get; set; }
         public virtual IEnumerable<MovingDto> Movings { get; set; }
     }
 }

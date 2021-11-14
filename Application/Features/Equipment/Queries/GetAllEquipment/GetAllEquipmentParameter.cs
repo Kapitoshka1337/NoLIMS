@@ -21,8 +21,8 @@ namespace Application.Features.Equipment.Queries.GetAllEquipment
         public int? DepartmentId { get; set; }
         //public Location Location { get; set; }
         public int? TypeId { get; set; }
+        public int? TagId { get; set; }
         //public DTOs.Equipment.Instruction Instruction { get; set; }
-        public virtual IEnumerable<Status> Status { get; set; }
         //public virtual CheckDto Checks { get; set; }
     }
 }
