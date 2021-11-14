@@ -8,7 +8,7 @@
                     <v-form>
                         <v-row>
                             <v-col cols="12">
-                                <v-textarea :rows="2" :height="60" dense label="Имя" outlined v-model="equipment.name"></v-textarea>
+                                <v-textarea :rows="2" :height="60" dense label="Наименование" outlined v-model="equipment.name"></v-textarea>
                             </v-col>
                             <v-col cols="12">
                                 <manufacturer @select-id="getManufacturerId" :show-view="true"></manufacturer>

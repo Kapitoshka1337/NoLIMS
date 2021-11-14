@@ -76,9 +76,10 @@
             </v-toolbar>
         </template>
         <template v-slot:item.tag="{ item }">
-            <v-chip-group v-for="status in item.status">
-                <v-chip color="teal" small text-color="white">{{ status.name }}</v-chip>
-            </v-chip-group>
+          <v-chip v-if="item.tag != null" color="green" small text-color="white">{{ item.tag }}</v-chip>
+          <!--<v-chip-group v-for="status in item.status">
+                <v-chip v-if="status != null" color="teal" small text-color="white">{{ status.tag.name[0] }}</v-chip>
+            </v-chip-group>-->
         </template>
         <template v-slot:item.actions="{ item }">
             <v-tooltip bottom>
@@ -96,22 +97,13 @@
               <v-card-text>
                   <v-form>
                       <v-row>
-                          <v-col cols="10">
+                          <v-col cols="9">
+                                <tags @select-id="getTagsId" :show-view="true"></tags>
                                 <type @select-id="getTypeId" :show-view="true"></type>
-                          </v-col>
-                          <v-col cols="10">
                                 <department @select-id="getDepartmentId" :show-view="true"></department>
-                          </v-col>
-                          <v-col cols="9">
-                                <v-text-field dense label="Имя" outlined v-model="filterBy.name"></v-text-field>
-                          </v-col>
-                          <v-col cols="9">
+                                <v-text-field dense label="Наименование" outlined v-model="filterBy.name"></v-text-field>
                                 <v-text-field dense label="Номер" outlined v-model="filterBy.number"></v-text-field>
-                          </v-col>
-                          <v-col cols="9">
                                 <v-text-field dense label="Модель" outlined v-model="filterBy.model"></v-text-field>
-                          </v-col>
-                          <v-col cols="9">
                                 <v-text-field dense label="Серийный номер" outlined v-model="filterBy.serialNumber"></v-text-field>
                           </v-col>
                       </v-row>
@@ -137,18 +129,19 @@ import CreateEquipmentVo from '../../../components/modal/equipment.vue';
 import CreateEquipmentIo from '../../../components/modal/equipmentio.vue';
 import CreateEquipmentCi from '../../../components/modal/equipmentci.vue';
 import Type from '../../../components/formui/type/view.vue'
+import Tags from '../../../components/formui/tags/view.vue'
 import Department from '../../../components/formui/department/view.vue'
 
-@Component({ components: { CreateEquipmentVo, CreateEquipmentIo, CreateEquipmentCi, Type, Department } })
+@Component({ components: { CreateEquipmentVo, CreateEquipmentIo, CreateEquipmentCi, Type, Department, Tags } })
 export default class EquipmentView extends Vue {
     tableColumn: Array<object> = [
         { text: 'Номер', align: 'start', sortable: true, value: 'number'},
         { text: 'Отдел', align: 'start', sortable: true, value: 'department'},
         { text: 'Тип', align: 'start', sortable: true, value: 'type'},
-        { text: 'Имя', align: 'start', sortable: true, value: 'name' },
+        { text: 'Наименование', align: 'start', sortable: true, value: 'name' },
         { text: 'Модель', align: 'start', sortable: true, value: 'model'},
         { text: 'С/Н', align: 'end', sortable: true, value: 'serialNumber'},
-        { text: 'Тег', align: 'center', sortable: false, value: 'tag'},
+        { text: 'Тег', align: 'center', sortable: true, value: 'tag'},
         { text: '', align: 'center', sortable: false, value: 'actions'}
     ]
     gridData: Array<object> = []
@@ -161,6 +154,11 @@ export default class EquipmentView extends Vue {
     showCreateEquipmentVO: boolean = false
     showCreateEquipmentIO: boolean = false
     showCreateEquipmentCI: boolean = false
+
+    getTagsId(value: number)
+    {
+      this.filterBy.tagId = value
+    }
 
     getTypeId (value: number)
     {   

@@ -72,9 +72,7 @@
                       <v-row>
                           <v-col cols="9">
                                 <v-text-field dense label="Номер" outlined v-model="filterBy.number"></v-text-field>
-                          </v-col>
-                          <v-col cols="9">
-                                <v-text-field dense label="Имя инструкции" outlined v-model="filterBy.name"></v-text-field>
+                                <v-text-field dense label="Наименование инструкции" outlined v-model="filterBy.name"></v-text-field>
                           </v-col>
                       </v-row>
                   </v-form>
@@ -100,7 +98,7 @@ import FileSaver from 'file-saver'
 export default class InstructionView extends Vue {
     tableColumn: Array<object> = [
         { text: 'Номер', align: 'start', sortable: true, value: 'number'},
-        { text: 'Имя', align: 'start', sortable: true, value: 'name'},
+        { text: 'Наименование', align: 'start', sortable: true, value: 'name'},
         { text: '', align: 'start', sortable: false, value: 'actions'}
     ]
     gridData: Array<object> = []

@@ -33,7 +33,7 @@
             <v-divider inset vertical></v-divider>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" v-on="on" icon @click="onSubmitDelete()" :disabled="!canDelete()"><v-icon>mdi-delete</v-icon></v-btn>
+                <v-btn v-bind="attrs" v-on="on" icon @click="onSubmitDelete()" :disabled="true"><v-icon>mdi-delete</v-icon></v-btn>
               </template>
               <span>Удалить оборудование из поверки</span>
             </v-tooltip>
@@ -46,25 +46,19 @@
             <v-divider inset vertical></v-divider>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" v-on="on" icon @click="onSubmit()"><v-icon>mdi-play</v-icon></v-btn>
+                <v-btn v-bind="attrs" v-on="on" icon @click="onSubmit()" v-can:play="'verification'"><v-icon>mdi-play</v-icon></v-btn>
               </template>
               <span>Запустить поверку</span>
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" v-on="on" icon @click="onCancelVerification()"><v-icon>mdi-cancel</v-icon></v-btn>
+                <v-btn v-bind="attrs" v-on="on" icon @click="onCancelVerification()" v-can:reset="'verification'"><v-icon>mdi-cancel</v-icon></v-btn>
               </template>
               <span>Отменить поверку</span>
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" v-on="on" icon @click="beforeRecieved()" :disabled=true><v-icon>mdi-download</v-icon></v-btn>
-              </template>
-              <span>Получить из ЦСМ</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" v-on="on" icon><v-icon>mdi-upload</v-icon></v-btn>
+                <v-btn v-bind="attrs" v-on="on" icon @click="onReturnToDepartment()" v-can:return="'verification'"><v-icon>mdi-upload</v-icon></v-btn>
               </template>
               <span>Отдать в отдел</span>
             </v-tooltip>
@@ -100,15 +94,9 @@
                 <v-form>
                     <v-row>
                         <v-col cols="9">
-                              <v-text-field dense label="Имя оборудования" outlined v-model="filterBy.equipmentName"></v-text-field>
-                        </v-col>
-                        <v-col cols="9">
+                              <v-text-field dense label="Наименование оборудования" outlined v-model="filterBy.equipmentName"></v-text-field>
                               <v-text-field dense label="Модель" outlined v-model="filterBy.equipmentModel"></v-text-field>
-                        </v-col>
-                        <v-col cols="9">
                               <v-text-field dense label="Серийный номер" outlined v-model="filterBy.equipmentSerialNumber"></v-text-field>
-                        </v-col>
-                        <v-col cols="9">
                               <v-autocomplete :items="statusesId" :clearable="true" outlined dense label="Состояние" v-model="filterBy.statusId"></v-autocomplete>
                         </v-col>
                     </v-row>
@@ -136,7 +124,7 @@ import csmDialog from '../../../components/modal/csm.vue';
   export default class VerificationView extends Vue {
     tableColumn: Array<object> = [
       { text: 'Номер', align: 'start', sortable: true, value: 'equipment.number' },
-      { text: 'Оборудование', align: 'start', sortable: true, value: 'equipment.name' },
+      { text: 'Наименование оборудования', align: 'start', sortable: true, value: 'equipment.name' },
       { text: 'Модель', align: 'start', sortable: true, value: 'equipment.model' },
       { text: 'Серийный номер', align: 'start', sortable: true, value: 'equipment.serialNumber' },
       { text: 'Состояние', align: 'start', sortable: true, value: 'status.name' },
@@ -295,6 +283,40 @@ import csmDialog from '../../../components/modal/csm.vue';
           this.onCloseDialog(),
           this.getData(),
           this.$toast.success("Состояние оборудование сброшено..")
+        ));
+      }
+      catch (e) {
+        this.$toast.error("Ошибка во время выполенения.");
+      }
+    }
+
+    // Отдать в отделю
+    async onReturnToDepartment() {
+      if (this.selected == null || this.selected.length <= 0) {
+        this.$toast.info("Не выбрано оборудование для возврата в отдел.");
+        return
+      }
+
+      let badEq = this.selected.filter(el => el.statusId < 3)
+
+      if (badEq.length > 0) {
+        this.$toast.error("Невозможно вернуть в отдел. Проверьте состояние!");
+        return
+      }
+
+      let obj = { verifications: [] }
+
+      this.selected.forEach(el => {
+        obj.verifications.push({ verificationId: el.id })
+      })
+
+      try {
+        this.loadPlay = true;
+        await this.$axios.post("api/v1/verification/return", obj).then(response => (
+          this.selected = [],
+          this.onCloseDialog(),
+          this.getData(),
+          this.$toast.success("Оборудование отдано в отдел!")
         ));
       }
       catch (e) {

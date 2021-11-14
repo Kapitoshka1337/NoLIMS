@@ -1,7 +1,7 @@
 <template>
     <v-dialog dense v-model="getVisible" @input="closeDialog()">
         <v-card>
-            <v-card-title>Производители</v-card-title>
+            <v-card-title>Теги</v-card-title>
             <v-divider></v-divider>
             <v-card-text>
                 <v-data-table
@@ -34,11 +34,11 @@
                             <span>Обновить</span>
                         </v-tooltip>
                         <v-divider inset vertical></v-divider>
-                        <v-tooltip bottom>
+                        <!--<v-tooltip bottom>
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn v-bind="attrs" v-on="on" icon @click="showDialogCreate = true"><v-icon>mdi-plus</v-icon></v-btn>
                             </template>
-                            <span>Создать производителя</span>
+                            <span>Создать подразделение</span>
                         </v-tooltip>
                         <v-divider inset vertical></v-divider>
                         <v-spacer></v-spacer>
@@ -47,7 +47,7 @@
                                 <v-btn v-bind="attrs" v-on="on" icon @click="draw()"><v-icon>mdi-filter</v-icon></v-btn>
                             </template>
                             <span>Фильтрация</span>
-                        </v-tooltip>
+                        </v-tooltip>-->
                     </v-toolbar>
                 </template>
                 </v-data-table>
@@ -58,47 +58,23 @@
                 <v-btn color="error" v-on:click="closeDialog()">Отмена</v-btn>
             </v-card-actions>
         </v-card>
-        <v-navigation-drawer v-model="drawer" absolute right temporary width="512">
-          <v-card flat>
-              <v-card-title>Фильтрация</v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                  <v-form>
-                      <v-row>
-                          <v-col cols="9">
-                            <v-text-field dense label="Наименование" outlined v-model="filterBy.name"></v-text-field>
-                            <v-text-field dense label="Страна" outlined v-model="filterBy.country"></v-text-field>
-                            <v-text-field dense label="Город" outlined v-model="filterBy.city"></v-text-field>
-                          </v-col>
-                      </v-row>
-                  </v-form>
-              </v-card-text>
-              <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="warning" @click="clearFilter()">Сброс</v-btn>
-                  <v-btn color="success" @click="submitFilter()">Применить</v-btn>
-              </v-card-actions>
-          </v-card>
-        </v-navigation-drawer>
-        <create :visible="showDialogCreate" @close="closeDialogCreate()" @save="Save"></create>
+        <v-navigation-drawer v-model="drawer" absolute right temporary></v-navigation-drawer>
+        <create-department :visible="showDialogCreate" @close="closeDialogCreateDepartment()" @save="Save"></create-department>
     </v-dialog>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from 'nuxt-property-decorator';
-import Create from './create.vue'
+//import CreateDepartment from './create.vue'
 
-@Component({ components: { Create }})
-export default class ManufacturerTable extends Vue {
+@Component
+export default class TagsTable extends Vue {
     tableColumn: Array<object> = [
-        { text: 'Наименование', align: 'start', sortable: true, value: 'name'},
-        { text: 'Страна', align: 'start', sortable: true, value: 'country'},
-        { text: 'Город', align: 'start', sortable: true, value: 'city'}
+        { text: 'Наименование', align: 'start', sortable: true, value: 'name'}
     ]
     gridData: Array<object> = []
     selected: Array<object> = []
     options: Object = {}
-    filterBy: Object = {}
     totalRecord: number = 0
     load: boolean = false
     drawer: boolean = false
@@ -106,8 +82,9 @@ export default class ManufacturerTable extends Vue {
     createdItem: boolean = false
 
     @Prop({default: false}) visible!: boolean
+    @Prop({default: null}) findId!: number
 
-    closeDialogCreate(value: boolean){
+    closeDialogCreateDepartment(value: boolean){
         this.showDialogCreate = false;
     }
 
@@ -117,7 +94,7 @@ export default class ManufacturerTable extends Vue {
     }
 
     closeDialog(value: any){
-        this.$emit('close', value);
+      this.$emit('close', value);
     };
 
     get getVisible() {
@@ -133,28 +110,32 @@ export default class ManufacturerTable extends Vue {
     }
 
     created() {
-        this.getData();
+      this.getData();
     }
 
     async getData() {
         try
         {
             this.load = true;
-            let url: string = this.computedUrl;
-            let filterUrl: string = this.computedFilter();
+            let url: string = "";
 
-            await this.$axios.get(url + filterUrl).then(response => {
+            if (this.options.sortBy.length <= 0)
+                url = `api/v1/tags?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}`;
+            else
+                url = `api/v1/tags?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}&sortBy=${this.options.sortBy[0]} ${this.options.sortDesc[0] ? "desc" : ""}`;
+
+            await this.$axios.get(url).then(response => {
                     this.gridData = response.data["data"]
                     this.totalRecord = response.data['totalRecords']
                 }
             );
 
-            this.$toast.success("Производители успешно загружены.");
+            this.$toast.success("Теги успешно загружены.");
             this.load = false
         }
         catch (e)
         {
-            this.$toast.error("Ошибка во время загрузки производетелей.");
+            this.$toast.error("Ошибка во время загрузки тегов.");
             this.load = false
         }
     }
@@ -177,39 +158,6 @@ export default class ManufacturerTable extends Vue {
             this.$emit('item-selected', newVal[0])
             this.closeDialog(false)
         }
-    }
-
-    computedFilter(): string {
-      let url = '';
-
-      if (Object.keys(this.filterBy).length > 0) {
-        Object.keys(this.filterBy).forEach(el => {
-          if (this.filterBy[el] != null || this.filterBy[el] != "" || this.filterBy[el] > 0)
-            url += `&${el}=${this.filterBy[el]}`
-        })
-      }
-
-      return url
-    }
-
-    get computedUrl() {
-      let url = ''
-
-      if (this.options.sortBy.length <= 0)
-        url = `api/v1/manufacturer?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}`;
-      else
-        url = `api/v1/manufacturer?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}&sortBy=${this.options.sortBy[0]} ${this.options.sortDesc[0] ? "desc" : ""}`;
-
-      return url
-    }
-
-    submitFilter() {
-      this.getData()
-    }
-
-    clearFilter() {
-      this.filterBy = {}
-      this.getData()
     }
 }
 </script>

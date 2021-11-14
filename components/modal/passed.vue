@@ -74,11 +74,15 @@ export default class PassedDialog extends Vue
         {
             this.verification.equipmentId = this.getEquipment.id
             this.loadingBtn = true
-            await this.$axios.post("api/v1/check", this.verification)
-            this.$toast.success("Пройденная поверка успешно добавлена.")
-            this.loadingBtn = false
-            this.$emit("save", true)
-            this.closeDialog(false)
+            await this.$axios.post("api/v1/check", this.verification).then(response => {
+              this.$toast.success("Пройденная поверка успешно добавлена.")
+              this.loadingBtn = false
+              this.$emit("save", true)
+              this.closeDialog(false)
+            }).catch(error => {
+              this.$toast.error("Ошибка во время добавление пройденной поверки.");
+              this.loadingBtn = false;
+            })
         }
         catch (e)
         {

@@ -83,24 +83,12 @@
                           <v-col cols="9">
                                 <v-text-field type="date" dense label="Пройденная поверка от" outlined v-model="filterBy.currentCheckStart"></v-text-field>
                                 <v-text-field type="date" dense label="Пройденная поверка по" outlined v-model="filterBy.currentCheckEnd"></v-text-field>
-                          </v-col>
-                          <v-col cols="9">
                                 <v-text-field type="date" dense label="Предстоящая поверка от" outlined v-model="filterBy.nextCheckStart"></v-text-field>
                                 <v-text-field type="date" dense label="Предстоящая поверка по" outlined v-model="filterBy.nextCheckEnd"></v-text-field>
-                          </v-col>
-                          <v-col cols="9">
-                                <v-text-field dense label="Имя оборудования" outlined v-model="filterBy.equipmentName"></v-text-field>
-                          </v-col>
-                          <v-col cols="9">
+                                <v-text-field dense label="Наименование оборудования" outlined v-model="filterBy.equipmentName"></v-text-field>
                                 <v-text-field dense label="Модель" outlined v-model="filterBy.equipmentModel"></v-text-field>
-                          </v-col>
-                          <v-col cols="9">
                                 <v-text-field dense label="Серийный номер" outlined v-model="filterBy.equipmentSerialNumber"></v-text-field>
-                          </v-col>
-                          <v-col cols="10">
                                 <type @select-id="getTypeId" :show-view="true"></type>
-                          </v-col>
-                          <v-col cols="10">
                                 <department @select-id="getDepartmentId" :show-view="true"></department>
                           </v-col>
                       </v-row>
@@ -130,7 +118,7 @@ export default class ChecksView extends Vue {
         { text: 'Предстоящая', align: 'start', sortable: true, value: 'nextCheck'},
         { text: 'Подразделение', align: 'start', sortable: true, value: 'equipment.department' },
         { text: 'Номер', align: 'start', sortable: true, value: 'equipment.number' },
-        { text: 'Оборудование', align: 'start', sortable: true, value: 'equipment.name'},
+        { text: 'Наименование оборудования', align: 'start', sortable: true, value: 'equipment.name'},
         { text: 'Вид', align: 'start', sortable: true, value: 'equipment.type'},
         { text: 'Модель', align: 'start', sortable: true, value: 'equipment.model'},
         { text: 'С/Н', align: 'end', sortable: true, value: 'equipment.serialNumber'},

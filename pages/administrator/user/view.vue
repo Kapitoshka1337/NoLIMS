@@ -71,14 +71,8 @@
               <v-row>
                 <v-col cols="9">
                   <v-text-field dense label="Имя" outlined v-model="filterBy.firstName"></v-text-field>
-                </v-col>
-                <v-col cols="9">
                   <v-text-field dense label="Фамилия" outlined v-model="filterBy.middleName"></v-text-field>
-                </v-col>
-                <v-col cols="9">
                   <v-text-field dense label="Отчество" outlined v-model="filterBy.lastName"></v-text-field>
-                </v-col>
-                <v-col cols="10">
                   <department @select-id="getDepartmentId" :show-view="true"></department>
                 </v-col>
               </v-row>

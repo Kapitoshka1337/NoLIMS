@@ -14,7 +14,7 @@
                                 <v-form v-if="Object.keys(gridData).length > 0">
                                     <v-row>
                                         <v-col cols="12" md="6">
-                                            <v-text-field clearable dense label="Имя" outlined v-model="gridData.name"></v-text-field>
+                                            <v-text-field clearable dense label="Наименование" outlined v-model="gridData.name"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" md="6">
                                             <manufacturer @select-id="getManufacturerId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.manufacturerId"></manufacturer>
@@ -29,7 +29,7 @@
                                             <v-text-field clearable dense label="Модель" outlined v-model="gridData.model"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" md="3">
-                                            <v-text-field clearable type="date" dense label="Дата изготовления" outlined v-model="gridData.dateCreated"></v-text-field>
+                                            <v-text-field clearable type="date" dense label="Дата изготовления" outlined v-model="gridData.dateCreate"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" md="4">
                                             <v-text-field clearable dense label="Номер" outlined v-model="gridData.number"></v-text-field>
@@ -40,11 +40,14 @@
                                         <v-col cols="12" md="4">
                                             <v-text-field clearable type="date" dense label="Дата ввода в эксплуатацию" outlined v-model="gridData.dateCommissioning"></v-text-field>
                                         </v-col>
-                                        <v-col cols="12">
+                                        <v-col cols="6">
                                             <department @select-id="getDepartmentId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.departmentId"></department>
                                         </v-col>
+                                        <v-col cols="6">
+                                            <tags @select-id="getTagsId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.tagId"></tags>
+                                        </v-col>
                                         <v-col cols="12" md="12">
-                                            <v-textarea :rows="2" :height="100" dense label="Примечание" outlined></v-textarea>
+                                            <v-textarea :rows="2" :height="100" dense label="Примечание" outlined v-model="gridData.description"></v-textarea>
                                         </v-col>
                                     </v-row>
                                 </v-form>
@@ -79,12 +82,12 @@
                         <v-tab-item>
                             <v-card-text>
                                 <v-data-table dense :headers="tableColumn" :items="gridData.checks" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Количество записей'}">
-                                    <template v-slot:item.currentCheck="{ item }">
-                                        {{ formatDate(item.currentCheck) }}
-                                    </template>
-                                    <template v-slot:item.nextCheck="{ item }">
-                                        {{ formatDate(item.nextCheck) }}
-                                    </template>
+                                  <template v-slot:item.currentCheck="{ item }">
+                                    {{ formatDateLocalDate(item.currentCheck) }}
+                                  </template>
+                                  <template v-slot:item.nextCheck="{ item }">
+                                    {{ formatDateLocalDate(item.nextCheck) }}
+                                  </template>
                                     <template v-slot:item.fileId="{ item }">
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on, attrs }">
@@ -103,7 +106,7 @@
                           <v-card-text>
                             <v-data-table dense :headers="tableColumnMoving" :items="gridData.movings" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Количество записей'}">
                               <template v-slot:item.movingDate="{ item }">
-                                {{ formatDate(item.movingDate) }}
+                                {{ formatDateLocalDate(item.movingDate) }}
                               </template>
                               <template v-slot:no-data>
                                 Пока ничего нет :(
@@ -119,6 +122,8 @@
                     </v-tabs>
                 </v-card-text>
                 <v-card-actions v-if="can()">
+                    <v-chip>±</v-chip>
+                    <v-chip>°</v-chip>
                     <v-spacer></v-spacer>
                     <v-btn color="success" :disabled="!changed" @click="update()" :loading="updateLoad">Сохранить</v-btn>
                 </v-card-actions>
@@ -132,9 +137,10 @@ import { Component, Vue, Watch } from "nuxt-property-decorator"
 import Department from '../../../components/formui/department/view.vue'
 import Manufacturer from '../../../components/formui/manufacturer/view.vue'
 import Type from '../../../components/formui/type/view.vue'
+import Tags from '../../../components/formui/tags/view.vue'
 import FileSaver from 'file-saver'
 
-@Component({ components: { Department, Manufacturer, Type } })
+@Component({ components: { Department, Manufacturer, Type, Tags } })
 export default class EquipmentDetails extends Vue
 {
     tableColumn: Array<object> = [
@@ -155,6 +161,10 @@ export default class EquipmentDetails extends Vue
     changed: boolean = false
     updateLoad: boolean = false
 
+    formatDate(date: any) {
+      return date === null ? null : date.split("T")[0];
+    }
+
     async getData (){
         try
         {
@@ -171,12 +181,8 @@ export default class EquipmentDetails extends Vue
         }
     }
 
-    formatDate(date: any){
+    formatDateLocalDate(date: any){
         return date === null ? null : new Date(date).toLocaleString().split(',')[0];
-    }
-
-    formatDateUTC(date: any){
-        return date === null ? null : new Date(date).toUTCString().split(',')[0];
     }
 
     getDepartmentId (value: number)
@@ -189,13 +195,19 @@ export default class EquipmentDetails extends Vue
         this.gridData.manufacturerId = value;
     }
 
+    getTagsId(value: number) {
+      this.gridData.tagId = value;
+    }
+
     getTypeId (value: number)
     {
         this.gridData.typeId = value;
     }
 
     @Watch("gridData", { deep: true })
-    equipment(newVal: object, oldVal: object){
+    equipment(newVal: object, oldVal: object) {
+        newVal.dateCreate = this.formatDate(newVal.dateCreate)
+        newVal.dateCommissioning = this.formatDate(newVal.dateCommissioning)
         this.changed = true
     }
 
