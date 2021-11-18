@@ -111,44 +111,14 @@ export default class DepartmentTable extends Vue {
     }
 
     created() {
-        // if (this.findId != null || this.findId > 0)
-        // {
-        //     this.getData();
-
-        //     let dep = this.gridData.filter(el => el.id == this.findId);
-            
-        //     if (dep != null || dep.length > 0)
-        //         this.selected.push(dep);
-        // }
-        // else
-            this.getData();
+        this.getData();
     }
 
     async getData() {
-        try
-        {
-            this.load = true;
-            let url: string = "";
-
-            if (this.options.sortBy.length <= 0)
-                url = `api/v1/department?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}`;
-            else
-                url = `api/v1/department?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}&sortBy=${this.options.sortBy[0]} ${this.options.sortDesc[0] ? "desc" : ""}`;
-
-            await this.$axios.get(url).then(response => {
-                    this.gridData = response.data["data"]
-                    this.totalRecord = response.data['totalRecords']
-                }
-            );
-
-            this.$toast.success("Подразделения успешно загружены.");
-            this.load = false
-        }
-        catch (e)
-        {
-            this.$toast.error("Ошибка во время загрузки подразделений.");
-            this.load = false
-        }
+      this.load = true;
+      let data = await this.$department.view(this.options, this.filterBy);
+      this.gridData = data['data']
+      this.totalRecord = data['totalRecords']
     }
 
     @Watch("options", { deep: true })
@@ -158,8 +128,9 @@ export default class DepartmentTable extends Vue {
 
     @Watch("gridData")
     watchToGridData(newVal: Array<object>){
-        if (newVal.length > 0)
-            this.load = false
+        if (newVal)
+            if (newVal.length > 0)
+                this.load = false
     }
 
     @Watch("selected")

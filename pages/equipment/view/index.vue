@@ -209,52 +209,10 @@ export default class EquipmentView extends Vue {
 
     async getData()
     {
-        try
-        {
-            this.load = true;
-            let url: string = this.computedUrl;
-            let filterUrl: string = this.computedFilter();
-
-            await this.$axios.get(url + filterUrl).then(response => {
-                    this.gridData = response.data["data"]
-                    this.totalRecord = response.data['totalRecords']
-                }
-            );
-            this.load = false
-            this.$toast.success("Оборудование успешно загружено.");
-        }
-        catch (e)
-        {
-            this.$toast.error("Ошибка во время загрузки оборудования.");
-            this.load = false
-        }
-    }
-
-    computedFilter() : string
-    {
-        let url = '';
-
-        if (Object.keys(this.filterBy).length > 0)
-        {
-            Object.keys(this.filterBy).forEach(el => {
-                if (this.filterBy[el] != null || this.filterBy[el] != "" || this.filterBy[el] > 0)
-                    url += `&${el}=${this.filterBy[el]}`
-            })
-        }
-
-        return url
-    }
-
-    get computedUrl()
-    {
-        let url = ''
-
-        if (this.options.sortBy.length <= 0)
-            url = `api/v1/equipment?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}`;
-        else
-            url = `api/v1/equipment?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}&sortBy=${this.options.sortBy[0]} ${this.options.sortDesc[0] ? "desc" : ""}`;
-        
-        return url
+      this.load = true;
+      let data = await this.$equipment.view(this.options, this.filterBy);
+      this.gridData = data['data']
+      this.totalRecord = data['totalRecords']
     }
 
     submitFilter(){
@@ -273,7 +231,6 @@ export default class EquipmentView extends Vue {
 
     @Watch("gridData")
     watchToGridData(newVal: Array<object>){
-    if (newVal.length > 0)
         this.load = false
     }
 

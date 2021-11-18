@@ -77,6 +77,12 @@
             <v-chip color="teal" small text-color="white">{{ status.name }}</v-chip>
           </v-chip-group>
         </template>
+				<!-- <template v-slot:item.departmentNumber="{ item }">
+          {{ item.equipment.department.number }}
+				</template>
+				<template v-slot:item.department="{ item }">
+          {{ item.equipment.department.name }}
+				</template> -->
 				<template v-slot:item.actions="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -98,6 +104,7 @@
                               <v-text-field dense label="Модель" outlined v-model="filterBy.equipmentModel"></v-text-field>
                               <v-text-field dense label="Серийный номер" outlined v-model="filterBy.equipmentSerialNumber"></v-text-field>
                               <v-autocomplete :items="statusesId" :clearable="true" outlined dense label="Состояние" v-model="filterBy.statusId"></v-autocomplete>
+                              <department @select-id="getDepartmentId" :show-view="true"></department>
                         </v-col>
                     </v-row>
                 </v-form>
@@ -119,11 +126,13 @@
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import passedDialog from '../../../components/modal/passed.vue';
 import csmDialog from '../../../components/modal/csm.vue';
+import Department from '../../../components/formui/department/view.vue'
 
-  @Component({ components: { passedDialog, csmDialog } })
+  @Component({ components: { passedDialog, csmDialog, Department } })
   export default class VerificationView extends Vue {
     tableColumn: Array<object> = [
-      { text: 'Номер', align: 'start', sortable: true, value: 'equipment.number' },
+      { text: 'Подразделение', align: 'start', sortable: true, value: 'equipment.department.name' },
+      { text: 'Номер оборудования', align: 'start', sortable: true, value: 'equipment.number' },
       { text: 'Наименование оборудования', align: 'start', sortable: true, value: 'equipment.name' },
       { text: 'Модель', align: 'start', sortable: true, value: 'equipment.model' },
       { text: 'Серийный номер', align: 'start', sortable: true, value: 'equipment.serialNumber' },
@@ -153,6 +162,11 @@ import csmDialog from '../../../components/modal/csm.vue';
         { value: 4, text: "Отдано в отдел"}
     ]
 
+    getDepartmentId (value: number)
+    {   
+        this.filterBy.departmentId = value
+    }
+
     canDelete()
     {
         return this.$permissions.can('delete', 'verification');
@@ -163,25 +177,10 @@ import csmDialog from '../../../components/modal/csm.vue';
     }
 
     async getData() {
-        try
-        {
-            this.load = true;
-            let url: string = this.computedUrl;
-            let filterUrl: string = this.computedFilter();
-
-            await this.$axios.get(url + filterUrl).then(response => {
-                    this.gridData = response.data["data"]
-                    this.totalRecord = response.data['totalRecords']
-                }
-            );
-            this.load = false
-            this.$toast.success("Поверки успешно загружены.");
-        }
-        catch (e)
-        {
-            this.$toast.error("Ошибка во время загрузки поверок.");
-            this.load = false
-        }
+      this.load = true;
+      let data = await this.$verifications.view(this.options, this.filterBy);
+      this.gridData = data['data']
+      this.totalRecord = data['totalRecords']
     }
 
     @Watch("options", { deep: true })
@@ -191,7 +190,6 @@ import csmDialog from '../../../components/modal/csm.vue';
 
     @Watch("gridData")
     watchToGridData(newVal: Array<object>) {
-      if (newVal.length > 0)
         this.load = false
     }
 
@@ -381,33 +379,6 @@ import csmDialog from '../../../components/modal/csm.vue';
       catch (e) {
         this.$toast.error("Ошибка во время выполнения.");
       }
-    }
-
-    computedFilter() : string
-    {
-        let url = '';
-
-        if (Object.keys(this.filterBy).length > 0)
-        {
-            Object.keys(this.filterBy).forEach(el => {
-                if (this.filterBy[el] != null || this.filterBy[el] != "" || this.filterBy[el] > 0)
-                    url += `&${el}=${this.filterBy[el]}`
-            })
-        }
-
-        return url
-    }
-
-    get computedUrl()
-    {
-        let url = ''
-
-        if (this.options.sortBy.length <= 0)
-            url = `api/v1/verification?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}`;
-        else
-            url = `api/v1/verification?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}&sortBy=${this.options.sortBy[0]} ${this.options.sortDesc[0] ? "desc" : ""}`;
-        
-        return url
     }
 
     submitFilter(){

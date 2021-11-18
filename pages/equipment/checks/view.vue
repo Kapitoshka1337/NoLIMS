@@ -42,7 +42,7 @@
                     <template v-slot:activator="{ on: menu, attrs }">
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on: tooltip }">
-                        <v-btn v-bind="attrs" v-on="{ ...tooltip, ...menu }" icon v-can:add="'equipment'"><v-icon>mdi-printer</v-icon></v-btn>
+                        <v-btn v-bind="attrs" v-on="{ ...tooltip, ...menu }" icon v-can:view="'checks'"><v-icon>mdi-printer</v-icon></v-btn>
                         </template>
                         <span>Печать шаблонов</span>
                     </v-tooltip>
@@ -145,25 +145,10 @@ export default class ChecksView extends Vue {
 
     async getData()
     {
-        try
-        {
-            this.load = true;
-            let url: string = this.computedUrl;
-            let filterUrl: string = this.computedFilter();
-
-            await this.$axios.get(url + filterUrl).then(response => {
-                    this.gridData = response.data["data"]
-                    this.totalRecord = response.data['totalRecords']
-                }
-            );
-            this.load = false
-            this.$toast.success("Поверки успешно загружены.");
-        }
-        catch (e)
-        {
-            this.$toast.error("Ошибка во время загрузки поверок.");
-            this.load = false
-        }
+      this.load = true;
+      let data = await this.$checks.view(this.options, this.filterBy);
+      this.gridData = data['data']
+      this.totalRecord = data['totalRecords']
     }
 
     getTypeId(value: number) {
@@ -172,33 +157,6 @@ export default class ChecksView extends Vue {
 
     getDepartmentId(value: number) {
       this.filterBy.departmentId = value
-    }
-
-    computedFilter() : string
-    {
-        let url = '';
-
-        if (Object.keys(this.filterBy).length > 0)
-        {
-            Object.keys(this.filterBy).forEach(el => {
-                if (this.filterBy[el] != null || this.filterBy[el] != "" || this.filterBy[el] > 0)
-                    url += `&${el}=${this.filterBy[el]}`
-            })
-        }
-
-        return url
-    }
-
-    get computedUrl()
-    {
-        let url = ''
-
-        if (this.options.sortBy.length <= 0)
-            url = `api/v1/check?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}`;
-        else
-            url = `api/v1/check?pageNumber=${this.options.page}&pageSize=${this.options.itemsPerPage}&sortBy=${this.options.sortBy[0]} ${this.options.sortDesc[0] ? "desc" : ""}`;
-        
-        return url
     }
 
     submitFilter(){
@@ -217,7 +175,6 @@ export default class ChecksView extends Vue {
 
     @Watch("gridData")
     watchToGridData(newVal: Array<object>){
-    if (newVal.length > 0)
         this.load = false
     }
 

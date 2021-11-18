@@ -21,27 +21,27 @@ export default ({store, context}) => {
             }
     })
 
-    Vue.prototype.$permissions = {
+    // Vue.prototype.$permissions = {
 
-        can(operation, module){
+    //     can(operation, module){
             
-            if (operation == null || module == null)
-                return false
+    //         if (operation == null || module == null)
+    //             return false
 
-            let route = store.app.router.app.$route;
-            let routeName = route.name.split('-').length > 0 ? route.name.split('-')[0] : route.name
-            let value = store.$auth.$state.user.claims.filter(claim => claim.module == routeName)
+    //         let route = store.app.router.app.$route;
+    //         let routeName = route.name.split('-').length > 0 ? route.name.split('-')[0] : route.name
+    //         let value = store.$auth.$state.user.claims.filter(claim => claim.module == routeName)
             
-            if (value.length <= 0)
-                return false;
+    //         if (value.length <= 0)
+    //             return false;
 
-            let permission = `${module}.${operation}`
-            let result = Object.keys(value[0].permissions).filter(key => key === permission)
+    //         let permission = `${module}.${operation}`
+    //         let result = Object.keys(value[0].permissions).filter(key => key === permission)
             
-            if (result.length <= 0)
-                return false;
+    //         if (result.length <= 0)
+    //             return false;
 
-            return true;
-        }
-    }
+    //         return true;
+    //     }
+    // }
 }

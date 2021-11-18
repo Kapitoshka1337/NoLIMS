@@ -29,7 +29,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/axios.js',
-    '~/plugins/checkPermission.js'
+    '~/plugins/checkPermission.js',
+    '~/plugins/services.plugin.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -61,7 +62,8 @@ export default {
     baseURL: "https://localhost:9001/",
     common: {
       "Content-type" : "applications/json"
-    }
+    },
+    credentials: false
     // proxy: true
   },
 

@@ -48,12 +48,14 @@ export default class DepartmentAutocomplete extends Vue
     async getData() {
         try
         {
-            await this.$axios.get(`api/v1/department/${this.existedId}`).then(response => {
-                    this.department = response.data["data"]
-                }
-            );
-
-            this.$toast.success("Подразделение успешно загружено.");
+            if (this.$permissions.can('view', 'department'))
+                await this.$axios.get(`api/v1/department/${this.existedId}`).then(response => {
+                        this.department = response.data["data"]
+                        this.$toast.success("Подразделение успешно загружено.")
+                    }
+                );
+            else
+                this.$toast.success("У вас нет прав на просмотр подразделений!");
         }
         catch (e)
         {
