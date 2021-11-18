@@ -225,6 +225,14 @@ namespace Infrastructure.Persistence.Extension
                 expr.And("Equipment.SerialNumber", DynamicExpressions.FilterOperator.Contains, request.EquipmentSerialNumber);
             }
 
+            if (request.DepartmentId > 0)
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Verification>();
+
+                expr.And("Equipment.Department.Id", DynamicExpressions.FilterOperator.Equals, request.DepartmentId);
+            }
+
             if (request.StatusId > 0)
             {
                 if (expr == null)

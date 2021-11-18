@@ -31,7 +31,7 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<IReadOnlyList<Verification>> GetPagedReponseAsync(GetAllVerificationParameter filter)
         {
             var verifications = await _verifications
-                .Include(v => v.Equipment)
+                .Include(v => v.Equipment).ThenInclude(e => e.Department)
                 .Include(v => v.Status)
                 .FilterVerification(filter)
                 .Sort(filter.SortBy)

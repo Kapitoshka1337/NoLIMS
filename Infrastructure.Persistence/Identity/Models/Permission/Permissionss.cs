@@ -87,7 +87,7 @@
         public static class Department
         {
             public const int Id = 9;
-            public const string Resource = "equipment";
+            public const string Resource = "base";
             public const string Add = "department.add";
             public const string Edit = "department.edit";
             public const string Delete = "department.delete";
