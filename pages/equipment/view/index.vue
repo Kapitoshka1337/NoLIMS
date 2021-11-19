@@ -76,10 +76,7 @@
             </v-toolbar>
         </template>
         <template v-slot:item.tag="{ item }">
-          <v-chip v-if="item.tag != null" color="green" small text-color="white">{{ item.tag }}</v-chip>
-          <!--<v-chip-group v-for="status in item.status">
-                <v-chip v-if="status != null" color="teal" small text-color="white">{{ status.tag.name[0] }}</v-chip>
-            </v-chip-group>-->
+          {{ item.tag }}
         </template>
         <template v-slot:item.actions="{ item }">
             <v-tooltip bottom>
@@ -141,7 +138,7 @@ export default class EquipmentView extends Vue {
         { text: 'Наименование', align: 'start', sortable: true, value: 'name' },
         { text: 'Модель', align: 'start', sortable: true, value: 'model'},
         { text: 'С/Н', align: 'end', sortable: true, value: 'serialNumber'},
-        { text: 'Тег', align: 'center', sortable: true, value: 'tag'},
+        { text: 'Статус', align: 'center', sortable: true, value: 'tag'},
         { text: '', align: 'center', sortable: false, value: 'actions'}
     ]
     gridData: Array<object> = []

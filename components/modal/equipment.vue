@@ -54,6 +54,8 @@
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
+                    <v-chip>±</v-chip>
+                    <v-chip>°</v-chip>
                     <v-spacer></v-spacer>
                     <v-btn color="success" @click="submit()" :loading="loading">ОК</v-btn>
                     <v-btn color="error" v-on:click="closeDialog()">Отмена</v-btn>

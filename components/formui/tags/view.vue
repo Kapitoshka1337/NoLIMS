@@ -1,14 +1,14 @@
 <template>
   <v-row>
     <v-col cols="11">
-        <v-text-field readonly dense label="Тег" outlined v-model="tags.name"></v-text-field>
+        <v-text-field readonly dense label="Статус" outlined v-model="tags.name"></v-text-field>
     </v-col>
     <v-col cols="1" v-if="showView">
         <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
                 <v-btn v-bind="attrs" v-on="on" icon @click="showTable = true"><v-icon>mdi-dots-horizontal</v-icon></v-btn>
             </template>
-            <span>Теги</span>
+            <span>Просмотр статусов</span>
         </v-tooltip>
     </v-col>
     <table-tags :visible="showTable" @close="closeTable()" @item-selected="selectedItem"></table-tags>

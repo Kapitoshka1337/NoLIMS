@@ -1,7 +1,7 @@
 <template>
     <v-dialog dense v-model="getVisible" @input="closeDialog()">
         <v-card>
-            <v-card-title>Теги</v-card-title>
+            <v-card-title>Статус</v-card-title>
             <v-divider></v-divider>
             <v-card-text>
                 <v-data-table
@@ -34,20 +34,6 @@
                             <span>Обновить</span>
                         </v-tooltip>
                         <v-divider inset vertical></v-divider>
-                        <!--<v-tooltip bottom>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn v-bind="attrs" v-on="on" icon @click="showDialogCreate = true"><v-icon>mdi-plus</v-icon></v-btn>
-                            </template>
-                            <span>Создать подразделение</span>
-                        </v-tooltip>
-                        <v-divider inset vertical></v-divider>
-                        <v-spacer></v-spacer>
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn v-bind="attrs" v-on="on" icon @click="draw()"><v-icon>mdi-filter</v-icon></v-btn>
-                            </template>
-                            <span>Фильтрация</span>
-                        </v-tooltip>-->
                     </v-toolbar>
                 </template>
                 </v-data-table>
@@ -65,7 +51,6 @@
 
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from 'nuxt-property-decorator';
-//import CreateDepartment from './create.vue'
 
 @Component
 export default class TagsTable extends Vue {
