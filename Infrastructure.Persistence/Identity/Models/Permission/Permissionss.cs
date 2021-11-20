@@ -97,7 +97,7 @@
         public static class Location
         {
             public const int Id = 10;
-            public const string Resource = "equipment";
+            public const string Resource = "base";
             public const string Add = "location.add";
             public const string Edit = "location.edit";
             public const string Delete = "location.delete";

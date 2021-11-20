@@ -60,7 +60,7 @@ namespace Infrastructure.Persistence.Repository
                  .ToListAsync();
         }
 
-        public virtual async Task<int> CountAsync()
+        public virtual async Task<int> CountAsync(RequestParameter filter)
         {
             return await _dbContext.Set<T>().CountAsync();
         }

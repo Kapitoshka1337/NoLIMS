@@ -2,5 +2,9 @@
 
 namespace Application.Features.Base.Location.GetAll
 {
-    public class Parameter : RequestParameter { }
+    public class Parameter : RequestParameter
+    {
+        public string NumberRoom { get; set; }
+        public int? DepartmentId { get; set; }
+    }
 }

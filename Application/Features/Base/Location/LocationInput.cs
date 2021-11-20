@@ -9,10 +9,7 @@ namespace Application.Features.Base.Location
 {
     public class LocationInput : IRequest<Response<int>>
     {
-        public string Name { get; set; }
         public string NumberRoom { get; set; }
-        public string Notation { get; set; }
-        public string Storage { get; set; }
         public int DepartmentId { get; set; }
     }
 
@@ -20,6 +17,7 @@ namespace Application.Features.Base.Location
     {
         private readonly ILocationRepository _repository;
         private readonly IMapper _mapper;
+        
         public LocationInputHandler(ILocationRepository repository, IMapper mapper)
         {
             _repository = repository;
@@ -30,9 +28,9 @@ namespace Application.Features.Base.Location
         {
             var dto = _mapper.Map<DTOs.Base.Location>(request);
             var bases = _mapper.Map<Domain.Entities.Base.Location>(dto);
-            await _repository.AddAsync(bases);
+            var addedItem = await _repository.AddAsync(bases);
 
-            return new Response<int>(bases.Id);
+            return new Response<int>(addedItem.Id);
         }
     }
 }

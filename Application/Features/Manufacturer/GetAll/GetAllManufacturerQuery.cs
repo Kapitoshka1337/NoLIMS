@@ -35,7 +35,7 @@ namespace Application.Features.Manufacturer.GetAll
             var validFilter = _mapper.Map<GetAllManufacturerParameter>(request);
             var manufacturers = await _manufacturerRepository.GetPagedReponseAsync(validFilter);
 
-            var totalRecords = await _manufacturerRepository.CountAsync();
+            var totalRecords = await _manufacturerRepository.CountAsync(validFilter);
             var totalPages = ((double)totalRecords / (double)validFilter.PageSize);
 
             var equipmentViewModel = _mapper.Map<IEnumerable<GetAllManufacturerViewModel>>(manufacturers);

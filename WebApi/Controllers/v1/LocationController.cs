@@ -4,12 +4,20 @@ using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace WebApi.Controllers.v1
 {
     [ApiVersion("1.0")]
     public class LocationController : BaseApiController
     {
+        private readonly IMapper _mapper;
+        
+        public LocationController(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         [HttpPost]
         [Authorize(Policy = PolicyTypes.Department.Add)]
         public async Task<IActionResult> Post(LocationInput command)
@@ -28,19 +36,23 @@ namespace WebApi.Controllers.v1
         [Authorize(Policy = PolicyTypes.Department.View)]
         public async Task<IActionResult> Get([FromQuery] Parameter filter)
         {
-            return Ok(await Mediator.Send(new Query() { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+            var query = _mapper.Map<Query>(filter);
+
+            return Ok(await Mediator.Send(query));
         }
 
-        //[HttpPost("update/{id}")]
-        //[Authorize(Policy = PolicyTypes.DocumentKind.Edit)]
-        //public async Task<IActionResult> Put(int id, UpdateEquipmentCommand command)
-        //{
-        //    if (id != command.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpGet("{id}")]
+        [Authorize(Policy = PolicyTypes.Location.View)]
+        public async Task<IActionResult> GetById(int id)
+        {
+            return Ok(await Mediator.Send(new ByIdQuery() { Id = id }));
+        }
 
-        //    return Ok(await Mediator.Send(command));
-        //}
+        [HttpPost("update")]
+        [Authorize(Policy = PolicyTypes.Location.Edit)]
+        public async Task<IActionResult> Put(UpdateLocation command)
+        {
+           return Ok(await Mediator.Send(command));
+        }
     }
 }

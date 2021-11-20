@@ -137,8 +137,9 @@ namespace Application.Mappings
             CreateMap<LocationInput, Application.DTOs.Base.Location>();
             CreateMap<Application.DTOs.Base.Location, Location>();
             CreateMap<Location, Application.DTOs.Base.Location>();
-            CreateMap<Application.Features.Base.Location.GetAll.Query, Application.Features.Base.Location.GetAll.Parameter>();
+            CreateMap<Application.Features.Base.Location.GetAll.Query, Application.Features.Base.Location.GetAll.Parameter>().ReverseMap();
             CreateMap<Domain.Entities.Base.Location, Application.Features.Base.Location.GetAll.ViewModel>().ReverseMap();
+            CreateMap<Domain.Entities.Base.Location, Application.Features.Base.Location.GetAll.ViewModelDepId>().ReverseMap();
 
             // Инструкции.
             CreateMap<InstructionInput, Application.DTOs.Equipment.Instruction>();

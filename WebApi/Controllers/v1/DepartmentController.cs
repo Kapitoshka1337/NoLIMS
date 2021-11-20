@@ -47,9 +47,10 @@ namespace WebApi.Controllers.v1
         {
             return Ok(await Mediator.Send(new ByIdQuery() { Id = id }));
         }
+        
         [HttpPost("update")]
         [Authorize(Policy = PolicyTypes.Department.Edit)]
-        public async Task<IActionResult> Put(Update command)
+        public async Task<IActionResult> Put(UpdateDepartment command)
         {
            return Ok(await Mediator.Send(command));
         }

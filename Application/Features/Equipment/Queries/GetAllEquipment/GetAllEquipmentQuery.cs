@@ -28,6 +28,7 @@ namespace Application.Features.Equipment.Queries.GetAllEquipment
         public int? ManufacturerId { get; set; }
         public int? DepartmentId { get; set; }
         //public Location Location { get; set; }
+        public int? LocationId { get; set; }
         public int? TypeId { get; set; }
         public int? TagId { get; set; }
         //public DTOs.Equipment.Instruction Instruction { get; set; }

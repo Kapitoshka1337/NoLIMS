@@ -32,7 +32,7 @@ namespace Application.Features.Type.GetAll
             var validFilter = _mapper.Map<Parameter>(request);
             var manufacturers = await _repository.GetPagedReponseAsync(validFilter);
 
-            var totalRecords = await _repository.CountAsync();
+            var totalRecords = await _repository.CountAsync(validFilter);
             var totalPages = ((double)totalRecords / (double)validFilter.PageSize);
 
             var equipmentViewModel = _mapper.Map<IEnumerable<ViewModel>>(manufacturers);

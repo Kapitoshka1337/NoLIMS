@@ -32,7 +32,7 @@ namespace Application.Features.DocumentKind.GetAll
             var validFilter = _mapper.Map<GetAllDocumentKindParameter>(request);
             var equipment = await _documentKindRepository.GetPagedReponseAsync(validFilter);
             
-            var totalRecords = await _documentKindRepository.CountAsync();
+            var totalRecords = await _documentKindRepository.CountAsync(validFilter);
             var totalPages = ((double)totalRecords / (double)validFilter.PageSize);
 
             var equipmentViewModel = _mapper.Map<IEnumerable<GetAllDocumentKindViewModel>>(equipment);
