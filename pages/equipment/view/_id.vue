@@ -121,11 +121,11 @@
                         </v-tab-item>
                     </v-tabs>
                 </v-card-text>
-                <v-card-actions v-if="can()">
+                <v-card-actions>
                     <v-chip>±</v-chip>
                     <v-chip>°</v-chip>
                     <v-spacer></v-spacer>
-                    <v-btn color="success" :disabled="!changed" @click="update()" :loading="updateLoad">Сохранить</v-btn>
+                    <v-btn color="success" :disabled="!changed" @click="update()" v-can:edit="equipment" :loading="updateLoad">Сохранить</v-btn>
                 </v-card-actions>
             </v-card>
         </v-col>
@@ -243,7 +243,7 @@ export default class EquipmentDetails extends Vue
         this.getData()
     }
 
-    activated(){
+    activated () {
         this.getData()
     }
 

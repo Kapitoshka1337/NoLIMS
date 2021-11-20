@@ -8,7 +8,7 @@
                     <v-form>
                         <v-row no-gutters>
                             <v-col cols="12">
-                                <v-text-field dense label="Имя" outlined v-model="department.name"></v-text-field>
+                                <v-text-field dense label="Наименование подразделения" outlined v-model="department.name"></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field dense label="Номер" outlined v-model="department.number"></v-text-field>

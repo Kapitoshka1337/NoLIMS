@@ -36,6 +36,9 @@ export default function ({ store }) {
         if (splitRoute.length == 2)
             str = `${splitRoute[0]}.${splitRoute[1]}`
 
+        if (splitRoute.length == 4)
+            str = `${splitRoute[1]}.${splitRoute[2]}`
+
         let keys = Object.keys(path[0].permissions).filter(key => key === str)
         
         if (keys == null || keys.length <= 0)

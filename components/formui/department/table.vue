@@ -34,12 +34,12 @@
                             <span>Обновить</span>
                         </v-tooltip>
                         <v-divider inset vertical></v-divider>
-                        <v-tooltip bottom>
+                        <!-- <v-tooltip bottom>
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn v-bind="attrs" v-on="on" icon @click="showDialogCreate = true"><v-icon>mdi-plus</v-icon></v-btn>
                             </template>
                             <span>Создать подразделение</span>
-                        </v-tooltip>
+                        </v-tooltip> -->
                         <v-divider inset vertical></v-divider>
                         <v-spacer></v-spacer>
                         <v-tooltip bottom>

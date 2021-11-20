@@ -39,9 +39,15 @@ export default class NavidationDrawer extends Vue
         visible: false,
         to: ""
       },
+      // {
+      //   name: "Пользователь",
+      //   module: 'user',
+      //   visible: false,
+      //   to: ""
+      // },
       {
-        name: "Пользователь",
-        module: 'user',
+        name: "Лаборатория",
+        module: 'base',
         visible: false,
         to: ""
       },

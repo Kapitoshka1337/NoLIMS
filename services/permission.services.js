@@ -7,12 +7,12 @@ export class PermissionService {
         if ((operation == null || resource == null) && !this.store.$auth.state.user)
             return false
 
-        let key = resource + "." + operation
+        let permission = `${resource}.${operation}`
         let path;
         // [ { } ] permission: [equimpent.view] <- KEY
         path = this.store.$auth.state.user.claims.filter(claim => {
             let dd = Object.keys(claim.permissions)
-            let ddd = dd.filter(k => k === key)
+            let ddd = dd.filter(k => k === permission)
             if (ddd.length > 0)
                 return dd
         })
@@ -20,7 +20,6 @@ export class PermissionService {
         if (path.length <= 0)
             return false;
 
-        let permission = `${resource}.${operation}`
         let result = Object.keys(path[0].permissions).filter(key => key === permission)
         
         if (result.length <= 0)
