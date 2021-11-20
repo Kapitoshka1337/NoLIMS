@@ -130,7 +130,7 @@ namespace Application.Mappings
             CreateMap<DepartmentInput, Application.DTOs.Base.Department>();
             CreateMap<Application.DTOs.Base.Department, Department>();
             CreateMap<Department, Application.DTOs.Base.Department>();
-            CreateMap<Application.Features.Base.Department.GetAll.Query, Application.Features.Base.Department.GetAll.Parameter>();
+            CreateMap<Application.Features.Base.Department.GetAll.Query, Application.Features.Base.Department.GetAll.Parameter>().ReverseMap();
             CreateMap<Domain.Entities.Base.Department, Application.Features.Base.Department.GetAll.ViewModel>().ReverseMap();
 
             // Местоположение.

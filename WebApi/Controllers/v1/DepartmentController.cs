@@ -4,12 +4,20 @@ using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace WebApi.Controllers.v1
 {
     [ApiVersion("1.0")]
     public class DepartmentController : BaseApiController
     {
+        private readonly IMapper _mapper;
+        
+        public DepartmentController(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         [HttpPost]
         [Authorize(Policy = PolicyTypes.Department.Add)]
         public async Task<IActionResult> Post(DepartmentInput command)
@@ -28,7 +36,9 @@ namespace WebApi.Controllers.v1
         [Authorize(Policy = PolicyTypes.Department.View)]
         public async Task<IActionResult> Get([FromQuery] Parameter filter)
         {
-            return Ok(await Mediator.Send(new Query() { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+            var query = _mapper.Map<Query>(filter);
+
+            return Ok(await Mediator.Send(query));
         }
 
         [HttpGet("{id}")]
@@ -37,16 +47,11 @@ namespace WebApi.Controllers.v1
         {
             return Ok(await Mediator.Send(new ByIdQuery() { Id = id }));
         }
-        //[HttpPost("update/{id}")]
-        //[Authorize(Policy = PolicyTypes.DocumentKind.Edit)]
-        //public async Task<IActionResult> Put(int id, UpdateEquipmentCommand command)
-        //{
-        //    if (id != command.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    return Ok(await Mediator.Send(command));
-        //}
+        [HttpPost("update")]
+        [Authorize(Policy = PolicyTypes.Department.Edit)]
+        public async Task<IActionResult> Put(Update command)
+        {
+           return Ok(await Mediator.Send(command));
+        }
     }
 }

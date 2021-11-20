@@ -14,6 +14,8 @@ namespace Application.Features.Base.Department.GetAll
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public string SortBy { get; set; }
+        public string Name { get; set; }
+        public string Number { get; set; }
     }
 
     public class QueryHandler : IRequestHandler<Query, PagedResponse<IEnumerable<ViewModel>>>
@@ -32,7 +34,7 @@ namespace Application.Features.Base.Department.GetAll
             var validFilter = _mapper.Map<Parameter>(request);
             var manufacturers = await _repository.GetPagedReponseAsync(validFilter);
 
-            var totalRecords = await _repository.CountAsync();
+            var totalRecords = await _repository.CountAsync(validFilter);
             var totalPages = ((double)totalRecords / (double)validFilter.PageSize);
 
             var equipmentViewModel = _mapper.Map<IEnumerable<ViewModel>>(manufacturers);
