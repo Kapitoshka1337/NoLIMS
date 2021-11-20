@@ -11,15 +11,14 @@
             <span>Подразделения</span>
         </v-tooltip>
     </v-col>
-    <table-department :visible="showTable" @close="closeTable()" @item-selected="selectedItem"></table-department>
+    <FormuiDepartmentDialog :visible="showTable" @close="closeTable()" @select-object="selectedItem"></FormuiDepartmentDialog>
   </v-row>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "nuxt-property-decorator"
-import TableDepartment from './table.vue'
 
-@Component({ components: { TableDepartment } })
+@Component
 export default class DepartmentAutocomplete extends Vue
 {
     loadSelect: boolean = false
@@ -76,6 +75,8 @@ export default class DepartmentAutocomplete extends Vue
     wExistedId(newVal: number){
         if (this.existedId != null || this.existedId > 0)
             this.getData()
+        
+        this.department = {}
     }
 }
 </script>

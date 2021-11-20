@@ -43,11 +43,11 @@ export default class ProductCover extends Vue
         },
         {
             title: "Местоположения",
-            module: "locations",
+            module: "location",
             actions: [
                 {
                     title: "Местоположения",
-                    link: "/base/locations/view",
+                    link: "/base/location/view",
                     desctiption: "Отобразить список местоположений"
                 }
             ]

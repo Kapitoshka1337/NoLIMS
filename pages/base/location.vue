@@ -6,5 +6,5 @@
 import { Component, Vue } from "nuxt-property-decorator"
 
 @Component
-export default class DepartmentCover extends Vue  {}
+export default class LocationCover extends Vue  {}
 </script>

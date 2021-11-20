@@ -8,11 +8,11 @@
                     <v-form v-if="Object.keys(gridData).length > 0">
                         <v-row>
                             <v-col cols="12" md="6">
-                                <v-text-field dense label="Наименование" v-model="gridData.name"></v-text-field>
+                                <v-text-field dense label="Номер кабинета" v-model="gridData.numberRoom"></v-text-field>
                             </v-col>
-                                <v-col cols="12" md="6">
-                                    <v-text-field dense label="Номер" v-model="gridData.number"></v-text-field>
-                                </v-col>
+                            <v-col cols="12" md="6">
+                                <FormuiDepartmentView @select-id="getDepartmentId" :show-view="this.$permissions.can('edit', 'location')" :existed-id="gridData.departmentId"></FormuiDepartmentView>
+                            </v-col>
                         </v-row>                        
                     </v-form>
                 </v-card-text>
@@ -30,7 +30,7 @@
 import { Component, Vue, Watch } from "nuxt-property-decorator"
 
 @Component
-export default class DepartmentDetails extends Vue
+export default class LocationDetails extends Vue
 {
     gridData: Object = {}
     changed: boolean = false
@@ -40,18 +40,23 @@ export default class DepartmentDetails extends Vue
     async getData (){
         try
         {
-            await this.$axios.get(`api/v1/department/${this.$route.params.id}`).then(response => {
+            await this.$axios.get(`api/v1/location/${this.$route.params.id}`).then(response => {
                     this.gridData = response.data["data"]
-                    this.name = this.gridData.name
+                    this.name = this.gridData.numberRoom
                 }
             );
             this.changed = false
-            this.$toast.success("Подразделение успешно загружено.");
+            this.$toast.success("Местоположение успешно загружено.");
         }
         catch (e)
         {
-            this.$toast.error("Ошибка во время загрузки подразделения.");
+            this.$toast.error("Ошибка во время загрузки местоположения.");
         }
+    }
+
+    getDepartmentId (value: number)
+    {
+        this.gridData.departmentId = value;
     }
 
     @Watch("gridData", { deep: true })
@@ -72,7 +77,7 @@ export default class DepartmentDetails extends Vue
             return
 
         this.updateLoad = true
-        let data = await this.$department.update(this.gridData);
+        let data = await this.$locations.update(this.gridData);
 
         if (data['data'] == true)
         {

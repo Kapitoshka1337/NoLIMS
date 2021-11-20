@@ -69,6 +69,8 @@ export default class ManufacturerAutocomplete extends Vue
     wExistedId(newVal: number){
         if (this.existedId != null || this.existedId > 0)
             this.getData()
+
+        this.manufacturer = {}
     }
 }
 </script>

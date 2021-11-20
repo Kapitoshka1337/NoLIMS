@@ -8,19 +8,10 @@
                     <v-form>
                         <v-row no-gutters>
                             <v-col cols="12">
-                                <v-text-field dense label="Имя" outlined v-model="location.name"></v-text-field>
+                                <v-text-field dense label="Номер кабинета" outlined v-model="location.numberRoom"></v-text-field>
                             </v-col>
-                            <v-col cols="12">
-                                <v-text-field dense label="Кабинет" outlined v-model="location.numberRoom"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field dense label="Место хранения" outlined v-model="location.storage"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field dense label="Примечание" outlined v-model="location.notation"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <department @select="getDepartmentId" :show-view="false" :show-create="false"></department>
+                            <v-col cols="11">
+                                <FormuiDepartmentView @select-id="getDepartmentId" :show-view="true"></FormuiDepartmentView>
                             </v-col>
                         </v-row>
                     </v-form>
@@ -38,9 +29,8 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Vue } from "nuxt-property-decorator"
-import Department from '../department/view.vue'
 
-@Component({ components: { Department } })
+@Component
 export default class DialogCreateLocation extends Vue
 {
     loading: boolean = false

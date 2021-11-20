@@ -95,9 +95,9 @@
                   <v-form>
                       <v-row>
                           <v-col cols="9">
-                                <tags @select-id="getTagsId" :show-view="true"></tags>
-                                <type @select-id="getTypeId" :show-view="true"></type>
-                                <department @select-id="getDepartmentId" :show-view="true"></department>
+                                <tags @select-id="getTagsId" :show-view="true" :existedId="filterBy.tagId"></tags>
+                                <type @select-id="getTypeId" :show-view="true" :existedId="filterBy.typeId"></type>
+                                <department @select-id="getDepartmentId" :show-view="true" :existedId="filterBy.departmentId"></department>
                                 <v-text-field dense label="Наименование" outlined v-model="filterBy.name"></v-text-field>
                                 <v-text-field dense label="Номер" outlined v-model="filterBy.number"></v-text-field>
                                 <v-text-field dense label="Модель" outlined v-model="filterBy.model"></v-text-field>

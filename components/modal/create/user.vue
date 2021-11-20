@@ -14,7 +14,7 @@
                           <v-text-field dense label="Учетная запись" outlined v-model="user.userName"></v-text-field>
                           <v-text-field type="password" dense label="Пароль" outlined v-model="user.password"></v-text-field>
                           <v-text-field type="password" dense label="Подтверждение пароля" outlined v-model="user.confirmPassword"></v-text-field>
-                          <department @select-id="getDepartmentId" :show-view="true"></department>
+                          <FormuiDepartmentView @select-id="getDepartmentId" :show-view="true" :singleSelect="true"></FormuiDepartmentView>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -32,9 +32,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "nuxt-property-decorator"
-import Department from '../../formui/department/view.vue';
 
-@Component({ components: { Department } })
+@Component
 export default class DialogCreateUser extends Vue
 {
     loading: boolean = false

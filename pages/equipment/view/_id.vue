@@ -40,11 +40,14 @@
                                         <v-col cols="12" md="4">
                                             <v-text-field clearable type="date" dense label="Дата ввода в эксплуатацию" outlined v-model="gridData.dateCommissioning"></v-text-field>
                                         </v-col>
-                                        <v-col cols="6">
+                                        <v-col cols="12">
                                             <department @select-id="getDepartmentId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.departmentId"></department>
                                         </v-col>
                                         <v-col cols="6">
                                             <tags @select-id="getTagsId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.tagId"></tags>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <FormuiLocationView @select-id="getLocationId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.locationId"></FormuiLocationView>
                                         </v-col>
                                         <v-col cols="12" md="12">
                                             <v-textarea :rows="2" :height="100" dense label="Примечание" outlined v-model="gridData.description"></v-textarea>
@@ -202,6 +205,11 @@ export default class EquipmentDetails extends Vue
     getTypeId (value: number)
     {
         this.gridData.typeId = value;
+    }
+
+    getLocationId (value: number)
+    {
+        this.gridData.locationId = value;
     }
 
     @Watch("gridData", { deep: true })

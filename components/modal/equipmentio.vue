@@ -11,7 +11,7 @@
                                 <v-textarea :rows="2" :height="60" dense label="Наименование" outlined v-model="equipment.name"></v-textarea>
                             </v-col>
                             <v-col cols="12">
-                                <manufacturer @select-id="getManufacturerId" :show-view="true"></manufacturer>
+                                <FormuiManufacturerView @select-id="getManufacturerId" :show-view="true"></FormuiManufacturerView>
                             </v-col>
                             <v-col cols="3">
                                 <v-text-field clearable dense label="Модель" outlined v-model="equipment.model"></v-text-field>
@@ -27,14 +27,14 @@
                             </v-col> -->
                         </v-row>
                         <v-row>
-                            <v-col cols="12">
-                                <department @select-id="getDepartmentId" :show-view="true"></department>
+                            <v-col cols="6">
+                                <FormuiDepartmentView @select-id="getDepartmentId" :show-view="true"></FormuiDepartmentView>
+                            </v-col>
+                            <v-col cols="6">
+                                <FormuiLocationView @select-id="getlocationId" :show-view="true"></FormuiLocationView>
                             </v-col>
                         </v-row>
                         <v-row>
-                            <!-- <v-col cols="6">
-                                <location @select="getlocationId" :show-create="false" :show-view="false"></location>
-                            </v-col> -->
                             <v-col cols="3">
                                 <v-text-field clearable dense label="Инвентарный номер" outlined v-model="equipment.inventoryNumber"></v-text-field>
                             </v-col>
@@ -70,12 +70,8 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Vue } from "nuxt-property-decorator"
-import Manufacturer from '../formui/manufacturer/view.vue'
-import Department from '../formui/department/view.vue'
-import Location from '../formui/location/view.vue'
-import Instruction from '../formui/instruction/view.vue'
 
-@Component( { components: { Manufacturer, Department, Location, Instruction } })
+@Component
 export default class DialogCreateEquipmentIo extends Vue
 {
     public equipment = {} as IEquipmentIO

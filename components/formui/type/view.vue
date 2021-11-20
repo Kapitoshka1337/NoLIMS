@@ -74,6 +74,8 @@ export default class TypeAutocomplete extends Vue
     wExistedId(newVal: number){
         if (this.existedId != null || this.existedId > 0)
             this.getData()
+
+        this.type = {}
     }
 }
 </script>

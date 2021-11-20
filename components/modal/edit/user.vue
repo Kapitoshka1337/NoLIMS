@@ -17,7 +17,7 @@
                       <v-text-field dense label="Фамилия" outlined v-model="editUser.middleName"></v-text-field>
                       <v-text-field dense label="Имя" outlined v-model="editUser.firstName"></v-text-field>
                       <v-text-field dense label="Отчество" outlined v-model="editUser.lastName"></v-text-field>
-                      <department @select-id="getDepartmentId" :show-view="true" :existed-id="editUser.departmentId"></department>
+                      <FormuiDepartmentView @select-id="getDepartmentId" :show-view="true" :existed-id="editUser.departmentId" :singleSelect="true"></FormuiDepartmentView>
                     </v-col>
                   </v-row>
                 </v-form>
@@ -80,9 +80,8 @@
 
 <script lang="ts">
   import { Component, Prop, Vue, Watch } from "nuxt-property-decorator"
-  import Department from '../../formui/department/view.vue';
 
-  @Component({ components: { Department } })
+  @Component
   export default class DialogEditUer extends Vue {
     tableColumn: Array<object> = [
       { text: 'ИД', align: 'start', sortable: true, value: 'id' },

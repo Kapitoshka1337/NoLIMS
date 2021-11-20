@@ -1,113 +1,83 @@
 <template>
   <v-row>
-    <v-col :cols="getCols">
-        <v-autocomplete @input="selectItem" :loading="loadSelect" :disabled="loadSelect" :items="dropdown" dense label="Местоположение" outlined></v-autocomplete>
+    <v-col :cols="11">
+        <v-text-field readonly dense label="Местоположение" outlined v-model="location.numberRoom"></v-text-field>
+        <!-- <v-autocomplete @input="selectItem" :loading="loadSelect" :disabled="loadSelect" :items="dropdown" dense label="Местоположение" outlined></v-autocomplete> -->
     </v-col>
     <v-col cols="1" v-if="showView">
         <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" v-on="on" icon><v-icon>mdi-dots-horizontal</v-icon></v-btn>
+                <v-btn v-bind="attrs" v-on="on" icon @click="showTable = true"><v-icon>mdi-dots-horizontal</v-icon></v-btn>
             </template>
             <span>Местоположения</span>
         </v-tooltip>
     </v-col>
-    <v-col cols="1" v-if="showCreate">
-        <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" v-on="on" icon @click="showDialogCreate = true"><v-icon>mdi-plus</v-icon></v-btn>
-            </template>
-            <span>Создать местоположение</span>
-        </v-tooltip>
-    </v-col>
-    <create-location :visible="showDialogCreate" @close="closeDialog()" @save="Save"></create-location>
+    <FormuiLocationDialog :visible="showTable" @close="closeTable()" @select-object="selectedItem"></FormuiLocationDialog>
   </v-row>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from "nuxt-property-decorator"
-import CreateLocation from './create.vue'
 
-@Component({ components: { CreateLocation } })
+@Component
 export default class LocationAutocomplete extends Vue
 {
     loadSelect: boolean = false
-    showDialogCreate: boolean = false
-    createdItenm: boolean = false
+    showTable: boolean = false
 
-    @Prop({default: true}) showCreate!: boolean
     @Prop({default: true}) showView!: boolean
-    @Prop({default: null}) departmentId!: boolean
+    @Prop({default: null}) existedId!: number
 
-    public locations: Array<ILocation> = {} as ILocation
+    public location: object = {}
 
-    closeDialog(value: boolean){
-        this.showDialogCreate = false;
+    get ExistedId(){
+        if (this.existedId != null || this.existedId > 0)
+            return this.existedId
     }
 
-    getData ()
-    {
+    closeTable(value: boolean){
+        this.showTable = false;
+    }
+
+    selectedItem (value: object){
+        this.location = value
+        this.$emit('select-id', value.id)
+        this.$emit('select-object', value)
+    }
+
+    async getData() {
         try
         {
-            this.loadSelect = true;
-            this.$axios.get('/api/v1/location')
-            .then(response => (this.locations = response.data['data']))
-            this.loadSelect = false
-            this.$toast.success("Местоположения успешно загружены.");
+            if (this.$permissions.can('view', 'location'))
+                await this.$axios.get(`api/v1/location/${this.existedId}`).then(response => {
+                        this.location = response.data["data"]
+                        this.$toast.success("Подразделение успешно загружено.")
+                    }
+                );
+            else
+                this.$toast.success("У вас нет прав на просмотр подразделений!");
         }
         catch (e)
         {
-            this.$toast.error("Ошибка во время загрузки местоположений.");
-            this.loadSelect = false
+            this.$toast.error("Ошибка во время загрузки подразделения.");
         }
     }
 
-    get dropdown(){
-        if(this.locations.length > 0)
-        {
-            let result = [];
-            
-            for (let row of this.locations)
-                result.push( { value: row['id'], text: `${row['name']}` } );
-            
-            return result;
-        }
-    };
-
-    get getCols(): string
-    {
-        if (this.showView && this.showCreate)
-            return "10"
-        
-        if (this.showView && !this.showCreate)
-            return "11"
-
-        if (!this.showView && this.showCreate)
-            return "11"
-        
-        return "12"
-    }
-
-    selectItem (value: any)
-    {
-        this.$emit('select', value)
-    }
-
-    Save (value: boolean)
-    {
-        this.createdItenm = value
+    getExistedData(){
+        if (this.existedId != null || this.existedId > 0)
+            this.getData()
     }
 
     created() {
-        this.getData()
+        this.getExistedData()
     }
 
-    @Watch("createdItenm")
-    saved(newVal: boolean)
-    {
-        if (newVal == true)
-        {
+    @Watch("existedId")
+    wExistedId(newVal: number){
+        if (this.existedId != null || this.existedId > 0)
             this.getData()
-        }
+
+        this.location = {}
     }
 }
 </script>

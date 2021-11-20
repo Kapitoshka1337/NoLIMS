@@ -73,7 +73,7 @@
                   <v-text-field dense label="Имя" outlined v-model="filterBy.firstName"></v-text-field>
                   <v-text-field dense label="Фамилия" outlined v-model="filterBy.middleName"></v-text-field>
                   <v-text-field dense label="Отчество" outlined v-model="filterBy.lastName"></v-text-field>
-                  <department @select-id="getDepartmentId" :show-view="true"></department>
+                  <FormuiDepartmentView @select-id="getDepartmentId" :show-view="true"></FormuiDepartmentView>
                 </v-col>
               </v-row>
             </v-form>
@@ -85,19 +85,16 @@
           </v-card-actions>
         </v-card>
       </v-navigation-drawer>
-      <user :visible="showCreateRole" @close="closeDialogRole"></user>
-      <user-edit :visible="showEditRole" @close="closeDialogRoleEdit" :user="getRole"></user-edit>
+      <ModalCreateUser :visible="showCreateRole" @close="closeDialogRole"></ModalCreateUser>
+      <ModalEditUser :visible="showEditRole" @close="closeDialogRoleEdit" :user="getRole"></ModalEditUser>
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
-import User from '../../../components/modal/create/user.vue';
-import UserEdit from '../../../components/modal/edit/user.vue';
-import Department from '../../../components/formui/department/view.vue';
 
-  @Component({ components: { User, UserEdit, Department } })
+  @Component
 export default class UserView extends Vue {
     tableColumn: Array<object> = [
       { text: 'ИД', align: 'start', sortable: true, value: 'id'},
