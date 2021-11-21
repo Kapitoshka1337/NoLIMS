@@ -84,26 +84,7 @@
                         </v-tab-item>
                         <v-tab-item>
                             <v-card-text>
-                                <!-- Проверки -->
-                                <!-- <v-data-table dense :headers="tableColumn" :items="gridData.checks" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Количество записей'}">
-                                  <template v-slot:item.currentCheck="{ item }">
-                                    {{ formatDateLocalDate(item.currentCheck) }}
-                                  </template>
-                                  <template v-slot:item.nextCheck="{ item }">
-                                    {{ formatDateLocalDate(item.nextCheck) }}
-                                  </template>
-                                    <template v-slot:item.fileId="{ item }">
-                                        <v-tooltip bottom>
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-btn v-bind="attrs" v-on="on" icon v-can:view="'file'" @click="download(item)"><v-icon>mdi-download</v-icon></v-btn>
-                                            </template>
-                                            <span>Экспортировать</span>
-                                        </v-tooltip>
-                                    </template>
-                                    <template v-slot:no-data>
-                                        Пока ничего нет :(
-                                    </template>
-                                </v-data-table> -->
+                                <FormuiCheckTableComp :showSelect="false" :showToolbar="false" :tableColumn="checkTableHeaders" :equipmentId="$route.params.id"></FormuiCheckTableComp>
                             </v-card-text>
                         </v-tab-item>
                         <v-tab-item>
@@ -135,17 +116,16 @@ import Department from '../../../components/formui/department/view.vue'
 import Manufacturer from '../../../components/formui/manufacturer/view.vue'
 import Type from '../../../components/formui/type/view.vue'
 import Tags from '../../../components/formui/tags/view.vue'
-import FileSaver from 'file-saver'
 
 @Component({ components: { Department, Manufacturer, Type, Tags } })
 export default class EquipmentDetails extends Vue
 {
-    tableColumn: Array<object> = [
-        { text: 'Пройденная', align: 'start', sortable: false, value: 'currentCheck' },
-        { text: 'Предстоящая', align: 'start', sortable: false, value: 'nextCheck' },
-        { text: 'Вид документа', align: 'start', sortable: false, value: 'documentKind.name' },
-        { text: '№ документа', align: 'start', sortable: false, value: 'numberDocument' },
-        { text: 'Документ', align: 'start', sortable: false, value: 'fileId'}
+    checkTableHeaders: Array<object> = [
+        { text: 'Пройденная', align: 'start', sortable: false, value: 'currentCheck', visible: true},
+        { text: 'Предстоящая', align: 'start', sortable: false, value: 'nextCheck', visible: true},
+        { text: 'Вид документа', align: 'start', sortable: false, value: 'documentKind.name', visible: true},
+        { text: '№ документа', align: 'start', sortable: false, value: 'numberDocument', visible: true},
+        { text: 'Экспорт', align: 'start', sortable: false, value: 'fileId', visible: true}
     ]
 
     gridData: Object = {}
@@ -209,29 +189,6 @@ export default class EquipmentDetails extends Vue
     can()
     {
         return this.$permissions.can('edit', 'equipment');
-    }
-
-    download(item: any){
-        try
-        {
-            if (item.fileId == null)
-            {
-                this.$toast.info("Отсутствует документ для экспорта.");
-                return;
-            }
-
-            this.$toast.info("Начат экспорт файла.");
-            this.$axios.get(`/api/file/download/?fileId=${item.fileId}`, {responseType: 'blob'})
-            .then(response =>{
-                const fl = new Blob([response.data], {type: response.data['type']});
-                FileSaver.saveAs(fl, "Документ");
-                this.$toast.success("Файл экспортирован.");
-            })
-        }
-        catch (e)
-        {
-            this.$toast.error("Ошибка во время экспорта файла.");
-        }
     }
 
     created (){

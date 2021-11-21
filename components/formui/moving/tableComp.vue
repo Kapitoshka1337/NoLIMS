@@ -148,7 +148,7 @@ export default class MovingTable extends Vue {
     async getData() {
       this.load = true;
       
-      if (this.equipmentId >= 0)
+      if (this.equipmentId > 0)
         this.getEquipmentId(this.equipmentId);
       
       let data = await this.$movings.view(this.options, this.filterBy);
