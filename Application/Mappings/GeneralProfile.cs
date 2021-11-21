@@ -12,6 +12,7 @@ using Application.Features.Equipment.Queries.GetEquipmentById;
 using Application.Features.Instruction;
 using Application.Features.Manufacturer;
 using Application.Features.Manufacturer.GetAll;
+using Application.Features.Moving;
 using Application.Features.Role.Grant;
 using Application.Features.Storage;
 using Application.Features.Verification;
@@ -95,10 +96,10 @@ namespace Application.Mappings
 
             CreateMap<GetAllEquipmentQuery, GetAllEquipmentParameter>().ReverseMap();
             CreateMap<Domain.Entities.Equipment.Equipment, GetAllEquipmentViewModel>()
-                .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department.Name))
-                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.Name))
-                .ForMember(dest => dest.Manufacturer, opt => opt.MapFrom(src => src.Manufacturer.Name))
-                .ForMember(dest => dest.Tag, opt => opt.MapFrom(src => src.Tag.Name))
+                // .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department.Name))
+                // .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.Name))
+                // .ForMember(dest => dest.Manufacturer, opt => opt.MapFrom(src => src.Manufacturer.Name))
+                // .ForMember(dest => dest.Tag, opt => opt.MapFrom(src => src.Tag.Name))
                 .ReverseMap();
 
             CreateMap<Domain.Entities.Equipment.Equipment, EqViewModel>()
@@ -156,6 +157,12 @@ namespace Application.Mappings
             CreateMap<DTOs.Account.RegisterRequest, Domain.Entities.User.ApplicationUser>().ReverseMap();
             CreateMap<Domain.Entities.User.ApplicationUser, Application.Features.User.GetAll.ViewModel>().ReverseMap();
             CreateMap<Application.Features.User.GetAll.Query, Application.Features.User.GetAll.Parameter>().ReverseMap();
+
+            // Перемещения.
+            CreateMap<MovingInput, Application.DTOs.Equipment.MovingDto>();
+            CreateMap<Application.DTOs.Equipment.MovingDto, Moving>().ReverseMap();
+            CreateMap<Application.Features.Moving.GetAll.Query, Application.Features.Moving.GetAll.Parameter>().ReverseMap();
+            CreateMap<Domain.Entities.Equipment.Moving, Application.Features.Moving.GetAll.ViewModel>().ReverseMap();
         }
     }
 }

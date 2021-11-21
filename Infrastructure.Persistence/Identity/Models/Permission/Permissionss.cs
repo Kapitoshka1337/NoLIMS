@@ -168,5 +168,15 @@
             public const string Delete = "user.delete";
             public const string View = "user.view";
         }
+
+        public static class Moving
+        {
+            public const int Id = 18;
+            public const string Resource = "equipment";
+            public const string Add = "moving.add";
+            public const string Edit = "moving.edit";
+            public const string Delete = "moving.delete";
+            public const string View = "moving.view";
+        }
     }
 }

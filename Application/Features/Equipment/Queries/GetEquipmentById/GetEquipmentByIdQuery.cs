@@ -74,17 +74,17 @@ namespace Application.Features.Equipment.Queries.GetEquipmentById
             if (equipment == null)
                 throw new ApiException($"Оборудование с ИД \"{query.Id}\" не найдено.");
 
-            var checks = await _checkRepository.GetAllAsync();
-            var checksEq = checks.Where(c => c.EquipmentId == query.Id);
-            var checksDto = _mapper.Map<IEnumerable<CheckDto>>(checksEq);
+            // var checks = await _checkRepository.GetAllAsync();
+            // var checksEq = checks.Where(c => c.EquipmentId == query.Id);
+            // var checksDto = _mapper.Map<IEnumerable<CheckDto>>(checksEq);
 
-            var movings = await _movingRepository.GetAllAsync();
-            var movingsEq = movings.Where(c => c.EquipmentId == query.Id);
-            var movingsDto = _mapper.Map< IEnumerable<MovingDto>>(movingsEq);
+            // var movings = await _movingRepository.GetAllAsync();
+            // var movingsEq = movings.Where(c => c.EquipmentId == query.Id);
+            // var movingsDto = _mapper.Map< IEnumerable<MovingDto>>(movingsEq);
 
             var equipmentViewModel = _mapper.Map<EquipmentDetail>(equipment);
-            equipmentViewModel.Checks = checksDto;
-            equipmentViewModel.Movings = movingsDto;
+            // equipmentViewModel.Checks = checksDto;
+            // equipmentViewModel.Movings = movingsDto;
 
             return new Response<EquipmentDetail>(equipmentViewModel);
         }

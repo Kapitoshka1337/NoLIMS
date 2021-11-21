@@ -115,5 +115,13 @@
             public const string Delete = "permission.type.delete";
             public const string View = "permission.type.view";
         }
+
+        public static class Moving
+        {
+            public const string Add = "permission.moving.add";
+            public const string Edit = "permission.moving.edit";
+            public const string Delete = "permission.moving.delete";
+            public const string View = "permission.moving.view";
+        }
     }
 }

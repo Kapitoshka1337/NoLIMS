@@ -17,7 +17,9 @@ namespace Domain.Entities.Equipment
         [ForeignKey("NextDepartmentId")]
         public Department NextDepartment { get; set; }
         public int? CurrentLocationId { get; set; }
+        public Location CurrentLocation { get; set; }
         public int? NextLocationId { get; set; }
+        public Location NextLocation { get; set; }
         public DateTime? MovingDate { get; set; }
     }
 }

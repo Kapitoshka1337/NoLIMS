@@ -18,10 +18,11 @@ namespace Application.Features.Equipment.Queries.GetAllEquipment
         public string InventoryNumber { get; set; }
         public string Description { get; set; }
         public string Manufacturer { get; set; }
-        public string Department { get; set; }
+        public Department Department { get; set; }
+        public int? LocationId { get; set; }
         public Location Location { get; set; }
-        public string Type { get; set; }
-        public string Tag { get; set; }
+        public Application.DTOs.Equipment.Type Type { get; set; }
+        public TagsDto Tag { get; set; }
         public virtual IEnumerable<MovingDto> Movings { get; set; }
     }
 }
