@@ -6,7 +6,7 @@
       calculate-widths
       dense
       v-model="selected"
-      :show-select="true"
+      :show-select="showSelect"
       :headers="tableColumn"
       :items="gridData"
       :items-per-page="50"
@@ -23,8 +23,8 @@
           itemsPerPageText: 'Количество записей',
       }">
       <template #top>
-          <v-toolbar color="white" flat>
-              <v-toolbar-title style="margin-right: 10px">Местоположения</v-toolbar-title>
+          <v-toolbar color="white" flat v-if="showToolbar">
+              <v-toolbar-title v-if="showTitle" style="margin-right: 10px">Перемещения</v-toolbar-title>
               <v-divider inset vertical></v-divider>
               <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
@@ -35,28 +35,31 @@
               <v-divider inset vertical></v-divider>
               <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                      <v-btn v-bind="attrs" v-on="on" icon @click="showDialogCreate = true" v-can:add="'location'"><v-icon>mdi-plus</v-icon></v-btn>
+                      <v-btn v-bind="attrs" v-on="on" icon @click="showDialogCreate = true" v-can:add="'moving'"><v-icon>mdi-plus</v-icon></v-btn>
                   </template>
-                  <span>Создать местоположение</span>
+                  <span>Создать перемещение</span>
               </v-tooltip>
               <v-divider inset vertical></v-divider>
               <v-spacer></v-spacer>
               <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                      <v-btn v-bind="attrs" v-on="on" icon @click="draw()"><v-icon>mdi-filter</v-icon></v-btn>
+                      <v-btn v-bind="attrs" v-on="on" icon @click="draw()" :disabled="!showFilterPanel"><v-icon>mdi-filter</v-icon></v-btn>
                   </template>
                   <span>Фильтрация</span>
               </v-tooltip>
           </v-toolbar>
       </template>
-      <template v-slot:item.actions="{ item }">
+      <template v-slot:item.movingDate="{ item }">
+        {{ formatDateLocalDate(item.movingDate) }}
+      </template>
+      <!-- <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                   <v-btn v-bind="attrs" v-on="on" icon @click="openDetail(item.id)"><v-icon>mdi-card-text</v-icon></v-btn>
               </template>
               <span>Открыть карточку</span>
           </v-tooltip>
-      </template>
+      </template> -->
       </v-data-table>
       <v-navigation-drawer v-model="drawer" absolute right temporary width="512">
         <v-card flat>
@@ -66,8 +69,8 @@
             <v-form>
               <v-row>
                 <v-col cols="9">
-                  <v-text-field dense label="Номер кабинета" outlined v-model="filterBy.numberRoom"></v-text-field>
-                  <FormuiDepartmentView @select-id="getDepartmentId" :show-view="true"></FormuiDepartmentView>
+                  <!-- <v-text-field dense label="Номер кабинета" outlined v-model="filterBy.numberRoom"></v-text-field> -->
+                  <!-- <FormuiDepartmentView @select-id="getDepartmentId" :show-view="true"></FormuiDepartmentView> -->
                 </v-col>
               </v-row>
             </v-form>
@@ -79,7 +82,7 @@
           </v-card-actions>
         </v-card>
       </v-navigation-drawer>
-      <FormuiLocationCreate :visible="showDialogCreate" @close="closeDialogCreate()" @save="Save"></FormuiLocationCreate>
+      <!-- <FormuiLocationCreate :visible="showDialogCreate" @close="closeDialogCreate()" @save="Save"></FormuiLocationCreate> -->
     </v-col>
   </v-row>
 </template>
@@ -88,11 +91,12 @@
 import { Component, Vue, Watch, Prop } from 'nuxt-property-decorator';
 
 @Component
-export default class LocationTable extends Vue {
+export default class MovingTable extends Vue {
     tableColumn: Array<object> = [
-        { text: 'Номер кабинета', align: 'start', sortable: true, value: 'numberRoom'},
-        { text: 'Подразделение', align: 'start', sortable: true, value: 'department.name'},
-        { text: '', align: 'start', sortable: false, value: 'actions'},
+      { text: 'Текущий отдел', align: 'start', sortable: true, value: 'nextDepartment.name' },
+      { text: 'Прошлый отдел', align: 'start', sortable: true, value: 'currentDepartment.name' },
+      { text: 'Дата перемещения', align: 'right', sortable: true, value: 'movingDate' }
+      // { text: '', align: 'start', sortable: false, value: 'actions'},
     ]
     gridData: Array<object> = []
     selected: Array<object> = []
@@ -105,14 +109,23 @@ export default class LocationTable extends Vue {
     createdItem: boolean = false
 
     @Prop({default: true}) singleSelect!: boolean
+    @Prop({default: true}) showSelect!: boolean
+    @Prop({default: true}) showTitle!: boolean
+    @Prop({default: true}) showToolbar!: boolean
+    @Prop({default: true}) equipmentId!: number
+    @Prop({default: true}) showFilterPanel!: boolean
 
-    getDepartmentId (value: number)
+    getEquipmentId (value: number)
     {   
-        this.filterBy.departmentId = value
+        this.filterBy.equipmentId = value
+    }
+
+    formatDateLocalDate(date: any){
+        return date === null ? null : new Date(date).toLocaleString().split(',')[0];
     }
 
     openDetail(value: number){
-        this.$router.push({name: 'base-location-view-id', params: { id: value }});
+        this.$router.push({name: 'equipment-moving-view-id', params: { id: value }});
     }
 
     closeDialogCreate(value: boolean){
@@ -134,7 +147,11 @@ export default class LocationTable extends Vue {
 
     async getData() {
       this.load = true;
-      let data = await this.$locations.view(this.options, this.filterBy);
+      
+      if (this.equipmentId >= 0)
+        this.getEquipmentId(this.equipmentId);
+      
+      let data = await this.$movings.view(this.options, this.filterBy);
       this.gridData = data['data']
       this.totalRecord = data['totalRecords']
     }

@@ -48,7 +48,6 @@ export class ChecksService {
                 }
             );
 
-            this.$toast.success("Журнал поверок успешно загружен.");
             return data;
         }
         catch (e)

@@ -48,7 +48,6 @@ export class EquipmentService {
                 }
             );
 
-            this.$toast.success("Оборудование успешно загружено.");
             return data;
         }
         catch (e)

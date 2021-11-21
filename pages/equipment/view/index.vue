@@ -61,7 +61,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-btn v-bind="attrs" v-on="on" icon @click="updateLocation()"><v-icon>mdi-map-marker</v-icon></v-btn>
+                        <v-btn v-bind="attrs" v-on="on" icon @click="setMoving()" v-can:add="'moving'"><v-icon>mdi-map-marker</v-icon></v-btn>
                     </template>
                     <span>Сменить местоположение</span>
                 </v-tooltip>
@@ -116,6 +116,7 @@
       <create-equipment-vo :visible="showCreateEquipmentVO" @close="closeDialogVo"></create-equipment-vo>
       <create-equipment-io :visible="showCreateEquipmentIO" @close="closeDialogIo"></create-equipment-io>
       <create-equipment-ci :visible="showCreateEquipmentCI" @close="closeDialogCi"></create-equipment-ci>
+      <FormuiMovingCreate :visible="showCreateMoving" @close="closeDialogCreateMoving" :equipment="FirstSelectedItem"></FormuiMovingCreate>
     </v-col>
   </v-row>
 </template>
@@ -133,12 +134,12 @@ import Department from '../../../components/formui/department/view.vue'
 export default class EquipmentView extends Vue {
     tableColumn: Array<object> = [
         { text: 'Номер', align: 'start', sortable: true, value: 'number'},
-        { text: 'Отдел', align: 'start', sortable: true, value: 'department'},
-        { text: 'Тип', align: 'start', sortable: true, value: 'type'},
+        { text: 'Отдел', align: 'start', sortable: true, value: 'department.name'},
+        { text: 'Тип', align: 'start', sortable: true, value: 'type.name'},
         { text: 'Наименование', align: 'start', sortable: true, value: 'name' },
         { text: 'Модель', align: 'start', sortable: true, value: 'model'},
         { text: 'С/Н', align: 'end', sortable: true, value: 'serialNumber'},
-        { text: 'Статус', align: 'center', sortable: true, value: 'tag'},
+        { text: 'Статус', align: 'center', sortable: true, value: 'tag.name'},
         { text: '', align: 'center', sortable: false, value: 'actions'}
     ]
     gridData: Array<object> = []
@@ -151,6 +152,7 @@ export default class EquipmentView extends Vue {
     showCreateEquipmentVO: boolean = false
     showCreateEquipmentIO: boolean = false
     showCreateEquipmentCI: boolean = false
+    showCreateMoving: boolean = false
 
     getTagsId(value: number)
     {
@@ -165,6 +167,10 @@ export default class EquipmentView extends Vue {
     getDepartmentId (value: number)
     {   
         this.filterBy.departmentId = value
+    }
+
+    closeDialogCreateMoving(value: boolean) {
+        this.showCreateMoving = false;
     }
 
     closeDialogVo(value: boolean){
@@ -257,8 +263,27 @@ export default class EquipmentView extends Vue {
         }
     }
 
-  updateLocation() {
-    this.$toast.info("Перемещние находится в разработке.");
-  }
+    setMoving () {
+        if (this.selected == null || this.selected.length <= 0)
+        {
+            this.$toast.info("Не выбрано оборудование для отправки на поверку.");
+            return;
+        }
+        
+        if (this.selected.length > 1)
+        {
+            this.$toast.info("Для смены местоположения необходимо выбрать одно оборудование.");
+            return;
+        }
+
+        this.showCreateMoving = true;
+    }
+
+    get FirstSelectedItem() {
+        if (this.selected != null || this.selected.length > 0)
+            return this.selected[0]
+
+        return null;
+    }
 }
 </script>

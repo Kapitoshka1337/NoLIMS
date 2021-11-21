@@ -48,7 +48,6 @@ export class InstructionsService {
                 }
             );
 
-            this.$toast.success("Инструкции успешно загружено.");
             return data;
         }
         catch (e)

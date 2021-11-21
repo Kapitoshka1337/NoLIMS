@@ -47,8 +47,6 @@ export class VerificationsService {
                     data = response.data
                 }
             );
-
-            this.$toast.success("Поверки успешно загружены.");
             return data;
         }
         catch (e)

@@ -47,7 +47,6 @@ export class EmployesService {
                 }
             );
 
-            this.$toast.success("Сотрудники успешно загружены.");
             return data;
         }
         catch (e)

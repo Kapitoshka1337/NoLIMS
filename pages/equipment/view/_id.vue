@@ -84,7 +84,8 @@
                         </v-tab-item>
                         <v-tab-item>
                             <v-card-text>
-                                <v-data-table dense :headers="tableColumn" :items="gridData.checks" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Количество записей'}">
+                                <!-- Проверки -->
+                                <!-- <v-data-table dense :headers="tableColumn" :items="gridData.checks" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Количество записей'}">
                                   <template v-slot:item.currentCheck="{ item }">
                                     {{ formatDateLocalDate(item.currentCheck) }}
                                   </template>
@@ -102,19 +103,12 @@
                                     <template v-slot:no-data>
                                         Пока ничего нет :(
                                     </template>
-                                </v-data-table>
+                                </v-data-table> -->
                             </v-card-text>
                         </v-tab-item>
                         <v-tab-item>
                           <v-card-text>
-                            <v-data-table dense :headers="tableColumnMoving" :items="gridData.movings" :items-per-page="5" :footer-props="{showFirstLastPage: true, firstIcon: 'mdi-arrow-collapse-left', lastIcon: 'mdi-arrow-collapse-right', prevIcon: 'mdi-minus', nextIcon: 'mdi-plus', itemsPerPageOptions: [30, 50, 100, -1], itemsPerPageText: 'Количество записей'}">
-                              <template v-slot:item.movingDate="{ item }">
-                                {{ formatDateLocalDate(item.movingDate) }}
-                              </template>
-                              <template v-slot:no-data>
-                                Пока ничего нет :(
-                              </template>
-                            </v-data-table>
+                              <FormuiMovingTableComp :singleSelect="false" :showSelect="false" :showToolbar="false" :equipmentId="$route.params.id" :showFilterPanel="true"></FormuiMovingTableComp>
                           </v-card-text>
                         </v-tab-item>
                         <v-tab-item>
@@ -154,12 +148,6 @@ export default class EquipmentDetails extends Vue
         { text: 'Документ', align: 'start', sortable: false, value: 'fileId'}
     ]
 
-    tableColumnMoving: Array<object> = [
-      { text: 'Дата перемещения', align: 'start', sortable: false, value: 'movingDate' },
-      { text: 'Прошлый отдел', align: 'start', sortable: false, value: 'currentDepartment.name' },
-      { text: 'Текущий отдел', align: 'start', sortable: false, value: 'nextDepartment.name' }
-    ]
-
     gridData: Object = {}
     changed: boolean = false
     updateLoad: boolean = false
@@ -176,7 +164,6 @@ export default class EquipmentDetails extends Vue
                 }
             );
             this.changed = false
-            this.$toast.success("Оборудование успешно загружено.");
         }
         catch (e)
         {
@@ -238,7 +225,7 @@ export default class EquipmentDetails extends Vue
             .then(response =>{
                 const fl = new Blob([response.data], {type: response.data['type']});
                 FileSaver.saveAs(fl, "Документ");
-                this.$toast.success("Файл успешно экспортирован.");
+                this.$toast.success("Файл экспортирован.");
             })
         }
         catch (e)
@@ -268,17 +255,13 @@ export default class EquipmentDetails extends Vue
                 }
             );
             this.changed = false
-            this.$toast.success("Оборудование успешно обновлено.");
+            this.$toast.success("Оборудование обновлено.");
         }
         catch (e)
         {
             this.updateLoad = false
             this.$toast.error("Ошибка во время обновления оборудования.");
         }
-    }
-
-    paramId () {
-        return this.$route.params.id
     }
 }
 </script>

@@ -1,4 +1,4 @@
-export class LocationService {
+export class MovingService {
     constructor ($axios, $toast) {
       this.$axios = $axios
       this.$toast = $toast
@@ -24,15 +24,15 @@ export class LocationService {
         let url = ''
 
         if (options.sortBy.length <= 0)
-            url = `api/v1/location?pageNumber=${options.page}&pageSize=${options.itemsPerPage}`;
+            url = `api/v1/moving?pageNumber=${options.page}&pageSize=${options.itemsPerPage}`;
         else
-          url = `api/v1/location?pageNumber=${options.page}&pageSize=${options.itemsPerPage}&sortBy=${options.sortBy[0]} ${options.sortDesc[0] ? "desc" : ""}`;
+          url = `api/v1/moving?pageNumber=${options.page}&pageSize=${options.itemsPerPage}&sortBy=${options.sortBy[0]} ${options.sortDesc[0] ? "desc" : ""}`;
         
         return url
     }
 
     async view (options, filter) {
-      if ($nuxt.$permissions.can('view', 'location'))
+      if ($nuxt.$permissions.can('view', 'moving'))
       {
         let data;
         
@@ -46,69 +46,71 @@ export class LocationService {
                     data = response.data
                 }
             );
-            
+
             return data;
         }
         catch (e)
         {
-            this.$toast.error("Ошибка во время загрузки местоположений.");
+            this.$toast.error("Ошибка во время загрузки перемещений.");
         }
       }
       else
       {
-        this.$toast.error("У вас нет прав на просмотр местоположений.");
+        this.$toast.error("У вас нет прав на просмотр перемещений.");
       }
     }
 
     async update (item)
     {
-      if ($nuxt.$permissions.can('edit', 'location'))
+      if ($nuxt.$permissions.can('edit', 'moving'))
       {
         let data;
         
         try
         {
-            await this.$axios.post("api/v1/location/update", item).then(response => {
+            await this.$axios.post("api/v1/moving/update", item).then(response => {
                     data = response.data
                 }
             );
 
-            this.$toast.success("Местоположение успешно обновлено.");
+            this.$toast.success("Перемещения успешно обновлено.");
             return data;
         }
         catch (e)
         {
-            this.$toast.error("Ошибка во время обновления местоположения.");
+            this.$toast.error("Ошибка во время обновления перемещений.");
         }
       }
       else
       {
-        this.$toast.error("У вас нет прав на изменение местоположения.");
+        this.$toast.error("У вас нет прав на изменение перемещений.");
       }
     }
 
-    async getById (itemId)
+    async add (item)
     {
-      if ($nuxt.$permissions.can('view', 'location'))
+      if ($nuxt.$permissions.can('add', 'moving'))
       {
         let data;
         
         try
         {
-            await this.$axios.get(`api/v1/location/${itemId}`).then(response => {
+            await this.$axios.post("api/v1/moving", item).then(response => {
                     data = response.data
                 }
             );
+
+            this.$toast.success("Перемещение успешно добавлено.");
             return data;
         }
         catch (e)
         {
-            this.$toast.error("Ошибка во время загрузки местоположения.");
+            this.$toast.error("Ошибка во время добавления перемещения.");
         }
       }
       else
       {
-        this.$toast.error("У вас нет прав на чтение местоположений.");
+        this.$toast.error("У вас нет прав на добавление перемещений.");
       }
     }
   }

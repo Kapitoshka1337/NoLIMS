@@ -47,7 +47,6 @@ export class DepartmentService {
                 }
             );
 
-            this.$toast.success("Подразделения успешно загружены.");
             return data;
         }
         catch (e)

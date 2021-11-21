@@ -48,7 +48,6 @@ export class RolesService {
                 }
             );
 
-            this.$toast.success("Роли успешно загружено.");
             return data;
         }
         catch (e)
