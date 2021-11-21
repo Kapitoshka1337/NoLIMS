@@ -292,6 +292,14 @@ namespace Infrastructure.Persistence.Extension
                 expr.And("NextCheck", DynamicExpressions.FilterOperator.LessThanOrEqual, request.NextCheckEnd);
             }
 
+            if (request.EquipmentId > 0)
+            {
+                if (expr == null)
+                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+
+                expr.And("EquipmentId", DynamicExpressions.FilterOperator.Equals, request.EquipmentId);
+            }
+
             if (request.DepartmentId != null)
             {
                 if (expr == null)

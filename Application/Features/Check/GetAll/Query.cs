@@ -19,7 +19,7 @@ namespace Application.Features.Check.GetAll
         public DateTime? CurrentCheckEnd { get; set; }
         public DateTime? NextCheckStart { get; set; }
         public DateTime? NextCheckEnd { get; set; }
-        public int? EquipmentId { get; set; }
+        public int EquipmentId { get; set; }
         public int? DocumentKindId { get; set; }
         public int? DepartmentId { get; set; }
         public int? TypeId { get; set; }
