@@ -1,5 +1,5 @@
 <template>
-  <FormuiCheckTableComp :tableColumn="headers"></FormuiCheckTableComp>
+  <FormuiCheckTableComp :tableColumn="headers" :singleSelect="false"></FormuiCheckTableComp>
 </template>
 
 <script lang="ts">
