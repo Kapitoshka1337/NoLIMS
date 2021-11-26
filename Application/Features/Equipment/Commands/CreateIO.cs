@@ -15,8 +15,8 @@ namespace Application.Features.Equipment.Commands
         public string PurposeOfUse { get; set; }
         public string Model { get; set; }
         public string SerialNumber { get; set; }
-        public DateTime DateCreate { get; set; }
-        public DateTime DateCommissioning { get; set; }
+        public DateTime? DateCreate { get; set; }
+        public DateTime? DateCommissioning { get; set; }
         public string InventoryNumber { get; set; }
         public string Description { get; set; }
         public int? ManufacturerId { get; set; }
