@@ -1,5 +1,5 @@
 <template>
-	<v-dialog dense v-model="getVisible" max-width="1256px" @input="closeDialog()">
+	<v-dialog dense v-model="getVisible" @input="closeDialog()">
 		<v-form>
             <v-card>
                 <v-card-title>Исследовательское оборудование</v-card-title>
@@ -21,6 +21,9 @@
                             </v-col>
                             <v-col cols="3">
                                 <v-text-field type="date" clearable dense label="Дата изготовления" outlined v-model="equipment.dateCreate"></v-text-field>
+                            </v-col>
+                            <v-col cols="3">
+                                <v-text-field type="date" clearable dense label="Дата ввода в эксплуатацию" outlined v-model="equipment.dateCommissioning"></v-text-field>
                             </v-col>
                             <!-- <v-col cols="4">
                                 <v-autocomplete clearable outlined dense label="Вид"></v-autocomplete>

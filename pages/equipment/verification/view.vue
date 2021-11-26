@@ -73,7 +73,7 @@
           </v-toolbar>
         </template>
         <template v-slot:item.tag="{ item }">
-          <v-chip-group v-for="status in item.status">
+          <v-chip-group v-for="status in item.status" :key="status">
             <v-chip color="teal" small text-color="white">{{ status.name }}</v-chip>
           </v-chip-group>
         </template>

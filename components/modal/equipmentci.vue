@@ -1,5 +1,5 @@
 <template>
-	<v-dialog dense v-model="getVisible" max-width="1256px" @input="closeDialog()">
+	<v-dialog dense v-model="getVisible" @input="closeDialog()">
 		<v-form>
             <v-card>
                 <v-card-title>Средство измерения</v-card-title>
@@ -23,7 +23,7 @@
                                 <v-text-field type="date" clearable dense label="Дата изготовления" outlined v-model="equipment.dateCreate"></v-text-field>
                             </v-col>
                             <v-col cols="3">
-                                <v-text-field clearable dense label="ФИФ номер" outlined v-model="equipment.fifNumber"></v-text-field>
+                                <v-text-field type="date" clearable dense label="Дата ввода в эксплуатацию" outlined v-model="equipment.dateCommissioning"></v-text-field>
                             </v-col>
                             <!-- <v-col cols="4">
                                 <v-autocomplete clearable outlined dense label="Вид"></v-autocomplete>
@@ -43,6 +43,9 @@
                             </v-col>
                             <v-col cols="3">
                                 <v-text-field clearable dense label="Регистрационный номер" outlined v-model="equipment.number"></v-text-field>
+                            </v-col>
+                            <v-col cols="3">
+                                <v-text-field clearable dense label="ФИФ номер" outlined v-model="equipment.fifNumber"></v-text-field>
                             </v-col>
                             <!-- <v-col cols="6">
                                 <instruction @select="getInstructionId" :show-create="true" :show-view="false"></instruction>
