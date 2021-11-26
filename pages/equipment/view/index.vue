@@ -252,21 +252,15 @@ export default class EquipmentView extends Vue {
             obj.equipments.push({ equipmentId: el.id })
         })
 
-        try
-        {
-            await this.$axios.post("api/v1/verification", obj).then(response => (this.selected = []));
-            this.$toast.success("Оборудование добавлено в поверку");
-        }
-        catch (e)
-        {
-            this.$toast.error("Ошибка во время выполнения.");
-        }
+        let data = await this.$verifications.sentToCheck(obj);
+        if (data)
+            this.selected = []
     }
 
     setMoving () {
         if (this.selected == null || this.selected.length <= 0)
         {
-            this.$toast.info("Не выбрано оборудование для отправки на поверку.");
+            this.$toast.info("Не выбрано оборудование для смены местоположения.");
             return;
         }
         

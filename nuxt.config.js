@@ -2,8 +2,8 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
-  target: "static",
+  ssr: true,
+  target: "server",
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - НеЛИС',
@@ -30,7 +30,8 @@ export default {
   plugins: [
     '~/plugins/axios.js',
     '~/plugins/checkPermission.js',
-    '~/plugins/services.plugin.js'
+    '~/plugins/services.plugin.js',
+    '~/plugins/tableResizable.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

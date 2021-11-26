@@ -59,4 +59,29 @@ export class VerificationsService {
         this.$toast.error("У вас нет прав на просмотр поверок.");
       }
     }
+
+    async sentToCheck (item) {
+      if ($nuxt.$permissions.can('add', 'verification'))
+      {
+        let data;
+
+        try
+        {
+            await this.$axios.post("api/v1/verification", item).then(response => {
+              data = response.data
+              this.$toast.success("Оборудование добавлено в поверку");
+            });
+
+            return data;
+        }
+        catch (e)
+        {
+            this.$toast.error("Ошибка во время выполнения.");
+        }
+      }
+      else
+      {
+        this.$toast.error("У вас нет прав на отправку оборудования на поверку.");
+      }
   }
+}

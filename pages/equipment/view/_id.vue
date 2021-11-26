@@ -35,19 +35,19 @@
                                             <v-text-field clearable dense label="Номер" outlined v-model="gridData.number"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" md="4">
-                                            <type @select-id="getTypeId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.typeId"></type>
+                                            <type @select-id="getTypeId" :show-view="false" :existed-id="gridData.typeId"></type>
                                         </v-col>
                                         <v-col cols="12" md="4">
                                             <v-text-field clearable type="date" dense label="Дата ввода в эксплуатацию" outlined v-model="gridData.dateCommissioning"></v-text-field>
                                         </v-col>
                                         <v-col cols="12">
-                                            <department @select-id="getDepartmentId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.departmentId"></department>
+                                            <department @select-id="getDepartmentId" :show-view="false" :existed-id="gridData.departmentId"></department>
                                         </v-col>
                                         <v-col cols="6">
                                             <tags @select-id="getTagsId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.tagId"></tags>
                                         </v-col>
                                         <v-col cols="6">
-                                            <FormuiLocationView @select-id="getLocationId" :show-view="this.$permissions.can('edit', 'equipment')" :existed-id="gridData.locationId"></FormuiLocationView>
+                                            <FormuiLocationView @select-id="getLocationId" :show-view="false" :existed-id="gridData.locationId"></FormuiLocationView>
                                         </v-col>
                                         <v-col cols="12" md="12">
                                             <v-textarea :rows="2" :height="100" dense label="Примечание" outlined v-model="gridData.description"></v-textarea>
@@ -184,11 +184,6 @@ export default class EquipmentDetails extends Vue
         newVal.dateCreate = this.formatDate(newVal.dateCreate)
         newVal.dateCommissioning = this.formatDate(newVal.dateCommissioning)
         this.changed = true
-    }
-
-    can()
-    {
-        return this.$permissions.can('edit', 'equipment');
     }
 
     created (){

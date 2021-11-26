@@ -2,6 +2,7 @@
   <v-row>
     <v-col cols="12">
       <v-data-table
+        v-columns-resizable
         :single-select="singleSelect"
         calculate-widths
         dense
@@ -38,6 +39,12 @@
                     <v-btn v-bind="attrs" v-on="on" icon v-can:add="'checks'" :disabled="true"><v-icon>mdi-plus</v-icon></v-btn>
                     </template>
                     <span>Создать поверку</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn v-bind="attrs" v-on="on" icon @click="sentToCheck()" v-can:add="'verification'"><v-icon>mdi-alert-circle-check</v-icon></v-btn>
+                    </template>
+                    <span>Отправить на поверку</span>
                 </v-tooltip>
                 <v-menu :offset-y=true>
                     <template v-slot:activator="{ on: menu, attrs }">
@@ -120,7 +127,7 @@
         <v-list subheader two-line flat>
           <v-subheader>Отображаемые колонки</v-subheader>
           <v-list-item-group multiple>
-            <v-list-item v-for="column in tableColumn">
+            <v-list-item v-for="column in tableColumn" :key="column.value">
               <template v-slot:default="{ active }">
                 <v-list-item-action>
                   <v-checkbox v-model="column.visible" :key="column.value" color="primary"></v-checkbox>
@@ -305,6 +312,26 @@ export default class ChecksView extends Vue {
         {
             this.$toast.error("Ошибка во время экспорта файла.");
         }
+    }
+
+    async sentToCheck () {
+        if (this.selected == null || this.selected.length <= 0)
+        {
+            this.$toast.info("Не выбрано оборудование для отправки на поверку.");
+            return;
+        }
+
+        let obj = {
+            equipments: []
+        }
+
+        this.selected.forEach(el => {
+            obj.equipments.push({ equipmentId: el.equipment.id })
+        })
+
+        let data = await this.$verifications.sentToCheck(obj);
+        if (data)
+            this.selected = []
     }
 }
 </script>

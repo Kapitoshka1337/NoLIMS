@@ -325,6 +325,7 @@ import Department from '../../../components/formui/department/view.vue'
     closeDialog(){
 			this.showPassed = false;
       this.equipment = {}
+      this.getData()
 		}
 
     closeCsmDialog() {
