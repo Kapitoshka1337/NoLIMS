@@ -7,8 +7,8 @@ namespace Domain.Entities.Equipment
     public class Check : BaseEntity
     {
         public string NumberDocument { get; set; }
-        public DateTime CurrentCheck { get; set; }
-        public DateTime NextCheck { get; set; }
+        public DateTime? CurrentCheck { get; set; }
+        public DateTime? NextCheck { get; set; }
 
         public int? FileId { get; set; }
         public File File { get; set; }
