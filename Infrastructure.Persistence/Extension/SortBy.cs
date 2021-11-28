@@ -265,7 +265,7 @@ namespace Infrastructure.Persistence.Extension
                 if (expr == null)
                     expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
-                expr.And("CurrentCheck", DynamicExpressions.FilterOperator.GreaterThanOrEqual, request.CurrentCheckStart);
+                expr.And("CurrentCheck.Value", DynamicExpressions.FilterOperator.GreaterThanOrEqual, request.CurrentCheckStart);
             }
 
             if (request.CurrentCheckEnd != null)
@@ -273,7 +273,7 @@ namespace Infrastructure.Persistence.Extension
                 if (expr == null)
                     expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
-                expr.And("CurrentCheck", DynamicExpressions.FilterOperator.LessThanOrEqual, request.CurrentCheckEnd);
+                expr.And("CurrentCheck.Value", DynamicExpressions.FilterOperator.LessThanOrEqual, request.CurrentCheckEnd);
             }
 
             if (request.NextCheckStart != null)
@@ -281,7 +281,7 @@ namespace Infrastructure.Persistence.Extension
                 if (expr == null)
                     expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
-                expr.And("NextCheck", DynamicExpressions.FilterOperator.GreaterThanOrEqual, request.NextCheckStart);
+                expr.And("NextCheck.Value", DynamicExpressions.FilterOperator.GreaterThanOrEqual, request.NextCheckStart);
             }
 
             if (request.NextCheckEnd != null)
@@ -289,7 +289,7 @@ namespace Infrastructure.Persistence.Extension
                 if (expr == null)
                     expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
-                expr.And("NextCheck", DynamicExpressions.FilterOperator.LessThanOrEqual, request.NextCheckEnd);
+                expr.And("NextCheck.Value", DynamicExpressions.FilterOperator.LessThanOrEqual, request.NextCheckEnd);
             }
 
             if (request.EquipmentId > 0)
