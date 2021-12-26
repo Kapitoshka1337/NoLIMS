@@ -8,6 +8,7 @@ import { InstructionsService } from '../services/instructions.services'
 import { RolesService } from '../services/roles.services'
 import { LocationService } from '../services/location.services'
 import { MovingService } from '../services/moving.services'
+import { FileService } from '../services/file.services'
 
 export default ({ app: { $axios, $toast, store } }, inject) => {
   const Department = new DepartmentService($axios, $toast)
@@ -20,6 +21,7 @@ export default ({ app: { $axios, $toast, store } }, inject) => {
   const Roles = new RolesService($axios, $toast)
   const Location = new LocationService($axios, $toast)
   const Moving = new MovingService($axios, $toast)
+  const File = new FileService($axios, $toast)
   
   inject('department', Department)
   inject('permissions', Permission)
@@ -31,4 +33,5 @@ export default ({ app: { $axios, $toast, store } }, inject) => {
   inject('roles', Roles)
   inject('locations', Location)
   inject('movings', Moving)
+  inject('files', File)
 }

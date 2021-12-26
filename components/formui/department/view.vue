@@ -25,6 +25,7 @@ export default class DepartmentAutocomplete extends Vue
     showTable: boolean = false
 
     @Prop({default: true}) showView!: boolean
+    @Prop({default: false}) show!: boolean
     @Prop({default: null}) existedId!: number
 
     public department: object = {}
@@ -32,6 +33,8 @@ export default class DepartmentAutocomplete extends Vue
     get ExistedId(){
         if (this.existedId != null || this.existedId > 0)
             return this.existedId
+
+        return null;
     }
 
     closeTable(value: boolean){
@@ -65,14 +68,22 @@ export default class DepartmentAutocomplete extends Vue
     getExistedData(){
         if (this.existedId != null || this.existedId > 0)
             this.getData()
+        else
+            this.department = {}
     }
 
     created() {
         this.getExistedData()
     }
 
+    @Watch("show")
+    wShow(newVal: boolean){
+        if (newVal === true)
+            this.department = {}
+    }
+
     @Watch("existedId")
-    wExistedId(newVal: number){
+    wExistedId(newVal: any){
         if (this.existedId != null || this.existedId > 0)
             this.getData()
         

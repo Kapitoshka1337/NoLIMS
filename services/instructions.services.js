@@ -60,4 +60,29 @@ export class InstructionsService {
         this.$toast.error("У вас нет прав на просмотр инструкций.");
       }
     }
+
+    async getById (itemId)
+    {
+      if ($nuxt.$permissions.can('view', 'instruction'))
+      {
+        let data;
+        
+        try
+        {
+            await this.$axios.get(`api/v1/instruction/${itemId}`).then(response => {
+                    data = response.data
+                }
+            );
+            return data;
+        }
+        catch (e)
+        {
+            this.$toast.error("Ошибка во время загрузки инструкций.");
+        }
+      }
+      else
+      {
+        this.$toast.error("У вас нет прав на чтение инструкций.");
+      }
+    }
   }

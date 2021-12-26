@@ -55,13 +55,13 @@ export default class DialogCreateInstruction extends Vue
                 let formData = new FormData();
                 formData.append('file', this.file);
                 this.loading = true;
-                this.$toast.success("Загрузка файла...")
-                await this.$axios.post('/api/file/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-                .then(response => {
-                    this.instruction.fileId = response.data['data'];
-                });
-                this.loading = false;
-                this.$toast.success("Файл успешно загружен.")
+                let data = await this.$files.upload(formData);
+
+                if (data)
+                {
+                    this.instruction.fileId = data['data'];
+                    this.loading = false;
+                }
             }
             catch (e)
             {

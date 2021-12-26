@@ -11,7 +11,7 @@
                                 <v-text-field dense label="Номер кабинета" outlined v-model="location.numberRoom"></v-text-field>
                             </v-col>
                             <v-col cols="11">
-                                <FormuiDepartmentView @select-id="getDepartmentId" :show-view="true"></FormuiDepartmentView>
+                                <FormuiDepartmentView @select-id="getDepartmentId" :show-view="true" :show="getVisible"></FormuiDepartmentView>
                             </v-col>
                         </v-row>
                     </v-form>

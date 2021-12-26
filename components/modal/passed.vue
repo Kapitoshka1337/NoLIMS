@@ -136,7 +136,7 @@ export default class PassedDialog extends Vue
         if(newVal && this.docType.length <= 0)
         {
             this.loadSelect = true;
-            this.$axios.get('/api/v1/documentkind').then(response => (this.docType = response.data['data'], this.loadSelect = false)).catch(error => (alert(error.response.data.message), this.loadSelect = false));
+            this.$axios.get('/api/v1/documentkind?pageSize=13').then(response => (this.docType = response.data['data'], this.loadSelect = false)).catch(error => (alert(error.response.data.message), this.loadSelect = false));
         }
         if(!newVal)
             this.closeDialog(true)

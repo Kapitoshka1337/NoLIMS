@@ -2,7 +2,6 @@
   <v-row>
     <v-col cols="12">
       <v-data-table
-        v-columns-resizable
         :single-select="singleSelect"
         calculate-widths
         dense
