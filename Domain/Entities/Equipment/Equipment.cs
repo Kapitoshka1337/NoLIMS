@@ -9,7 +9,7 @@ namespace Domain.Entities.Equipment
     public class Equipment : AuditableBaseEntity
     {
         public string Name { get; set; }
-        public string Number { get; set; }
+        public int? Number { get; set; }
         //public string id_function_of_use { get; set; }
         //public string id_object_study { get; set; }
 

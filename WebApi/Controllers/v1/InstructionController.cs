@@ -41,16 +41,18 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(query));
         }
 
-        //[HttpPost("update/{id}")]
-        //[Authorize(Policy = PolicyTypes.DocumentKind.Edit)]
-        //public async Task<IActionResult> Put(int id, UpdateEquipmentCommand command)
-        //{
-        //    if (id != command.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpGet("{id}")]
+        [Authorize(Policy = PolicyTypes.Instruction.View)]
+        public async Task<IActionResult> GetById(int id)
+        {
+            return Ok(await Mediator.Send(new ByIdQuery() { Id = id }));
+        }
 
-        //    return Ok(await Mediator.Send(command));
-        //}
+        [HttpPost("update")]
+        [Authorize(Policy = PolicyTypes.Instruction.Edit)]
+        public async Task<IActionResult> Put(InstructionUpdate command)
+        {
+           return Ok(await Mediator.Send(command));
+        }
     }
 }

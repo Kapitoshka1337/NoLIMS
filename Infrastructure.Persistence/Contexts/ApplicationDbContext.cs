@@ -116,6 +116,12 @@ namespace Infrastructure.Persistence.Contexts
             {
                 entity.ToTable("UserTokens");
             });
+
+            builder.Entity<Check>(entity =>
+            {
+                entity.Property(p => p.CurrentCheck).HasDefaultValue(null);
+                entity.Property(p => p.NextCheck).HasDefaultValue(null);
+            });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

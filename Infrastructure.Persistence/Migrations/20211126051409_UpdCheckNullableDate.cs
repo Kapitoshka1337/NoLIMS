@@ -12,6 +12,7 @@ namespace Infrastructure.Persistence.Migrations
                 table: "Checks",
                 type: "timestamp without time zone",
                 nullable: true,
+                defaultValue: null,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone");
 
@@ -20,6 +21,7 @@ namespace Infrastructure.Persistence.Migrations
                 table: "Checks",
                 type: "timestamp without time zone",
                 nullable: true,
+                defaultValue: null,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone");
         }

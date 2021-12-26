@@ -12,8 +12,8 @@ namespace Application.Features.Check
     public class PassedCommand : IRequest<Response<int>>
     {
         public string NumberDocument { get; set; }
-        public DateTime CurrentCheck { get; set; }
-        public DateTime NextCheck { get; set; }
+        public DateTime? CurrentCheck { get; set; }
+        public DateTime? NextCheck { get; set; }
         public int EquipmentId { get; set; }
         public int? DocumentKindId { get; set; }
         public int? FileId { get; set; }
