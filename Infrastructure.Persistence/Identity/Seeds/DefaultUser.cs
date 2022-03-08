@@ -17,8 +17,7 @@ namespace Infrastructure.Identity.Seeds
                 FirstName = "admin",
                 LastName = "admin",
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true,
-                DepartmentId = 3
+                PhoneNumberConfirmed = true
             };
 
             if (userManager.Users.All(u => u.Id != defaultUser.Id))
