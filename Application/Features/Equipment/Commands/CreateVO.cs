@@ -41,6 +41,7 @@ namespace Application.Features.Equipment.Commands
         {
             var equipmentDto = _mapper.Map<DTOs.Equipment.EquipmentVO>(request);
             var equipmentBase = _mapper.Map<Domain.Entities.Equipment.EquipmentVO>(equipmentDto);
+            equipmentBase.Created = DateTime.Now;
             await _genericRepositoryAsync.AddAsync(equipmentBase);
             
             return new Response<int>(equipmentBase.Id);

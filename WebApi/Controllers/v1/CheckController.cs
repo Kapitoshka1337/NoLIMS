@@ -34,12 +34,12 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(query));
         }
 
-        //[HttpPost("delete")]
-        //[Authorize(Policy = PolicyTypes.Checks.Delete)]
-        //public async Task<IActionResult> Delete(DeleteVerificationCommand command)
-        //{
-        //    return Ok(await Mediator.Send(command));
-        //}
+        [HttpPost("delete")]
+        [Authorize(Policy = PolicyTypes.Checks.Delete)]
+        public async Task<IActionResult> Delete(DeleteCheckCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
 
         //[HttpPost("update/{id}")]
         //[Authorize(Policy = PolicyTypes.Checks.Edit)]

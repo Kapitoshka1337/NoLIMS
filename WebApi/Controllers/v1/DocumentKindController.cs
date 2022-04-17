@@ -17,13 +17,6 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(command));
         }
 
-        //[HttpPost("delete/{id}")]
-        //[Authorize(Policy = PolicyTypes.Equipment.Delete)]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
-        //}
-
         [HttpGet]
         [Authorize(Policy = PolicyTypes.DocumentKind.View)]
         public async Task<IActionResult> Get([FromQuery] GetAllDocumentKindParameter filter)
@@ -31,16 +24,18 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(new GetAllDocumentKindQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
         }
 
-        //[HttpPost("update/{id}")]
-        //[Authorize(Policy = PolicyTypes.DocumentKind.Edit)]
-        //public async Task<IActionResult> Put(int id, UpdateEquipmentCommand command)
-        //{
-        //    if (id != command.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpGet("{id}")]
+        [Authorize(Policy = PolicyTypes.Manufacturer.View)]
+        public async Task<IActionResult> GetById([FromRoute] ByIdQuery query)
+        {
+            return Ok(await Mediator.Send(query));
+        }
 
-        //    return Ok(await Mediator.Send(command));
-        //}
+        [HttpPost("update")]
+        [Authorize(Policy = PolicyTypes.Manufacturer.Edit)]
+        public async Task<IActionResult> Put(UpdateDocumentKind command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
     }
 }

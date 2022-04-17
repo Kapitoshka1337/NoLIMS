@@ -1,5 +1,6 @@
 ﻿using Application.Features.Manufacturer;
 using Application.Features.Manufacturer.GetAll;
+using Application.Features.Manufacturer.Update;
 using AutoMapper;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -42,21 +43,16 @@ namespace WebApi.Controllers.v1
 
         [HttpGet("{id}")]
         [Authorize(Policy = PolicyTypes.Manufacturer.View)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromRoute] ByIdQuery query)
         {
-            return Ok(await Mediator.Send(new ByIdManufacturerQuery() { Id = id }));
+            return Ok(await Mediator.Send(query));
         }
 
-        //[HttpPost("update/{id}")]
-        //[Authorize(Policy = PolicyTypes.DocumentKind.Edit)]
-        //public async Task<IActionResult> Put(int id, UpdateEquipmentCommand command)
-        //{
-        //    if (id != command.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    return Ok(await Mediator.Send(command));
-        //}
+        [HttpPost("update")]
+        [Authorize(Policy = PolicyTypes.Manufacturer.Edit)]
+        public async Task<IActionResult> Put(UpdateManufacturer command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
     }
 }

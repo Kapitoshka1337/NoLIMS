@@ -18,8 +18,41 @@ namespace WebApi.Controllers
         [HttpPost("upload")]
         [Consumes("multipart/form-data")]
         [Authorize(Policy = PolicyTypes.File.Add)]
-        public async Task<IActionResult> UploadFile(IFormFile file)
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
         {
+            if (this.Request.Form.Files.Any())
+            {
+                var formFile = this.Request.Form.Files.FirstOrDefault();
+
+                Stream st = formFile.OpenReadStream();
+                MemoryStream mst = new MemoryStream();
+                await st.CopyToAsync(mst);
+                var hash = ToMD5Hash(mst.ToArray());
+
+                var basePath = Path.Combine(Directory.GetCurrentDirectory() + "\\uploads\\");
+
+                if (!Directory.Exists(basePath))
+                    Directory.CreateDirectory(basePath);
+
+                var uniqueFileName = string.Concat(hash, Path.GetExtension(formFile.FileName));
+                var filePath = Path.Combine(basePath, uniqueFileName);
+
+                if (!System.IO.File.Exists(filePath))
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
+
+                var fileCommand = new CreateFileCommand()
+                {
+                    Hash = uniqueFileName,
+                    Size = formFile.Length,
+                    Type = formFile.ContentType == null ? "text/plain" : formFile.ContentType
+                };
+
+                return Ok(await Mediator.Send(fileCommand));
+            }
+
             if (file != null || file.Length > 0)
             {
                 Stream st = file.OpenReadStream();

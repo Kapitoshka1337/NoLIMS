@@ -36,15 +36,27 @@ namespace Application.Features.Check
         {
             var verification = await _verificationRepository.GetAllAsync();
             // Оборудование на поверке.
-            var eqver = verification.Where(v => v.EquipmentId == command.EquipmentId && v.StatusId == 2).First();
-            eqver.StatusId = 3;
+            var eqver = verification.Where(v => v.EquipmentId == command.EquipmentId && v.StatusId == 2);
+
+            if (!eqver.Any())
+            {
+                string msg = $"Не найдено оборудование с ИД \"{command.EquipmentId}\" и статусом 'На поверке'.";
+                Response<int> rsp = new Response<int>();
+                rsp.Succeeded = false;
+                rsp.Message = msg;
+
+                return rsp;
+            }
+
+            var ver = eqver.First();
+            ver.StatusId = 3;
 
             var mapCheck = _mapper.Map<Domain.Entities.Equipment.Check>(command);
             Domain.Entities.Equipment.Check addedCheck = null;
 
             // Добавление поверки и обновление состояние.
             addedCheck = await _checkRepository.AddAsync(mapCheck);
-            await _verificationRepository.UpdateAsync(eqver);
+            await _verificationRepository.UpdateAsync(ver);
 
             return new Response<int>(addedCheck.Id);
         }

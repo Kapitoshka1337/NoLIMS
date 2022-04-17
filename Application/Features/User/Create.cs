@@ -21,7 +21,7 @@ namespace Application.Features.User
 
         public string ConfirmPassword { get; set; }
 
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
     }
 
     public class CreateHandler : IRequestHandler<Create, Response<string>>

@@ -43,9 +43,9 @@ namespace WebApi.Controllers.v1
 
         [HttpGet("{id}")]
         [Authorize(Policy = PolicyTypes.Department.View)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromRoute] ByIdQuery query)
         {
-            return Ok(await Mediator.Send(new ByIdQuery() { Id = id }));
+            return Ok(await Mediator.Send(query));
         }
         
         [HttpPost("update")]

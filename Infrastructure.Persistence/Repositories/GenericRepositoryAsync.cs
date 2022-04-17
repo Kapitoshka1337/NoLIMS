@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Infrastructure.Persistence.Contexts;
 using Infrastructure.Persistence.Extension;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +38,12 @@ namespace Infrastructure.Persistence.Repository
         public async Task<T> AddAsync(T entity)
         {
             await _dbContext.Set<T>().AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+
+            }
+            catch (Exception ex) { }
             return entity;
         }
 

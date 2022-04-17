@@ -5,7 +5,7 @@ namespace Application.DTOs.Equipment
     public class Equipment : BaseDto
     {
         public string Name { get; set; }
-        public int? Number { get; set; }
+        public string Number { get; set; }
         public string PurposeOfUse { get; set; }
         public string Model { get; set; }
         public string SerialNumber { get; set; }

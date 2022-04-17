@@ -37,7 +37,16 @@ namespace Application.Features.Verification
                 var verification = await _equipmentRepositoryAsync.GetByIdAsync(eq.EquipmentId);
 
                 if (verification == null)
-                    throw new ApiException($"Поверка с ИД \"{eq.EquipmentId}\" не найдена.");
+                {
+                    string msg = $"Поверка с ИД \"{eq.EquipmentId}\" не найдена.";
+
+                    Response<bool> rsp = new Response<bool>();
+                    rsp.Succeeded = false;
+                    rsp.Message = msg;
+                    rsp.Data = false;
+
+                    return rsp;
+                }
 
                 verification.StatusId = 2;
 

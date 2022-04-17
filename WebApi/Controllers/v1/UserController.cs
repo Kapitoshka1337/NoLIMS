@@ -1,5 +1,6 @@
 ﻿using Application.Features.User;
 using Application.Features.User.GetAll;
+using Application.Features.User.GetById;
 using Application.Interfaces;
 using AutoMapper;
 using Infrastructure.Identity.Models;
@@ -28,6 +29,15 @@ namespace WebApi.Controllers.v1
         public async Task<IActionResult> GetAll([FromQuery] Parameter filter)
         {
             var query = _mapper.Map<Query>(filter);
+
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Policy = PolicyTypes.User.View)]
+        public async Task<IActionResult> GetById([FromRoute] QueryById request)
+        {
+            var query = _mapper.Map<QueryById>(request);
 
             return Ok(await Mediator.Send(query));
         }

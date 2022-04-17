@@ -27,12 +27,18 @@ namespace Application.Features.Base.Department
         public async Task<Response<ViewModel>> Handle(ByIdQuery query, CancellationToken cancellationToken)
         {
             var equipment = await _repository.GetByIdAsync(query.Id);
-
-            if (equipment == null)
-                throw new ApiException($"Подразделение с ИД \"{query.Id}\" не найдено.");
-
             var equipmentViewModel = _mapper.Map<ViewModel>(equipment);
 
+            if (equipment == null)
+            {
+                string msg = $"Подразделение с ИД \"{query.Id}\" не найдено.";
+                Response<ViewModel> rsp = new Response<ViewModel>();
+                rsp.Succeeded = false;
+                rsp.Message = msg;
+
+                return rsp;
+            }
+            
             return new Response<ViewModel>(equipmentViewModel);
         }
     }

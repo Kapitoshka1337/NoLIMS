@@ -9,27 +9,34 @@ using Application.Interfaces.Repositories.Equipment;
 
 namespace Application.Features.Manufacturer
 {
-    public class ByIdManufacturerQuery : IRequest<Response<GetAllManufacturerViewModel>>
+    public class ByIdQuery : IRequest<Response<GetAllManufacturerViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class ByIdManufacturerQueryHandler : IRequestHandler<ByIdManufacturerQuery, Response<GetAllManufacturerViewModel>>
+    public class ByIdQueryHandler : IRequestHandler<ByIdQuery, Response<GetAllManufacturerViewModel>>
     {
         private readonly IManufacturerRepository _repository;
         private readonly IMapper _mapper;
 
-        public ByIdManufacturerQueryHandler(IManufacturerRepository repository, IMapper mapper)
+        public ByIdQueryHandler(IManufacturerRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
-        public async Task<Response<GetAllManufacturerViewModel>> Handle(ByIdManufacturerQuery query, CancellationToken cancellationToken)
+        public async Task<Response<GetAllManufacturerViewModel>> Handle(ByIdQuery query, CancellationToken cancellationToken)
         {
             var equipment = await _repository.GetByIdAsync(query.Id);
 
             if (equipment == null)
-                throw new ApiException($"Производитель с ИД \"{query.Id}\" не найден.");
+            {
+                string msg = $"Производитель с ИД \"{query.Id}\" не найден.";
+                Response<GetAllManufacturerViewModel> rsp = new Response<GetAllManufacturerViewModel>();
+                rsp.Succeeded = false;
+                rsp.Message = msg;
+
+                return rsp;
+            }
 
             var equipmentViewModel = _mapper.Map<GetAllManufacturerViewModel>(equipment);
 

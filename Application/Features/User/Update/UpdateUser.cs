@@ -1,4 +1,5 @@
 ﻿using Application.Exceptions;
+using Application.Features.User.GetAll;
 using Application.Interfaces.Repositories.Equipment;
 using Application.Interfaces.Repositories.User;
 using Application.Wrappers;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.User.Update
 {
-    public class UpdateUser : IRequest<Response<bool>> 
+    public class UpdateUser : IRequest<Response<ViewModel>> 
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -18,7 +19,7 @@ namespace Application.Features.User.Update
         public int DepartmentId { get; set; }
     }
 
-    public class UpdateUserHandler : IRequestHandler<UpdateUser, Response<bool>>
+    public class UpdateUserHandler : IRequestHandler<UpdateUser, Response<ViewModel>>
     {
         private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
@@ -28,21 +29,29 @@ namespace Application.Features.User.Update
             _repository = repository;
             _mapper = mapper;
         }
-        public async Task<Response<bool>> Handle(UpdateUser command, CancellationToken cancellationToken)
+        public async Task<Response<ViewModel>> Handle(UpdateUser command, CancellationToken cancellationToken)
         {
-            var user = await _repository.GetByIdAsync(command.Id);
+            var item = await _repository.GetByIdAsync(command.Id);
+            var itemViewModel = _mapper.Map<ViewModel>(item);
 
-            if (user == null)
-                throw new ApiException($"Пользователь с ИД \"{command.Id}\" не найден.");
+            if (item == null)
+            {
+                string msg = $"Пользователь с ИД \"{command.Id}\" не найден.";
+                Response<ViewModel> rsp = new Response<ViewModel>();
+                rsp.Succeeded = false;
+                rsp.Message = msg;
 
-            user.FirstName = command.FirstName;
-            user.MiddleName = command.MiddleName;
-            user.LastName = command.LastName;
-            user.DepartmentId = command.DepartmentId;
+                return rsp;
+            }
 
-            await _repository.UpdateAsync(user);
+            item.FirstName = command.FirstName;
+            item.MiddleName = command.MiddleName;
+            item.LastName = command.LastName;
+            item.DepartmentId = command.DepartmentId;
 
-            return new Response<bool>(true);
+            await _repository.UpdateAsync(item);
+
+            return new Response<ViewModel>(itemViewModel);
         }
     }
 }
