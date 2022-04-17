@@ -1,12 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import agent from '../agent'
 import { connect } from 'react-redux'
 import { SETTINGS_SAVED, SETTINGS_PAGE_UNLOADED, LOGOUT } from '../constants/actionTypes'
 
-import { Layout, Button, Nav, Avatar, Dropdown, Toast } from '@douyinfe/semi-ui';
-import { IconBell, IconHelpCircle } from '@douyinfe/semi-icons';
+import { Layout, Nav, Avatar, Dropdown, Toast } from '@douyinfe/semi-ui';
 
 const mapStateToProps = state => ({
   ...state.settings,

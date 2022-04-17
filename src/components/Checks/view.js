@@ -1,13 +1,13 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Nav, Toast, Dropdown } from '@douyinfe/semi-ui'
-import { IconRefresh, IconPlus, IconMapPin, IconVerify } from '@douyinfe/semi-icons';
+import { Table, Nav, Toast } from '@douyinfe/semi-ui'
+import { IconRefresh, IconPlus, IconVerify } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
   EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
-import ModalCreateVO from './modal/modalCreateVO';
+// import ModalCreateVO from './modal/modalCreateVO';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -21,7 +21,7 @@ const mapDispatchToProps = dispatch => ({
     //   dispatch({ type: ARTICLE_PAGE_UNLOADED })
   });
 
-class EquipmentView extends React.PureComponent {
+class ChecksView extends React.PureComponent {
     
     constructor(){
         super()
@@ -47,12 +47,12 @@ class EquipmentView extends React.PureComponent {
 
         if (typeof(page) == 'undefined' && typeof(size) == 'undefined')
         {
-            const data = await agent.EquipmentService.view(this.state.currentPage, this.state.pageSize, this.state.sorter)
+            const data = await agent.ChecksService.view(this.state.currentPage, this.state.pageSize, this.state.sorter)
             this.setState({...this.state, dataSource: data, loading: false, sorter: sorter})
         }
         else
         {
-            const data = await agent.EquipmentService.view(page, size, sorter)
+            const data = await agent.ChecksService.view(page, size, sorter)
             this.setState({dataSource: data, currentPage: page, pageSize: size, loading: false, sorter: sorter})
         }
         
@@ -96,7 +96,7 @@ class EquipmentView extends React.PureComponent {
         }
 
         this.state.selectedRow.forEach(el => {
-            obj.equipments.push({ equipmentId: el.id })
+            obj.equipments.push({ equipmentId: el.equipment.id })
         })
 
         let result = await agent.VerificationService.add(obj);
@@ -111,14 +111,14 @@ class EquipmentView extends React.PureComponent {
 
     render() {
         const columns = [
-            { title: 'Номер', dataIndex: 'number', width: 200, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
-            { title: 'Отдел', dataIndex: 'department.name', width: 200, sorter: (a, b) => a.department.name - b.department.name > 0 ? 1 : -1},
-            { title: 'Тип', dataIndex: 'type.name', width: 200, sorter: (a, b) => a.type.name - b.type.name > 0 ? 1 : -1},
-            { title: 'Наименование', dataIndex: 'name' , width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1},
-            { title: 'Модель', dataIndex: 'model', width: 200, sorter: (a, b) => a.model - b.model > 0 ? 1 : -1},
-            { title: 'С/Н', dataIndex: 'serialNumber', width: 200, sorter: (a, b) => a.serialNumber - b.serialNumber > 0 ? 1 : -1},
-            { title: 'Статус', dataIndex: 'tag.name', width: 200, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
-            { title: '', dataIndex: 'actions', width: 100}
+            { title : 'Пройденная', dataIndex: 'currentCheck', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+            { title : 'Предстоящая', dataIndex: 'nextCheck', width: 200, sorter: (a, b) => a.nextCheck - b.nextCheck > 0 ? 1 : -1},
+            { title : 'Подразделение', dataIndex: 'equipment.department' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
+            { title : 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},
+            { title : 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1},
+            { title : 'Вид', dataIndex: 'equipment.type', width: 200, sorter: (a, b) => a.equipment.type - b.equipment.type > 0 ? 1 : -1},
+            { title : 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.quipment.model - b.quipment.model > 0 ? 1 : -1},
+            { title : 'С/Н', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1},
         ];
 
         return (
@@ -132,19 +132,14 @@ class EquipmentView extends React.PureComponent {
                 showHeader={true}
                 rowKey={'id'}
                 title={<Nav
-                    header={{text: 'Оборудование'}}
+                    header={{text: 'Журнал поверок'}}
                     style={{padding: 0}}
                     mode={'horizontal'}
                     items={
                         [
                             { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => this.getData() },
-                            { itemKey: 'create', text: 'Создать', icon: <IconPlus />, items: [
-                                { itemKey: 'vo', text: 'Вспомогательное', onClick: (e) => this.showAdd(true) },
-                                { itemKey: 'io', text: 'Испытательное' },
-                                { itemKey: 'ci', text: 'Средство измерения' }
-                            ]},
+                            { itemKey: 'create', text: 'Создать', icon: <IconPlus /> },
                             { itemKey: 'toVerification', text: 'Отправить на поверку', icon: <IconVerify />, onClick: (e) => this.sentToCheck() },
-                            { itemKey: 'changeLocation', text: 'Сменить местоположение', icon: <IconMapPin /> },
                         ]
                     } 
                     />}
@@ -156,10 +151,9 @@ class EquipmentView extends React.PureComponent {
                     total: this.state.dataSource.totalRecords,
                     showSizeChanger: true
                 }}/>
-                <ModalCreateVO onClose={this.showAdd} show={this.state.showVo} />
             </>
         );
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EquipmentView);
+export default connect(mapStateToProps, mapDispatchToProps)(ChecksView);

@@ -1,6 +1,6 @@
-import React, {lazy} from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { NavLink, Switch } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
   HOME_PAGE_LOADED,
   HOME_PAGE_UNLOADED,
@@ -39,10 +39,20 @@ class Equipment extends React.PureComponent {
                 desctiption: "Отобразить список оборудования"
             },
             {
-                title: "Журнал поверок",
-                link: "/equipment/checks/view",
-                desctiption: "Отобразить журнал поверок оборудования"
-            }
+                title: "Инструкции к оборудованию",
+                link: "/equipment/instruction/view",
+                desctiption: "Отобразить список инструкций"
+            },
+            {
+                title: "Техническое обслуживание",
+                link: "/equipment/service/view",
+                desctiption: "Отобразить список обордования требующее ТО"
+            },
+            {
+                title: "Производители",
+                link: "/equipment/manufacturer/view",
+                desctiption: "Отобразить список производителей"
+            },
         ]
       },
       {
@@ -51,33 +61,43 @@ class Equipment extends React.PureComponent {
           actions: [
               {
                   title: "Поверки",
-                  link: "/equipment/verification/view",
+                  link: "/equipment/verifications/view",
                   desctiption: "Отобразить список поверок"
+              },
+              {
+                title: "Журнал поверок",
+                link: "/equipment/checks/view",
+                desctiption: "Отобразить журнал поверок оборудования"
+              },
+              {
+                title: "Виды документов",
+                link: "/equipment/documentkind/view",
+                desctiption: "Отобразить виды документов для поверки"
               }
           ]
       },
-      {
-          title: "Инструкции к оборудованию",
-          module: "instruction",
-          actions: [
-              {
-                  title: "Инструкции",
-                  link: "/equipment/instruction/view",
-                  desctiption: "Отобразить список инструкций"
-              }
-          ]
-      },
-      {
-          title: "Техническое обслуживание",
-          module: "service",
-          actions: [
-              {
-                  title: "Техническое обслуживание",
-                  link: "/equipment/service/view",
-                  desctiption: "Отобразить список обордования требующее ТО"
-              }
-          ]
-      }
+      // {
+      //     title: "",
+      //     module: "instruction",
+      //     actions: [
+      //         {
+      //             title: "Инструкции",
+      //             link: "",
+      //             desctiption: ""
+      //         }
+      //     ]
+      // },
+      // {
+      //     title: "Техническое обслуживание",
+      //     module: "service",
+      //     actions: [
+      //         {
+      //             title: "Техническое обслуживание",
+      //             link: "/equipment/service/view",
+      //             desctiption: "Отобразить список обордования требующее ТО"
+      //         }
+      //     ]
+      // }
     ]};
   }
   render() {
@@ -100,7 +120,7 @@ class Equipment extends React.PureComponent {
                       {item.actions.map((action) => {
                         return (
                           <div className='actions' key={action.title}>
-                            <NavLink style={{display: 'block'}} to={action.link} key={action.title}>{action.title}</NavLink>
+                            <Link style={{display: 'block'}} to={action.link} key={action.title}>{action.title}</Link>
                             <span>{ action.desctiption }</span>
                           </div>
                         )
