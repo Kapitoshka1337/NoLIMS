@@ -5,7 +5,7 @@ namespace Application.DTOs.Account
     public class ResetPasswordRequest
     {
         [Required]
-        public string UserId { get; set; }
+        public int UserId { get; set; }
         [Required]
         [MinLength(3)]
         public string Password { get; set; }

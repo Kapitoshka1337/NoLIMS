@@ -66,7 +66,6 @@ namespace Application.Mappings
             CreateMap<Domain.Entities.Equipment.EquipmentIO, EquipmentDetail>();
             CreateMap<Domain.Entities.Equipment.EquipmentCI, EquipmentDetail>();
             CreateMap<Domain.Entities.Equipment.Manufacturer, Application.DTOs.Equipment.Manufacturer>();
-            CreateMap<Domain.Entities.Equipment.Type, Application.DTOs.Equipment.Type>();
             CreateMap<Domain.Entities.Equipment.Tags, Application.DTOs.Equipment.TagsDto>();
             CreateMap<Domain.Entities.Equipment.Tags, Application.Features.Tags.GetAll.ViewModel>();
             CreateMap<Application.Features.Tags.GetAll.Query, Application.Features.Tags.GetAll.Parameter>();
@@ -74,6 +73,8 @@ namespace Application.Mappings
             CreateMap<Domain.Entities.Equipment.Check, Application.DTOs.Equipment.CheckDto>();
             CreateMap<Domain.Entities.Equipment.Check, Application.Features.Check.GetAll.ViewModel>();
             CreateMap<Domain.Entities.Equipment.Type, Application.Features.Type.GetAll.ViewModel>();
+            CreateMap<Domain.Entities.Equipment.Type, Application.DTOs.Equipment.Type>();
+            CreateMap<Domain.Entities.Equipment.Type, Application.Features.Type.CreateTypeCommand>().ReverseMap();
             CreateMap<Domain.Entities.Equipment.DocumentKind, Application.DTOs.Equipment.DocumentKindDto>();
             CreateMap<Domain.Entities.Equipment.Moving, Application.DTOs.Equipment.MovingDto>();
 

@@ -43,37 +43,5 @@ namespace WebApi.Controllers
         {
             return Ok(await Mediator.Send(query));
         }
-
-        //[HttpPost("add")]
-        //[Authorize(Policy = PolicyTypes.UserRole.Add)]
-        //public async Task<IActionResult> Add(UserRoleRequest request)
-        //{
-        //    var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-        //    var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
-
-        //    return Ok(await _userManager.AddToRoleAsync(user, role.Name));
-        //}
-
-        //[HttpPost("update")]
-        //[Authorize(Policy = PolicyTypes.UserRole.Edit)]
-        //public async Task<IActionResult> Put(UserRoleUpdateRequest request)
-        //{
-        //    var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-        //    var oldRole = await _roleManager.FindByIdAsync(request.OldRoleId.ToString());
-        //    var newRole = await _roleManager.FindByIdAsync(request.NewRoleId.ToString());
-        //    var result = await _userManager.RemoveFromRoleAsync(user, oldRole.Name);
-
-        //    return Ok(await _userManager.AddToRoleAsync(user, newRole.Name));
-        //}
-
-        //[HttpPost("delete")]
-        //[Authorize(Policy = PolicyTypes.UserRole.Delete)]
-        //public async Task<IActionResult> Delete(UserRoleRequest request)
-        //{
-        //    var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-        //    var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
-
-        //    return Ok(await _userManager.RemoveFromRoleAsync(user, role.Name));
-        //}
     }
 }

@@ -35,7 +35,7 @@ namespace Application.Features.Role.Update
                 throw new ApiException($"Роль с ИД \"{command.Id}\" не найдена.");
 
             role.Name = command.Name;
-            role.NormalizedName = command.Name;
+            role.NormalizedName = command.Name.ToUpper();
 
             await _roleRepository.UpdateAsync(role);
 

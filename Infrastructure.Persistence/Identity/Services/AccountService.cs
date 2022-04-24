@@ -232,16 +232,16 @@ namespace Infrastructure.Identity.Services
 
         public async Task<Response<string>> ResetPassword(ResetPasswordRequest model)
         {
-            var account = await _userManager.FindByIdAsync(model.UserId);
+            var account = await _userManager.FindByIdAsync(model.UserId.ToString());
 
-            if (account == null) throw new ApiException($"Пользователя с ИД {model.UserId} не существует.");
+            if (account == null) throw new ApiException($"Пользователя с ИД {model.UserId.ToString()} не существует.");
 
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(account);
             var result = await _userManager.ResetPasswordAsync(account, resetToken, model.Password);
             
             if(result.Succeeded)
             {
-                return new Response<string>(model.UserId, message: $"Пароль изменен.");
+                return new Response<string>(model.UserId.ToString(), message: $"Пароль изменен.");
             }
             else
             {

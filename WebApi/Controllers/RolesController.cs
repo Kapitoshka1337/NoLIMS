@@ -11,6 +11,7 @@ using Application.Features.Role.Update;
 using Application.Features.Role.Grant;
 using Application.Features.Role.Invoke;
 using Application.Features.Role.Delete;
+using Application.Features.Role;
 
 namespace WebApi.Controllers
 {
@@ -39,6 +40,13 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Add(RoleRequest request)
         {
             return Ok(await _roleManager.CreateAsync(new Role(request.Name)));
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Policy = PolicyTypes.Roles.View)]
+        public async Task<IActionResult> GetById([FromRoute] ByIdQuery query)
+        {
+            return Ok(await Mediator.Send(query));
         }
 
         [HttpPost("update")]
