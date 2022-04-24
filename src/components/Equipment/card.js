@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Nav } from '@douyinfe/semi-ui'
-import { IconSave, IconSetting, IconUserGroup } from '@douyinfe/semi-icons';
+import { IconSave } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
@@ -12,8 +12,6 @@ import DepartmentAutocomplete from "../Department/autoComplete";
 import ManufacturerAutocomplete from "../Manufacturer/autoComplete";
 import LocationtAutocomplete from "../Location/autoComplete";
 import EquipmentTypeAutocomplete from "../EquipmentTypes/autoComplete";
-// import ModalUserChangePassword from "./modalChangePassword";
-// import ModalUserRoles from "./modalRoles";
 
 const mapStateToProps = state => ({
   ...state,
@@ -145,9 +143,7 @@ class EquipmentCard extends React.PureComponent {
                     mode={'horizontal'}
                     items={
                         [
-                            { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => this.handleSave(true), disabled: !this.state.formChanged},
-                            { itemKey: 'changePassword', text: 'Сменить пароль', icon: <IconSetting />, onClick: (e) => this.handleChangePassword(true)},
-                            { itemKey: 'roles', text: 'Роли', icon: <IconUserGroup />, onClick: (e) => this.handleRoles(true)}
+                            { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => this.handleSave(true), disabled: !this.state.formChanged}
                         ]
                     }
                 />
@@ -165,12 +161,12 @@ class EquipmentCard extends React.PureComponent {
                             <DepartmentAutocomplete id={this.state.dataSource.data.departmentId} onOk={this.handleOkDepartment} rules={[{ required: true, message }]}/>
                             <Form.Input field='inventoryNumber' label="Инвентарный номер" trigger='blur'/>
                             <Form.Input field='number' label="Регистрационный номер" trigger='blur'/>
-                            <Form.Input field='characteristics' label="Характеристики ВО" trigger='blur'/>
-                            <Form.Input field='accuracy' label="Точность ИО СИ" trigger='blur'/>
-                            <Form.Input field='measuringWork' label="Диапазон работы ИО" trigger='blur'/>
-                            <Form.Input field='fifNumber' label="ФИФ СИ" trigger='blur'/>
-                            <Form.Input field='classAccuracy' label="Класс точности СИ" trigger='blur'/>
-                            <Form.Input field='measuringRange' label="Диапазон измерений СИ" trigger='blur'/>
+                            <Form.Input field='characteristics' label="Характеристики" disabled={this.state.dataSource.data.typeId != 1} trigger='blur'/>
+                            <Form.Input field='accuracy' label="Точность" disabled={this.state.dataSource.data.typeId != 2 && this.state.dataSource.data.typeId != 3} trigger='blur'/>
+                            <Form.Input field='measuringWork' label="Диапазон работы" disabled={this.state.dataSource.data.typeId != 2} trigger='blur'/>
+                            <Form.Input field='fifNumber' label="ФИФ" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>
+                            <Form.Input field='classAccuracy' label="Класс точности" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>
+                            <Form.Input field='measuringRange' label="Диапазон измерений" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>
                         </Col>
                     </Row>
                 </Form>

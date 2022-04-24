@@ -134,22 +134,22 @@ class ModalCreateEquipment extends React.PureComponent {
                                 <Form.Input field='number' label="Регистрационный номер" trigger='blur'/>
                             </Col>
                             <Col >
-                                <Form.Input field='characteristics' label="Характеристики ВО" disabled={this.state.equipmentType.id != 1} trigger='blur'/>
+                                <Form.Input field='characteristics' label="Характеристики" disabled={this.state.equipmentType.id != 1} trigger='blur'/>
                             </Col>
                             <Col >
-                                <Form.Input field='accuracy' label="Точность ИО СИ" disabled={this.state.equipmentType.id != 2 && this.state.equipmentType.id != 3} trigger='blur'/>
+                                <Form.Input field='accuracy' label="Точность" disabled={this.state.equipmentType.id != 2 && this.state.equipmentType.id != 3} trigger='blur'/>
                             </Col>
                             <Col >
-                                <Form.Input field='measuringWork' label="Диапазон работы ИО" disabled={this.state.equipmentType.id != 2} trigger='blur'/>
+                                <Form.Input field='measuringWork' label="Диапазон работы" disabled={this.state.equipmentType.id != 2} trigger='blur'/>
                             </Col>
                             <Col >
-                                <Form.Input field='fifNumber' label="ФИФ СИ" disabled={this.state.equipmentType.id != 3} trigger='blur'/>
+                                <Form.Input field='fifNumber' label="ФИФ" disabled={this.state.equipmentType.id != 3} trigger='blur'/>
                             </Col>
                             <Col >
-                                <Form.Input field='classAccuracy' label="Класс точности СИ" disabled={this.state.equipmentType.id != 3} trigger='blur'/>
+                                <Form.Input field='classAccuracy' label="Класс точности" disabled={this.state.equipmentType.id != 3} trigger='blur'/>
                             </Col>
                             <Col >
-                                <Form.Input field='measuringRange' label="Диапазон измерений СИ" disabled={this.state.equipmentType.id != 3} trigger='blur'/>
+                                <Form.Input field='measuringRange' label="Диапазон измерений" disabled={this.state.equipmentType.id != 3} trigger='blur'/>
                             </Col>
                         </Row>
                     </Form>
