@@ -32,7 +32,8 @@ class AutoCompleteLocation extends React.PureComponent {
     }
 
     componentDidMount(){
-        this.getData();
+        if (this.props.id != null)
+            this.getData();
     }
 
     async getData(){

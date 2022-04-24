@@ -53,6 +53,12 @@ const EquipmentService = {
   addSI: (item) => {
     return requests.post('/v1/equipment/si', item)
   },
+  get: (id) => {
+    return requests.get(`/v1/equipment/detail/${id}`)
+  },
+  update: (item) => {
+    return requests.post(`/v1/equipment/update/${item.id}`, item)
+  },
 };
 
 const ManufacturerService = {

@@ -1,13 +1,14 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Nav, Toast, Dropdown } from '@douyinfe/semi-ui'
-import { IconRefresh, IconPlus, IconMapPin, IconVerify } from '@douyinfe/semi-icons';
+import { Table, Nav, Toast, Button } from '@douyinfe/semi-ui'
+import { IconRefresh, IconPlus, IconMapPin, IconVerify, IconIdCard } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
   EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
 import ModalCreate from './modalCreate';
+import { history } from '../../store';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -109,6 +110,10 @@ class EquipmentView extends React.PureComponent {
         this.setState({...this.state, showModalCreate: value});
     }
 
+    openCard(record){
+        history.push(`/equipment/view/${record.id}`)
+    }
+
     render() {
         const columns = [
             { title: 'Номер', dataIndex: 'number', width: 200, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
@@ -118,7 +123,13 @@ class EquipmentView extends React.PureComponent {
             { title: 'Модель', dataIndex: 'model', width: 200, sorter: (a, b) => a.model - b.model > 0 ? 1 : -1},
             { title: 'С/Н', dataIndex: 'serialNumber', width: 200, sorter: (a, b) => a.serialNumber - b.serialNumber > 0 ? 1 : -1},
             { title: 'Статус', dataIndex: 'tag.name', width: 200, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
-            { title: '', dataIndex: 'actions', width: 100}
+            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => {
+                return (
+                    <>
+                        <Button icon={<IconIdCard />} aria-label={'Карточка'} theme={'borderless'} type={'tertiary'} onClick={(e) => this.openCard(record)}/>
+                    </>
+                );
+            }}
         ];
 
         return (

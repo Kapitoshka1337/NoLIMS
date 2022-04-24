@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import TableManufacturer from './view';
 import { Form, Button, Modal } from '@douyinfe/semi-ui';
 import { IconMore } from "@douyinfe/semi-icons";
+import agent from "../../agent";
 
 const mapStateToProps = state => state.auth
 
@@ -28,6 +29,22 @@ class AutoCompleteManufacturer extends React.PureComponent {
 
         this.handleOk = this.handleOk.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
+    }
+
+    componentDidMount(){
+        if (this.props.id != null)
+            this.getData();
+    }
+
+    async getData(){
+        if (this.props.id != null || typeof(this.props.id) != 'undefined')
+        {
+            const data = await agent.ManufacturerService.get(this.props.id);
+            if (data.succeeded)
+                this.setState({...this.state, item: data.data})
+
+            this.props.onOk(this.state.item)
+        }
     }
 
     handleOk() {

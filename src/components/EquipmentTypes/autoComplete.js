@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import TableManufacturer from './view';
 import { Form, AutoComplete, Button, Modal } from '@douyinfe/semi-ui';
 import { IconMore } from "@douyinfe/semi-icons";
+import agent from "../../agent";
 
 const mapStateToProps = state => state.auth
 
@@ -30,13 +31,28 @@ class AutoCompleteEquipmentType extends React.PureComponent {
         this.handleCancel = this.handleCancel.bind(this);
     }
 
+    componentDidMount(){
+        this.getData();
+    }
+
+    async getData(){
+        if (this.props.id != null || typeof(this.props.id) != 'undefined')
+        {
+            const data = await agent.EquipmentTypeService.get(this.props.id);
+            if (data.succeeded)
+                this.setState({...this.state, item: data.data})
+
+            this.props.onOk(this.state.item)
+        }
+    }
+
     handleOk() {
         this.props.onOk(this.state.item);
         this.setState({show: false});
     }
 
     handleCancel(value) {
-        this.setState({show: value, item: {}});
+        this.setState({...this.state, show: value, item: {}});
     }
 
     selectedManufacturer = value => {
