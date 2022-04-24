@@ -70,7 +70,8 @@ class AutoCompleteLocation extends React.PureComponent {
                     style={{width: '100%'}}
                     suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
                     label="Местоположение"
-                    field="departmentName"
+                    field="locationName"
+                    rules={this.props.rules}
                 />
                 <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
                     <TableLocation onSelect={this.selectedManufacturer}/>

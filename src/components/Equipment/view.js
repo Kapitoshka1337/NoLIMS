@@ -7,7 +7,7 @@ import agent from '../../agent';
 import {
   EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
-import ModalCreateVO from './modal/modalCreateVO';
+import ModalCreate from './modalCreate';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -33,7 +33,7 @@ class EquipmentView extends React.PureComponent {
             sorter: {},
             dataSource: [],
             selectedRow: [],
-            showVo: false
+            showModalCreate: false
         }
     }
 
@@ -105,8 +105,8 @@ class EquipmentView extends React.PureComponent {
             Toast.info('Оборудование добавлено на поверку')
     }
 
-    showAdd = value => {
-        this.setState({...this.state, showVo: value});
+    handleModalCreate = value => {
+        this.setState({...this.state, showModalCreate: value});
     }
 
     render() {
@@ -138,11 +138,7 @@ class EquipmentView extends React.PureComponent {
                     items={
                         [
                             { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => this.getData() },
-                            { itemKey: 'create', text: 'Создать', icon: <IconPlus />, items: [
-                                { itemKey: 'vo', text: 'Вспомогательное', onClick: (e) => this.showAdd(true) },
-                                { itemKey: 'io', text: 'Испытательное' },
-                                { itemKey: 'ci', text: 'Средство измерения' }
-                            ]},
+                            { itemKey: 'create', text: 'Создать', icon: <IconPlus />, onClick: (e) => this.handleModalCreate(true)},
                             { itemKey: 'toVerification', text: 'Отправить на поверку', icon: <IconVerify />, onClick: (e) => this.sentToCheck() },
                             { itemKey: 'changeLocation', text: 'Сменить местоположение', icon: <IconMapPin /> },
                         ]
@@ -156,7 +152,7 @@ class EquipmentView extends React.PureComponent {
                     total: this.state.dataSource.totalRecords,
                     showSizeChanger: true
                 }}/>
-                <ModalCreateVO onClose={this.showAdd} show={this.state.showVo} />
+                <ModalCreate onClose={this.handleModalCreate} show={this.state.showModalCreate} />
             </>
         );
     }

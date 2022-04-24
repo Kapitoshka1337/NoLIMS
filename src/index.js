@@ -7,14 +7,25 @@ import { Route, Switch } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
 
 import ru_RU from '@douyinfe/semi-ui/lib/es/locale/source/ru_RU';
-import { LocaleProvider } from '@douyinfe/semi-ui';
+import { LocaleProvider, Spin } from '@douyinfe/semi-ui';
 
 import App from './components/App';
 
 ReactDOM.render((
   <LocaleProvider locale={ru_RU}>
     <Provider store={store}>
-        <Suspense fallback={<p>Application is loading</p>}>
+        <Suspense fallback={
+          <Spin tip="Загрузка">
+          <div
+              style={{
+                  border: '1px solid var(--semi-color-primary)',
+                  borderRadius: '4px',
+                  paddingLeft: '8px',
+              }}
+          >
+          </div>
+      </Spin>
+        }>
           <ConnectedRouter history={history}>
             <Switch>
               <Route path="/" component={App} />

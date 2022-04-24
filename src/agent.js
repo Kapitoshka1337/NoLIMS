@@ -17,11 +17,11 @@ const tokenPlugin = req => {
 
 const requests = {
   del: url =>
-    superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
+    superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
   get: url =>
-    superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
+    superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
   put: (url, body) =>
-    superagent.put(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody),
+    superagent.put(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
   post: (url, body) =>
     superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody).catch(console.log(responseBody))
 };
@@ -43,8 +43,18 @@ const EquipmentService = {
       return requests.get(`/v1/equipment?pageNumber=${page}&pageSize=${size}`)
     else
       return requests.get(`/v1/equipment?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
-  }
+  },
+  addVO: (item) => {
+    return requests.post('/v1/equipment/vo', item)
+  },
+  addIO: (item) => {
+    return requests.post('/v1/equipment/io', item)
+  },
+  addSI: (item) => {
+    return requests.post('/v1/equipment/si', item)
+  },
 };
+
 const ManufacturerService = {
   view: (page, size, sorter = null) => {
     if (sorter == null)
@@ -62,6 +72,7 @@ const ManufacturerService = {
     return requests.post('/v1/manufacturer/update', item)
   }
 };
+
 const UsersService = {
   view: (page, size, sorter = null) => {
     if (sorter == null)
@@ -77,8 +88,12 @@ const UsersService = {
   },
   update: (item) => {
     return requests.post('/v1/user/update', item)
+  },
+  changePassword: (item) => {
+    return requests.post('/account/reset-password', item)
   }
 };
+
 const DepartmentService = {
   view: (page, size, sorter = null) => {
     if (sorter == null)
@@ -133,6 +148,24 @@ const DocumentKindService = {
   }
 };
 
+const EquipmentTypeService = {
+  view: (page, size, sorter = null) => {
+    if (sorter == null)
+      return requests.get(`/v1/type?pageNumber=${page}&pageSize=${size}`)
+    else
+      return requests.get(`/v1/type?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  },
+  add: (item) => {
+    return requests.post('/v1/type', item)
+  },
+  get: (id) => {
+    return requests.get(`/v1/type/${id}`)
+  },
+  update: (item) => {
+    return requests.post('/v1/type/update', item)
+  }
+};
+
 const VerificationService = {
   view: (page, size, sorter = null) => {
     if (sorter == null)
@@ -168,9 +201,49 @@ const ChecksService = {
     return requests.post('/v1/check', item)
   }
 };
+
 const FileService = {
   upload: (item) => {
     return requests.post('/v1/files/upload', item)
+  }
+};
+
+const UserRoleService = {
+  view: (id) => {
+    return requests.get(`/v1/userrole?userId=${id}`, id)
+  },
+  grant: (item) => {
+    return requests.post('/v1/userrole/grant', item)
+  },
+  invoke: (item) => {
+    return requests.post('/v1/userrole/invoke', item)
+  }
+};
+
+const RoleService = {
+  view: (page, size, sorter = null) => {
+    if (sorter == null)
+      return requests.get(`/v1/roles?pageNumber=${page}&pageSize=${size}`)
+    else
+      return requests.get(`/v1/roles?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  },
+  add: (item) => {
+    return requests.post('/v1/roles', item)
+  },
+  get: (id) => {
+    return requests.get(`/v1/roles/${id}`)
+  },
+  update: (item) => {
+    return requests.post('/v1/roles/update', item)
+  },
+  grant: (item) => {
+    return requests.post('/v1/roles/grant', item)
+  },
+  invoke: (item) => {
+    return requests.post('/v1/roles/invoke', item)
+  },
+  getClaim: (id) => {
+    return requests.get(`/permission/byrole?roleId=${id}`)
   }
 };
 
@@ -186,5 +259,8 @@ export default {
   DocumentKindService,
   FileService,
   API_ROOT,
+  UserRoleService,
+  RoleService,
+  EquipmentTypeService,
   setToken: _token => { token = _token; }
 };

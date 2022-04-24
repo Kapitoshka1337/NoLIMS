@@ -5,6 +5,7 @@ import { APP_LOAD, REDIRECT } from '../constants/actionTypes'
 import { Switch, Redirect } from 'react-router-dom'
 import { store } from '../store'
 import { push } from 'connected-react-router'
+import { Spin } from '@douyinfe/semi-ui'
 
 const Home = lazy(() => import('../components/Home'/* webpackChunkName: "Home", webpackPreload: true  */))
 const Login = lazy(() => import('../components/Login'/* webpackChunkName: "Login", webpackPrefetch: true  */))
@@ -59,7 +60,18 @@ class App extends React.PureComponent {
 
   render ()
   {
-    if (this.state.loading || typeof(this.props.appLoaded) == 'undefined') return <p>Application is loading</p>;
+    if (this.state.loading || typeof(this.props.appLoaded) == 'undefined') return (
+        <Spin tip="Загрузка">
+            <div
+                style={{
+                    border: '1px solid var(--semi-color-primary)',
+                    borderRadius: '4px',
+                    paddingLeft: '8px',
+                }}
+            >
+            </div>
+        </Spin>
+    );
 
     if (this.props.appLoaded && (this.props.currentUser != null || this.props.token != null))
     {

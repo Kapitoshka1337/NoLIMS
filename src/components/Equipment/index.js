@@ -53,6 +53,11 @@ class Equipment extends React.PureComponent {
                 link: "/equipment/manufacturer/view",
                 desctiption: "Отобразить список производителей"
             },
+            {
+                title: "Типы оборудования",
+                link: "/equipment/types/view",
+                desctiption: "Отобразить список типов оборудования"
+            },
         ]
       },
       {

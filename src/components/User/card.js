@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Nav } from '@douyinfe/semi-ui'
-import { IconSave } from '@douyinfe/semi-icons';
+import { IconSave, IconSetting, IconUserGroup } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
@@ -9,6 +9,8 @@ import {
 } from '../../constants/actionTypes';
 
 import DepartmentAutocomplete from "../Department/autoComplete";
+import ModalUserChangePassword from "./modalChangePassword";
+import ModalUserRoles from "./modalRoles";
 
 const mapStateToProps = state => ({
   ...state,
@@ -29,7 +31,9 @@ class UserCard extends React.PureComponent {
             dataSource: null,
             formChanged: false,
             initForm: false,
-            departmentItem: {}
+            departmentItem: {},
+            showChangePassword: false,
+            showRoles: false
         }
 
         this.handleOk = this.handleOk.bind(this);
@@ -95,6 +99,14 @@ class UserCard extends React.PureComponent {
             });
     }
 
+    handleChangePassword = (value) => {
+        this.setState({...this.state, showChangePassword: value})
+    }
+
+    handleRoles = (value) => {
+        this.setState({...this.state, showRoles: value})
+    }
+
     render() {
         let message = 'Поле обязательное для заполнения';
     
@@ -109,13 +121,16 @@ class UserCard extends React.PureComponent {
                     mode={'horizontal'}
                     items={
                         [
-                            { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => this.handleSave(true), disabled: !this.state.formChanged}
+                            { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => this.handleSave(true), disabled: !this.state.formChanged},
+                            { itemKey: 'changePassword', text: 'Сменить пароль', icon: <IconSetting />, onClick: (e) => this.handleChangePassword(true)},
+                            { itemKey: 'roles', text: 'Роли', icon: <IconUserGroup />, onClick: (e) => this.handleRoles(true)}
                         ]
                     }
                 />
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Row>
                         <Col>
+                            <Form.Input field='userName' label="Учетная запись (логин)" trigger='blur' disabled={true}/>
                             <Form.Input field='firstName' label="Имя" trigger='blur' rules={[{ required: true, message },]}/>
                             <Form.Input field='middleName' label="Фамилия" trigger='blur'/>
                             <Form.Input field='lastName' label="Отчество" trigger='blur'/>
@@ -123,6 +138,8 @@ class UserCard extends React.PureComponent {
                         </Col>
                     </Row>
                 </Form>
+                <ModalUserChangePassword user={this.state.dataSource.data} onClose={this.handleChangePassword} onOk={this.handleChangePassword} show={this.state.showChangePassword}/>
+                <ModalUserRoles user={this.state.dataSource.data} onClose={this.handleRoles} onOk={this.handleRoles} show={this.state.showRoles}/>
             </>
         );
     }

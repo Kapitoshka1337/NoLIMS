@@ -1,8 +1,7 @@
 import React from "react"
 import { connect } from 'react-redux'
+import { Modal} from '@douyinfe/semi-ui';
 import TableManufacturer from './view';
-import { Form, Button, Modal } from '@douyinfe/semi-ui';
-import { IconMore } from "@douyinfe/semi-icons";
 
 const mapStateToProps = state => state.auth
 
@@ -17,13 +16,12 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: LOGIN_PAGE_UNLOADED })
 })
 
-class AutoCompleteManufacturer extends React.PureComponent {
+class ModalTableEquipmentType extends React.PureComponent {
     constructor(props) {
         super(props);
         
         this.state = {
-            item: {},
-            show: false
+            item: {}
         }
 
         this.handleOk = this.handleOk.bind(this);
@@ -32,32 +30,23 @@ class AutoCompleteManufacturer extends React.PureComponent {
 
     handleOk() {
         this.props.onOk(this.state.item);
-        this.setState({show: false});
+        this.props.onClose(false)
     }
 
     handleCancel(value) {
-        this.setState({show: value, item: {}});
+        this.props.onClose(false)
     }
 
     selectedManufacturer = value => {
         this.setState({item: value})
     }
 
-    show = value => {
-        this.setState({show: value});
-    }
-
     render(){
+        if (!this.props.show) return null;
+
         return (
             <>
-                <Form.AutoComplete 
-                    style={{width: '100%'}}
-                    suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
-                    label="Производитель"
-                    field="manufacturerName"
-                    rules={this.props.rules}
-                />
-                <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
+                <Modal visible={this.props.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(e)} okText={"ОК"} cancelText={"Отмена"}>
                     <TableManufacturer onSelect={this.selectedManufacturer}/>
                 </Modal>
             </>
@@ -65,4 +54,4 @@ class AutoCompleteManufacturer extends React.PureComponent {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AutoCompleteManufacturer)
+export default connect(mapStateToProps, mapDispatchToProps)(ModalTableEquipmentType)
