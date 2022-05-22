@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Nav, Toast, Button } from '@douyinfe/semi-ui'
-import { IconRefresh, IconPlus, IconMapPin, IconVerify, IconIdCard } from '@douyinfe/semi-icons';
+import { Table, Toast } from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
 import {
@@ -9,6 +8,8 @@ import {
 } from '../../constants/actionTypes';
 import ModalCreate from './modalCreate';
 import { history } from '../../store';
+import ButtonOpenCard from './../common/buttonOpenCard';
+import Toolbar from './toolbar';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -43,7 +44,7 @@ class EquipmentView extends React.PureComponent {
             this.setState({loading: false})
     }
 
-    async getData(page, size, sorter){
+    getData = async(page, size, sorter) => {
         this.setState({...this.state, loading: true})
 
         if (typeof(page) == 'undefined' && typeof(size) == 'undefined')
@@ -85,7 +86,7 @@ class EquipmentView extends React.PureComponent {
         }
     }
 
-    async sentToCheck(){
+    sentToCheck = async () => {
         if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
         {
             Toast.warning("Не выбрано оборудование для отправки на поверку.");
@@ -123,13 +124,7 @@ class EquipmentView extends React.PureComponent {
             { title: 'Модель', dataIndex: 'model', width: 200, sorter: (a, b) => a.model - b.model > 0 ? 1 : -1},
             { title: 'С/Н', dataIndex: 'serialNumber', width: 200, sorter: (a, b) => a.serialNumber - b.serialNumber > 0 ? 1 : -1},
             { title: 'Статус', dataIndex: 'tag.name', width: 200, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
-            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => {
-                return (
-                    <>
-                        <Button icon={<IconIdCard />} aria-label={'Карточка'} theme={'borderless'} type={'tertiary'} onClick={(e) => this.openCard(record)}/>
-                    </>
-                );
-            }}
+            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
         ];
 
         return (
@@ -142,19 +137,7 @@ class EquipmentView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Nav
-                    header={{text: 'Оборудование'}}
-                    style={{padding: 0}}
-                    mode={'horizontal'}
-                    items={
-                        [
-                            { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => this.getData() },
-                            { itemKey: 'create', text: 'Создать', icon: <IconPlus />, onClick: (e) => this.handleModalCreate(true)},
-                            { itemKey: 'toVerification', text: 'Отправить на поверку', icon: <IconVerify />, onClick: (e) => this.sentToCheck() },
-                            { itemKey: 'changeLocation', text: 'Сменить местоположение', icon: <IconMapPin /> },
-                        ]
-                    } 
-                    />}
+                title={<Toolbar header={'Оборудование'} onGet={this.getData} showCreate={this.handleModalCreate} onSentToCheck={this.sentToCheck}/>}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{

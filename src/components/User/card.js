@@ -11,6 +11,7 @@ import {
 import DepartmentAutocomplete from "../Department/autoComplete";
 import ModalUserChangePassword from "./modalChangePassword";
 import ModalUserRoles from "./modalRoles";
+import CardToolbar from "./cardToolbar";
 
 const mapStateToProps = state => ({
   ...state,
@@ -84,7 +85,7 @@ class UserCard extends React.PureComponent {
             this.setState({...this.state, initForm: true})
     }
 
-    handleSave(){
+    handleSave= () => {
         this.formApi.setValue('departmentId', this.state.departmentItem.id)
         this.formApi.setValue('id', this.props.match.params.id)
 
@@ -115,18 +116,7 @@ class UserCard extends React.PureComponent {
         
         return (
             <>
-                <Nav
-                    header={{text: this.state.dataSource.data.firstName}}
-                    style={{padding: 0}}
-                    mode={'horizontal'}
-                    items={
-                        [
-                            { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => this.handleSave(true), disabled: !this.state.formChanged},
-                            { itemKey: 'changePassword', text: 'Сменить пароль', icon: <IconSetting />, onClick: (e) => this.handleChangePassword(true)},
-                            { itemKey: 'roles', text: 'Роли', icon: <IconUserGroup />, onClick: (e) => this.handleRoles(true)}
-                        ]
-                    }
-                />
+                <CardToolbar header={this.state.dataSource.data.firstName} formChanged={this.state.formChanged} onChangePassword={this.handleChangePassword} onSave={this.handleSave} onRoles={this.handleRoles}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Row>
                         <Col>

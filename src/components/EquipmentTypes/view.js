@@ -9,6 +9,7 @@ import {
 } from '../../constants/actionTypes';
 import ModalCreateManufacturer from './modalCreate'
 import { history } from '../../store';
+import ButtonOpenCard from './../common/buttonOpenCard';
 
 const mapStateToProps = state => ({
   ...state,
@@ -101,13 +102,7 @@ class EquipmentTypeView extends React.PureComponent {
     render() {
         const columns = [
             { title: 'Наименование', dataIndex: 'name', width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1},
-            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => {
-                return (
-                    <>
-                        <Button icon={<IconIdCard />} aria-label={'Карточка'} theme={'borderless'} type={'tertiary'} onClick={(e) => this.openCard(record)}/>
-                    </>
-                );
-            }}
+            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
         ];
 
         return (

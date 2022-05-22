@@ -1,7 +1,5 @@
 import React from 'react';
-
 import { connect } from 'react-redux'
-
 import { Layout, Nav } from '@douyinfe/semi-ui';
 import { IconHome, IconHistogram, IconSetting } from '@douyinfe/semi-icons';
 
@@ -30,7 +28,7 @@ class Sider extends React.PureComponent {
     }
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     let items = [
       { itemKey: 'Equipment', text: 'Оборудование', icon: <IconHome size="large" /> },
       { itemKey: 'Base', text: 'Лаборатория ', icon: <IconHistogram size="large" /> },

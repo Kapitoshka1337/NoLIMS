@@ -1,11 +1,10 @@
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import React, { Suspense } from 'react';
-import { store, history} from './store';
-
 import { Route, Switch } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
 
+import { store, history} from './store';
 import ru_RU from '@douyinfe/semi-ui/lib/es/locale/source/ru_RU';
 import { LocaleProvider, Spin } from '@douyinfe/semi-ui';
 

@@ -1,14 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Nav, Button } from '@douyinfe/semi-ui'
-import { IconRefresh, IconPlus, IconIdCard } from '@douyinfe/semi-icons';
+import { Table, Button, SideSheet } from '@douyinfe/semi-ui'
+import { IconIdCard } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
 import ModalCreateDepartment from './modalCreate'
+import Toolbar from './toolbar'
 import { history } from '../../store';
+import ButtonOpenCard from './../common/buttonOpenCard';
 
 const mapStateToProps = state => ({
   ...state,
@@ -18,6 +20,7 @@ const mapDispatchToProps = dispatch => ({
     onLoad: payload =>
       dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
   });
+
 
 class DepartmentView extends React.PureComponent {
     
@@ -31,7 +34,8 @@ class DepartmentView extends React.PureComponent {
             sorter: {},
             dataSource: [],
             selectedRow: [],
-            showCreate: false
+            showCreate: false,
+            showFilter: false
         }
     }
 
@@ -40,7 +44,7 @@ class DepartmentView extends React.PureComponent {
             this.setState({loading: false})
     }
 
-    async getData(page, size, sorter){
+    getData = async (page, size, sorter) => {
         this.setState({...this.state, loading: true})
 
         if (typeof(page) == 'undefined' && typeof(size) == 'undefined')
@@ -98,17 +102,35 @@ class DepartmentView extends React.PureComponent {
         history.push(`/base/department/view/${record.id}`)
     }
 
+    handleShowFilter = (value) => {
+        this.setState({...this.state, showFilter: value})
+        setTimeout(() => {
+            let doc = document.getElementsByClassName('semi-sidesheet-content')
+            if (doc.length > 0) 
+                doc[0].style.overflow = 'visible'
+        }, 1000)
+    }
+
     render() {
         const columns = [
-            { title: 'Наименование', dataIndex: 'name', width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1},
+            { title: 'Наименование', dataIndex: 'name', width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1, 
+                // filterDropdown: 
+                // <Dropdown
+                // trigger={'click'}
+                // position={'bottomLeft'}
+                // render={
+                //     <Dropdown.Menu>
+                //         <Dropdown.Item key={1}>
+                //             <Input field='name' placeholder={'Наименование'} trigger='blur'/>
+                //         </Dropdown.Item>
+                //     </Dropdown.Menu>
+                // }
+                // >
+                // <Button icon={<IconFilter/>} theme={'borderless'} type={'tertiary'} />
+            // </Dropdown>,
+            },
             { title: 'Номер', dataIndex: 'number', width: 200, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
-            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => {
-                return (
-                    <>
-                        <Button icon={<IconIdCard />} aria-label={'Карточка'} theme={'borderless'} type={'tertiary'} onClick={(e) => this.openCard(record)}/>
-                    </>
-                );
-            }}
+            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
         ];
 
         return (
@@ -121,17 +143,7 @@ class DepartmentView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Nav
-                    header={{text: 'Подразделения'}}
-                    style={{padding: 0}}
-                    mode={'horizontal'}
-                    items={
-                            [
-                                { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => this.getData() },
-                                { itemKey: 'create', text: 'Создать', icon: <IconPlus />, onClick: (e) => this.showCreate(true) }
-                            ]
-                        }
-                    />}
+                title={<Toolbar header={'Подразделения'} getData={this.getData} showCreate={this.showCreate} handleShowFilter={this.handleShowFilter} roles={this.roles} />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{
@@ -140,6 +152,10 @@ class DepartmentView extends React.PureComponent {
                     total: this.state.dataSource.totalRecords,
                     showSizeChanger: true
                 }}/>
+                <SideSheet getPopupContainer={null} disableScroll={false} title="Панель фильтрации" mask={false} visible={this.state.showFilter} onCancel={() => this.handleShowFilter(false)} size={"medium"}>
+                <p>This is the content of a basic sidesheet.</p>
+                <p>Here is more content...</p>
+                </SideSheet>
                 <ModalCreateDepartment onClose={this.showCreate} onOk={this.onCreate} show={this.state.showCreate}/>
             </>
         );

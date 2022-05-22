@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Nav } from '@douyinfe/semi-ui'
-import { IconSave } from '@douyinfe/semi-icons';
+import { Form, Row, Col } from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
 import {
@@ -12,6 +11,7 @@ import DepartmentAutocomplete from "../Department/autoComplete";
 import ManufacturerAutocomplete from "../Manufacturer/autoComplete";
 import LocationtAutocomplete from "../Location/autoComplete";
 import EquipmentTypeAutocomplete from "../EquipmentTypes/autoComplete";
+import CardToolbar from './cardToolbar';
 
 const mapStateToProps = state => ({
   ...state,
@@ -103,7 +103,7 @@ class EquipmentCard extends React.PureComponent {
         this.setState({...this.state, manufacturer: value})
     }
 
-    handleSave(){
+    handleSave = () => {
         this.formApi.setValue('departmentId', this.state.departmentItem.id)
         this.formApi.setValue('manufacturerId', this.state.manufacturer.id)
         this.formApi.setValue('typeId', this.state.equipmentType.id)
@@ -137,16 +137,7 @@ class EquipmentCard extends React.PureComponent {
         
         return (
             <>
-                <Nav
-                    header={{text: this.state.dataSource.data.firstName}}
-                    style={{padding: 0}}
-                    mode={'horizontal'}
-                    items={
-                        [
-                            { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => this.handleSave(true), disabled: !this.state.formChanged}
-                        ]
-                    }
-                />
+                <CardToolbar header={this.state.dataSource.data.FirstName} onSave={this.handleSave} formChanged={this.state.formChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Row>
                         <Col>

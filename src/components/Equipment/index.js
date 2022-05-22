@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
+import { useAbac } from 'react-abac'
 import {
   HOME_PAGE_LOADED,
   HOME_PAGE_UNLOADED,
@@ -23,39 +24,37 @@ const mapDispatchToProps = dispatch => ({
     dispatch({  type: HOME_PAGE_UNLOADED })
 });
 
-class Equipment extends React.PureComponent {
-  constructor()
-  {
-    super()
-
-    this.state = {items:[
+function Equipment()
+{
+  const { userHasPermissions } = useAbac();
+  const [items, setItems] = useState([
       {
         title: "Оборудование",
         module: "equipment",
         actions: [
             {
                 title: "Оборудование",
-                link: "/equipment/view",
+                link: "equipment/view",
                 desctiption: "Отобразить список оборудования"
             },
             {
                 title: "Инструкции к оборудованию",
-                link: "/equipment/instruction/view",
+                link: "equipment/instruction/view",
                 desctiption: "Отобразить список инструкций"
             },
             {
                 title: "Техническое обслуживание",
-                link: "/equipment/service/view",
-                desctiption: "Отобразить список обордования требующее ТО"
+                link: "equipment/service/view",
+                desctiption: "Отобразить список оборудования требующее ТО"
             },
             {
                 title: "Производители",
-                link: "/equipment/manufacturer/view",
+                link: "equipment/manufacturer/view",
                 desctiption: "Отобразить список производителей"
             },
             {
                 title: "Типы оборудования",
-                link: "/equipment/types/view",
+                link: "equipment/types/view",
                 desctiption: "Отобразить список типов оборудования"
             },
         ]
@@ -66,46 +65,23 @@ class Equipment extends React.PureComponent {
           actions: [
               {
                   title: "Поверки",
-                  link: "/equipment/verifications/view",
+                  link: "equipment/verifications/view",
                   desctiption: "Отобразить список поверок"
               },
               {
                 title: "Журнал поверок",
-                link: "/equipment/checks/view",
+                link: "equipment/checks/view",
                 desctiption: "Отобразить журнал поверок оборудования"
               },
               {
                 title: "Виды документов",
-                link: "/equipment/documentkind/view",
+                link: "equipment/documentkind/view",
                 desctiption: "Отобразить виды документов для поверки"
               }
           ]
-      },
-      // {
-      //     title: "",
-      //     module: "instruction",
-      //     actions: [
-      //         {
-      //             title: "Инструкции",
-      //             link: "",
-      //             desctiption: ""
-      //         }
-      //     ]
-      // },
-      // {
-      //     title: "Техническое обслуживание",
-      //     module: "service",
-      //     actions: [
-      //         {
-      //             title: "Техническое обслуживание",
-      //             link: "/equipment/service/view",
-      //             desctiption: "Отобразить список обордования требующее ТО"
-      //         }
-      //     ]
-      // }
-    ]};
-  }
-  render() {
+      }
+    ])
+
     const { Title, Paragraph } = Typography;
 
     return (
@@ -118,18 +94,24 @@ class Equipment extends React.PureComponent {
             <hr></hr>
           </Row>
           <Row gutter={[16,16]}>
-            {this.state.items.map((item) => {
+            {items.map((item) => {
               return (
                 <Col span={8} key={item.title}>
                   <Card title={item.title}>
                       {item.actions.map((action) => {
-                        return (
-                          <div className='actions' key={action.title}>
-                            <Link style={{display: 'block'}} to={action.link} key={action.title}>{action.title}</Link>
-                            <span>{ action.desctiption }</span>
-                          </div>
-                        )
-                      })}
+                        let tt = action.link.split('/');
+                        console.log(tt)
+                        if (userHasPermissions(`${tt[1]}.view`))
+                        {
+                          return (
+                            <div className='actions' key={action.title}>
+                              <Link style={{display: 'block'}} to={action.link} key={action.title}>{action.title}</Link>
+                              <span>{ action.desctiption }</span>
+                            </div>
+                          )
+                        }
+                      })
+                    }
                   </Card>
                 </Col>
               )
@@ -138,6 +120,5 @@ class Equipment extends React.PureComponent {
       </>
     );
   }
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Equipment);

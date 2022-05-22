@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Nav, Toast } from '@douyinfe/semi-ui'
-import { IconRefresh, IconPlus, IconVerify } from '@douyinfe/semi-icons';
+import { Table, Toast } from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
 import {
   EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
-// import ModalCreateVO from './modal/modalCreateVO';
+import Toolbar from './toolbar';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -42,7 +41,7 @@ class ChecksView extends React.PureComponent {
             this.setState({loading: false})
     }
 
-    async getData(page, size, sorter){
+    getData = async (page, size, sorter) => {
         this.setState({...this.state, loading: true})
 
         if (typeof(page) == 'undefined' && typeof(size) == 'undefined')
@@ -84,7 +83,7 @@ class ChecksView extends React.PureComponent {
         }
     }
 
-    async sentToCheck(){
+    sentToCheck = async() => {
         if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
         {
             Toast.warning("Не выбрано оборудование для отправки на поверку.");
@@ -131,17 +130,7 @@ class ChecksView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Nav
-                    header={{text: 'Журнал поверок'}}
-                    style={{padding: 0}}
-                    mode={'horizontal'}
-                    items={
-                        [
-                            { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => this.getData() },
-                            { itemKey: 'create', text: 'Создать', icon: <IconPlus /> },
-                            { itemKey: 'toVerification', text: 'Отправить на поверку', icon: <IconVerify />, onClick: (e) => this.sentToCheck() },
-                        ]
-                    } 
+                title={<Toolbar header={'Журнал поверок'} onGet={this.getData} onSentToCheck={this.onSentToCheck}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}

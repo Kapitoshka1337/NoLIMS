@@ -30,7 +30,8 @@ export default (state = defaultState, action) => {
         ...state,
         token: action.token || null,
         appLoaded: true,
-        currentUser: action.payload ? action.payload.data : null
+        currentUser: action.payload ? action.payload.data : null,
+        roles: action.roles ? action.roles.data : null
       };
     case REDIRECT:
       return { ...state, redirectTo: null };

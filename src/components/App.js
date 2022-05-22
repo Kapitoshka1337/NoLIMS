@@ -1,11 +1,13 @@
-import agent from '../agent'
 import React, { lazy } from 'react'
 import { connect } from 'react-redux'
-import { APP_LOAD, REDIRECT } from '../constants/actionTypes'
 import { Switch, Redirect } from 'react-router-dom'
 import { store } from '../store'
 import { push } from 'connected-react-router'
 import { Spin } from '@douyinfe/semi-ui'
+import { AbacProvider } from 'react-abac'
+
+import { APP_LOAD, REDIRECT } from '../constants/actionTypes'
+import agent from '../agent'
 
 const Home = lazy(() => import('../components/Home'/* webpackChunkName: "Home", webpackPreload: true  */))
 const Login = lazy(() => import('../components/Login'/* webpackChunkName: "Login", webpackPrefetch: true  */))
@@ -18,17 +20,29 @@ const mapStateToProps = state => {
     appLoaded: state.common.appLoaded,
     appName: state.common.appName,
     currentUser: state.common.currentUser,
+    roles: state.common.roles,
     redirectTo: state.common.redirectTo,
     token: state.common.token
   }
 }
 
 const mapDispatchToProps = dispatch => ({
-  onLoad: (payload, token) =>
-    dispatch({ type: APP_LOAD, payload, token, skipTracking: true }),
+  onLoad: (payload, roles, token) =>
+    dispatch({ type: APP_LOAD, payload, roles, token, skipTracking: true }),
   onRedirect: () =>
     dispatch({ type: REDIRECT })
 })
+
+// const rules = {
+//   ['ADMIN']: {
+//       ['EDIT_POST']: true,
+//   },
+//   ['USER']: {
+//       // an abac rule
+//       // user can only edit the post if it is the owner of it
+//       ['EDIT_POST']: true,
+//   },
+// };
 
 class App extends React.PureComponent {
 
@@ -47,14 +61,17 @@ class App extends React.PureComponent {
     }
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     const token = window.localStorage.getItem('jwt')
-    
+    let info, roles;
+
     if (token) {
       agent.setToken(token)
+      roles = await agent.Auth.roles();
+      info = await agent.Auth.current();
     }
     
-    this.props.onLoad(agent.Auth.current(), token)
+    this.props.onLoad(info, roles, token)
     this.setState({loading: false});
   }
 
@@ -76,10 +93,12 @@ class App extends React.PureComponent {
     if (this.props.appLoaded && (this.props.currentUser != null || this.props.token != null))
     {
       return (
+        <AbacProvider rules={this.props.roles} user={this.props.currentUser} roles={this.props.currentUser.roles} permissions={this.props.currentUser.permissions}>
           <Switch>
             <LoginLayoutRoute exact path='/login' component={Login} />
             <AppLayoutRoute path='/' component={Home} />
           </Switch>
+        </AbacProvider>
       );
     }
 

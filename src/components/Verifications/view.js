@@ -1,14 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Nav, Toast, Button } from '@douyinfe/semi-ui'
-import { IconRefresh, IconFilledArrowUp, IconPlay, IconDelete, IconStop, IconPrint, IconTickCircle } from '@douyinfe/semi-icons';
+import { Table, Toast  } from '@douyinfe/semi-ui'
+import { IconTickCircle } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
   EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
 import ModalPassedVerification from './modal/passed';
-import reactRouterDom from 'react-router-dom';
+import ButtonOpenCard from './../common/buttonOpenCard';
+import Toolbar from './toolbar';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -44,7 +45,7 @@ class VerificationsView extends React.PureComponent {
             this.setState({loading: false})
     }
 
-    async getData(page, size, sorter){
+    getData = async (page, size, sorter) => {
         this.setState({...this.state, loading: true})
 
         if (typeof(page) == 'undefined' && typeof(size) == 'undefined')
@@ -85,34 +86,13 @@ class VerificationsView extends React.PureComponent {
             this.setState({...this.state, selectedRow: records})
         }
     }
-
-    async sentToCheck(){
-        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
-        {
-            Toast.warning("Не выбрано оборудование для отправки на поверку.");
-            return;
-        }
-
-        let obj = {
-            equipments: []
-        }
-
-        this.state.selectedRow.forEach(el => {
-            obj.equipments.push({ equipmentId: el.id })
-        })
-
-        let result = await agent.VerificationService.add(obj);
-
-        if (result)
-            Toast.info('Оборудование добавлено на поверку')
-    }
-
+    
     showAdd = value => {
         this.setState({...this.state, showVo: value});
     }
 
     // Запустить поверку.
-    async onStartVerification() {
+    onStartVerification = async () => {
         if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
         {
             Toast.warning("Не выбрано оборудование для отправки на поверку.");
@@ -142,7 +122,7 @@ class VerificationsView extends React.PureComponent {
     }
 
     // Отменить поверку.
-    async onCancelVerification(){
+    onCancelVerification = async () => {
         if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
         {
             Toast.warning("Не выбрано оборудование для отмены поверки.");
@@ -172,7 +152,7 @@ class VerificationsView extends React.PureComponent {
     }
 
     // Удаление записи
-    async ontDeleteVerification() {
+    onDeleteVerification = async () => {
         if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
         {
             Toast.warning("Не выбрано оборудование для отмены удаления.");
@@ -202,7 +182,7 @@ class VerificationsView extends React.PureComponent {
     }
 
     // Отдать в отделю
-    async onReturnToDepartment() {
+    onReturnToDepartment = async () => {
         if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
         {
             Toast.warning("Не выбрано оборудование для возврата в отдел.");
@@ -246,22 +226,9 @@ class VerificationsView extends React.PureComponent {
             { title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.equipment.model - b.equipment.model > 0 ? 1 : -1 },
             { title: 'Серийный номер', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1 },
             { title: 'Состояние', dataIndex: 'status.name', width: 200, sorter: (a, b) => a.status.name - b.status.name > 0 ? 1 : -1 },
-            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => {
-                return (
-                    <>
-                        <Button 
-                            icon={<IconTickCircle />} 
-                            aria-label={'Получить с поверки'} 
-                            theme={'borderless'} 
-                            type={'tertiary'} 
-                            onClick={(e) => this.onPassedVerification(record, true)} 
-                            disabled={record.statusId == 1 || record.statusId == 3}
-                        />
-                    </>
-                );
-            }}
+            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) =>  <ButtonOpenCard icon={<IconTickCircle />} onClick={(e) => this.onPassedVerification(record, true)} record={record} disabled={record.statusId == 1 || record.statusId == 3} />}
         ];
-
+        
         return (
             <>
                 <Table
@@ -272,20 +239,13 @@ class VerificationsView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Nav
-                    header={{text: 'Поверки'}}
-                    style={{padding: 0}}
-                    mode={'horizontal'}
-                    items={
-                        [
-                            { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => this.getData() },
-                            { itemKey: 'startVerification', text: 'Запустить поверку', icon: <IconPlay />, onClick: (e) => this.onStartVerification() },
-                            { itemKey: 'cancelVerification', text: 'Отменить поверку', icon: <IconStop />, onClick: (e) => this.onCancelVerification() },
-                            { itemKey: 'toDepartment', text: 'Отдать в отдел', icon: <IconFilledArrowUp />, onClick: (e) => this.onReturnToDepartment() },
-                            { itemKey: 'printOrder', text: 'Печать заявки в ЦСМ', icon: <IconPrint /> },
-                            { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => this.ontDeleteVerification(), disabled: true },
-                        ]
-                    } 
+                title={<Toolbar 
+                    header={'Поверки'}
+                    onGet={this.getData}
+                    onStartVerification={this.onStartVerification}
+                    onCancelVerification={this.onCancelVerification}
+                    onReturnToDepartment={this.onReturnToDepartment}
+                    onDeleteVerification={this.onDeleteVerification}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}

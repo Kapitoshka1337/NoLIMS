@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
+import { useAbac } from 'react-abac'
+
 import {
   HOME_PAGE_LOADED,
   HOME_PAGE_UNLOADED,
@@ -23,37 +25,57 @@ const mapDispatchToProps = dispatch => ({
     dispatch({  type: HOME_PAGE_UNLOADED })
 });
 
-class Administrator extends React.PureComponent {
-  constructor()
-  {
-    super()
-
-    this.state = {items:[
-        {
-            title: "Сотрудники",
-            module: "user",
-            actions: [
-                {
-                    title: "Просмотр",
-                    link: "/administrator/user/view",
-                    desctiption: "Отобразить список сотрудников"
-                }
-            ]
-        },
-        {
-            title: "Роли",
-            module: "roles",
-            actions: [
-                {
-                    title: "Просмотр",
-                    link: "/administrator/roles/view",
-                    desctiption: "Отобразить список ролей"
-                }
-            ]
-        }
-    ]};
-  }
-  render() {
+function Administrator () {
+  const { userHasPermissions } = useAbac();
+  const [items, setItems] = useState([
+    {
+        title: "Сотрудники",
+        module: "user",
+        actions: [
+            {
+                title: "Просмотр",
+                link: "/administrator/user/view",
+                desctiption: "Отобразить список сотрудников"
+            }
+        ]
+    },
+    {
+        title: "Роли",
+        module: "roles",
+        actions: [
+            {
+                title: "Просмотр",
+                link: "/administrator/roles/view",
+                desctiption: "Отобразить список ролей"
+            }
+        ]
+    }
+])
+    // this.state = {items:[
+    //     {
+    //         title: "Сотрудники",
+    //         module: "user",
+    //         actions: [
+    //             {
+    //                 title: "Просмотр",
+    //                 link: "/administrator/user/view",
+    //                 desctiption: "Отобразить список сотрудников"
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         title: "Роли",
+    //         module: "roles",
+    //         actions: [
+    //             {
+    //                 title: "Просмотр",
+    //                 link: "/administrator/roles/view",
+    //                 desctiption: "Отобразить список ролей"
+    //             }
+    //         ]
+    //     }
+    // ]};
+  // render() {
     const { Title, Paragraph } = Typography;
 
     return (
@@ -66,26 +88,32 @@ class Administrator extends React.PureComponent {
             <hr></hr>
           </Row>
           <Row gutter={[16,16]}>
-            {this.state.items.map((item) => {
-              return (
-                <Col span={8} key={item.title}>
-                  <Card title={item.title}>
-                      {item.actions.map((action) => {
-                        return (
-                          <div className='actions' key={action.title}>
-                            <Link style={{display: 'block'}} to={action.link} key={action.title}>{action.title}</Link>
-                            <span>{ action.desctiption }</span>
-                          </div>
-                        )
-                      })}
-                  </Card>
-                </Col>
-              )
-            })}
+            {items.map((item) => {
+                    if (userHasPermissions(`${item.module}.view`))
+                    {
+                      return (
+                        <Col span={8} key={item.title}>
+                          <Card title={item.title}>
+                              {item.actions.map((action) => {
+                                return (
+                                  <div className='actions' key={action.title}>
+                                    <Link style={{display: 'block'}} to={action.link} key={action.title}>{action.title}</Link>
+                                    <span>{ action.desctiption }</span>
+                                  </div>
+                                )
+                              })}
+                          </Card>
+                        </Col>
+                      )
+                    }
+                    // else return 'Нет прав'
+                  }
+                )
+              }
             </Row>
       </>
     );
-  }
+  // }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Administrator);

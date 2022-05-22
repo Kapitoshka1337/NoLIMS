@@ -1,14 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Nav, Button } from '@douyinfe/semi-ui'
-import { IconRefresh, IconPlus, IconIdCard } from '@douyinfe/semi-icons';
+import { Table} from '@douyinfe/semi-ui'
 
+import Toolbar from './toolbar'
 import agent from '../../agent';
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
 import ModalCreateLocation from './modalCreate'
 import { history } from '../../store';
+import ButtonOpenCard from './../common/buttonOpenCard';
 
 const mapStateToProps = state => ({
   ...state,
@@ -40,7 +41,7 @@ class LocationView extends React.PureComponent {
             this.setState({loading: false})
     }
 
-    async getData(page, size, sorter){
+    getData = async(page, size, sorter) => {
         this.setState({...this.state, loading: true})
 
         if (typeof(page) == 'undefined' && typeof(size) == 'undefined')
@@ -102,13 +103,7 @@ class LocationView extends React.PureComponent {
         const columns = [
             { title: 'Номер кабинета', dataIndex: 'numberRoom', width: 200, sorter: (a, b) => a.numberRoom - b.numberRoom > 0 ? 1 : -1},
             { title: 'Подразделение', dataIndex: 'department.name', width: 200, sorter: (a, b) => a.department.name - b.department.name > 0 ? 1 : -1},
-            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => {
-                return (
-                    <>
-                        <Button icon={<IconIdCard />} aria-label={'Карточка'} theme={'borderless'} type={'tertiary'} onClick={(e) => this.openCard(record)}/>
-                    </>
-                );
-            }}
+            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
         ];
 
         return (
@@ -121,17 +116,7 @@ class LocationView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Nav
-                    header={{text: 'Местоположения'}}
-                    style={{padding: 0}}
-                    mode={'horizontal'}
-                    items={
-                            [
-                                { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => this.getData() },
-                                { itemKey: 'create', text: 'Создать', icon: <IconPlus />, onClick: (e) => this.showCreate(true) }
-                            ]
-                        }
-                    />}
+                title={<Toolbar header={'Местоположения'} onGet={this.getData} showCreate={this.showCreate} />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{

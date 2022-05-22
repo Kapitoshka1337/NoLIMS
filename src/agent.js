@@ -15,6 +15,20 @@ const tokenPlugin = req => {
   }
 }
 
+const URLService= (filters) => {
+      let url = '';
+
+      if (Object.keys(filters).length > 0)
+      {
+          Object.keys(filters).forEach(el => {
+              if (filters[el] != null || filters[el] != "" || filters[el] > 0)
+                  url += `&${el}=${filters[el]}`
+          })
+      }
+
+      return url
+}
+
 const requests = {
   del: url =>
     superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
@@ -34,7 +48,9 @@ const Auth = {
   register: (username, email, password) =>
     requests.post('/v1/user', { user: { username, email, password } }),
   save: user =>
-    requests.put('/user', { user })
+    requests.put('/user', { user }),
+  roles: () =>
+    requests.get('/v1/roles/roles')
 };
 
 const EquipmentService = {
@@ -101,7 +117,7 @@ const UsersService = {
 };
 
 const DepartmentService = {
-  view: (page, size, sorter = null) => {
+  view: (page, size, sorter = null, filters = null) => {
     if (sorter == null)
       return requests.get(`/v1/department?pageNumber=${page}&pageSize=${size}`)
     else

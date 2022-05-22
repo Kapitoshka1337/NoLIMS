@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Nav, SideSheet, List, Button, ButtonGroup } from '@douyinfe/semi-ui'
-import { IconSave, IconUserGroup } from '@douyinfe/semi-icons';
+import { Form, Row, Col, SideSheet, List, Button, ButtonGroup } from '@douyinfe/semi-ui'
 
+import CardToolbar from './cardToolbar';
 import agent from '../../agent';
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
@@ -78,7 +78,7 @@ class RoleCard extends React.PureComponent {
         })
     }
 
-    handleSave(){
+    handleSave = () => {
         this.formApi.setValue('id', this.props.match.params.id)
 
         this.formApi.validate()
@@ -120,7 +120,7 @@ class RoleCard extends React.PureComponent {
   
     async handleSubmitInvoke(item) {
         let obj = {
-            roleId: item.id, 
+            roleId: this.props.match.params.id, 
             resource: item.resources,
             claimType: item.type,
             claimValue: item.value
@@ -140,17 +140,7 @@ class RoleCard extends React.PureComponent {
 
         return (
             <>
-                <Nav
-                    header={{text: this.state.dataSource.data.firstName}}
-                    style={{padding: 0}}
-                    mode={'horizontal'}
-                    items={
-                        [
-                            { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => this.handleSave(true), disabled: !this.state.formChanged},
-                            { itemKey: 'accessList', text: 'Права доступа', icon: <IconUserGroup />, onClick: (e) => this.handleAccessList(true)}
-                        ]
-                    }
-                />
+                <CardToolbar header={this.state.dataSource.data.firstName} formChanged={this.state.formChanged} onChangeAccessList={this.handleAccessList} onSave={this.handleSave}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Row>
                         <Col>

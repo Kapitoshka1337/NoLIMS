@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Nav } from '@douyinfe/semi-ui'
-import { IconSave } from '@douyinfe/semi-icons';
+import { Form, Row, Col } from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
+import CardToolbar from './cardToolbar';
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
@@ -71,7 +71,7 @@ class DocumentKindCard extends React.PureComponent {
         })
     }
 
-    handleSave(){
+    handleSave = () => {
         this.formApi.setValue('id', this.props.match.params.id)
 
         this.formApi.validate()
@@ -93,16 +93,7 @@ class DocumentKindCard extends React.PureComponent {
         
         return (
             <>
-                <Nav
-                    header={{text: this.state.dataSource.data.name}}
-                    style={{padding: 0}}
-                    mode={'horizontal'}
-                    items={
-                        [
-                            { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => this.handleSave(true), disabled: !this.state.formChanged}
-                        ]
-                    }
-                />
+                <CardToolbar header={this.state.dataSource.data.name} onSave={this.handleSave} formChanged={this.state.formChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Row>
                         <Col>
