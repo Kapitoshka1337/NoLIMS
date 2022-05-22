@@ -10,6 +10,7 @@
             public const string Edit = "roles.edit";
             public const string Delete = "roles.delete";
             public const string View = "roles.view";
+            public const string Info = "roles.info";
         }
 
         public static class Permissions
@@ -40,6 +41,7 @@
             public const string Edit = "user.edit";
             public const string Delete = "user.delete";
             public const string View = "user.view";
+            public const string Info = "user.info";
         }
 
         public static class Equipment
@@ -150,6 +152,7 @@
             public const string Resource = "index";
             public const string loginView = "login.view";
             public const string userView = "user.view";
+            public const string userInfo = "user.info";
         }
 
         public static class Login

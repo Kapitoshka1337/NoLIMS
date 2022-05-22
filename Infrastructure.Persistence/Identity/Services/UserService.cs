@@ -27,7 +27,7 @@ namespace Infrastructure.Identity.Services
             _db = db;
         }
 
-        public async Task<Response<UserPermissionResponse>> GetPermission(int userId)
+        public async Task<UserPermissionResponse> GetPermission(int userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             var moduleClaims = new List<ModuleClaimViewModel>();
@@ -76,7 +76,7 @@ namespace Infrastructure.Identity.Services
             response.UserName = user.UserName;
             response.Claims = moduleClaims;
 
-            return new Response<UserPermissionResponse>(response);
+            return response;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Infrastructure.Identity.Seeds
                 if (basicClaims.Count <= 0)
                 {
                     RoleClaim loginView = new RoleClaim() { RoleId = basicRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Index.loginView, Resource = Permissionss.Index.Resource };
-                    RoleClaim userView = new RoleClaim() { RoleId = basicRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Index.userView, Resource = Permissionss.Index.Resource };
+                    RoleClaim userView = new RoleClaim() { RoleId = basicRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Index.userInfo, Resource = Permissionss.Index.Resource };
                     RoleClaim indexView = new RoleClaim() { RoleId = basicRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Login.indexView, Resource = Permissionss.Login.Resource };
 
                     await db.Set<RoleClaim>().AddAsync(loginView);

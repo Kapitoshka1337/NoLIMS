@@ -30,12 +30,15 @@ namespace Infrastructure.Identity.Services
         private readonly IEmailService _emailService;
         private readonly JWTSettings _jwtSettings;
         private readonly IDateTimeService _dateTimeService;
+        private readonly IUserService _userService;
+
         public AccountService(UserManager<ApplicationUser> userManager, 
             RoleManager<Role> roleManager, 
             IOptions<JWTSettings> jwtSettings, 
             IDateTimeService dateTimeService, 
             SignInManager<ApplicationUser> signInManager,
-            IEmailService emailService)
+            IEmailService emailService,
+            IUserService userService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -43,6 +46,7 @@ namespace Infrastructure.Identity.Services
             _dateTimeService = dateTimeService;
             _signInManager = signInManager;
             this._emailService = emailService;
+            _userService = userService;
         }
 
         public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress)
@@ -69,8 +73,10 @@ namespace Infrastructure.Identity.Services
             response.UserName = user.UserName;
             
             var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+            var claims = await _userService.GetPermission(user.Id);
             
             response.Roles = rolesList.ToList();
+            response.Claims = claims.Claims;
             
             var refreshToken = GenerateRefreshToken(ipAddress);
             

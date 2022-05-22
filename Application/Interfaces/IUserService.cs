@@ -6,6 +6,6 @@ namespace Application.Interfaces
 {
     public interface IUserService
     {
-        Task<Response<UserPermissionResponse>> GetPermission(int userId);
+        Task<UserPermissionResponse> GetPermission(int userId);
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Features.User.Update;
+using Application.Features.User.Info;
 
 namespace WebApi.Controllers.v1
 {
@@ -43,12 +44,15 @@ namespace WebApi.Controllers.v1
         }
 
         [HttpGet("info")]
-        [Authorize(Policy = PolicyTypes.User.View)]
+        [Authorize(Policy = PolicyTypes.User.Info)]
         public async Task<IActionResult> GetInfo()
         {
-            var userId = HttpContext.User.Claims.Where(c => c.Type == "uid").Select(c => c.Value).FirstOrDefault().ToString();
-            
-            return Ok(await _userService.GetPermission(int.Parse(userId)));
+            var query = new QueryInfo() { Id = HttpContext.User.Claims.Where(c => c.Type == "uid").Select(c => c.Value).FirstOrDefault().ToString() };
+
+            return Ok(await Mediator.Send(query));
+            //var userId = HttpContext.User.Claims.Where(c => c.Type == "uid").Select(c => c.Value).FirstOrDefault().ToString();
+
+            //return Ok(await _userService.GetPermission(int.Parse(userId)));
         }
 
         [HttpPost]

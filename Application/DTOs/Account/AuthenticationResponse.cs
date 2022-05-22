@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Application.DTOs.Permission;
 
 namespace Application.DTOs.Account
 {
@@ -8,6 +9,7 @@ namespace Application.DTOs.Account
         public int Id { get; set; }
         public string UserName { get; set; }
         public List<string> Roles { get; set; }
+        public IList<ModuleClaimViewModel> Claims { get; set; }
         public string JWToken { get; set; }
         [JsonIgnore]
         public string RefreshToken { get; set; }

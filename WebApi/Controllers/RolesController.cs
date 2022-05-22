@@ -12,6 +12,7 @@ using Application.Features.Role.Grant;
 using Application.Features.Role.Invoke;
 using Application.Features.Role.Delete;
 using Application.Features.Role;
+using Application.Features.Role.WithPermission;
 
 namespace WebApi.Controllers
 {
@@ -31,6 +32,15 @@ namespace WebApi.Controllers
         public async Task<IActionResult> GetAll([FromQuery] Parameter filter)
         {
             var query = _mapper.Map<Query>(filter);
+
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("roles")]
+        [Authorize(Policy = PolicyTypes.Roles.Info)]
+        public async Task<IActionResult> GetAllWithPermission()
+        {
+            var query = new GetRoles();
 
             return Ok(await Mediator.Send(query));
         }

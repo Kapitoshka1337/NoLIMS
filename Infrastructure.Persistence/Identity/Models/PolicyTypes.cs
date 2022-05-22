@@ -8,6 +8,7 @@
             public const string Edit = "permission.roles.edit";
             public const string Delete = "permission.roles.delete";
             public const string View = "permission.roles.view";
+            public const string Info = "permission.roles.info";
         }
 
         public static class Permissions
@@ -31,6 +32,7 @@
             public const string Edit = "permission.user.edit";
             public const string Delete = "permission.user.delete";
             public const string View = "permission.user.view";
+            public const string Info = "permission.user.info";
         }
 
         public static class Equipment
