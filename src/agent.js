@@ -15,18 +15,29 @@ const tokenPlugin = req => {
   }
 }
 
-const URLService= (filters) => {
-      let url = '';
+const computedFilter = (filter) => {
+    let url = '';
 
-      if (Object.keys(filters).length > 0)
-      {
-          Object.keys(filters).forEach(el => {
-              if (filters[el] != null || filters[el] != "" || filters[el] > 0)
-                  url += `&${el}=${filters[el]}`
-          })
-      }
+    if (Object.keys(filter).length > 0)
+    {
+        Object.keys(filter).forEach(el => {
+            if (filter[el])
+                url += `&${el}=${filter[el]}`
+        })
+    }
 
-      return url
+    return url
+}
+
+const computedUrl = (url, page, size, sorter) => {
+    let uri = ''
+
+    if (sorter == null)
+      uri = `${url}?pageNumber=${page}&pageSize=${size}`
+    else
+      uri = `${url}?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`
+    
+    return uri
 }
 
 const requests = {
@@ -118,10 +129,12 @@ const UsersService = {
 
 const DepartmentService = {
   view: (page, size, sorter = null, filters = null) => {
-    if (sorter == null)
-      return requests.get(`/v1/department?pageNumber=${page}&pageSize=${size}`)
-    else
-      return requests.get(`/v1/department?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+    // debugger
+    let url = computedUrl('/v1/department', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
   },
   add: (item) => {
     return requests.post('/v1/department', item)
