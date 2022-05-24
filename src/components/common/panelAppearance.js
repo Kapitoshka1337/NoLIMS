@@ -7,11 +7,12 @@ function PanelAppearance(props)
             <SideSheet getPopupContainer={null} disableScroll={false} title="Настройка внешнего вида" mask={true} visible={props.show} onCancel={() => props.onCancel(false)} size={"small"}>
             {props.columns.map((column) => {
                 if (column.dataIndex != 'actions')
-                    return (
-                        <Checkbox key={column.dataIndex} checked={column.visible} onChange={checked => props.onChangeVisibleColumn(checked)} aria-label={column.dataIndex}>
-                            {column.title}
-                        </Checkbox>
-                    )
+                    if (column.inAppearance)
+                        return (
+                            <Checkbox key={column.dataIndex} checked={column.visible} onChange={checked => props.onChangeVisibleColumn(checked)} aria-label={column.dataIndex}>
+                                {column.title}
+                            </Checkbox>
+                        )
             })}
             </SideSheet>
         </>

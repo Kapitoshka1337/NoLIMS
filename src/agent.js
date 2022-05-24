@@ -226,11 +226,13 @@ const VerificationService = {
 };
 
 const ChecksService = {
-  view: (page, size, sorter = null) => {
-    if (sorter == null)
-      return requests.get(`/v1/check?pageNumber=${page}&pageSize=${size}`)
-    else
-      return requests.get(`/v1/check?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  view: (page, size, sorter = null, filters = null) => {
+    // debugger
+    let url = computedUrl('/v1/check', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
   },
   add: (item) => {
     return requests.post('/v1/check', item)

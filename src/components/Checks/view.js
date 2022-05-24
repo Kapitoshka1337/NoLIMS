@@ -7,6 +7,8 @@ import {
   EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
 import Toolbar from './toolbar';
+import PanelAppearance from './../common/panelAppearance';
+import PanelFilter from './../common/panelFilter';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -32,7 +34,32 @@ class ChecksView extends React.PureComponent {
             sorter: {},
             dataSource: [],
             selectedRow: [],
-            showVo: false
+            showVo: false,
+            showColumns: false,
+            showFilter: false,
+            columns: [
+                { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Пройденная', dataIndex: 'currentCheck', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', inFilter: true, inAppearance: false, visible: false, title: 'ПройденнаяС', dataIndex: 'currentCheckStart', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', inFilter: true, inAppearance: false, visible: false, title: 'ПройденнаяК', dataIndex: 'currentCheckEnd', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Предстоящая', dataIndex: 'nextCheck', width: 200, sorter: (a, b) => a.nextCheck - b.nextCheck > 0 ? 1 : -1},
+                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
+                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},
+                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1},
+                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Вид', dataIndex: 'equipment.type', width: 200, sorter: (a, b) => a.equipment.type - b.equipment.type > 0 ? 1 : -1},
+                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.quipment.model - b.quipment.model > 0 ? 1 : -1},
+                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1},
+            ],
+            cols: [],
+            filters: {
+                currentCheck: '',
+                nextCheck: '',
+                'equipment.department': '',
+                'equipment.number': '',
+                'equipment.name': '',
+                'equipment.type': '',
+                'equipment.model': '',
+                'equipment.serialNumber': '',
+            }
         }
     }
 
@@ -46,12 +73,12 @@ class ChecksView extends React.PureComponent {
 
         if (typeof(page) == 'undefined' && typeof(size) == 'undefined')
         {
-            const data = await agent.ChecksService.view(this.state.currentPage, this.state.pageSize, this.state.sorter)
+            const data = await agent.ChecksService.view(this.state.currentPage, this.state.pageSize, this.state.sorter, this.state.filters)
             this.setState({...this.state, dataSource: data, loading: false, sorter: sorter})
         }
         else
         {
-            const data = await agent.ChecksService.view(page, size, sorter)
+            const data = await agent.ChecksService.view(page, size, sorter, this.state.filters)
             this.setState({dataSource: data, currentPage: page, pageSize: size, loading: false, sorter: sorter})
         }
         
@@ -59,10 +86,11 @@ class ChecksView extends React.PureComponent {
 
     async componentDidMount(){
         this.getData()
+        this.setState({...this.state, cols: this.state.columns.filter(it => it.visible == true)})
     }
 
     handlePageChange(changes){
-        this.getData(changes.pagination.currentPage, changes.pagination.pageSize, changes.sorter)
+        this.getData(changes.pagination.currentPage, changes.pagination.pageSize, changes.sorter, this.state.filters)
     }
 
     rowSelection = {
@@ -108,29 +136,55 @@ class ChecksView extends React.PureComponent {
         this.setState({...this.state, showVo: value});
     }
 
-    render() {
-        const columns = [
-            { title : 'Пройденная', dataIndex: 'currentCheck', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
-            { title : 'Предстоящая', dataIndex: 'nextCheck', width: 200, sorter: (a, b) => a.nextCheck - b.nextCheck > 0 ? 1 : -1},
-            { title : 'Подразделение', dataIndex: 'equipment.department' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
-            { title : 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},
-            { title : 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1},
-            { title : 'Вид', dataIndex: 'equipment.type', width: 200, sorter: (a, b) => a.equipment.type - b.equipment.type > 0 ? 1 : -1},
-            { title : 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.quipment.model - b.quipment.model > 0 ? 1 : -1},
-            { title : 'С/Н', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1},
-        ];
+    handleShowColumns = (value) => {
+        this.setState({...this.state, showColumns: value})
+        setTimeout(() => {
+            let doc = document.getElementsByClassName('semi-sidesheet-content')
+            if (doc.length > 0) 
+                doc[0].style.overflow = 'visible'
+        }, 1000)
+    }
 
+    handleShowFilter = (value) => {
+        this.setState({...this.state, showFilter: value})
+        setTimeout(() => {
+            let doc = document.getElementsByClassName('semi-sidesheet-content')
+            if (doc.length > 0) 
+                doc[0].style.overflow = 'visible'
+        }, 1000)
+    }
+
+    changeVisibleColumn = (item) => {
+        let columns = this.state.columns;
+        columns.forEach(it => {
+            if (it.dataIndex == item.target['aria-label'])
+            {
+                it.visible = !it.visible
+            }
+        })
+
+        this.setState({...this.state, cols: columns.filter(it => it.visible == true)})
+    }
+
+    onChangeInput = (value) => {
+        this.setState({...this.state, filters: value})
+        setTimeout(() => {
+            this.getData()
+        }, 100)
+    }
+
+    render() {
         return (
             <>
                 <Table
-                columns={columns}
+                columns={this.state.cols}
                 dataSource={this.state.dataSource.data}
                 loading={this.state.loading}
                 resizable
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar header={'Журнал поверок'} onGet={this.getData} onSentToCheck={this.onSentToCheck}
+                title={<Toolbar header={'Журнал поверок'} onGet={this.getData} handleShowFilter={this.handleShowFilter} handleShowColumns ={this.handleShowColumns} onSentToCheck={this.onSentToCheck}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
@@ -140,6 +194,8 @@ class ChecksView extends React.PureComponent {
                     total: this.state.dataSource.totalRecords,
                     showSizeChanger: true
                 }}/>
+                <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
+                <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
             </>
         );
     }

@@ -65,7 +65,7 @@ function Equipment()
           actions: [
               {
                   title: "Поверки",
-                  link: "equipment/verifications/view",
+                  link: "equipment/verification/view",
                   desctiption: "Отобразить список поверок"
               },
               {
@@ -101,7 +101,8 @@ function Equipment()
                       {item.actions.map((action) => {
                         let tt = action.link.split('/');
                         console.log(tt)
-                        if (userHasPermissions(`${tt[1]}.view`))
+                        let idx = tt.length > 2 ? 1 : 0;
+                        if (userHasPermissions(`${tt[idx]}.view`))
                         {
                           return (
                             <div className='actions' key={action.title}>

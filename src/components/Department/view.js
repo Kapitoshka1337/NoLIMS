@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, SideSheet, Checkbox, Input } from '@douyinfe/semi-ui'
+import { Table } from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
 import {
@@ -11,6 +11,7 @@ import Toolbar from './toolbar'
 import { history } from '../../store';
 import ButtonOpenCard from './../common/buttonOpenCard';
 import PanelAppearance from './../common/panelAppearance';
+import PanelFilter from './../common/panelFilter';
 
 const mapStateToProps = state => ({
   ...state,
@@ -160,10 +161,8 @@ class DepartmentView extends React.PureComponent {
         this.setState({...this.state, cols: columns.filter(it => it.visible == true)})
     }
 
-    changeName = (value, e, column) => {
-        let filter = this.state.filters;
-        filter[column] = value;
-        this.setState({...this.state, filters: filter})
+    onChangeInput = (value) => {
+        this.setState({...this.state, filters: value})
         setTimeout(() => {
             this.getData()
         }, 100)
@@ -189,16 +188,7 @@ class DepartmentView extends React.PureComponent {
                     total: this.state.dataSource.totalRecords,
                     showSizeChanger: true
                 }}/>
-                <SideSheet getPopupContainer={null} disableScroll={false} title="Панель фильтрации" mask={true} visible={this.state.showFilter} onCancel={() => this.handleShowFilter(false)} size={"small"}>
-                    {
-                        this.state.columns.map((column) => {
-                            if (column.dataIndex != 'actions')
-                                return (
-                                    <Input key={column.dataIndex} type={column.type} placeholder={column.title} value={this.state.filters[column.dataIndex]} onChange={(value, event) => this.changeName(value, event, column.dataIndex)}/>
-                                    )
-                        })
-                    }
-                </SideSheet>
+                <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
                 <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
                 <ModalCreateDepartment onClose={this.showCreate} onOk={this.onCreate} show={this.state.showCreate}/>
             </>

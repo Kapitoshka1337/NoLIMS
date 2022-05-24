@@ -67,7 +67,7 @@ class Home extends React.PureComponent {
               <Content style={{ padding: '12px', backgroundColor: 'var(--semi-color-bg-0)'}}>
                 <Switch>
                   <AppLayoutRoute exac path='/equipment/checks/view' component={ChecksView} />
-                  <AppLayoutRoute exac path='/equipment/verifications/view' component={VerificationsView} />
+                  <AppLayoutRoute exac path='/equipment/verification/view' component={VerificationsView} />
                   <AppLayoutRoute exac path='/equipment/documentkind/view/:id' component={DocumentKindCard} />
                   <AppLayoutRoute exac path='/equipment/documentkind/view' component={DocumentKind} />
                   <AppLayoutRoute exac path='/equipment/types/view/:id' component={EquipmentTypeCard} />
