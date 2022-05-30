@@ -39,8 +39,8 @@ class ChecksView extends React.PureComponent {
             showFilter: false,
             columns: [
                 { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Пройденная', dataIndex: 'currentCheck', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
-                { type: 'date', inFilter: true, inAppearance: false, visible: false, title: 'ПройденнаяС', dataIndex: 'currentCheckStart', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
-                { type: 'date', inFilter: true, inAppearance: false, visible: false, title: 'ПройденнаяК', dataIndex: 'currentCheckEnd', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', inFilter: true, inAppearance: false, visible: false, title: 'ПройденнаяСтарт', dataIndex: 'currentCheckStart', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', inFilter: true, inAppearance: false, visible: false, title: 'ПройденнаяКонец', dataIndex: 'currentCheckEnd', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Предстоящая', dataIndex: 'nextCheck', width: 200, sorter: (a, b) => a.nextCheck - b.nextCheck > 0 ? 1 : -1},
                 { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
                 { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},
