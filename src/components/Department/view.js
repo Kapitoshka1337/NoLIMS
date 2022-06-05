@@ -39,24 +39,9 @@ class DepartmentView extends React.PureComponent {
             showFilter: false,
             showColumns: false,
             columns: [
-                { type: 'text', visible: true, title: 'Наименование', dataIndex: 'name', width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1, 
-                    // filterDropdown: 
-                    // <Dropdown
-                    // trigger={'click'}
-                    // position={'bottomLeft'}
-                    // render={
-                    //     <Dropdown.Menu>
-                    //         <Dropdown.Item key={1}>
-                    //             <Input field='name' placeholder={'Наименование'} trigger='blur'/>
-                    //         </Dropdown.Item>
-                    //     </Dropdown.Menu>
-                    // }
-                    // >
-                    // <Button icon={<IconFilter/>} theme={'borderless'} type={'tertiary'} />
-                // </Dropdown>,
-                },
-                { type: 'text', visible: true, title: 'Номер', dataIndex: 'number', width: 200, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
-                { visible: true, title: '', dataIndex: 'actions', width: '12px', render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
+                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Наименование', dataIndex: 'name', width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1 },
+                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'number', width: 200, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1 },
+                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: '12px', render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
             ],
             cols: [],
             filters: {

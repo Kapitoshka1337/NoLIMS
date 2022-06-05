@@ -10,6 +10,8 @@ import {
 import ModalPassedVerification from './modal/passed';
 import ButtonOpenCard from './../common/buttonOpenCard';
 import Toolbar from './toolbar';
+import PanelAppearance from './../common/panelAppearance';
+import PanelFilter from './../common/panelFilter';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -36,7 +38,24 @@ class VerificationsView extends React.PureComponent {
             dataSource: [],
             selectedRow: [],
             showPassed: false,
-            passedEquipment: {}
+            passedEquipment: {},
+            showColumns: false,
+            showFilter: false,
+            columns: [
+                { type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department.name', width: 200, sorter: (a, b) => a.equipment.department.name - b.equipment.department.name > 0 ? 1 : -1 },
+                { type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Номер оборудования', dataIndex: 'equipment.number', width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1 },
+                { type: 'text', filterIndex: 'equipmentName', inFilter: true, inAppearance: true, visible: true, title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1 },
+                { type: 'text', filterIndex: 'equipmentModel', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.equipment.model - b.equipment.model > 0 ? 1 : -1 },
+                { type: 'text', filterIndex: 'equipmentSerialNumber', inFilter: true, inAppearance: true, visible: true, title: 'Серийный номер', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1 },
+                { type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Состояние', dataIndex: 'status.name', width: 200, sorter: (a, b) => a.status.name - b.status.name > 0 ? 1 : -1 },
+                { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) =>  <ButtonOpenCard icon={<IconTickCircle />} onClick={(e) => this.onPassedVerification(record, true)} record={record} disabled={record.statusId == 1 || record.statusId == 3} />}
+            ],
+            cols: [],
+            filters: {
+                equipmentName: '',
+                equipmentModel: '',
+                equipmentSerialNumber: '',
+            }
         }
     }
 
@@ -50,12 +69,12 @@ class VerificationsView extends React.PureComponent {
 
         if (typeof(page) == 'undefined' && typeof(size) == 'undefined')
         {
-            const data = await agent.VerificationService.view(this.state.currentPage, this.state.pageSize, this.state.sorter)
+            const data = await agent.VerificationService.view(this.state.currentPage, this.state.pageSize, this.state.sorter, this.state.filters)
             this.setState({...this.state, dataSource: data, loading: false, sorter: sorter})
         }
         else
         {
-            const data = await agent.VerificationService.view(page, size, sorter)
+            const data = await agent.VerificationService.view(page, size, sorter, this.state.filters)
             this.setState({dataSource: data, currentPage: page, pageSize: size, loading: false, sorter: sorter})
         }
         
@@ -63,6 +82,7 @@ class VerificationsView extends React.PureComponent {
 
     async componentDidMount(){
         this.getData()
+        this.setState({...this.state, cols: this.state.columns.filter(it => it.visible == true)})
     }
 
     handlePageChange(changes){
@@ -218,21 +238,48 @@ class VerificationsView extends React.PureComponent {
         this.getData()
     }
 
-    render() {
-        const columns = [
-            { title: 'Подразделение', dataIndex: 'equipment.department.name', width: 200, sorter: (a, b) => a.equipment.department.name - b.equipment.department.name > 0 ? 1 : -1 },
-            { title: 'Номер оборудования', dataIndex: 'equipment.number', width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1 },
-            { title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1 },
-            { title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.equipment.model - b.equipment.model > 0 ? 1 : -1 },
-            { title: 'Серийный номер', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1 },
-            { title: 'Состояние', dataIndex: 'status.name', width: 200, sorter: (a, b) => a.status.name - b.status.name > 0 ? 1 : -1 },
-            { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) =>  <ButtonOpenCard icon={<IconTickCircle />} onClick={(e) => this.onPassedVerification(record, true)} record={record} disabled={record.statusId == 1 || record.statusId == 3} />}
-        ];
-        
+    handleShowColumns = (value) => {
+        this.setState({...this.state, showColumns: value})
+        setTimeout(() => {
+            let doc = document.getElementsByClassName('semi-sidesheet-content')
+            if (doc.length > 0) 
+                doc[0].style.overflow = 'visible'
+        }, 1000)
+    }
+
+    handleShowFilter = (value) => {
+        this.setState({...this.state, showFilter: value})
+        setTimeout(() => {
+            let doc = document.getElementsByClassName('semi-sidesheet-content')
+            if (doc.length > 0) 
+                doc[0].style.overflow = 'visible'
+        }, 1000)
+    }
+
+    changeVisibleColumn = (item) => {
+        let columns = this.state.columns;
+        columns.forEach(it => {
+            if (it.dataIndex == item.target['aria-label'])
+            {
+                it.visible = !it.visible
+            }
+        })
+
+        this.setState({...this.state, cols: columns.filter(it => it.visible == true)})
+    }
+
+    onChangeInput = (value) => {
+        this.setState({...this.state, filters: value})
+        setTimeout(() => {
+            this.getData()
+        }, 100)
+    }
+
+    render() {        
         return (
             <>
                 <Table
-                columns={columns}
+                columns={this.state.cols}
                 dataSource={this.state.dataSource.data}
                 loading={this.state.loading}
                 resizable
@@ -246,6 +293,8 @@ class VerificationsView extends React.PureComponent {
                     onCancelVerification={this.onCancelVerification}
                     onReturnToDepartment={this.onReturnToDepartment}
                     onDeleteVerification={this.onDeleteVerification}
+                    handleShowFilter={this.handleShowFilter}
+                    handleShowColumns ={this.handleShowColumns}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
@@ -255,6 +304,8 @@ class VerificationsView extends React.PureComponent {
                     total: this.state.dataSource.totalRecords,
                     showSizeChanger: true
                 }}/>
+                <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
+                <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
                 <ModalPassedVerification onClose={this.onPassedVerification} onOk={this.onOkPassed} show={this.state.showPassed} passedEquipment={this.state.passedEquipment}/>
             </>
         );

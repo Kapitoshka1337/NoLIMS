@@ -1,4 +1,4 @@
-import { SideSheet, Row, Col, Input } from '@douyinfe/semi-ui'
+import { SideSheet, Row, Col, Input, DatePicker } from '@douyinfe/semi-ui'
 
 const onChangeName = (value, column, filters) => {
     let filter = filters;
@@ -17,11 +17,24 @@ function PanelFilter(props)
                         props.columns.map((column) => {
                             if (column.dataIndex != 'actions')
                                 if (column.inFilter)
-                                    return (
-                                            <Col key={column.dataIndex}>
-                                                <Input type={column.type} placeholder={column.title} value={props.filters[column.dataIndex]} onChange={(value, event) => props.onChange(onChangeName(value, column.dataIndex, props.filters))}/>
+                                {
+                                    if (column.type == 'date')
+                                    {
+                                        return (
+                                            <Col key={column.dataIndex || column.filterIndex}>
+                                                <DatePicker style={{ width: '100%' }} placeholder={column.title} onChange={(date, dateString) => props.onChange(onChangeName(dateString, column.filterIndex, props.filters))} value={props.filters[column.filterIndex]}/>
                                             </Col>
-                                    )
+                                        )
+                                    }
+                                    else
+                                    {
+                                        return (
+                                            <Col key={column.dataIndex || column.filterIndex}>
+                                                <Input type={column.type} placeholder={column.title} value={props.filters[column.filterIndex]} onChange={(value, event) => props.onChange(onChangeName(value, column.filterIndex, props.filters))}/>
+                                            </Col>
+                                        )
+                                    }
+                                }
                         })
                     }
                 </Row>

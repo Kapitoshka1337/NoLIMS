@@ -65,11 +65,12 @@ const Auth = {
 };
 
 const EquipmentService = {
-  view: (page, size, sorter = null) => {
-    if (sorter == null)
-      return requests.get(`/v1/equipment?pageNumber=${page}&pageSize=${size}`)
-    else
-      return requests.get(`/v1/equipment?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  view: (page, size, sorter = null, filters = null) => {
+    let url = computedUrl('/v1/equipment', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
   },
   addVO: (item) => {
     return requests.post('/v1/equipment/vo', item)
@@ -89,11 +90,12 @@ const EquipmentService = {
 };
 
 const ManufacturerService = {
-  view: (page, size, sorter = null) => {
-    if (sorter == null)
-      return requests.get(`/v1/manufacturer?pageNumber=${page}&pageSize=${size}`)
-    else
-      return requests.get(`/v1/manufacturer?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  view: (page, size, sorter = null, filters = null) => {
+    let url = computedUrl('/v1/manufacturer', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
   },
   add: (item) => {
     return requests.post('/v1/manufacturer', item)
@@ -107,11 +109,12 @@ const ManufacturerService = {
 };
 
 const UsersService = {
-  view: (page, size, sorter = null) => {
-    if (sorter == null)
-      return requests.get(`/v1/user?pageNumber=${page}&pageSize=${size}`)
-    else
-      return requests.get(`/v1/user?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  view: (page, size, sorter = null, filters = null) => {
+    let url = computedUrl('/v1/user', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
   },
   add: (item) => {
     return requests.post('/v1/user', item)
@@ -148,11 +151,12 @@ const DepartmentService = {
 };
 
 const LocationService = {
-  view: (page, size, sorter = null) => {
-    if (sorter == null)
-      return requests.get(`/v1/location?pageNumber=${page}&pageSize=${size}`)
-    else
-      return requests.get(`/v1/location?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  view: (page, size, sorter = null, filters = null) => {
+    let url = computedUrl('/v1/location', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
   },
   add: (item) => {
     return requests.post('/v1/location', item)
@@ -166,11 +170,12 @@ const LocationService = {
 };
 
 const DocumentKindService = {
-  view: (page, size, sorter = null) => {
-    if (sorter == null)
-      return requests.get(`/v1/documentKind?pageNumber=${page}&pageSize=${size}`)
-    else
-      return requests.get(`/v1/documentKind?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  view: (page, size, sorter = null, filters = null) => {
+    let url = computedUrl('/v1/documentKind', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
   },
   add: (item) => {
     return requests.post('/v1/documentKind', item)
@@ -202,11 +207,12 @@ const EquipmentTypeService = {
 };
 
 const VerificationService = {
-  view: (page, size, sorter = null) => {
-    if (sorter == null)
-      return requests.get(`/v1/verification?pageNumber=${page}&pageSize=${size}`)
-    else
-      return requests.get(`/v1/verification?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  view: (page, size, sorter = null, filters = null) => {
+    let url = computedUrl('/v1/verification', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
   },
   add: (item) => {
     return requests.post('/v1/verification', item)
@@ -227,7 +233,6 @@ const VerificationService = {
 
 const ChecksService = {
   view: (page, size, sorter = null, filters = null) => {
-    // debugger
     let url = computedUrl('/v1/check', page, size, sorter);
     let filterUrl = "";
     if (filters) filterUrl = computedFilter(filters);
@@ -258,11 +263,12 @@ const UserRoleService = {
 };
 
 const RoleService = {
-  view: (page, size, sorter = null) => {
-    if (sorter == null)
-      return requests.get(`/v1/roles?pageNumber=${page}&pageSize=${size}`)
-    else
-      return requests.get(`/v1/roles?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  view: (page, size, sorter = null, filters = null) => {
+    let url = computedUrl('/v1/roles', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
   },
   add: (item) => {
     return requests.post('/v1/roles', item)

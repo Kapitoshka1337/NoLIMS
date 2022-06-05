@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Nav } from '@douyinfe/semi-ui'
-import { IconRefresh, IconFilledArrowUp, IconPlay, IconDelete, IconStop, IconPrint, IconTickCircle } from '@douyinfe/semi-icons';
+import { IconRefresh, IconFilledArrowUp, IconPlay, IconDelete, IconStop, IconPrint, IconFilter, IconCheckList } from '@douyinfe/semi-icons';
 import { useAbac } from 'react-abac'
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
@@ -31,7 +31,8 @@ const mapDispatchToProps = dispatch => ({
                     { itemKey: 'toDepartment', text: 'Отдать в отдел', icon: <IconFilledArrowUp />, onClick: (e) => props.onReturnToDepartment(), disabled: !userHasPermissions('verification.return') },
                     { itemKey: 'printOrder', text: 'Печать заявки в ЦСМ', icon: <IconPrint /> },
                     { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDeleteVerification(), disabled: !userHasPermissions('verification.delete')  },
-
+                    { itemKey: 'filter', text: 'Фильтрация', icon: <IconFilter />, onClick: (e) => props.handleShowFilter(true) },
+                    { itemKey: 'appearance', text: 'Внешний вид', icon: <IconCheckList />, onClick: (e) => props.handleShowColumns(true) }
                 ]
             }
         />

@@ -24,8 +24,8 @@ const mapDispatchToProps = dispatch => ({
 
 class ChecksView extends React.PureComponent {
     
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
 
         this.state = {
             loading: true,
@@ -39,26 +39,27 @@ class ChecksView extends React.PureComponent {
             showFilter: false,
             columns: [
                 { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Пройденная', dataIndex: 'currentCheck', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
-                { type: 'date', inFilter: true, inAppearance: false, visible: false, title: 'ПройденнаяСтарт', dataIndex: 'currentCheckStart', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
-                { type: 'date', inFilter: true, inAppearance: false, visible: false, title: 'ПройденнаяКонец', dataIndex: 'currentCheckEnd', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Предстоящая', dataIndex: 'nextCheck', width: 200, sorter: (a, b) => a.nextCheck - b.nextCheck > 0 ? 1 : -1},
-                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
-                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},
-                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1},
-                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Вид', dataIndex: 'equipment.type', width: 200, sorter: (a, b) => a.equipment.type - b.equipment.type > 0 ? 1 : -1},
-                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.quipment.model - b.quipment.model > 0 ? 1 : -1},
-                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1},
+                { type: 'date', filterIndex: 'currentCheckStart', inFilter: true, inAppearance: false, visible: false, title: 'Пройденная поверка по', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', filterIndex: 'currentCheckEnd', inFilter: true, inAppearance: false, visible: false, title: 'Пройденная поверка от', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', filterIndex: 'nextCheckStart', inFilter: true, inAppearance: false, visible: false, title: 'Предстоящая поверка от', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', filterIndex: 'nextCheckEnd', inFilter: true, inAppearance: false, visible: false, title: 'Предстоящая поверка по', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'text', filterIndex: 'equipment.number', inFilter: false, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},
+                { type: 'text', filterIndex: 'equipment.department', inFilter: false, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
+                { type: 'text', filterIndex: 'equipmentName', inFilter: true, inAppearance: true, visible: true, title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1},
+                { type: 'text', filterIndex: 'equipment.type', inFilter: false, inAppearance: true, visible: true, title: 'Вид', dataIndex: 'equipment.type', width: 200, sorter: (a, b) => a.equipment.type - b.equipment.type > 0 ? 1 : -1},
+                { type: 'text', filterIndex: 'equipmentModel', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.quipment.model - b.quipment.model > 0 ? 1 : -1},
+                { type: 'text', filterIndex: 'equipmentSerialNumber', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1},
             ],
             cols: [],
             filters: {
-                currentCheck: '',
-                nextCheck: '',
-                'equipment.department': '',
-                'equipment.number': '',
-                'equipment.name': '',
-                'equipment.type': '',
-                'equipment.model': '',
-                'equipment.serialNumber': '',
+                currentCheckStart: '',
+                currentCheckEnd: '',
+                nextCheckStart: '',
+                nextCheckEnd: '',
+                equipmentName: '',
+                equipmentModel: '',
+                equipmentSerialNumber: ''
             }
         }
     }
@@ -90,7 +91,7 @@ class ChecksView extends React.PureComponent {
     }
 
     handlePageChange(changes){
-        this.getData(changes.pagination.currentPage, changes.pagination.pageSize, changes.sorter, this.state.filters)
+        this.getData(changes.pagination.currentPage, changes.pagination.pageSize, changes.sorter)
     }
 
     rowSelection = {
@@ -184,7 +185,7 @@ class ChecksView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar header={'Журнал поверок'} onGet={this.getData} handleShowFilter={this.handleShowFilter} handleShowColumns ={this.handleShowColumns} onSentToCheck={this.onSentToCheck}
+                title={<Toolbar header={'Журнал поверок'} onGet={this.getData} handleShowFilter={this.handleShowFilter} handleShowColumns={this.handleShowColumns} onSentToCheck={this.onSentToCheck}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
