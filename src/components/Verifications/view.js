@@ -12,6 +12,7 @@ import ButtonOpenCard from './../common/buttonOpenCard';
 import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
+import AutoCompleteDepartment from "../Department/autoComplete";
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -42,13 +43,13 @@ class VerificationsView extends React.PureComponent {
             showColumns: false,
             showFilter: false,
             columns: [
-                { type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department.name', width: 200, sorter: (a, b) => a.equipment.department.name - b.equipment.department.name > 0 ? 1 : -1 },
+                { renderFilter: () => { return <AutoCompleteDepartment key={'1'} onOk={this.handleOkAutoComplete}/>}, type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department.name', width: 200, sorter: (a, b) => a.equipment.department.name - b.equipment.department.name > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Номер оборудования', dataIndex: 'equipment.number', width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: 'equipmentName', inFilter: true, inAppearance: true, visible: true, title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: 'equipmentModel', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.equipment.model - b.equipment.model > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: 'equipmentSerialNumber', inFilter: true, inAppearance: true, visible: true, title: 'Серийный номер', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1 },
-                { type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Состояние', dataIndex: 'status.name', width: 200, sorter: (a, b) => a.status.name - b.status.name > 0 ? 1 : -1 },
-                { title: '', dataIndex: 'actions', width: 100, render: (text, record, index) =>  <ButtonOpenCard icon={<IconTickCircle />} onClick={(e) => this.onPassedVerification(record, true)} record={record} disabled={record.statusId == 1 || record.statusId == 3} />}
+                { type: 'text', filterIndex: '', inFilter: false, inAppearance: true, visible: true, title: 'Состояние', dataIndex: 'status.name', width: 200, sorter: (a, b) => a.status.name - b.status.name > 0 ? 1 : -1 },
+                { inFilter: false, inAppearance: false, visible: true,title: '', dataIndex: 'actions', width: 100, render: (text, record, index) =>  <ButtonOpenCard icon={<IconTickCircle />} onClick={(e) => this.onPassedVerification(record, true)} record={record} disabled={record.statusId == 1 || record.statusId == 3} />}
             ],
             cols: [],
             filters: {
@@ -57,6 +58,12 @@ class VerificationsView extends React.PureComponent {
                 equipmentSerialNumber: '',
             }
         }
+    }
+
+    handleOkAutoComplete = (value) => {
+        let filter = this.state.filters;
+        filter['departmentId'] = value.id;
+        this.onChangeInput(filter)
     }
 
     componentDidUpdate(){
@@ -237,7 +244,7 @@ class VerificationsView extends React.PureComponent {
     onOkPassed = () => {
         this.getData()
     }
-
+    
     handleShowColumns = (value) => {
         this.setState({...this.state, showColumns: value})
         setTimeout(() => {

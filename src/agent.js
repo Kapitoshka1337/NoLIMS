@@ -43,12 +43,14 @@ const computedUrl = (url, page, size, sorter) => {
 const requests = {
   del: url =>
     superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
-  get: url =>
+  get: (url) =>
     superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
   put: (url, body) =>
     superagent.put(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
   post: (url, body) =>
-    superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody).catch(console.log(responseBody))
+    superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
+  download: (url) =>
+    superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody => {return responseBody}).catch(console.log(responseBody))
 };
 
 const Auth = {
@@ -247,6 +249,9 @@ const ChecksService = {
 const FileService = {
   upload: (item) => {
     return requests.post('/v1/files/upload', item)
+  },
+  download: (fileId) => {
+    return requests.download(`/file/download/?fileId=${fileId}`)
   }
 };
 

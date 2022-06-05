@@ -64,20 +64,39 @@ class AutoCompleteDepartment extends React.PureComponent {
     }
 
     render(){
-        return (
-            <>
-                <Form.AutoComplete 
-                    style={{width: '100%'}}
-                    suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
-                    label="Подразделение"
-                    field="departmentName"
-                    rules={this.props.rules}
-                />
-                <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
-                    <TableDepartment onSelect={this.selectedManufacturer}/>
-                </Modal>
-            </>
-        );
+        if (!this.props.form)
+        {
+            return (
+                <>
+                    <Form.AutoComplete
+                        style={{width: '100%'}}
+                        suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
+                        label="Подразделение"
+                        field="departmentName"
+                        rules={this.props.rules}
+                    />
+                    <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
+                        <TableDepartment onSelect={this.selectedManufacturer}/>
+                    </Modal>
+                </>
+            );
+        }
+        else
+        {
+            return (
+                <>
+                    <AutoComplete
+                        style={{width: '100%'}}
+                        suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
+                        placeholder="Подразделение"
+                        value={this.state.item.name}
+                    />
+                    <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
+                        <TableDepartment onSelect={this.selectedManufacturer}/>
+                    </Modal>
+                </>
+            );
+        }
     }
 }
 

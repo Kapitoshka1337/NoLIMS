@@ -5,6 +5,8 @@ import { Table} from '@douyinfe/semi-ui'
 import Toolbar from './toolbar'
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
+import AutoCompleteDepartment from "../Department/autoComplete";
+
 import agent from '../../agent';
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
@@ -12,6 +14,7 @@ import {
 import ModalCreateLocation from './modalCreate'
 import { history } from '../../store';
 import ButtonOpenCard from './../common/buttonOpenCard';
+import { IconTopRightStroked } from '@douyinfe/semi-icons';
 
 const mapStateToProps = state => ({
   ...state,
@@ -39,7 +42,18 @@ class LocationView extends React.PureComponent {
             showFilter: false,
             columns: [
                 { type: 'text', filterIndex: 'numberRoom', inFilter: true, inAppearance: true, visible: true, title: 'Номер кабинета', dataIndex: 'numberRoom', width: 200, sorter: (a, b) => a.numberRoom - b.numberRoom > 0 ? 1 : -1},
-                { type: 'text', filterIndex: 'departmentId', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'department.name', width: 200, sorter: (a, b) => a.department.name - b.department.name > 0 ? 1 : -1},
+                {
+                    type: 'text',
+                    filterIndex: 'departmentId',
+                    inFilter: true,
+                    inAppearance: true,
+                    visible: true,
+                    title: 'Подразделение',
+                    dataIndex: 'department.name',
+                    width: 200,
+                    sorter: (a, b) => a.department.name - b.department.name > 0 ? 1 : -1,
+                    renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoComplete}/>}
+                },
                 { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
             ],
             cols: [],
@@ -48,6 +62,12 @@ class LocationView extends React.PureComponent {
                 departmentId: ''
             }
         }
+    }
+
+    handleOkAutoComplete = (value) => {
+        let filter = this.state.filters;
+        filter['departmentId'] = value.id;
+        this.onChangeInput(filter)
     }
 
     componentDidUpdate(){

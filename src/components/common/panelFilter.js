@@ -1,4 +1,4 @@
-import { SideSheet, Row, Col, Input, DatePicker } from '@douyinfe/semi-ui'
+import { SideSheet, Row, Col, Input, DatePicker, Button } from '@douyinfe/semi-ui'
 
 const onChangeName = (value, column, filters) => {
     let filter = filters;
@@ -7,11 +7,30 @@ const onChangeName = (value, column, filters) => {
     return filter;
 }
 
+const onResetFilter = () => {
+    return {};
+}
+
 function PanelFilter(props)
 {
     return (
         <>
-            <SideSheet getPopupContainer={null} disableScroll={false} title="Панель фильтрации" mask={true} visible={props.show} onCancel={() => props.onCancel(false)} size={"small"}>
+            <SideSheet
+            getPopupContainer={null}
+            disableScroll={false}
+            title="Панель фильтрации"
+            mask={true}
+            visible={props.show}
+            onCancel={() => props.onCancel(false)}
+            size={"small"}
+            footer={
+                <>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button onClick={() => props.onChange(onResetFilter())}>Сбросить</Button>
+                    </div>
+                </>
+            }
+            >
                 <Row>
                     {
                         props.columns.map((column) => {
@@ -25,6 +44,10 @@ function PanelFilter(props)
                                                 <DatePicker style={{ width: '100%' }} placeholder={column.title} onChange={(date, dateString) => props.onChange(onChangeName(dateString, column.filterIndex, props.filters))} value={props.filters[column.filterIndex]}/>
                                             </Col>
                                         )
+                                    }
+                                    else if (column.renderFilter)
+                                    {
+                                        return column.renderFilter()
                                     }
                                     else
                                     {

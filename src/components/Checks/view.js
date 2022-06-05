@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Table, Toast } from '@douyinfe/semi-ui'
+import FileSaver from 'file-saver'
 
 import agent from '../../agent';
 import {
@@ -174,6 +175,30 @@ class ChecksView extends React.PureComponent {
         }, 100)
     }
 
+    handleDownload = async () => {
+
+        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
+        {
+            Toast.warning("Не выбрана поверка для экспорта документа.");
+            return;
+        }
+
+        if (this.state.selectedRow[0].fileId == null)
+        {
+            Toast.warning("Отсутствует документ для экспорта.")
+            return;
+        }
+
+            // this.$toast.info("Начат экспорт файла.");
+            const result = await agent.FileService.download(this.state.selectedRow[0].fileId)
+            if (result)
+            {
+                console.log(result)
+                const fl = new Blob([result.text], {type: result.type});
+                FileSaver.saveAs(fl, "Документ");
+            }
+    }
+
     render() {
         return (
             <>
@@ -185,7 +210,7 @@ class ChecksView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar header={'Журнал поверок'} onGet={this.getData} handleShowFilter={this.handleShowFilter} handleShowColumns={this.handleShowColumns} onSentToCheck={this.onSentToCheck}
+                title={<Toolbar header={'Журнал поверок'} onGet={this.getData} handleShowFilter={this.handleShowFilter} handleShowColumns={this.handleShowColumns} onSentToCheck={this.onSentToCheck} handleDownload ={this.handleDownload}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
