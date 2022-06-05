@@ -43,7 +43,7 @@ class VerificationsView extends React.PureComponent {
             showColumns: false,
             showFilter: false,
             columns: [
-                { renderFilter: () => { return <AutoCompleteDepartment key={'1'} onOk={this.handleOkAutoComplete}/>}, type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department.name', width: 200, sorter: (a, b) => a.equipment.department.name - b.equipment.department.name > 0 ? 1 : -1 },
+                { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoComplete}/>}, type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department.name', width: 200, sorter: (a, b) => a.equipment.department.name - b.equipment.department.name > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Номер оборудования', dataIndex: 'equipment.number', width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: 'equipmentName', inFilter: true, inAppearance: true, visible: true, title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: 'equipmentModel', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.equipment.model - b.equipment.model > 0 ? 1 : -1 },

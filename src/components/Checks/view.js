@@ -10,6 +10,7 @@ import {
 import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
+import AutoCompleteDepartment from "../Department/autoComplete";
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -46,7 +47,7 @@ class ChecksView extends React.PureComponent {
                 { type: 'date', filterIndex: 'nextCheckStart', inFilter: true, inAppearance: false, visible: false, title: 'Предстоящая поверка от', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 { type: 'date', filterIndex: 'nextCheckEnd', inFilter: true, inAppearance: false, visible: false, title: 'Предстоящая поверка по', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'equipment.number', inFilter: false, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},
-                { type: 'text', filterIndex: 'equipment.department', inFilter: false, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
+                { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoComplete}/>}, type: 'text', filterIndex: 'departmentId', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'equipmentName', inFilter: true, inAppearance: true, visible: true, title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'equipment.type', inFilter: false, inAppearance: true, visible: true, title: 'Вид', dataIndex: 'equipment.type', width: 200, sorter: (a, b) => a.equipment.type - b.equipment.type > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'equipmentModel', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.quipment.model - b.quipment.model > 0 ? 1 : -1},
@@ -60,9 +61,16 @@ class ChecksView extends React.PureComponent {
                 nextCheckEnd: '',
                 equipmentName: '',
                 equipmentModel: '',
-                equipmentSerialNumber: ''
+                equipmentSerialNumber: '',
+                departmentId: ''
             }
         }
+    }
+
+    handleOkAutoComplete = (value) => {
+        let filter = this.state.filters;
+        filter['departmentId'] = value.id;
+        this.onChangeInput(filter)
     }
 
     componentDidUpdate(){
