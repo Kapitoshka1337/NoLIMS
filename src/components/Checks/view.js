@@ -15,6 +15,7 @@ import AutoCompleteDepartment from "../Department/autoComplete";
 const mapStateToProps = state => ({
   ...state.EquipmentView,
   currentUser: state.common.currentUser,
+  token: state.common.token,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -197,14 +198,58 @@ class ChecksView extends React.PureComponent {
             return;
         }
 
-            // this.$toast.info("Начат экспорт файла.");
-            const result = await agent.FileService.download(this.state.selectedRow[0].fileId)
-            if (result)
-            {
-                console.log(result)
-                const fl = new Blob([result.text], {type: result.type});
-                FileSaver.saveAs(fl, "Документ");
-            }
+        const result = await agent.FileService.download(this.state.selectedRow[0].fileId)
+        if (result)
+        {
+            const fl = new Blob([result.body], {type: result.type});
+            FileSaver.saveAs(fl, "Документ");
+        }
+    }
+
+    handlepPrintSticker = async () => {
+        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
+        {
+            Toast.warning("Не выбрано оборудование для печати этикеток.");
+            return;
+        }
+
+        let obj = {
+            equipmentId: []
+        }
+
+        this.state.selectedRow.forEach(el => {
+            obj.equipmentId.push(el.equipmentId)
+        })
+
+        const result = await agent.ReportService.sticker(obj)
+        if (result)
+        {
+            const fl = new Blob([result.body], {type: result.type});
+            FileSaver.saveAs(fl, "Этикетки");
+        }
+    }
+
+    handlepPrintCheckTable = async () => {
+        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
+        {
+            Toast.warning("Не выбрано оборудование для печати таблицы поверок.");
+            return;
+        }
+
+        let obj = {
+            equipmentId: []
+        }
+
+        this.state.selectedRow.forEach(el => {
+            obj.equipmentId.push(el.equipmentId)
+        })
+
+        const result = await agent.ReportService.checkTable(obj)
+        if (result)
+        {
+            const fl = new Blob([result.body], {type: result.type});
+            FileSaver.saveAs(fl, "Таблица поверок");
+        }
     }
 
     render() {
@@ -218,7 +263,15 @@ class ChecksView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar header={'Журнал поверок'} onGet={this.getData} handleShowFilter={this.handleShowFilter} handleShowColumns={this.handleShowColumns} onSentToCheck={this.onSentToCheck} handleDownload ={this.handleDownload}
+                title={<Toolbar
+                    header={'Журнал поверок'}
+                    onGet={this.getData}
+                    handleShowFilter={this.handleShowFilter}
+                    handleShowColumns={this.handleShowColumns}
+                    onSentToCheck={this.onSentToCheck}
+                    handleDownload ={this.handleDownload}
+                    handlepPrintSticker={this.handlepPrintSticker}
+                    handlepPrintCheckTable={this.handlepPrintCheckTable}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}

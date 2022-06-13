@@ -27,7 +27,25 @@ const mapDispatchToProps = dispatch => ({
                 [
                     { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => props.onGet() },
                     { itemKey: 'toVerification', text: 'Отправить на поверку', icon: <IconVerify />, onClick: (e) => props.onSentToCheck(), disabled: !userHasPermissions('verification.add') },
-                    { itemKey: 'download', text: 'Экспортировать', icon: <IconDownload />, onClick: (e) => props.handleDownload(), disabled: !userHasPermissions('file.view')  },
+                    { itemKey: 'document', text: 'Экспорт', icon: <IconDownload />,
+                        items: [
+                            {
+                                itemKey: 'checkDocuement',
+                                text: 'Документы поверки',
+                                onClick: (e) => props.handleDownload(), disabled: !userHasPermissions('file.view')
+                            },
+                            {
+                                itemKey: 'stickerDocuement',
+                                text: 'Этикетка',
+                                onClick: (e) => props.handlepPrintSticker(), disabled: !userHasPermissions('file.view')
+                            },
+                            {
+                                itemKey: 'checkTableDocuement',
+                                text: 'Таблица поверок',
+                                onClick: (e) => props.handlepPrintCheckTable(), disabled: !userHasPermissions('file.view')
+                            }
+                        ]
+                    },
                     { itemKey: 'filter', text: 'Фильтрация', icon: <IconFilter />, onClick: (e) => props.handleShowFilter(true) },
                     { itemKey: 'appearance', text: 'Внешний вид', icon: <IconCheckList />, onClick: (e) => props.handleShowColumns(true) },
 

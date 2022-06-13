@@ -14,6 +14,12 @@ const tokenPlugin = req => {
     req.set('authorization', `Bearer ${token}`);
   }
 }
+const tokenDownloadPlugin = req => {
+  if (token) {
+    req.set('authorization', `Bearer ${token}`);
+    req.set('response-type', 'blob');
+  }
+}
 
 const computedFilter = (filter) => {
     let url = '';
@@ -50,7 +56,9 @@ const requests = {
   post: (url, body) =>
     superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
   download: (url) =>
-    superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody => {return responseBody}).catch(console.log(responseBody))
+    superagent.get(`${API_ROOT}${url}`).responseType('blob').use(tokenPlugin).then(responseBody => {return responseBody}).catch(console.log(responseBody)),
+  report: (url, body) =>
+    superagent.post(`${API_ROOT}${url}`, body).responseType('blob').use(tokenPlugin).then(responseBody => {return responseBody}).catch(console.log(responseBody))
 };
 
 const Auth = {
@@ -255,6 +263,15 @@ const FileService = {
   }
 };
 
+const ReportService = {
+  sticker: (item) => {
+    return requests.report('/v1/report/sticker', item)
+  },
+  checkTable: (item) => {
+    return requests.report('/v1/report/checktable', item)
+  }
+};
+
 const UserRoleService = {
   view: (id) => {
     return requests.get(`/v1/userrole?userId=${id}`, id)
@@ -310,5 +327,6 @@ export default {
   UserRoleService,
   RoleService,
   EquipmentTypeService,
+  ReportService,
   setToken: _token => { token = _token; }
 };
