@@ -47,12 +47,12 @@ namespace Infrastructure.Persistence.Extension
                 expr.And("Name", DynamicExpressions.FilterOperator.Contains, request.Name);
             }
 
-            if (request.Number > 0)
+            if (!string.IsNullOrEmpty(request.Number))
             {
                 if (expr == null)
                     expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
 
-                expr.And("Number", DynamicExpressions.FilterOperator.Equals, request.Number);
+                expr.And("Number", DynamicExpressions.FilterOperator.Contains, request.Number);
             }
 
             if (!string.IsNullOrEmpty(request.Model))

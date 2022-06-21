@@ -54,7 +54,7 @@ namespace Application.Features.User.Info
             }
 
             viewModel.Id = claims.Id;
-            viewModel.UserName = claims.UserName;
+            viewModel.UserName = $"{user.FirstName} {user.MiddleName} {user.LastName}";
             viewModel.Claims = claims.Claims;
             viewModel.Roles = roles;
             viewModel.Permissions = permissions;

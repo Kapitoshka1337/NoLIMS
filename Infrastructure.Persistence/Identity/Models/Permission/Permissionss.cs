@@ -181,5 +181,15 @@
             public const string Delete = "moving.delete";
             public const string View = "moving.view";
         }
+
+        public static class Tags
+        {
+            public const int Id = 19;
+            public const string Resource = "equipment";
+            public const string Add = "tags.add";
+            public const string Edit = "tags.edit";
+            public const string Delete = "tags.delete";
+            public const string View = "tags.view";
+        }
     }
 }

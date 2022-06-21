@@ -118,6 +118,14 @@
             public const string View = "permission.type.view";
         }
 
+        public static class Tags
+        {
+            public const string Add = "permission.tags.add";
+            public const string Edit = "permission.tags.edit";
+            public const string Delete = "permission.tags.delete";
+            public const string View = "permission.tags.view";
+        }
+
         public static class Moving
         {
             public const string Add = "permission.moving.add";
