@@ -216,6 +216,18 @@ const EquipmentTypeService = {
   }
 };
 
+const EquipmentTagsService = {
+  view: (page, size, sorter = null) => {
+    if (sorter == null)
+      return requests.get(`/v1/tags?pageNumber=${page}&pageSize=${size}`)
+    else
+      return requests.get(`/v1/tags?pageNumber=${page}&pageSize=${size}&sortBy=${sorter.dataIndex} ${sorter.sortOrder ? "desc" : ""}`);
+  },
+  get: (id) => {
+    return requests.get(`/v1/tags/${id}`)
+  },
+};
+
 const VerificationService = {
   view: (page, size, sorter = null, filters = null) => {
     let url = computedUrl('/v1/verification', page, size, sorter);
@@ -328,5 +340,6 @@ export default {
   RoleService,
   EquipmentTypeService,
   ReportService,
+  EquipmentTagsService,
   setToken: _token => { token = _token; }
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Nav } from '@douyinfe/semi-ui'
-import { IconSave } from '@douyinfe/semi-icons';
+import { IconSave, IconInfoCircle } from '@douyinfe/semi-icons';
 import { useAbac } from 'react-abac'
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
@@ -25,7 +25,8 @@ const mapDispatchToProps = dispatch => ({
             mode={'horizontal'}
             items={
                 [
-                    { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => props.onSave(true), disabled: !props.formChanged || !userHasPermissions('equipment.edit')}
+                    { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => props.onSave(true), disabled: !props.formChanged || !userHasPermissions('equipment.edit')},
+                    { itemKey: 'info', text: '± °', icon: <IconInfoCircle /> }
                 ]
             }
         />

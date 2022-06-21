@@ -122,7 +122,7 @@ class ChecksView extends React.PureComponent {
         }
     }
 
-    sentToCheck = async() => {
+    handleSentToCheck = async() => {
         if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
         {
             Toast.warning("Не выбрано оборудование для отправки на поверку.");
@@ -268,7 +268,7 @@ class ChecksView extends React.PureComponent {
                     onGet={this.getData}
                     handleShowFilter={this.handleShowFilter}
                     handleShowColumns={this.handleShowColumns}
-                    onSentToCheck={this.onSentToCheck}
+                    onSentToCheck={this.handleSentToCheck}
                     handleDownload ={this.handleDownload}
                     handlepPrintSticker={this.handlepPrintSticker}
                     handlepPrintCheckTable={this.handlepPrintCheckTable}

@@ -4,6 +4,7 @@ import TableManufacturer from './view';
 import { Form, AutoComplete, Button, Modal } from '@douyinfe/semi-ui';
 import { IconMore } from "@douyinfe/semi-icons";
 import agent from "../../agent";
+import { number } from "prop-types";
 
 const mapStateToProps = state => state.auth
 
@@ -36,14 +37,20 @@ class AutoCompleteEquipmentType extends React.PureComponent {
     }
 
     async getData(){
-        if (this.props.id != null || typeof(this.props.id) != 'undefined')
-        {
-            const data = await agent.EquipmentTypeService.get(this.props.id);
+
+        if (this.props.id == null)
+            return;
+
+        // if (this.props.id != null || typeof(this.props.id) != 'undefined')
+        // {
+            // console.log("not null")
+            // console.log(this.props)
+            const data = await agent.EquipmentTagsService.get(this.props.id);
             if (data.succeeded)
                 this.setState({...this.state, item: data.data})
 
             this.props.onOk(this.state.item)
-        }
+        // }
     }
 
     handleOk() {
@@ -71,8 +78,8 @@ class AutoCompleteEquipmentType extends React.PureComponent {
                     <Form.AutoComplete 
                         style={{width: '100%'}}
                         suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
-                        label="Тип оборудования"
-                        field="equipmentTypeName"
+                        label="Статус оборудования"
+                        field="equipmentTag"
                         rules={this.props.rules}
                     />
                     <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
@@ -88,7 +95,7 @@ class AutoCompleteEquipmentType extends React.PureComponent {
                     <AutoComplete 
                         style={{width: '100%'}}
                         suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
-                        placeholder="Тип оборудования"
+                        placeholder="Статус оборудования"
                         value={this.state.item.name}
                     />
                     <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>

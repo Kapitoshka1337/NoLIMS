@@ -17,6 +17,8 @@ const BaseLocationCard = lazy(() => import('../Location/card'/* webpackChunkName
 const DocumentKind = lazy(() => import('../DocumentKind/view'/* webpackChunkName: "Home", webpackPreload: true  */))
 const DocumentKindCard = lazy(() => import('../DocumentKind/card'/* webpackChunkName: "Home", webpackPreload: true  */))
 const EquipmentType = lazy(() => import('../EquipmentTypes/view'/* webpackChunkName: "Home", webpackPreload: true  */))
+const EquipmentTags = lazy(() => import('../EquipmentTags/view'/* webpackChunkName: "Home", webpackPreload: true  */))
+const EquipmentTagsCard = lazy(() => import('../EquipmentTags/card'/* webpackChunkName: "Home", webpackPreload: true  */))
 const EquipmentTypeCard = lazy(() => import('../EquipmentTypes/card'/* webpackChunkName: "Home", webpackPreload: true  */))
 const Administrator = lazy(() => import('../Administrator'/* webpackChunkName: "Home", webpackPreload: true  */))
 const AdministratorUser = lazy(() => import('../User/view'/* webpackChunkName: "Home", webpackPreload: true  */))
@@ -72,6 +74,8 @@ class Home extends React.PureComponent {
                   <AppLayoutRoute exac path='/equipment/documentkind/view' component={DocumentKind} />
                   <AppLayoutRoute exac path='/equipment/types/view/:id' component={EquipmentTypeCard} />
                   <AppLayoutRoute exac path='/equipment/types/view' component={EquipmentType} />
+                  <AppLayoutRoute exac path='/equipment/tags/view/:id' component={EquipmentTagsCard} />
+                  <AppLayoutRoute exac path='/equipment/tags/view' component={EquipmentTags} />
                   <AppLayoutRoute exac path='/equipment/manufacturer/view/:id' component={ManufacturerViewCard} />
                   <AppLayoutRoute exac path='/equipment/manufacturer/view' component={ManufacturerView} />
                   <AppLayoutRoute exac path='/equipment/view/:id' component={EquipmentCard} />

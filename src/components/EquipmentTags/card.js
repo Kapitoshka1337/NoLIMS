@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col} from '@douyinfe/semi-ui'
+import { Form, Row, Col, Nav } from '@douyinfe/semi-ui'
+import { IconSave } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
-import AutoCompleteDepartment from '../Department/autoComplete';
-import CardToolbar from './cardToolbar';
 
 const mapStateToProps = state => ({
   ...state,
@@ -16,9 +15,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     onLoad: payload =>
       dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
-});
+  });
 
-class LocationCard extends React.PureComponent {
+class EquipmentTypeCard extends React.PureComponent {
     
     constructor(){
         super()
@@ -27,11 +26,9 @@ class LocationCard extends React.PureComponent {
             loading: true,
             dataSource: null,
             formChanged: false,
-            initForm: false,
-            departmentItem: {}
+            initForm: false
         }
 
-        this.handleOk = this.handleOk.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.getFormApi = this.getFormApi.bind(this)
     }
@@ -44,7 +41,7 @@ class LocationCard extends React.PureComponent {
 
     async getData(){
         this.setState({...this.state, loading: true})
-        const data = await agent.LocationService.get(this.props.match.params.id)
+        const data = await agent.EquipmentTagsService.get(this.props.match.params.id)
         this.setState({...this.state, dataSource: data, loading: false})
         this.formApi.setValues(data.data)
     }
@@ -59,7 +56,10 @@ class LocationCard extends React.PureComponent {
 
     handleChangeForm(value) {
         if (!this.state.initForm)
+        {
+            this.setState({...this.state, initForm: true})
             return
+        }
         
         let form = value.values;
 
@@ -71,21 +71,12 @@ class LocationCard extends React.PureComponent {
         })
     }
 
-    handleOk(value){
-        this.formApi.setValue('departmentName', value.name)
-        this.setState({...this.state, departmentItem: value})
-
-        if (!this.state.initForm)
-            this.setState({...this.state, initForm: true})
-    }
-
-    handleSave = () => {
+    handleSave(){
         this.formApi.setValue('id', this.props.match.params.id)
-        this.formApi.setValue('departmentId', this.state.departmentItem.id)
 
         this.formApi.validate()
             .then(async (values) =>  {
-                const data = await agent.LocationService.update(values);
+                const data = await agent.EquipmentTypeService.update(values);
                 if (data.succeeded)
                     this.setState({...this.state, formChanged: false})
             })
@@ -102,12 +93,20 @@ class LocationCard extends React.PureComponent {
         
         return (
             <>
-                <CardToolbar header={this.state.dataSource.data.NumberRoom} onSave={this.handleSave} formChanged={this.state.formChanged}/>
+                <Nav
+                    header={{text: this.state.dataSource.data.name}}
+                    style={{padding: 0}}
+                    mode={'horizontal'}
+                    items={
+                        [
+                            { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => this.handleSave(true), disabled: true}
+                        ]
+                    }
+                />
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Row>
                         <Col>
-                            <Form.Input field='numberRoom' label="Номер" trigger='blur'/>
-                            <AutoCompleteDepartment id={this.state.dataSource.data.departmentId} onOk={this.handleOk}/>
+                            <Form.Input field='name' label="Наименование" trigger='blur' rules={[{ required: true, message },]}/>
                         </Col>
                     </Row>
                 </Form>
@@ -116,4 +115,4 @@ class LocationCard extends React.PureComponent {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LocationCard);
+export default connect(mapStateToProps, mapDispatchToProps)(EquipmentTypeCard);

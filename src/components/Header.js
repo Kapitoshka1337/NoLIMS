@@ -4,7 +4,7 @@ import agent from '../agent'
 import { connect } from 'react-redux'
 import { SETTINGS_SAVED, SETTINGS_PAGE_UNLOADED, LOGOUT } from '../constants/actionTypes'
 
-import { Layout, Nav, Avatar, Dropdown, Toast } from '@douyinfe/semi-ui';
+import { Layout, Nav, Avatar, Dropdown, Toast, Modal, Button} from '@douyinfe/semi-ui';
 
 const mapStateToProps = state => ({
   ...state.settings,
@@ -20,8 +20,20 @@ const mapDispatchToProps = dispatch => ({
 
 class Header extends React.PureComponent {
 
+  constructor(props){
+    super(props)
+
+    this.state = {
+      userInfo: false
+    }
+  }
+
   click () {
     Toast.info("You clicked me!");
+  }
+
+  handleOk = () => {
+    this.setState({userInfo: false})
   }
 
   render() {
@@ -35,17 +47,26 @@ class Header extends React.PureComponent {
                 <>
                     <Dropdown position="bottomLeft" trigger={'click'} render={
                       <Dropdown.Menu>
-                          <Dropdown.Item>Профиль</Dropdown.Item>
+                          <Dropdown.Item onClick={() => this.setState({userInfo: true})}>Профиль</Dropdown.Item>
                           <Dropdown.Item onClick={this.props.onClickLogout}>Выход</Dropdown.Item>
                       </Dropdown.Menu>
                     }>
-
-                      <Avatar color='orange' size='small'>{ this.props.currentUser?.userName[0].toUpperCase() }</Avatar>
+                        <Avatar color='orange' size='small'>{ this.props.currentUser?.userName[0].toUpperCase() }</Avatar>
                     </Dropdown>
                 </>
             }
         >
         </Nav>
+
+        <Modal title={"Профиль пользователя"} visible={this.state.userInfo} onOk={this.handleOk} onCancel={this.handleOk} closeOnEsc={true}
+          footer={
+              <Button type="primary" onClick={this.handleOk}>ОК</Button>
+          }
+        >
+          ФИО: {this.props.currentUser?.userName}
+          <br />
+          Роли: {this.props.currentUser?.roles.map((role) => {return `${role} `})}
+        </Modal>
       </Header>
     );
   }

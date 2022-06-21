@@ -57,6 +57,11 @@ function Equipment()
                 link: "equipment/types/view",
                 desctiption: "Отобразить список типов оборудования"
             },
+            {
+                title: "Статусы оборудования",
+                link: "equipment/tags/view",
+                desctiption: "Отобразить список статусов оборудования"
+            },
         ]
       },
       {

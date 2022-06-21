@@ -11,6 +11,7 @@ import DepartmentAutocomplete from "../Department/autoComplete";
 import ManufacturerAutocomplete from "../Manufacturer/autoComplete";
 import LocationtAutocomplete from "../Location/autoComplete";
 import EquipmentTypeAutocomplete from "../EquipmentTypes/autoComplete";
+import EquipmentTagAutocomplete from "../EquipmentTags/autoComplete";
 import CardToolbar from './cardToolbar';
 
 const mapStateToProps = state => ({
@@ -34,6 +35,7 @@ class EquipmentCard extends React.PureComponent {
             initForm: false,
             departmentItem: {},
             equipmentType: {},
+            equipmentTag: {},
             manufacturer: {},
             location: {},
             showChangePassword: false,
@@ -92,6 +94,11 @@ class EquipmentCard extends React.PureComponent {
         this.formApi.setValue('equipmentTypeName', value.name)
         this.setState({...this.state, equipmentType: value})
     }
+
+    handleOkEquipmentTag = value => {
+        this.formApi.setValue('equipmentTag', value.name)
+        this.setState({...this.state, equipmentTag: value})
+    }
     
     handleOkLocation = value => {
         this.formApi.setValue('locationName', value.numberRoom)
@@ -119,6 +126,7 @@ class EquipmentCard extends React.PureComponent {
         this.formApi.setValue('departmentId', this.state.departmentItem.id)
         this.formApi.setValue('manufacturerId', this.state.manufacturer.id)
         this.formApi.setValue('typeId', this.state.equipmentType.id)
+        this.formApi.setValue('tagId', this.state.equipmentTag.id)
         this.formApi.setValue('locationId', this.state.location.id)
         this.formApi.setValue('id', this.props.match.params.id)
 
@@ -149,7 +157,7 @@ class EquipmentCard extends React.PureComponent {
         
         return (
             <>
-                <CardToolbar header={this.state.dataSource.data.FirstName} onSave={this.handleSave} formChanged={this.state.formChanged}/>
+                <CardToolbar header={this.state.dataSource.data.name} onSave={this.handleSave} formChanged={this.state.formChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Row>
                         <Col>
@@ -162,6 +170,7 @@ class EquipmentCard extends React.PureComponent {
                             <LocationtAutocomplete id={this.state.dataSource.data.locationId} onOk={this.handleOkLocation}/>
                             <ManufacturerAutocomplete id={this.state.dataSource.data.manufacturerId} onOk={this.handleOkManufacturer}/>
                             <DepartmentAutocomplete id={this.state.dataSource.data.departmentId} onOk={this.handleOkDepartment} rules={[{ required: true, message }]}/>
+                            <EquipmentTagAutocomplete id={this.state.dataSource.data.tagId} onOk={this.handleOkEquipmentTag} rules={[{ required: true, message }]}/>
                             <Form.Input field='inventoryNumber' label="Инвентарный номер" trigger='blur'/>
                             <Form.Input field='number' label="Регистрационный номер" trigger='blur'/>
                             <Form.Input field='characteristics' label="Характеристики" disabled={this.state.dataSource.data.typeId != 1} trigger='blur'/>

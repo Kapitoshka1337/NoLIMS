@@ -13,6 +13,8 @@ import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
 import AutoCompleteDepartment from "../Department/autoComplete"
+import AutoCompleteType from "../EquipmentTypes/autoComplete"
+import AutoCompleteTags from "../EquipmentTags/autoComplete"
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -43,12 +45,12 @@ class EquipmentView extends React.PureComponent {
             showFilter: false,
             columns: [
                 { type: 'text', filterIndex: 'number', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'number', width: 200, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
-                { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoComplete}/>}, type: 'text', filterIndex: 'departmentId', inFilter: true, inAppearance: true, visible: true, title: 'Отдел', dataIndex: 'department.name', width: 200, sorter: (a, b) => a.department.name - b.department.name > 0 ? 1 : -1},
-                { type: 'text', filterIndex: 'typeId', inFilter: true, inAppearance: true, visible: true, title: 'Тип', dataIndex: 'type.name', width: 200, sorter: (a, b) => a.type.name - b.type.name > 0 ? 1 : -1},
+                { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoCompleteDepartment}/>}, type: 'text', filterIndex: 'departmentId', inFilter: true, inAppearance: true, visible: true, title: 'Отдел', dataIndex: 'department.name', width: 200, sorter: (a, b) => a.department.name - b.department.name > 0 ? 1 : -1},
+                { renderFilter: () => { return <AutoCompleteType form={true} key={'2'} onOk={this.handleOkAutoCompleteType}/>}, type: 'text', filterIndex: 'typeId', inFilter: true, inAppearance: true, visible: true, title: 'Тип', dataIndex: 'type.name', width: 200, sorter: (a, b) => a.type.name - b.type.name > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'name', inFilter: true, inAppearance: true, visible: true, title: 'Наименование', dataIndex: 'name' , width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'model', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'model', width: 200, sorter: (a, b) => a.model - b.model > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'serialNumber', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'serialNumber', width: 200, sorter: (a, b) => a.serialNumber - b.serialNumber > 0 ? 1 : -1},
-                { type: 'text', filterIndex: 'tagId', inFilter: true, inAppearance: true, visible: true, title: 'Статус', dataIndex: 'tag.name', width: 200, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
+                { renderFilter: () => { return <AutoCompleteTags form={true} key={'4' } onOk={this.handleOkAutoCompleteTags}/>}, type: 'text', filterIndex: 'tagId', inFilter: true, inAppearance: true, visible: true, title: 'Статус', dataIndex: 'tag.name', width: 200, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
                 { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
             ],
             cols: [],
@@ -64,9 +66,21 @@ class EquipmentView extends React.PureComponent {
         }
     }
 
-    handleOkAutoComplete = (value) => {
+    handleOkAutoCompleteDepartment = (value) => {
         let filter = this.state.filters;
         filter['departmentId'] = value.id;
+        this.onChangeInput(filter)
+    }
+
+    handleOkAutoCompleteType = (value) => {
+        let filter = this.state.filters;
+        filter['typeId'] = value.id;
+        this.onChangeInput(filter)
+    }
+
+    handleOkAutoCompleteTags = (value) => {
+        let filter = this.state.filters;
+        filter['tagId'] = value.id;
         this.onChangeInput(filter)
     }
 
