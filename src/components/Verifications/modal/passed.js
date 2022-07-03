@@ -91,8 +91,8 @@ class ModalPassedVerification extends React.PureComponent {
                     <Form getFormApi={this.getFormApi}>
                         <Row gutter={10}>
                             <Col>
-                                <DocumentKindAutoComplete onOk={this.onSelectDocumentKind}/>
-                                <Form.Input label="Регистрационный номер документа" trigger='blur' field={"numberDocument"} rules={[{ required: true, message },]}></Form.Input>
+                                <DocumentKindAutoComplete onOk={this.onSelectDocumentKind} rules={[{ required: true, message }]}/>
+                                <Form.Input label="Регистрационный номер документа" trigger='blur' field={"numberDocument"} rules={[{ required: true, message }]}></Form.Input>
                             </Col>
                             <Col span={12}>
                                 <Form.DatePicker style={{width: '100%'}} type="date" format="dd.MM.yyyy" label="Пройденная поверка" trigger='blur' field={"currentCheck"}></Form.DatePicker>

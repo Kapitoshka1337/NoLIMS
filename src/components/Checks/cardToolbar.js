@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
             mode={'horizontal'}
             items={
                 [
-                    { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => props.onSave(true), disabled: !props.formChanged || !userHasPermissions('equipment.edit')}
+                    { itemKey: 'save', text: 'Сохранить', icon: <IconSave />, onClick: (e) => props.onSave(true), disabled: !props.formChanged || !userHasPermissions('documentkind.edit')}
                 ]
             }
         />

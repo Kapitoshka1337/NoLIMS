@@ -44,13 +44,13 @@ class EquipmentView extends React.PureComponent {
             showColumns: false,
             showFilter: false,
             columns: [
-                { type: 'text', filterIndex: 'number', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'number', width: 200, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
+                { type: 'text', filterIndex: 'number', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'number', width: 100, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
                 { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoCompleteDepartment}/>}, type: 'text', filterIndex: 'departmentId', inFilter: true, inAppearance: true, visible: true, title: 'Отдел', dataIndex: 'department.name', width: 200, sorter: (a, b) => a.department.name - b.department.name > 0 ? 1 : -1},
-                { renderFilter: () => { return <AutoCompleteType form={true} key={'2'} onOk={this.handleOkAutoCompleteType}/>}, type: 'text', filterIndex: 'typeId', inFilter: true, inAppearance: true, visible: true, title: 'Тип', dataIndex: 'type.name', width: 200, sorter: (a, b) => a.type.name - b.type.name > 0 ? 1 : -1},
+                { renderFilter: () => { return <AutoCompleteType form={true} key={'2'} onOk={this.handleOkAutoCompleteType}/>}, type: 'text', filterIndex: 'typeId', inFilter: true, inAppearance: true, visible: true, title: 'Тип', dataIndex: 'type.name', width: 100, sorter: (a, b) => a.type.name - b.type.name > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'name', inFilter: true, inAppearance: true, visible: true, title: 'Наименование', dataIndex: 'name' , width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'model', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'model', width: 200, sorter: (a, b) => a.model - b.model > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'serialNumber', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'serialNumber', width: 200, sorter: (a, b) => a.serialNumber - b.serialNumber > 0 ? 1 : -1},
-                { renderFilter: () => { return <AutoCompleteTags form={true} key={'4' } onOk={this.handleOkAutoCompleteTags}/>}, type: 'text', filterIndex: 'tagId', inFilter: true, inAppearance: true, visible: true, title: 'Статус', dataIndex: 'tag.name', width: 200, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
+                { renderFilter: () => { return <AutoCompleteTags form={true} key={'4' } onOk={this.handleOkAutoCompleteTags}/>}, type: 'text', filterIndex: 'tagId', inFilter: true, inAppearance: true, visible: true, title: 'Статус', dataIndex: 'tag.name', width: 100, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
                 { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
             ],
             cols: [],
@@ -117,10 +117,14 @@ class EquipmentView extends React.PureComponent {
     rowSelection = {
         onSelect: (record, selected) => {
             if (selected)
+            {
                 this.setState(prevState => ({
                         selectedRow: [...prevState.selectedRow, record]
                     })
                 )
+
+                this.props.onSelect(record);
+            }
             else
                 this.setState(prevState => ({
                         selectedRow: [...prevState.selectedRow.filter(el => el.id != record.id)]
@@ -217,7 +221,9 @@ class EquipmentView extends React.PureComponent {
                     pageSize: this.state.pageSize,
                     total: this.state.dataSource.totalRecords,
                     showSizeChanger: true
-                }}/>
+                }}
+                size={'small'}
+                />
                 <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
                 <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
                 <ModalCreate onClose={this.handleModalCreate} show={this.state.showModalCreate} />

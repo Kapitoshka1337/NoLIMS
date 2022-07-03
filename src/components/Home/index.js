@@ -31,6 +31,7 @@ const ManufacturerView = lazy(() => import('../Manufacturer/view'/* webpackChunk
 const ManufacturerViewCard = lazy(() => import('../Manufacturer/card'/* webpackChunkName: "Home", webpackPreload: true  */))
 const VerificationsView = lazy(() => import('../Verifications/view'/* webpackChunkName: "Home", webpackPreload: true  */))
 const ChecksView = lazy(() => import('../Checks/view'/* webpackChunkName: "Home", webpackPreload: true  */))
+const ChecksViewCard = lazy(() => import('../Checks/card'/* webpackChunkName: "Home", webpackPreload: true  */))
 
 import AppLayoutRoute from '../Layouts/AppLayout'
 import Header from '../Header';
@@ -68,6 +69,7 @@ class Home extends React.PureComponent {
               <Header></Header>
               <Content style={{ padding: '12px', backgroundColor: 'var(--semi-color-bg-0)'}}>
                 <Switch>
+                  <AppLayoutRoute exac path='/equipment/checks/view/:id' component={ChecksViewCard} />
                   <AppLayoutRoute exac path='/equipment/checks/view' component={ChecksView} />
                   <AppLayoutRoute exac path='/equipment/verification/view' component={VerificationsView} />
                   <AppLayoutRoute exac path='/equipment/documentkind/view/:id' component={DocumentKindCard} />

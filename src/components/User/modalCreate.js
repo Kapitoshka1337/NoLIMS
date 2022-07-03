@@ -59,6 +59,18 @@ class ModalCreateUser extends React.PureComponent {
         this.setState({department: value})
     }
 
+    validateFormPassword(values) {
+        const errors = {};
+        
+        if (values.password !== values.confirmPassword)
+        {
+            errors.password = 'Пароли должны совпадать!';
+            errors.confirmPassword = 'Пароли должны совпадать!';
+            
+            return errors;
+        }
+    }
+
     render(){
         let message = 'Поле обязательное для заполнения';
         if (!this.props.show) return null;
@@ -66,18 +78,14 @@ class ModalCreateUser extends React.PureComponent {
         return (
             <>
                 <Modal visible={this.props.show} onOk={this.handleOk} size={"small"} onCancel={(e) => this.handleCancel(e)} okText={"ОК"} cancelText={"Отмена"}>
-                    <Form getFormApi={this.getFormApi}>
-                        <Row>
-                            <Col>
-                                <Form.Input label="Фамилия" trigger='blur' field={"middleName"} rules={[{ required: true, message },]}></Form.Input>
-                                <Form.Input label="Имя" trigger='blur' field={"firstName"} rules={[{ required: true, message },]}></Form.Input>
-                                <Form.Input label="Отчество" trigger='blur' field={"lastName"} rules={[{ required: true, message },]}></Form.Input>
-                                <AutoCompleteDepartment onOk={this.selectDepartment}/>
-                                <Form.Input label="Учетная запись (логин)" trigger='blur' field={"userName"} rules={[{ required: true, message },]}></Form.Input>
-                                <Form.Input type="password" label="Пароль" trigger='blur' field={"password"} rules={[{ required: true, message },]}></Form.Input>
-                                <Form.Input type="password" label="Подтверждение пароля" trigger='blur' field={"confirmPassword"} rules={[{ required: true, message },]}></Form.Input>
-                            </Col>
-                        </Row>
+                    <Form getFormApi={this.getFormApi} validateFields={this.validateFormPassword}>
+                        <Form.Input label="Фамилия" trigger='blur' field={"middleName"} rules={[{ required: true, message }]}></Form.Input>
+                        <Form.Input label="Имя" trigger='blur' field={"firstName"} rules={[{ required: true, message }]}></Form.Input>
+                        <Form.Input label="Отчество" trigger='blur' field={"lastName"} rules={[{ required: true, message }]}></Form.Input>
+                        <AutoCompleteDepartment onOk={this.selectDepartment} rules={[{ required: true, message }]}/>
+                        <Form.Input label="Учетная запись (логин)" trigger='blur' field={"userName"} rules={[{ required: true, message }]}></Form.Input>
+                        <Form.Input type="password" label="Пароль" trigger='blur' field={"password"} rules={[{ required: true, message }]}></Form.Input>
+                        <Form.Input type="password" label="Подтверждение пароля" trigger='blur' field={"confirmPassword"} rules={[{ required: true, message }]}></Form.Input>
                     </Form>
                 </Modal>
             </>

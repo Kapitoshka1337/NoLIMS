@@ -121,9 +121,9 @@ class UserCard extends React.PureComponent {
                     <Row>
                         <Col>
                             <Form.Input field='userName' label="Учетная запись (логин)" trigger='blur' disabled={true}/>
-                            <Form.Input field='firstName' label="Имя" trigger='blur' rules={[{ required: true, message },]}/>
-                            <Form.Input field='middleName' label="Фамилия" trigger='blur'/>
-                            <Form.Input field='lastName' label="Отчество" trigger='blur'/>
+                            <Form.Input field='firstName' label="Имя" trigger='blur' rules={[{ required: true, message }]}/>
+                            <Form.Input field='middleName' label="Фамилия" trigger='blur'rules={[{ required: true, message }]} />
+                            <Form.Input field='lastName' label="Отчество" trigger='blur' rules={[{ required: true, message }]} />
                             <DepartmentAutocomplete id={this.state.dataSource.data.departmentId} onOk={this.handleOk}/>
                         </Col>
                     </Row>

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Table, Toast } from '@douyinfe/semi-ui'
 import FileSaver from 'file-saver'
+import { history } from '../../store';
 
 import agent from '../../agent';
 import {
@@ -11,6 +12,10 @@ import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
 import AutoCompleteDepartment from "../Department/autoComplete";
+import AutoCompleteEquipment from "../Equipment/autoComplete";
+import AutoCompleteDocumentKind from "../DocumentKind/autoComplete";
+import ButtonOpenCard from './../common/buttonOpenCard';
+import DocumentKindCard from './../DocumentKind/card';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -41,18 +46,45 @@ class ChecksView extends React.PureComponent {
             showColumns: false,
             showFilter: false,
             columns: [
-                { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Пройденная', dataIndex: 'currentCheck', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
-                { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Предстоящая', dataIndex: 'nextCheck', width: 200, sorter: (a, b) => a.nextCheck - b.nextCheck > 0 ? 1 : -1},
+                { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Пройденная', dataIndex: 'currentCheck', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1,
+                    render: (text, record, index) => this.formatDate(record.currentCheck)
+                },
+                { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Предстоящая', dataIndex: 'nextCheck', width: 200, sorter: (a, b) => a.nextCheck - b.nextCheck > 0 ? 1 : -1, 
+                    render: (text, record, index) => this.formatDate(record.nextCheck)
+                },
                 { type: 'date', filterIndex: 'currentCheckStart', inFilter: true, inAppearance: false, visible: false, title: 'Пройденная поверка по', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 { type: 'date', filterIndex: 'currentCheckEnd', inFilter: true, inAppearance: false, visible: false, title: 'Пройденная поверка от', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 { type: 'date', filterIndex: 'nextCheckStart', inFilter: true, inAppearance: false, visible: false, title: 'Предстоящая поверка от', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 { type: 'date', filterIndex: 'nextCheckEnd', inFilter: true, inAppearance: false, visible: false, title: 'Предстоящая поверка по', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
-                { type: 'text', filterIndex: 'equipment.number', inFilter: false, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},
-                { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoComplete}/>}, type: 'text', filterIndex: 'departmentId', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
-                { type: 'text', filterIndex: 'equipmentName', inFilter: true, inAppearance: true, visible: true, title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1},
-                { type: 'text', filterIndex: 'equipment.type', inFilter: false, inAppearance: true, visible: true, title: 'Вид', dataIndex: 'equipment.type', width: 200, sorter: (a, b) => a.equipment.type - b.equipment.type > 0 ? 1 : -1},
-                { type: 'text', filterIndex: 'equipmentModel', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.quipment.model - b.quipment.model > 0 ? 1 : -1},
-                { type: 'text', filterIndex: 'equipmentSerialNumber', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1},
+                // { type: 'text', filterIndex: 'equipment.number', inFilter: false, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},
+                // { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoCompleteDepartment}/>}, type: 'text', filterIndex: 'departmentId', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department.name' , width: 200, sorter: (a, b) => a.equipment.department - b.equipment.department > 0 ? 1 : -1},
+                {
+                    renderFilter: () => { return <AutoCompleteEquipment form={true} key={'2'} onOk={this.handleOkAutoCompleteEquipment}/>},
+                    type: 'text',
+                    filterIndex: 'equipmentName',
+                    inFilter: true,
+                    inAppearance: true,
+                    visible: true,
+                    title: 'Оборудование',
+                    dataIndex: 'equipment.name',
+                    width: 200,
+                    sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1},
+                // { type: 'text', filterIndex: 'equipment.type', inFilter: false, inAppearance: true, visible: true, title: 'Вид', dataIndex: 'equipment.type', width: 200, sorter: (a, b) => a.equipment.type - b.equipment.type > 0 ? 1 : -1},
+                // { type: 'text', filterIndex: 'equipmentModel', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.quipment.model - b.quipment.model > 0 ? 1 : -1},
+                // { type: 'text', filterIndex: 'equipmentSerialNumber', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1},
+                {
+                    renderFilter: () => { return <AutoCompleteDocumentKind form={true} key={'3'} onOk={this.handleOkAutoCompleteDocumentKind}/>},
+                    type: 'text',
+                    filterIndex: 'documentKindId',
+                    inFilter: true,
+                    inAppearance: true,
+                    visible: true,
+                    title: 'Вид документа',
+                    dataIndex: 'documentKind.name',
+                    width: 200, sorter: (a, b) => a.documentKind.name - b.documentKind.name > 0 ? 1 : -1
+                },
+                { type: 'text', filterIndex: 'numberDocument', inFilter: true, inAppearance: true, visible: true, title: 'Рег. номер документа', dataIndex: 'numberDocument', width: 200, sorter: (a, b) => a.numberDocument - b.numberDocument > 0 ? 1 : -1},
+                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: '12px', render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
             ],
             cols: [],
             filters: {
@@ -60,17 +92,33 @@ class ChecksView extends React.PureComponent {
                 currentCheckEnd: '',
                 nextCheckStart: '',
                 nextCheckEnd: '',
-                equipmentName: '',
-                equipmentModel: '',
-                equipmentSerialNumber: '',
-                departmentId: ''
+                departmentId: '',
+                equipmentId: '',
+                numberDocument: '',
+                documentKindId: ''
             }
         }
     }
 
-    handleOkAutoComplete = (value) => {
+    formatDate(date){
+        return date === null ? null : new Date(date).toLocaleString().split(',')[0];
+    }
+
+    handleOkAutoCompleteDepartment = (value) => {
         let filter = this.state.filters;
         filter['departmentId'] = value.id;
+        this.onChangeInput(filter)
+    }
+
+    handleOkAutoCompleteEquipment = (value) => {
+        let filter = this.state.filters;
+        filter['equipmentId'] = value.id;
+        this.onChangeInput(filter)
+    }
+
+    handleOkAutoCompleteDocumentKind = (value) => {
+        let filter = this.state.filters;
+        filter['documentKindId'] = value.id;
         this.onChangeInput(filter)
     }
 
@@ -107,10 +155,14 @@ class ChecksView extends React.PureComponent {
     rowSelection = {
         onSelect: (record, selected) => {
             if (selected)
+            {
                 this.setState(prevState => ({
                         selectedRow: [...prevState.selectedRow, record]
                     })
                 )
+
+                this.props.onSelect(record);
+            }
             else
                 this.setState(prevState => ({
                         selectedRow: [...prevState.selectedRow.filter(el => el.id != record.id)]
@@ -250,6 +302,10 @@ class ChecksView extends React.PureComponent {
             const fl = new Blob([result.body], {type: result.type});
             FileSaver.saveAs(fl, "Таблица поверок");
         }
+    }
+
+    openCard = (record) => {
+        history.push(`/equipment/checks/view/${record.id}`)
     }
 
     render() {

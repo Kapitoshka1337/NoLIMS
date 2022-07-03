@@ -1,8 +1,9 @@
 import React from "react"
 import { connect } from 'react-redux'
-import TableDocumentKind from './view';
 import { Form, AutoComplete, Button, Modal } from '@douyinfe/semi-ui';
 import { IconMore } from "@douyinfe/semi-icons";
+import TableEquipemnt from './view';
+import agent from "../../agent";
 
 const mapStateToProps = state => state.auth
 
@@ -17,7 +18,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: LOGIN_PAGE_UNLOADED })
 })
 
-class AutoCompleteDocumentKind extends React.PureComponent {
+class AutoCompleteEquipment extends React.PureComponent {
     constructor(props) {
         super(props);
         
@@ -30,13 +31,28 @@ class AutoCompleteDocumentKind extends React.PureComponent {
         this.handleCancel = this.handleCancel.bind(this);
     }
 
+    componentDidMount(){
+        this.getData();
+    }
+
+    async getData(){
+        if (this.props.id != null || typeof(this.props.id) != 'undefined')
+        {
+            const data = await agent.EquipmentService.get(this.props.id);
+            if (data.succeeded)
+                this.setState({...this.state, item: data.data})
+
+            this.props.onOk(this.state.item)
+        }
+    }
+
     handleOk() {
         this.props.onOk(this.state.item);
         this.setState({show: false});
     }
 
     handleCancel(value) {
-        this.setState({show: value, item: {}});
+        this.setState({...this.state, show: value});
     }
 
     selectedManufacturer = value => {
@@ -52,16 +68,15 @@ class AutoCompleteDocumentKind extends React.PureComponent {
         {
             return (
                 <>
-                    <Form.AutoComplete 
+                    <Form.AutoComplete
                         style={{width: '100%'}}
-                        value={this.state.item.name}
                         suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
-                        label="Вид документа"
-                        field={"documentName"}
+                        label="Оборудование"
+                        field="equipmentName"
                         rules={this.props.rules}
                     />
                     <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
-                        <TableDocumentKind onSelect={this.selectedManufacturer}/>
+                        <TableEquipemnt onSelect={this.selectedManufacturer}/>
                     </Modal>
                 </>
             );
@@ -73,11 +88,11 @@ class AutoCompleteDocumentKind extends React.PureComponent {
                     <AutoComplete
                         style={{width: '100%'}}
                         suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
-                        placeholder="Вид документа"
+                        placeholder="Оборудование"
                         value={this.state.item.name}
                     />
                     <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
-                        <TableDocumentKind onSelect={this.selectedManufacturer}/>
+                        <TableEquipemnt onSelect={this.selectedManufacturer}/>
                     </Modal>
                 </>
             );
@@ -85,4 +100,4 @@ class AutoCompleteDocumentKind extends React.PureComponent {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AutoCompleteDocumentKind)
+export default connect(mapStateToProps, mapDispatchToProps)(AutoCompleteEquipment)

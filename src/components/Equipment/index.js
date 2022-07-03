@@ -105,7 +105,6 @@ function Equipment()
                   <Card title={item.title}>
                       {item.actions.map((action) => {
                         let tt = action.link.split('/');
-                        console.log(tt)
                         let idx = tt.length > 2 ? 1 : 0;
                         if (userHasPermissions(`${tt[idx]}.view`))
                         {

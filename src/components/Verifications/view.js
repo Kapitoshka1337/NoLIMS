@@ -126,10 +126,10 @@ class VerificationsView extends React.PureComponent {
             return;
         }
 
-        let obj = { equipments: [] }
+        let obj = { verifications: [] }
 
         this.state.selectedRow.forEach(el => {
-            obj.equipments.push({ equipmentId: el.id })
+            obj.verifications.push({ equipmentId: el.id })
         })
   
         let badEq = this.state.selectedRow.filter(el => el.statusId >= 2) 
@@ -194,10 +194,10 @@ class VerificationsView extends React.PureComponent {
             return
         }
   
-        let obj = { equipments: [] }
+        let obj = { verifications: [] }
   
         this.state.selectedRow.forEach(el => {
-          obj.equipments.push({ equipmentId: el.id })
+          obj.verifications.push({ equipmentId: el.id })
         })
 
         let result = await agent.VerificationService.delete(obj);
