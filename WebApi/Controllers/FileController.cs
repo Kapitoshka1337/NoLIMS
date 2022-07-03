@@ -1,4 +1,5 @@
 ﻿using Application.Features.Base.Storage.GetAll;
+using Application.Features.Base.Storage.Export;
 using Application.Features.Storage;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -103,6 +104,26 @@ namespace WebApi.Controllers
             var contentType = file.Type;
 
             return File(content, contentType, file.Hash);
+        }
+        
+        [HttpPost("export")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Export(ExportParameter request)
+        {
+            //var file = await Mediator.Send(new Query() { FileId = request.FileId });
+
+            //if (file == null)
+            //    return BadRequest();
+
+            //var basePath = Path.Combine(Directory.GetCurrentDirectory() + "\\uploads\\");
+            //var filePath = Path.Combine(basePath, file.Hash);
+            //var fileData = await System.IO.File.ReadAllBytesAsync(filePath);
+            //var content = new MemoryStream(fileData);
+            //var contentType = file.Type;
+
+            //return File(content, contentType, file.Hash);
+            //var serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+            return Ok(await Mediator.Send(new ExportQuery() { Columns = request.Columns, Table = request.Table }));
         }
 
         private string ToMD5Hash(byte[] bytes)

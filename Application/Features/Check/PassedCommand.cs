@@ -23,12 +23,14 @@ namespace Application.Features.Check
     {
         private readonly ICheckRepository _checkRepository;
         private readonly IVerificationRepositoryAsync _verificationRepository;
+        private readonly IEquipmentRepositoryAsync _equipmentRepository;
         private readonly IMapper _mapper;
 
-        public PassedCommandHandler(ICheckRepository checkRepository, IVerificationRepositoryAsync verificationRepository, IMapper mapper)
+        public PassedCommandHandler(ICheckRepository checkRepository, IVerificationRepositoryAsync verificationRepository, IEquipmentRepositoryAsync equipmentRepository, IMapper mapper)
         {
             _checkRepository = checkRepository;
             _verificationRepository = verificationRepository;
+            _equipmentRepository = equipmentRepository;
             _mapper = mapper;
         }
 
@@ -48,6 +50,9 @@ namespace Application.Features.Check
                 return rsp;
             }
 
+            var equipment = await _equipmentRepository.GetByIdAsync(command.EquipmentId);
+            equipment.TagId = 2;
+
             var ver = eqver.First();
             ver.StatusId = 3;
 
@@ -55,6 +60,7 @@ namespace Application.Features.Check
             Domain.Entities.Equipment.Check addedCheck = null;
 
             // Добавление поверки и обновление состояние.
+            await _equipmentRepository.UpdateAsync(equipment);
             addedCheck = await _checkRepository.AddAsync(mapCheck);
             await _verificationRepository.UpdateAsync(ver);
 

@@ -25,6 +25,7 @@ namespace Application.Features.Equipment.Commands
         public int TypeId { get; set; }
         public int? InstructionId { get; set; }
         public string Characteristics { get; set; }
+        public int TagId { get; set; }
     }
 
     public class CreateVOHandler : IRequestHandler<CreateVO, Response<int>>

@@ -28,6 +28,7 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<IReadOnlyList<Check>> GetPagedReponseAsync(Parameter filter)
         {
             var equipments = await _repository
+                .Include(e => e.Equipment).ThenInclude(e => e.Tag)
                 .Include(e => e.Equipment).ThenInclude(e => e.Type)
                 .Include(e => e.Equipment).ThenInclude(e => e.Department)
                 .Include(e => e.DocumentKind)

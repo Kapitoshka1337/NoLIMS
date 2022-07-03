@@ -22,10 +22,10 @@ namespace Application.Features.User.GetAll
 
     public class QueryHandler : IRequestHandler<Query, PagedResponse<IEnumerable<ViewModel>>>
     {
-        private readonly IUserRepository _repository;
+        private readonly IApplicationUserRepository _repository;
         private readonly IMapper _mapper;
 
-        public QueryHandler(IUserRepository repository, IMapper mapper)
+        public QueryHandler(IApplicationUserRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

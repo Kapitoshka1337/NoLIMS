@@ -15,10 +15,10 @@ namespace Application.Features.User.Update
 
     public class DeleteUserHandler : IRequestHandler<DeleteUser, Response<bool>>
     {
-        private readonly IUserRepository _repository;
+        private readonly IApplicationUserRepository _repository;
         private readonly IMapper _mapper;
 
-        public DeleteUserHandler(IUserRepository repository, IMapper mapper)
+        public DeleteUserHandler(IApplicationUserRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

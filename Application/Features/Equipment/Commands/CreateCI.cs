@@ -28,6 +28,7 @@ namespace Application.Features.Equipment.Commands
         public string Accuracy { get; set; }
         public string ClassAccuracy { get; set; }
         public string MeasuringRange { get; set; }
+        public int TagId { get; set; }
     }
 
     public class CreateCIHandler : IRequestHandler<CreateCI, Response<int>>

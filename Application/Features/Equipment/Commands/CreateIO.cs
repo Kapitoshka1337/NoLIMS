@@ -26,6 +26,7 @@ namespace Application.Features.Equipment.Commands
         public int? InstructionId { get; set; }
         public string Accuracy { get; set; }
         public string MeasuringWork { get; set; }
+        public int TagId { get; set; }
     }
 
     public class CreateIOHandler : IRequestHandler<CreateIO, Response<int>>

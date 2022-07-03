@@ -1,4 +1,5 @@
 ﻿using System;
+using Application.DTOs.Base;
 
 namespace Application.DTOs.Equipment
 {
@@ -15,9 +16,12 @@ namespace Application.DTOs.Equipment
         public string Description { get; set; }
         public int? ManufacturerId { get; set; }
         public int DepartmentId { get; set; }
+        public Department Department { get; set; }
         public int? LocationId { get; set; }
         public int TypeId { get; set; }
-        public int? TagId { get; set; }
+        public Type Type { get; set; }
+        public int TagId { get; set; }
+        public TagsDto Tag { get; set; }
         public int? InstructionId { get; set; }
     }
 }

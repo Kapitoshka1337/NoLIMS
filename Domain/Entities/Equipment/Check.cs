@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Domain.Entities.Storage;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities.Equipment
 {

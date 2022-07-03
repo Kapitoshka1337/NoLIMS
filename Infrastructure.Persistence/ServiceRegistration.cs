@@ -47,7 +47,7 @@ namespace Infrastructure.Persistence
             services.AddTransient<IInstructionRepository, InstructionRepository>();
             services.AddTransient<ITypeRepository, TypeRepository>();
             services.AddTransient<ITagsRepository, TagsRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IApplicationUserRepository, UserRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IUserRoleRepository, UserRoleRepository>();
             services.AddTransient<IRoleClaimRepository, RoleClaimRepository>();

@@ -300,45 +300,61 @@ namespace Infrastructure.Persistence.Extension
                 expr.And("EquipmentId", DynamicExpressions.FilterOperator.Equals, request.EquipmentId);
             }
 
-            if (request.DepartmentId != null)
+            if (request.DocumentKindId > 0)
             {
                 if (expr == null)
                     expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
-                expr.And("Equipment.DepartmentId", DynamicExpressions.FilterOperator.Equals, request.DepartmentId);
+                expr.And("DocumentKindId.Value", DynamicExpressions.FilterOperator.Equals, request.DocumentKindId);
             }
-
-            if (request.TypeId != null)
+            
+            if (!string.IsNullOrEmpty(request.NumberDocument))
             {
                 if (expr == null)
                     expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
-                expr.And("Equipment.TypeId", DynamicExpressions.FilterOperator.Equals, request.TypeId);
+                expr.And("NumberDocument", DynamicExpressions.FilterOperator.Contains, request.NumberDocument);
             }
 
-            if (!string.IsNullOrEmpty(request.EquipmentName))
-            {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+            //if (request.DepartmentId != null)
+            //{
+            //    if (expr == null)
+            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
-                expr.And("Equipment.Name", DynamicExpressions.FilterOperator.Contains, request.EquipmentName);
-            }
+            //    expr.And("Equipment.DepartmentId", DynamicExpressions.FilterOperator.Equals, request.DepartmentId);
+            //}
 
-            if (!string.IsNullOrEmpty(request.EquipmentModel))
-            {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+            //if (request.TypeId != null)
+            //{
+            //    if (expr == null)
+            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
-                expr.And("Equipment.Model", DynamicExpressions.FilterOperator.Contains, request.EquipmentModel);
-            }
+            //    expr.And("Equipment.TypeId", DynamicExpressions.FilterOperator.Equals, request.TypeId);
+            //}
 
-            if (!string.IsNullOrEmpty(request.EquipmentSerialNumber))
-            {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+            //if (!string.IsNullOrEmpty(request.EquipmentName))
+            //{
+            //    if (expr == null)
+            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
 
-                expr.And("Equipment.SerialNumber", DynamicExpressions.FilterOperator.Contains, request.EquipmentSerialNumber);
-            }
+            //    expr.And("Equipment.Name", DynamicExpressions.FilterOperator.Contains, request.EquipmentName);
+            //}
+
+            //if (!string.IsNullOrEmpty(request.EquipmentModel))
+            //{
+            //    if (expr == null)
+            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+
+            //    expr.And("Equipment.Model", DynamicExpressions.FilterOperator.Contains, request.EquipmentModel);
+            //}
+
+            //if (!string.IsNullOrEmpty(request.EquipmentSerialNumber))
+            //{
+            //    if (expr == null)
+            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
+
+            //    expr.And("Equipment.SerialNumber", DynamicExpressions.FilterOperator.Contains, request.EquipmentSerialNumber);
+            //}
 
             if (expr != null)
             {

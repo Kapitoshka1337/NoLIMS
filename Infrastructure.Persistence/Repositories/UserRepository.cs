@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Repositories
 {
-    public class UserRepository : GenericRepositoryAsync<ApplicationUser>, IUserRepository
+    public class UserRepository : GenericRepositoryAsync<ApplicationUser>, IApplicationUserRepository
     {
         public UserRepository(ApplicationDbContext dbContext) : base(dbContext)
         {

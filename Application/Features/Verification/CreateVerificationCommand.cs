@@ -10,7 +10,7 @@ namespace Application.Features.Verification
 {
     public class CreateVerificationCommand : IRequest<Response<bool>>
     {
-        public  IList<EqVal> Equipments { get; set; }
+        public  IList<EqVal> Verifications { get; set; }
     }
 
     public class CreateVerificationCommandHandler : IRequestHandler<CreateVerificationCommand, Response<bool>>
@@ -25,7 +25,7 @@ namespace Application.Features.Verification
 
         public async Task<Response<bool>> Handle(CreateVerificationCommand request, CancellationToken cancellationToken)
         {
-            foreach (var eq in request.Equipments)
+            foreach (var eq in request.Verifications)
             {
                 var verificationDto = _mapper.Map<DTOs.Equipment.Verification.VerificationDto>(eq);
                 var verificationBase = _mapper.Map<Domain.Entities.Equipment.Verification.Verification>(verificationDto);

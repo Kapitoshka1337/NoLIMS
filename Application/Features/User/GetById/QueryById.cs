@@ -18,10 +18,10 @@ namespace Application.Features.User.GetById
 
     public class QueryByIdHandler : IRequestHandler<QueryById, Response<ViewModel>>
     {
-        private readonly IUserRepository _repository;
+        private readonly IApplicationUserRepository _repository;
         private readonly IMapper _mapper;
 
-        public QueryByIdHandler(IUserRepository repository, IMapper mapper)
+        public QueryByIdHandler(IApplicationUserRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

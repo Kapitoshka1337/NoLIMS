@@ -10,7 +10,7 @@ namespace Application.Features.Verification
 {
     public class DeleteVerificationCommand : IRequest<Response<bool>>
     {
-        public IList<EqVal> Equipments { get; set; }
+        public IList<EqVal> Verifications { get; set; }
     }
 
     public class DeleteVerificationCommandHandler : IRequestHandler<DeleteVerificationCommand, Response<bool>>
@@ -22,7 +22,7 @@ namespace Application.Features.Verification
         }
         public async Task<Response<bool>> Handle(DeleteVerificationCommand command, CancellationToken cancellationToken)
         {
-            foreach (var eq in command.Equipments)
+            foreach (var eq in command.Verifications)
             {
                 var verification = await _equipmentRepositoryAsync.GetByIdAsync(eq.EquipmentId);
             

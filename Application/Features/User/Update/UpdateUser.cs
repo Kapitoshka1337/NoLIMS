@@ -21,10 +21,10 @@ namespace Application.Features.User.Update
 
     public class UpdateUserHandler : IRequestHandler<UpdateUser, Response<ViewModel>>
     {
-        private readonly IUserRepository _repository;
+        private readonly IApplicationUserRepository _repository;
         private readonly IMapper _mapper;
 
-        public UpdateUserHandler(IUserRepository repository, IMapper mapper)
+        public UpdateUserHandler(IApplicationUserRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

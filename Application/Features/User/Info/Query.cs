@@ -19,13 +19,13 @@ namespace Application.Features.User.Info
 
     public class QueryInfoHandler : IRequestHandler<QueryInfo, Response<ViewModel>>
     {
-        private readonly IUserRepository _repository;
+        private readonly IApplicationUserRepository _repository;
         private readonly IUserService _userService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<Domain.Entities.Role.Role> _roleManager;
         private readonly IMapper _mapper;
 
-        public QueryInfoHandler(IUserRepository repository, IUserService userService, UserManager<ApplicationUser> userManager, RoleManager<Domain.Entities.Role.Role> roleManager, IMapper mapper)
+        public QueryInfoHandler(IApplicationUserRepository repository, IUserService userService, UserManager<ApplicationUser> userManager, RoleManager<Domain.Entities.Role.Role> roleManager, IMapper mapper)
         {
             _repository = repository;
             _userService = userService;
