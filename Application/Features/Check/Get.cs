@@ -6,41 +6,42 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.DTOs.Equipment;
 using Application.Interfaces.Repositories.Equipment;
+using Application.Features.Check.GetAll;
 
 namespace Application.Features.Check
 {
-    public class GetOne : IRequest<Response<DocumentKindDto>>
+    public class GetOne : IRequest<Response<ViewModel>>
     {
         public int Id { get; set; }
     }
 
-    public class GetOneHandler : IRequestHandler<GetOne, Response<DocumentKindDto>>
+    public class GetOneHandler : IRequestHandler<GetOne, Response<ViewModel>>
     {
-        private readonly IDocumentKindRepository _repository;
+        private readonly ICheckRepository _repository;
         private readonly IMapper _mapper;
 
-        public GetOneHandler(IDocumentKindRepository repository, IMapper mapper)
+        public GetOneHandler(ICheckRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
-        public async Task<Response<DocumentKindDto>> Handle(GetOne query, CancellationToken cancellationToken)
+        public async Task<Response<ViewModel>> Handle(GetOne query, CancellationToken cancellationToken)
         {
             var equipment = await _repository.GetByIdAsync(query.Id);
 
             if (equipment == null)
             {
                 string msg = $"Вид документа с ИД \"{query.Id}\" не найден.";
-                Response<DocumentKindDto> rsp = new Response<DocumentKindDto>();
+                Response<ViewModel> rsp = new Response<ViewModel>();
                 rsp.Succeeded = false;
                 rsp.Message = msg;
 
                 return rsp;
             }
 
-            var equipmentViewModel = _mapper.Map<DocumentKindDto>(equipment);
+            var equipmentViewModel = _mapper.Map<ViewModel>(equipment);
 
-            return new Response<DocumentKindDto>(equipmentViewModel);
+            return new Response<ViewModel>(equipmentViewModel);
         }
     }
 }

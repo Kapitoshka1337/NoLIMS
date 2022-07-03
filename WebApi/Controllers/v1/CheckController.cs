@@ -1,5 +1,6 @@
 ﻿using Application.Features.Check;
 using Application.Features.Check.GetAll;
+using Application.Features.Check.Update;
 using AutoMapper;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -41,16 +42,18 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(command));
         }
 
-        //[HttpPost("update/{id}")]
-        //[Authorize(Policy = PolicyTypes.Checks.Edit)]
-        //public async Task<IActionResult> Put(int id, UpdateVerificationCommand command)
-        //{
-        //    if (id != command.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpGet("{id}")]
+        [Authorize(Policy = PolicyTypes.Checks.View)]
+        public async Task<IActionResult> GetById([FromRoute] GetOne query)
+        {
+            return Ok(await Mediator.Send(query));
+        }
 
-        //    return Ok(await Mediator.Send(command));
-        //}
+        [HttpPost("update")]
+        [Authorize(Policy = PolicyTypes.Checks.Edit)]
+        public async Task<IActionResult> Put(UpdateCheck command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
     }
 }

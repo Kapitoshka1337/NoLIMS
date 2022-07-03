@@ -25,6 +25,15 @@ namespace Infrastructure.Persistence.Repositories
             return await _repository.FilterChecks(filter).CountAsync();
         }
 
+        public override async Task<Check> GetByIdAsync(int id)
+        {
+            return await _repository
+                .Include(e => e.DocumentKind)
+                .Include(e => e.Equipment)
+                .Where(e => e.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<IReadOnlyList<Check>> GetPagedReponseAsync(Parameter filter)
         {
             var equipments = await _repository
