@@ -52,7 +52,7 @@ class AutoCompleteEquipment extends React.PureComponent {
     }
 
     handleCancel(value) {
-        this.setState({...this.state, show: value});
+        this.setState({show: value, item: {}});
     }
 
     selectedManufacturer = value => {

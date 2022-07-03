@@ -159,28 +159,24 @@ class EquipmentCard extends React.PureComponent {
             <>
                 <CardToolbar header={this.state.dataSource.data.name} onSave={this.handleSave} formChanged={this.state.formChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
-                    {/* <Row>
-                        <Col> */}
-                            <EquipmentTypeAutocomplete id={this.state.dataSource.data.typeId} onOk={this.handleOkEquipmentType} rules={[{ required: true, message }]}/>
-                            <Form.Input field='number' label="Регистрационный номер" trigger='blur'/>
-                            <Form.Input field='name' label="Наименование" trigger='blur' rules={[{ required: true, message },]}/>
-                            <Form.Input field='model' label="Модель" trigger='blur'/>
-                            <Form.Input field='serialNumber' label="Серийный номер" trigger='blur'/>
-                            <Form.Input field='inventoryNumber' label="Инвентарный номер" trigger='blur'/>
-                            <Form.DatePicker style={{width: '100%'}} type="date" format="dd.MM.yyyy" field='dateCreate' label="Дата изготовления" trigger='blur'/>
-                            <Form.DatePicker style={{width: '100%'}} type="date" format="dd.MM.yyyy" field='dateCommissioning' label="Дата ввода в эксплуатацию" trigger='blur'/>
-                            <DepartmentAutocomplete id={this.state.dataSource.data.departmentId} onOk={this.handleOkDepartment} rules={[{ required: true, message }]}/>
-                            <LocationtAutocomplete id={this.state.dataSource.data.locationId} onOk={this.handleOkLocation}/>
-                            <EquipmentTagAutocomplete id={this.state.dataSource.data.tagId} onOk={this.handleOkEquipmentTag} rules={[{ required: true, message }]}/>
-                            <Form.Input field='characteristics' label="Характеристики (ВО/ИО/СИ) (± °)" trigger='blur'/>
-                            <Form.Input field='measuringWork' label="Диапазон работы (ИО)" disabled={this.state.dataSource.data.typeId != 2} trigger='blur'/>
-                            <Form.Input field='accuracy' label="Точность (ИО/СИ)" disabled={this.state.dataSource.data.typeId != 2 && this.state.dataSource.data.typeId != 3} trigger='blur'/>
-                            <Form.Input field='measuringRange' label="Диапазон измерений (СИ)" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>
-                            <Form.Input field='classAccuracy' label="Класс точности (СИ)" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>
-                            <Form.Input field='fifNumber' label="ФИФ (СИ)" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>
-                            <ManufacturerAutocomplete id={this.state.dataSource.data.manufacturerId} onOk={this.handleOkManufacturer}/>
-                        {/* </Col>
-                    </Row> */}
+                    <EquipmentTypeAutocomplete id={this.state.dataSource.data.typeId} onOk={this.handleOkEquipmentType} rules={[{ required: true, message }]}/>
+                    <Form.Input field='number' label="Регистрационный номер" trigger='blur'/>
+                    <Form.Input field='name' label="Наименование" trigger='blur' rules={[{ required: true, message },]}/>
+                    <Form.Input field='model' label="Модель" trigger='blur'/>
+                    <Form.Input field='serialNumber' label="Серийный номер" trigger='blur'/>
+                    <Form.Input field='inventoryNumber' label="Инвентарный номер" trigger='blur'/>
+                    <Form.DatePicker style={{width: '100%'}} type="date" format="dd.MM.yyyy" field='dateCreate' label="Дата изготовления" trigger='blur'/>
+                    <Form.DatePicker style={{width: '100%'}} type="date" format="dd.MM.yyyy" field='dateCommissioning' label="Дата ввода в эксплуатацию" trigger='blur'/>
+                    <DepartmentAutocomplete id={this.state.dataSource.data.departmentId} onOk={this.handleOkDepartment} rules={[{ required: true, message }]}/>
+                    <LocationtAutocomplete id={this.state.dataSource.data.locationId} onOk={this.handleOkLocation}/>
+                    <EquipmentTagAutocomplete id={this.state.dataSource.data.tagId} onOk={this.handleOkEquipmentTag} rules={[{ required: true, message }]}/>
+                    <Form.Input field='characteristics' label="Характеристики (ВО/ИО/СИ) (± °)" trigger='blur'/>
+                    <Form.Input field='measuringWork' label="Диапазон работы (ИО)" disabled={this.state.dataSource.data.typeId != 2} trigger='blur'/>
+                    <Form.Input field='accuracy' label="Точность (ИО/СИ)" disabled={this.state.dataSource.data.typeId != 2 && this.state.dataSource.data.typeId != 3} trigger='blur'/>
+                    <Form.Input field='measuringRange' label="Диапазон измерений (СИ)" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>
+                    <Form.Input field='classAccuracy' label="Класс точности (СИ)" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>
+                    <Form.Input field='fifNumber' label="ФИФ (СИ)" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>
+                    <ManufacturerAutocomplete id={this.state.dataSource.data.manufacturerId} onOk={this.handleOkManufacturer}/>
                 </Form>
             </>
         );

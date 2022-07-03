@@ -1,8 +1,9 @@
 import React from "react"
 import { connect } from 'react-redux'
-import TableDocumentKind from './view';
 import { Form, AutoComplete, Button, Modal } from '@douyinfe/semi-ui';
 import { IconMore } from "@douyinfe/semi-icons";
+import TableDocumentKind from './view';
+import agent from "../../agent";
 
 const mapStateToProps = state => state.auth
 
@@ -30,6 +31,21 @@ class AutoCompleteDocumentKind extends React.PureComponent {
         this.handleCancel = this.handleCancel.bind(this);
     }
 
+    componentDidMount(){
+        this.getData();
+    }
+
+    async getData(){
+        if (this.props.id != null || typeof(this.props.id) != 'undefined')
+        {
+            const data = await agent.DocumentKindService.get(this.props.id);
+            if (data.succeeded)
+                this.setState({...this.state, item: data.data})
+
+            this.props.onOk(this.state.item)
+        }
+    }
+
     handleOk() {
         this.props.onOk(this.state.item);
         this.setState({show: false});
@@ -52,12 +68,11 @@ class AutoCompleteDocumentKind extends React.PureComponent {
         {
             return (
                 <>
-                    <Form.AutoComplete 
+                    <Form.AutoComplete
                         style={{width: '100%'}}
-                        value={this.state.item.name}
                         suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
                         label="Вид документа"
-                        field={"documentName"}
+                        field="documentKindName"
                         rules={this.props.rules}
                     />
                     <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>

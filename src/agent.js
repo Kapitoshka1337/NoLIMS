@@ -263,6 +263,12 @@ const ChecksService = {
   },
   add: (item) => {
     return requests.post('/v1/check', item)
+  },
+  get: (id) => {
+    return requests.get(`/v1/check/${id}`)
+  },
+  update: (item) => {
+    return requests.post('/v1/check/update', item)
   }
 };
 
