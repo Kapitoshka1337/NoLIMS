@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Nav } from '@douyinfe/semi-ui'
-import { IconRefresh, IconPlus, IconMapPin, IconVerify, IconFilter, IconCheckList } from '@douyinfe/semi-icons';
+import { IconRefresh, IconPlus, IconMapPin, IconVerify, IconFilter, IconCheckList, IconCopyAdd } from '@douyinfe/semi-icons';
 import { useAbac } from 'react-abac'
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
@@ -29,6 +29,7 @@ const mapDispatchToProps = dispatch => ({
                     { itemKey: 'create', text: 'Создать', icon: <IconPlus />, onClick: (e) => props.showCreate(true), disabled: !userHasPermissions('equipment.add') },
                     { itemKey: 'toVerification', text: 'Отправить на поверку', icon: <IconVerify />, onClick: (e) => props.onSentToCheck(), disabled: !userHasPermissions('verification.add')},
                     { itemKey: 'changeLocation', text: 'Сменить местоположение', icon: <IconMapPin />, disabled: !userHasPermissions('equipment.edit')},
+                    { itemKey: 'createCopy', text: 'Создать копию', icon: <IconCopyAdd />, onClick: (e) => props.onCreateCopy(true), disabled: !userHasPermissions('equipment.add') },
                     { itemKey: 'filter', text: 'Фильтрация', icon: <IconFilter />, onClick: (e) => props.handleShowFilter(true) },
                     { itemKey: 'appearance', text: 'Внешний вид', icon: <IconCheckList />, onClick: (e) => props.handleShowColumns(true) }
                 ]

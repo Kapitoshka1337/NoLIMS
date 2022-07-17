@@ -9,6 +9,7 @@ import {
 import ModalCreate from './modalCreate';
 import { history } from '../../store';
 import ButtonOpenCard from './../common/buttonOpenCard';
+import ButtonCopyAdd from './../common/buttonCopyAdd';
 import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
@@ -51,7 +52,17 @@ class EquipmentView extends React.PureComponent {
                 { type: 'text', filterIndex: 'model', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'model', width: 200, sorter: (a, b) => a.model - b.model > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'serialNumber', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'serialNumber', width: 200, sorter: (a, b) => a.serialNumber - b.serialNumber > 0 ? 1 : -1},
                 { renderFilter: () => { return <AutoCompleteTags form={true} key={'4' } onOk={this.handleOkAutoCompleteTags}/>}, type: 'text', filterIndex: 'tagId', inFilter: true, inAppearance: true, visible: true, title: 'Статус', dataIndex: 'tag.name', width: 100, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
-                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
+                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 100, 
+                    render: (text, record, index) => {
+                        return (
+                            <>
+                                <ButtonOpenCard onClick={this.openCard} record={record} />
+                                {/* <ButtonCopyAdd onClick={this.copyAdd} /> */}
+                            </>
+                            
+                        )
+                    }
+                }
             ],
             cols: [],
             filters: {
@@ -62,7 +73,8 @@ class EquipmentView extends React.PureComponent {
                 model: '',
                 serialNumber: '',
                 tagId: ''
-            }
+            },
+            copyEquipmentId: null
         }
     }
 
@@ -122,8 +134,8 @@ class EquipmentView extends React.PureComponent {
                         selectedRow: [...prevState.selectedRow, record]
                     })
                 )
-
-                this.props.onSelect(record);
+                if (this.props.onSelect)
+                    this.props.onSelect(record);
             }
             else
                 this.setState(prevState => ({
@@ -157,12 +169,26 @@ class EquipmentView extends React.PureComponent {
             Toast.info('Оборудование добавлено на поверку')
     }
 
-    handleModalCreate = value => {
+    handleModalCreate = (value) => {
         this.setState({...this.state, showModalCreate: value});
+    }
+
+    handleModalCreateCopy = (value) => {
+        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
+        {
+            Toast.warning("Не выбрано оборудование для создания копии.");
+            return;
+        }
+
+        this.setState({...this.state, showModalCreate: value });
     }
 
     openCard(record){
         history.push(`/equipment/view/${record.id}`)
+    }
+
+    copyAdd(record){
+        console.log('copyAdd')
     }
 
     handleShowColumns = (value) => {
@@ -213,7 +239,15 @@ class EquipmentView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar header={'Оборудование'} onGet={this.getData} handleShowFilter={this.handleShowFilter} handleShowColumns ={this.handleShowColumns} showCreate={this.handleModalCreate} onSentToCheck={this.sentToCheck}/>}
+                title={<Toolbar
+                    header={'Оборудование'}
+                    onGet={this.getData}
+                    handleShowFilter={this.handleShowFilter}
+                    handleShowColumns={this.handleShowColumns}
+                    showCreate={this.handleModalCreate}
+                    onSentToCheck={this.sentToCheck}
+                    onCreateCopy={this.handleModalCreateCopy}
+                    />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{
@@ -226,7 +260,7 @@ class EquipmentView extends React.PureComponent {
                 />
                 <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
                 <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
-                <ModalCreate onClose={this.handleModalCreate} show={this.state.showModalCreate} />
+                <ModalCreate onCopy={this.state.selectedRow[0]?.id} onClose={this.handleModalCreate} show={this.state.showModalCreate} />
             </>
         );
     }

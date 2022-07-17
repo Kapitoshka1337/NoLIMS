@@ -49,7 +49,7 @@ class VerificationsView extends React.PureComponent {
                 { type: 'text', filterIndex: 'equipmentModel', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.equipment.model - b.equipment.model > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: 'equipmentSerialNumber', inFilter: true, inAppearance: true, visible: true, title: 'Серийный номер', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: '', inFilter: false, inAppearance: true, visible: true, title: 'Состояние', dataIndex: 'status.name', width: 200, sorter: (a, b) => a.status.name - b.status.name > 0 ? 1 : -1 },
-                { inFilter: false, inAppearance: false, visible: true,title: '', dataIndex: 'actions', width: 100, render: (text, record, index) =>  <ButtonOpenCard icon={<IconTickCircle />} onClick={(e) => this.onPassedVerification(record, true)} record={record} disabled={record.statusId == 1 || record.statusId == 3} />}
+                { inFilter: false, inAppearance: false, visible: true,title: '', dataIndex: 'actions', width: 100, render: (text, record, index) =>  <ButtonOpenCard content={"Заполнить поверку"} icon={<IconTickCircle />} onClick={(e) => this.onPassedVerification(record, true)} record={record} disabled={record.statusId == 1 || record.statusId == 3} />}
             ],
             cols: [],
             filters: {

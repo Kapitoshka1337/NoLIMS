@@ -277,7 +277,10 @@ const FileService = {
     return requests.post('/v1/files/upload', item)
   },
   download: (fileId) => {
-    return requests.download(`/file/download/?fileId=${fileId}`)
+    return requests.download(`/file/download/${fileId}`)
+  },
+  info: (fileId) => {
+    return requests.get(`/file/info/${fileId}`)
   }
 };
 

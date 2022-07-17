@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col } from '@douyinfe/semi-ui'
+import { Form, Upload, Button, Tooltip } from '@douyinfe/semi-ui'
+import { IconDownload, IconRefresh, IconUpload, IconDelete } from '@douyinfe/semi-icons'
+import FileSaver from 'file-saver'
 
 import agent from '../../agent';
 import CardToolbar from './cardToolbar';
@@ -26,13 +28,13 @@ class CheckCard extends React.PureComponent {
         this.state = {
             loading: true,
             dataSource: null,
+            fileList: [],
             formChanged: false,
             initForm: false,
             equipmentItem: {},
             documentKindItem: {}
         }
 
-        this.handleOk = this.handleOk.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.getFormApi = this.getFormApi.bind(this)
     }
@@ -50,8 +52,17 @@ class CheckCard extends React.PureComponent {
         this.formApi.setValues(data.data)
     }
 
+    async getDataFile(fileId = null){
+        if (fileId)
+        {
+            const data = await agent.FileService.info(fileId)
+            this.setState({...this.state, fileList: [data]})
+        }
+    }
+
     async componentDidMount(){
-        this.getData() 
+        await this.getData()
+        this.getDataFile(this.state.dataSource.data.fileId)
     }
 
     getFormApi(formApi) {
@@ -75,10 +86,6 @@ class CheckCard extends React.PureComponent {
         })
     }
 
-    handleOk(value){
-        
-    }
-
     handleSave = () => {
         let fState = this.formApi.getFormState()
 
@@ -99,16 +106,16 @@ class CheckCard extends React.PureComponent {
         this.formApi.setValue('id', this.props.match.params.id)
         this.formApi.setValue('documentKindId', this.state.documentKindItem.id)
         this.formApi.setValue('equipmentId', this.state.equipmentItem.id)
-
+   
         this.formApi.validate()
-            .then(async (values) =>  {
-                const data = await agent.ChecksService.update(values);
-                if (data.succeeded)
-                    this.setState({...this.state, formChanged: false})
-            })
-            .catch((errors) => {
-                console.log(errors);
-            });
+        .then(async (values) =>  {
+            const data = await agent.ChecksService.update(values);
+            if (data.succeeded)
+                this.setState({...this.state, formChanged: false, dataSource: data})
+        })
+        .catch((errors) => {
+            console.log(errors);
+        });
     }
 
     handleOkEquipment = (value) => {
@@ -127,12 +134,44 @@ class CheckCard extends React.PureComponent {
             this.setState({...this.state, initForm: true})
     }
 
+    handleDownload = async () => {
+        const result = await agent.FileService.download(this.state.dataSource.data.fileId)
+
+        if (result)
+        {
+            const fl = new Blob([result.body], {type: result.type});
+            FileSaver.saveAs(fl, "Документ");
+        }
+    }
+
+    handleAfterUpload = (value) => {
+        this.formApi.setValue('fileId', value)
+        this.handleSave()
+        this.getDataFile(value)
+    }
+
     render() {
         let message = 'Поле обязательное для заполнения';
     
         if (this.state.dataSource == null)
             return null
         
+        const renderFileOperation = (fileItem) => (
+            <div style={{display: 'flex',columnGap: 8, padding: '0 8px'}}>
+                <Upload showUploadList={false} afterUpload={(e) => this.handleAfterUpload(e.response.data)} action={`${agent.API_ROOT}/file/upload`} headers={{'authorization': `Bearer ${this.props.common.token}`}}>
+                    <Tooltip content={"Обновить файл"}>
+                        <Button icon={<IconUpload />} type="tertiary" theme="borderless" size="small" />
+                    </Tooltip>
+                </Upload>
+                <Tooltip content={"Экспортировать"}>
+                    <Button onClick={() => this.handleDownload()} icon={<IconDownload />} type="tertiary" theme="borderless" size="small"></Button>
+                </Tooltip>
+                <Tooltip content={"Удалить файл"}>
+                    <Button disabled={true} onClick={e=>fileItem.onRemove()} icon={<IconDelete />} type="tertiary" theme="borderless" size="small"></Button>
+                </Tooltip>
+            </div>
+        )
+
         return (
             <>
                 <CardToolbar header={this.state.dataSource.data.equipment.name} onSave={this.handleSave} formChanged={this.state.formChanged}/>
@@ -142,6 +181,17 @@ class CheckCard extends React.PureComponent {
                     <Form.DatePicker style={{width: '100%'}} type="date" format="dd.MM.yyyy" field='nextCheck' label="Предстоящая поверка" trigger='blur'/>
                     <AutoCompleteEquipment id={this.state.dataSource.data.equipmentId} onOk={this.handleOkEquipment} rules={[{ required: true, message }]}/>
                     <AutoCompleteDocumentKind  id={this.state.dataSource.data.documentKindId} onOk={this.handleOkDocumentKind} rules={[{ required: true, message }]}/>
+                    <Upload
+                        action={`${agent.API_ROOT}/file/upload`}
+                        afterUpload={(e) => this.handleAfterUpload(e.response.data)}
+                        headers={{'authorization': `Bearer ${this.props.common.token}`}}
+                        showUploadList={false}
+                    >
+                        <Button disabled={this.state.dataSource.data.fileId ? true : false} icon={<IconUpload />} theme="light">
+                            Загрузите файл пройденной поверки
+                        </Button>
+                    </Upload>
+                    <Upload action={`${agent.API_ROOT}/file/upload`} fileList={this.state.fileList} renderFileOperation={renderFileOperation} />
                 </Form>
             </>
         );

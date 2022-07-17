@@ -29,12 +29,30 @@ class ModalCreateEquipment extends React.PureComponent {
             manufacturer: {},
             department: {},
             location: {},
-            equipmentType: {}
+            equipmentType: {},
+            dataSource: {}
         }
 
         this.handleOk = this.handleOk.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.getFormApi = this.getFormApi.bind(this);
+    }
+
+    async getData(){
+        // this.setState({...this.state, loading: true})
+        const data = await agent.EquipmentService.get(this.props.onCopy)
+        this.setState({...this.state, dataSource: data})
+        this.formApi.setValues(data.data)
+    }
+
+    async componentDidMount(){
+        // console.log(typeof(this.props.onCopy))
+        console.log('typeof(this.props.onCopy)')
+        // if (this.props.onCopy)
+        // {
+        //     console.log("!= null")
+        //     this.getData()
+        // }
     }
 
     handleOk() {
