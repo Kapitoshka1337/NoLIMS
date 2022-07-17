@@ -35,7 +35,6 @@ namespace Application.Features.Check.Update
         public async Task<Response<ViewModel>> Handle(UpdateCheck command, CancellationToken cancellationToken)
         {
             var item = await _repository.GetByIdAsync(command.Id);
-            var itemViewModel = _mapper.Map<ViewModel>(item);
 
             if (item == null)
             {
@@ -52,8 +51,10 @@ namespace Application.Features.Check.Update
             item.CurrentCheck = command.CurrentCheck;
             item.NextCheck = command.NextCheck;
             item.NumberDocument = command.NumberDocument;
+            item.FileId = command.FileId;
 
             await _repository.UpdateAsync(item);
+            var itemViewModel = _mapper.Map<ViewModel>(item);
 
             return new Response<ViewModel>(itemViewModel);
         }

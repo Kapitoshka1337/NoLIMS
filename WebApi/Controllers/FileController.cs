@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Application.Features.Base.Storage;
 
 namespace WebApi.Controllers
 {
@@ -88,11 +89,18 @@ namespace WebApi.Controllers
             return BadRequest();
         }
 
-        [HttpGet("download")]
-        [Authorize(Policy = PolicyTypes.File.View)]
-        public async Task<IActionResult> Download([FromQuery] Parameter request)
+        [HttpPost("update")]
+        [Authorize(Policy = PolicyTypes.File.Add)]
+        public async Task<IActionResult> UpdateFile()
         {
-            var file = await Mediator.Send(new Query() { FileId = request.FileId });
+            return BadRequest();
+        }
+
+        [HttpGet("download/{fileId}")]
+        [Authorize(Policy = PolicyTypes.File.View)]
+        public async Task<IActionResult> Download([FromRoute] int fileId)
+        {
+            var file = await Mediator.Send(new Query() { FileId = fileId });
             
             if (file == null)
                 return BadRequest();
@@ -104,6 +112,18 @@ namespace WebApi.Controllers
             var contentType = file.Type;
 
             return File(content, contentType, file.Hash);
+        }
+        
+        [HttpGet("info/{fileId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Info([FromRoute] int fileId)
+        {
+            var file = await Mediator.Send(new Info() { FileId = fileId, Host = string.Format("{0}://{1}{2}", Request.Scheme, Request.Host.Value, Request.Path) });
+            
+            if (file == null)
+                return BadRequest();
+
+            return Ok(file);
         }
         
         [HttpPost("export")]
