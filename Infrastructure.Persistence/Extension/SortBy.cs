@@ -37,71 +37,65 @@ namespace Infrastructure.Persistence.Extension
             if (request == null)
                 return owners;
 
-            DynamicExpressions.DynamicFilterBuilder<Equipment> expr = null;
+            IQueryable<Equipment> result = owners;
 
             if (!string.IsNullOrEmpty(request.Name))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
-
-                expr.And("Name", DynamicExpressions.FilterOperator.Contains, request.Name);
+                result = result.Where(x =>
+                x.Name.ToLower().Contains(request.Name.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(request.Number))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
-
-                expr.And("Number", DynamicExpressions.FilterOperator.Contains, request.Number);
+                result = result.Where(x => x.Number.ToLower().Contains(request.Number.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(request.Model))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
-
-                expr.And("Model", DynamicExpressions.FilterOperator.Contains, request.Model);
+                result = result.Where(x => x.Model.ToLower().Contains(request.Model.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(request.SerialNumber))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
-
-                expr.And("SerialNumber", DynamicExpressions.FilterOperator.Contains, request.SerialNumber);
+                result = result.Where(x => x.SerialNumber.ToLower().Contains(request.SerialNumber.ToLower()));
+            }
+            
+            if (!string.IsNullOrEmpty(request.InventoryNumber))
+            {
+                result = result.Where(x => x.InventoryNumber.ToLower().Contains(request.InventoryNumber.ToLower()));
             }
 
             if (request.DepartmentId.HasValue)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
-
-                expr.And("DepartmentId", DynamicExpressions.FilterOperator.Equals, request.DepartmentId.Value);
+                result = result.Where(x => x.DepartmentId.Equals(request.DepartmentId));
             }
 
             if (request.TypeId.HasValue)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
-
-                expr.And("TypeId", DynamicExpressions.FilterOperator.Equals, request.TypeId.Value);
+                result = result.Where(x => x.TypeId.Equals(request.TypeId));
             }
 
             if (request.TagId.HasValue)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Equipment>();
-
-                expr.And("TagId.Value", DynamicExpressions.FilterOperator.Equals, request.TagId.Value);
+                result = result.Where(x => x.TagId.Equals(request.TagId));
             }
 
-            if (expr != null)
+            if (request.ManufacturerId.HasValue)
             {
-                var buildedExpr = expr.Build();
-                return owners.Where(buildedExpr);
+                result = result.Where(x => x.ManufacturerId.Equals(request.ManufacturerId));
             }
 
-            return owners;
+            if (request.DateCreate != null)
+            {
+                result = result.Where(x => x.DateCreate.Value == request.DateCreate);
+            }
+            
+            if (request.DateCommissioning != null)
+            {
+                result = result.Where(x => x.DateCommissioning.Value == request.DateCommissioning);
+            }
+
+            return result;
         }
 
         public static IQueryable<ApplicationUser> FilterUser(this IQueryable<ApplicationUser> owners, Application.Features.User.GetAll.Parameter request)
@@ -112,47 +106,29 @@ namespace Infrastructure.Persistence.Extension
             if (request == null)
                 return owners;
 
-            DynamicExpressions.DynamicFilterBuilder<ApplicationUser> expr = null;
+            IQueryable<ApplicationUser> result = owners;
 
             if (!string.IsNullOrEmpty(request.FirstName))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<ApplicationUser>();
-
-                expr.And("FirstName", DynamicExpressions.FilterOperator.Contains, request.FirstName);
+                result = result.Where(x => x.FirstName.ToLower().Contains(request.FirstName.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(request.MiddleName))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<ApplicationUser>();
-
-                expr.And("MiddleName", DynamicExpressions.FilterOperator.Contains, request.MiddleName);
+                result = result.Where(x => x.MiddleName.ToLower().Contains(request.MiddleName.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(request.LastName))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<ApplicationUser>();
-
-                expr.And("LastName", DynamicExpressions.FilterOperator.Contains, request.LastName);
+                result = result.Where(x => x.LastName.ToLower().Contains(request.LastName.ToLower()));
             }
 
             if (request.DepartmentId > 0)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<ApplicationUser>();
-
-                expr.And("DepartmentId", DynamicExpressions.FilterOperator.Equals, request.DepartmentId);
+                result = result.Where(x => x.DepartmentId.Equals(request.DepartmentId));
             }
 
-            if (expr != null)
-            {
-                var buildedExpr = expr.Build();
-                return owners.Where(buildedExpr);
-            }
-
-            return owners;
+            return result;
         }
 
         public static IQueryable<Instruction> FilterInstruction(this IQueryable<Instruction> owners, Application.Features.Instruction.GetAll.Parameter request)
@@ -163,32 +139,19 @@ namespace Infrastructure.Persistence.Extension
             if (request == null)
                 return owners;
 
-            DynamicExpressions.DynamicFilterBuilder<Instruction> expr = null;
+            IQueryable<Instruction> result = owners;
 
             if (!string.IsNullOrEmpty(request.Name))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Instruction>();
-
-                expr.And("Name", DynamicExpressions.FilterOperator.Contains, request.Name);
+                result = result.Where(x => x.Name.ToLower().Contains(request.Name.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(request.Number))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Instruction>();
-
-                expr.And("Number", DynamicExpressions.FilterOperator.Contains, request.Number);
+                result = result.Where(x => x.Number.ToLower().Contains(request.Number.ToLower()));
             }
 
-
-            if (expr != null)
-            {
-                var buildedExpr = expr.Build();
-                return owners.Where(buildedExpr);
-            }
-
-            return owners;
+            return result;
         }
 
         public static IQueryable<Verification> FilterVerification(this IQueryable<Verification> owners, GetAllVerificationParameter request)
@@ -199,55 +162,34 @@ namespace Infrastructure.Persistence.Extension
             if (request == null)
                 return owners;
 
-            DynamicExpressions.DynamicFilterBuilder<Verification> expr = null;
+            IQueryable<Verification> result = owners;
 
             if (!string.IsNullOrEmpty(request.EquipmentName))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Verification>();
-
-                expr.And("Equipment.Name", DynamicExpressions.FilterOperator.Contains, request.EquipmentName);
+                result = result.Where(x => x.Equipment.Name.ToLower().Contains(request.EquipmentName.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(request.EquipmentModel))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Verification>();
-
-                expr.And("Equipment.Model", DynamicExpressions.FilterOperator.Contains, request.EquipmentModel);
+                result = result.Where(x => x.Equipment.Model.ToLower().Contains(request.EquipmentModel.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(request.EquipmentSerialNumber))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Verification>();
-
-                expr.And("Equipment.SerialNumber", DynamicExpressions.FilterOperator.Contains, request.EquipmentSerialNumber);
+                result = result.Where(x => x.Equipment.SerialNumber.ToLower().Contains(request.EquipmentSerialNumber.ToLower()));
             }
 
             if (request.DepartmentId > 0)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Verification>();
-
-                expr.And("Equipment.Department.Id", DynamicExpressions.FilterOperator.Equals, request.DepartmentId);
+                result = result.Where(x => x.Equipment.DepartmentId.Equals(request.DepartmentId));
             }
 
             if (request.StatusId > 0)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Verification>();
-
-                expr.And("StatusId", DynamicExpressions.FilterOperator.Equals, request.StatusId);
+                result = result.Where(x => x.StatusId.Equals(request.StatusId));
             }
 
-            if (expr != null)
-            {
-                var buildedExpr = expr.Build();
-                return owners.Where(buildedExpr);
-            }
-
-            return owners;
+            return result;
         }
 
         public static IQueryable<Check> FilterChecks(this IQueryable<Check> owners, Application.Features.Check.GetAll.Parameter request)
@@ -258,111 +200,44 @@ namespace Infrastructure.Persistence.Extension
             if (request == null)
                 return owners;
 
-            DynamicExpressions.DynamicFilterBuilder<Check> expr = null;
+            IQueryable<Check> result = owners;
 
             if (request.CurrentCheckStart != null)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-                expr.And("CurrentCheck.Value", DynamicExpressions.FilterOperator.GreaterThanOrEqual, request.CurrentCheckStart);
+                result = result.Where(x => x.CurrentCheck.Value >=  request.CurrentCheckStart);
             }
 
             if (request.CurrentCheckEnd != null)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-                expr.And("CurrentCheck.Value", DynamicExpressions.FilterOperator.LessThanOrEqual, request.CurrentCheckEnd);
+                result = result.Where(x => x.CurrentCheck.Value <= request.CurrentCheckEnd);
             }
 
             if (request.NextCheckStart != null)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-                expr.And("NextCheck.Value", DynamicExpressions.FilterOperator.GreaterThanOrEqual, request.NextCheckStart);
+                result = result.Where(x => x.NextCheck.Value >= request.NextCheckStart);
             }
 
             if (request.NextCheckEnd != null)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-                expr.And("NextCheck.Value", DynamicExpressions.FilterOperator.LessThanOrEqual, request.NextCheckEnd);
+                result = result.Where(x => x.NextCheck.Value <= request.NextCheckEnd);
             }
 
             if (request.EquipmentId > 0)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-                expr.And("EquipmentId", DynamicExpressions.FilterOperator.Equals, request.EquipmentId);
+                result = result.Where(x => x.EquipmentId.Equals(request.EquipmentId));
             }
 
             if (request.DocumentKindId > 0)
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-                expr.And("DocumentKindId.Value", DynamicExpressions.FilterOperator.Equals, request.DocumentKindId);
+                result = result.Where(x => x.DocumentKindId.Value.Equals(request.DocumentKindId));
             }
             
             if (!string.IsNullOrEmpty(request.NumberDocument))
             {
-                if (expr == null)
-                    expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-                expr.And("NumberDocument", DynamicExpressions.FilterOperator.Contains, request.NumberDocument);
+                result = result.Where(x => x.NumberDocument.ToLower().Contains(request.NumberDocument.ToLower()));
             }
 
-            //if (request.DepartmentId != null)
-            //{
-            //    if (expr == null)
-            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-            //    expr.And("Equipment.DepartmentId", DynamicExpressions.FilterOperator.Equals, request.DepartmentId);
-            //}
-
-            //if (request.TypeId != null)
-            //{
-            //    if (expr == null)
-            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-            //    expr.And("Equipment.TypeId", DynamicExpressions.FilterOperator.Equals, request.TypeId);
-            //}
-
-            //if (!string.IsNullOrEmpty(request.EquipmentName))
-            //{
-            //    if (expr == null)
-            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-            //    expr.And("Equipment.Name", DynamicExpressions.FilterOperator.Contains, request.EquipmentName);
-            //}
-
-            //if (!string.IsNullOrEmpty(request.EquipmentModel))
-            //{
-            //    if (expr == null)
-            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-            //    expr.And("Equipment.Model", DynamicExpressions.FilterOperator.Contains, request.EquipmentModel);
-            //}
-
-            //if (!string.IsNullOrEmpty(request.EquipmentSerialNumber))
-            //{
-            //    if (expr == null)
-            //        expr = new DynamicExpressions.DynamicFilterBuilder<Check>();
-
-            //    expr.And("Equipment.SerialNumber", DynamicExpressions.FilterOperator.Contains, request.EquipmentSerialNumber);
-            //}
-
-            if (expr != null)
-            {
-                var buildedExpr = expr.Build();
-                return owners.Where(buildedExpr);
-            }
-
-            return owners;
+            return result;
         }
 
         public static IQueryable<T> Filter<T, TParameter>(this IQueryable<T> owners, TParameter request)

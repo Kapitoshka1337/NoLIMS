@@ -35,7 +35,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             var equipments = await _equipments
                 .Include(e => e.Department)
-                //.Include(e => e.Location)
+                .Include(e => e.Location)
                 .Include(e => e.Manufacturer)
                 .Include(e => e.Type)
                 .Include(e => e.Tag)
