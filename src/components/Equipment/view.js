@@ -134,6 +134,7 @@ class EquipmentView extends React.PureComponent {
                         selectedRow: [...prevState.selectedRow, record]
                     })
                 )
+
                 if (this.props.onSelect)
                     this.props.onSelect(record);
             }
@@ -228,6 +229,19 @@ class EquipmentView extends React.PureComponent {
         }, 100)
     }
 
+    handleDelete = async () => {
+        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
+        {
+            Toast.warning("Не выбрана запись для удаления.");
+            return;
+        }
+
+        const result = await agent.EquipmentService.delete(this.state.selectedRow[0]['id'])
+
+        if (result)
+            Toast.info('Запись удалена')
+    }
+
     render() {
         return (
             <>
@@ -247,6 +261,7 @@ class EquipmentView extends React.PureComponent {
                     showCreate={this.handleModalCreate}
                     onSentToCheck={this.sentToCheck}
                     onCreateCopy={this.handleModalCreateCopy}
+                    onDelete={this.handleDelete} 
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Nav } from '@douyinfe/semi-ui'
-import { IconRefresh, IconPlus, IconMapPin, IconVerify, IconFilter, IconCheckList, IconCopyAdd } from '@douyinfe/semi-icons';
+import { IconRefresh, IconPlus, IconMapPin, IconVerify, IconFilter, IconCheckList, IconCopyAdd, IconDelete } from '@douyinfe/semi-icons';
 import { useAbac } from 'react-abac'
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
@@ -27,6 +27,7 @@ const mapDispatchToProps = dispatch => ({
                 [
                     { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => props.onGet() },
                     { itemKey: 'create', text: 'Создать', icon: <IconPlus />, onClick: (e) => props.showCreate(true), disabled: !userHasPermissions('equipment.add') },
+                    { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDelete(), disabled: !userHasPermissions('equipment.delete') },
                     { itemKey: 'toVerification', text: 'Отправить на поверку', icon: <IconVerify />, onClick: (e) => props.onSentToCheck(), disabled: !userHasPermissions('verification.add')},
                     { itemKey: 'changeLocation', text: 'Сменить местоположение', icon: <IconMapPin />, disabled: !userHasPermissions('equipment.edit')},
                     { itemKey: 'createCopy', text: 'Создать копию', icon: <IconCopyAdd />, onClick: (e) => props.onCreateCopy(true), disabled: !userHasPermissions('equipment.add') },

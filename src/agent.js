@@ -97,6 +97,9 @@ const EquipmentService = {
   update: (item) => {
     return requests.post(`/v1/equipment/update/${item.id}`, item)
   },
+  delete: (id) => {
+    return requests.get(`/v1/equipment/delete/${id}`)
+  }
 };
 
 const ManufacturerService = {
@@ -287,7 +290,7 @@ const ChecksService = {
   },
   delete: (id) => {
     return requests.get(`/v1/check/delete/${id}`)
-  },
+  }
 };
 
 const FileService = {
