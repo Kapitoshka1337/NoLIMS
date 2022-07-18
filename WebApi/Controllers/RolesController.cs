@@ -80,9 +80,9 @@ namespace WebApi.Controllers
             return Ok(await Mediator.Send(query));
         }
 
-        [HttpPost("delete")]
+        [HttpGet("delete/{id}")]
         [Authorize(Policy = PolicyTypes.Roles.Delete)]
-        public async Task<IActionResult> Delete(DeleteRole query)
+        public async Task<IActionResult> Delete([FromRoute] DeleteRole query)
         {
             return Ok(await Mediator.Send(query));
         }

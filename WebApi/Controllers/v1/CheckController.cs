@@ -35,9 +35,9 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(query));
         }
 
-        [HttpPost("delete")]
+        [HttpGet("delete/{id}")]
         [Authorize(Policy = PolicyTypes.Checks.Delete)]
-        public async Task<IActionResult> Delete(DeleteCheckCommand command)
+        public async Task<IActionResult> Delete([FromRoute] DeleteCheckCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

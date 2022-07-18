@@ -10,7 +10,7 @@ namespace Application.Features.Verification
 {
     public class DeleteVerificationCommand : IRequest<Response<bool>>
     {
-        public IList<EqVal> Verifications { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteVerificationCommandHandler : IRequestHandler<DeleteVerificationCommand, Response<bool>>
@@ -22,15 +22,12 @@ namespace Application.Features.Verification
         }
         public async Task<Response<bool>> Handle(DeleteVerificationCommand command, CancellationToken cancellationToken)
         {
-            foreach (var eq in command.Verifications)
-            {
-                var verification = await _equipmentRepositoryAsync.GetByIdAsync(eq.EquipmentId);
+            var verification = await _equipmentRepositoryAsync.GetByIdAsync(command.Id);
             
-                if (verification == null)
-                    throw new ApiException($"Поверка с ИД \"{eq.EquipmentId}\" не найдена.");
+            if (verification == null)
+                throw new ApiException($"Поверка с ИД \"{command.Id}\" не найдена.");
 
-                await _equipmentRepositoryAsync.DeleteAsync(verification);
-            }
+            await _equipmentRepositoryAsync.DeleteAsync(verification);
 
             return new Response<bool>(true);
         }

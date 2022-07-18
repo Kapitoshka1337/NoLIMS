@@ -34,9 +34,9 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(query));
         }
 
-        [HttpPost("delete")]
+        [HttpGet("delete/{id}")]
         [Authorize(Policy = PolicyTypes.Verification.Delete)]
-        public async Task<IActionResult> Delete(DeleteVerificationCommand command)
+        public async Task<IActionResult> Delete([FromRoute] DeleteVerificationCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

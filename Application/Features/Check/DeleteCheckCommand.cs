@@ -10,7 +10,8 @@ namespace Application.Features.Check
 {
     public class DeleteCheckCommand : IRequest<Response<bool>>
     {
-        public IList<int> CheckId { get; set; }
+        //public IList<int> CheckId { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteCheckCommandHandler : IRequestHandler<DeleteCheckCommand, Response<bool>>
@@ -23,15 +24,15 @@ namespace Application.Features.Check
 
         public async Task<Response<bool>> Handle(DeleteCheckCommand command, CancellationToken cancellationToken)
         {
-            foreach (var eq in command.CheckId)
-            {
-                var verification = await _equipmentRepositoryAsync.GetByIdAsync(eq);
+            //foreach (var eq in command.CheckId)
+            //{
+                var verification = await _equipmentRepositoryAsync.GetByIdAsync(command.Id);
 
                 if (verification == null)
-                    throw new ApiException($"Поверка с ИД \"{eq}\" не найдена.");
+                    throw new ApiException($"Поверка с ИД \"{command.Id}\" не найдена.");
 
                 await _equipmentRepositoryAsync.DeleteAsync(verification);
-            }
+            //}
 
             return new Response<bool>(true);
         }

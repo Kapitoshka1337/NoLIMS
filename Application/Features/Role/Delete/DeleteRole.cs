@@ -10,7 +10,7 @@ namespace Application.Features.Role.Delete
 {
     public class DeleteRole : IRequest<Response<bool>> 
     {
-        public int RoleId { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteRoleHandler : IRequestHandler<DeleteRole, Response<bool>>
@@ -25,10 +25,10 @@ namespace Application.Features.Role.Delete
         }
         public async Task<Response<bool>> Handle(DeleteRole command, CancellationToken cancellationToken)
         {
-            var role = await _repository.GetByIdAsync(command.RoleId);
+            var role = await _repository.GetByIdAsync(command.Id);
 
             if (role == null)
-                throw new ApiException($"Роль с ИД \"{command.RoleId}\" не найдена.");
+                throw new ApiException($"Роль с ИД \"{command.Id}\" не найдена.");
 
             if (role.IsSystem)
                 throw new ApiException($"Системную роль удалять нельзя.");

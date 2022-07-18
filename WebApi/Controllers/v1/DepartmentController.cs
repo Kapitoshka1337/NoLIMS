@@ -25,12 +25,12 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(command));
         }
 
-        //[HttpPost("delete/{id}")]
-        //[Authorize(Policy = PolicyTypes.Equipment.Delete)]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
-        //}
+        [HttpGet("delete/{id}")]
+        [Authorize(Policy = PolicyTypes.Department.Delete)]
+        public async Task<IActionResult> Delete([FromRoute] DeleteDepartmentCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
 
         [HttpGet]
         [Authorize(Policy = PolicyTypes.Department.View)]

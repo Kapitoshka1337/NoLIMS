@@ -19,21 +19,21 @@ namespace WebApi.Controllers.v1
         }
 
         [HttpPost]
-        [Authorize(Policy = PolicyTypes.Department.Add)]
+        [Authorize(Policy = PolicyTypes.Location.Add)]
         public async Task<IActionResult> Post(LocationInput command)
         {
             return Ok(await Mediator.Send(command));
         }
 
-        //[HttpPost("delete/{id}")]
-        //[Authorize(Policy = PolicyTypes.Equipment.Delete)]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
-        //}
+        [HttpGet("delete/{id}")]
+        [Authorize(Policy = PolicyTypes.Location.Delete)]
+        public async Task<IActionResult> Delete([FromRoute] DeleteLocationCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
 
         [HttpGet]
-        [Authorize(Policy = PolicyTypes.Department.View)]
+        [Authorize(Policy = PolicyTypes.Location.View)]
         public async Task<IActionResult> Get([FromQuery] Parameter filter)
         {
             var query = _mapper.Map<Query>(filter);

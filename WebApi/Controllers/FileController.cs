@@ -89,13 +89,6 @@ namespace WebApi.Controllers
             return BadRequest();
         }
 
-        [HttpPost("update")]
-        [Authorize(Policy = PolicyTypes.File.Add)]
-        public async Task<IActionResult> UpdateFile()
-        {
-            return BadRequest();
-        }
-
         [HttpGet("download/{fileId}")]
         [Authorize(Policy = PolicyTypes.File.View)]
         public async Task<IActionResult> Download([FromRoute] int fileId)

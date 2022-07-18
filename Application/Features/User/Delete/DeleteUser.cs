@@ -10,7 +10,7 @@ namespace Application.Features.User.Update
 {
     public class DeleteUser : IRequest<Response<bool>> 
     {
-        public int UserId { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteUserHandler : IRequestHandler<DeleteUser, Response<bool>>
@@ -25,10 +25,10 @@ namespace Application.Features.User.Update
         }
         public async Task<Response<bool>> Handle(DeleteUser command, CancellationToken cancellationToken)
         {
-            var user = await _repository.GetByIdAsync(command.UserId);
+            var user = await _repository.GetByIdAsync(command.Id);
 
             if (user == null)
-                throw new ApiException($"Пользователь с ИД \"{command.UserId}\" не найден.");
+                throw new ApiException($"Пользователь с ИД \"{command.Id}\" не найден.");
 
             await _repository.DeleteAsync(user);
 

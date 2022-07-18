@@ -69,7 +69,7 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(query));
         }
 
-        [HttpPost("delete")]
+        [HttpGet("delete/{id}")]
         [Authorize(Policy = PolicyTypes.User.Delete)]
         public async Task<IActionResult> Delete(DeleteUser query)
         {

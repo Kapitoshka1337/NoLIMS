@@ -25,15 +25,22 @@ namespace WebApi.Controllers.v1
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = PolicyTypes.Manufacturer.View)]
+        [Authorize(Policy = PolicyTypes.DocumentKind.View)]
         public async Task<IActionResult> GetById([FromRoute] ByIdQuery query)
         {
             return Ok(await Mediator.Send(query));
         }
 
         [HttpPost("update")]
-        [Authorize(Policy = PolicyTypes.Manufacturer.Edit)]
+        [Authorize(Policy = PolicyTypes.DocumentKind.Edit)]
         public async Task<IActionResult> Put(UpdateDocumentKind command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpGet("delete/{id}")]
+        [Authorize(Policy = PolicyTypes.DocumentKind.Delete)]
+        public async Task<IActionResult> Delete([FromRoute] DeleteDocumentKindCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
