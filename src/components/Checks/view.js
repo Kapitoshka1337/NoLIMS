@@ -50,8 +50,8 @@ class ChecksView extends React.PureComponent {
                 { type: 'date', inFilter: false, inAppearance: true, visible: true, title: 'Предстоящая', dataIndex: 'nextCheck', width: 200, sorter: (a, b) => a.nextCheck - b.nextCheck > 0 ? 1 : -1, 
                     render: (text, record, index) => this.formatDate(record.nextCheck)
                 },
-                { type: 'date', filterIndex: 'currentCheckStart', inFilter: true, inAppearance: false, visible: false, title: 'Пройденная поверка по', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
-                { type: 'date', filterIndex: 'currentCheckEnd', inFilter: true, inAppearance: false, visible: false, title: 'Пройденная поверка от', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', filterIndex: 'currentCheckStart', inFilter: true, inAppearance: false, visible: false, title: 'Пройденная поверка от', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
+                { type: 'date', filterIndex: 'currentCheckEnd', inFilter: true, inAppearance: false, visible: false, title: 'Пройденная поверка по', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 { type: 'date', filterIndex: 'nextCheckStart', inFilter: true, inAppearance: false, visible: false, title: 'Предстоящая поверка от', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 { type: 'date', filterIndex: 'nextCheckEnd', inFilter: true, inAppearance: false, visible: false, title: 'Предстоящая поверка по', width: 200, sorter: (a, b) => a.currentCheck - b.currentCheck > 0 ? 1 : -1},
                 // { type: 'text', filterIndex: 'equipment.number', inFilter: false, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'equipment.number' , width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1},

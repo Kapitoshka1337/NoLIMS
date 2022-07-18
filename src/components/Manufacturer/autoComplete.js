@@ -1,7 +1,7 @@
 import React from "react"
 import { connect } from 'react-redux'
 import TableManufacturer from './view';
-import { Form, Button, Modal } from '@douyinfe/semi-ui';
+import { Form, Button, Modal, AutoComplete } from '@douyinfe/semi-ui';
 import { IconMore } from "@douyinfe/semi-icons";
 import agent from "../../agent";
 
@@ -65,20 +65,39 @@ class AutoCompleteManufacturer extends React.PureComponent {
     }
 
     render(){
-        return (
-            <>
-                <Form.AutoComplete 
-                    style={{width: '100%'}}
-                    suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
-                    label="Производитель"
-                    field="manufacturerName"
-                    rules={this.props.rules}
-                />
-                <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
-                    <TableManufacturer onSelect={this.selectedManufacturer}/>
-                </Modal>
-            </>
-        );
+        if (!this.props.form)
+        {
+            return (
+                <>
+                    <Form.AutoComplete 
+                        style={{width: '100%'}}
+                        suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
+                        label="Производитель"
+                        field="manufacturerName"
+                        rules={this.props.rules}
+                    />
+                    <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
+                        <TableManufacturer onSelect={this.selectedManufacturer}/>
+                    </Modal>
+                </>
+            );
+        }
+        else
+        {
+            return (
+                <>
+                    <AutoComplete
+                        style={{width: '100%'}}
+                        suffix={<Button onClick={(e) => this.show(true)} icon={<IconMore />}></Button>}
+                        placeholder="Производитель"
+                        value={this.state.item.name}
+                    />
+                    <Modal visible={this.state.show} onOk={this.handleOk} size={"full-width"} onCancel={(e) => this.handleCancel(false)} okText={"ОК"} cancelText={"Отмена"}>
+                        <TableManufacturer onSelect={this.selectedManufacturer}/>
+                    </Modal>
+                </>
+            );
+        }
     }
 }
 

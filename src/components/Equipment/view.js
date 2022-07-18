@@ -14,6 +14,7 @@ import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
 import AutoCompleteDepartment from "../Department/autoComplete"
+import AutoCompleteManufacturer from "../Manufacturer/autoComplete"
 import AutoCompleteType from "../EquipmentTypes/autoComplete"
 import AutoCompleteTags from "../EquipmentTags/autoComplete"
 
@@ -47,11 +48,37 @@ class EquipmentView extends React.PureComponent {
             columns: [
                 { type: 'text', filterIndex: 'number', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'number', width: 100, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
                 { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoCompleteDepartment}/>}, type: 'text', filterIndex: 'departmentId', inFilter: true, inAppearance: true, visible: true, title: 'Отдел', dataIndex: 'department.name', width: 200, sorter: (a, b) => a.department.name - b.department.name > 0 ? 1 : -1},
-                { renderFilter: () => { return <AutoCompleteType form={true} key={'2'} onOk={this.handleOkAutoCompleteType}/>}, type: 'text', filterIndex: 'typeId', inFilter: true, inAppearance: true, visible: true, title: 'Тип', dataIndex: 'type.name', width: 100, sorter: (a, b) => a.type.name - b.type.name > 0 ? 1 : -1},
+                { renderFilter: () => { return <AutoCompleteManufacturer form={true} key={'2'} onOk={this.handleOkAutoCompleteManufacturer}/>}, type: 'text', filterIndex: 'manufacturerId', inFilter: true, inAppearance: true, visible: true, title: 'Производитель', dataIndex: 'manufacturer.name', width: 200, sorter: (a, b) => a.manufacturer.name - b.manufacturer.name > 0 ? 1 : -1},
+                { renderFilter: () => { return <AutoCompleteType form={true} key={'3'} onOk={this.handleOkAutoCompleteType}/>}, type: 'text', filterIndex: 'typeId', inFilter: true, inAppearance: true, visible: true, title: 'Тип', dataIndex: 'type.name', width: 100, sorter: (a, b) => a.type.name - b.type.name > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'name', inFilter: true, inAppearance: true, visible: true, title: 'Наименование', dataIndex: 'name' , width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'model', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'model', width: 200, sorter: (a, b) => a.model - b.model > 0 ? 1 : -1},
+                { type: 'text', filterIndex: 'inventoryNumber', inFilter: true, inAppearance: true, visible: true, title: 'Инвентарный номер', dataIndex: 'inventoryNumber', width: 200, sorter: (a, b) => a.inventoryNumber - b.inventoryNumber > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'serialNumber', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'serialNumber', width: 200, sorter: (a, b) => a.serialNumber - b.serialNumber > 0 ? 1 : -1},
                 { renderFilter: () => { return <AutoCompleteTags form={true} key={'4' } onOk={this.handleOkAutoCompleteTags}/>}, type: 'text', filterIndex: 'tagId', inFilter: true, inAppearance: true, visible: true, title: 'Статус', dataIndex: 'tag.name', width: 100, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
+                {
+                    type: 'date',
+                    inFilter: true,
+                    inAppearance: true,
+                    visible: true,
+                    title: 'Дата изготовления',
+                    filterIndex: 'dateCreate',
+                    dataIndex: 'dateCreate',
+                    width: 100,
+                    sorter: (a, b) => a.dateCreate - b.dateCreate > 0 ? 1 : -1,
+                    render: (text, record, index) => this.formatDate(record.dateCreate)
+                },
+                {
+                    type: 'date',
+                    inFilter: true,
+                    inAppearance: true,
+                    visible: true,
+                    title: 'Дата ввода в эксплуатацию',
+                    filterIndex: 'dateCommissioning',
+                    dataIndex: 'dateCommissioning',
+                    width: 100,
+                    sorter: (a, b) => a.dateCommissioning - b.dateCommissioning > 0 ? 1 : -1,
+                    render: (text, record, index) => this.formatDate(record.dateCommissioning)
+                },
                 { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 100, 
                     render: (text, record, index) => {
                         return (
@@ -68,14 +95,26 @@ class EquipmentView extends React.PureComponent {
             filters: {
                 number: '',
                 departmentId: '',
+                manufacturerId: '',
                 typeId: '',
                 name: '',
                 model: '',
                 serialNumber: '',
-                tagId: ''
+                tagId: '',
+                inventoryNumber: ''
             },
             copyEquipmentId: null
         }
+    }
+
+    formatDate(date){
+        return date === null ? null : new Date(date).toLocaleString().split(',')[0];
+    }
+
+    handleOkAutoCompleteManufacturer = (value) => {
+        let filter = this.state.filters;
+        filter['manufacturerId'] = value.id;
+        this.onChangeInput(filter)
     }
 
     handleOkAutoCompleteDepartment = (value) => {
@@ -261,7 +300,7 @@ class EquipmentView extends React.PureComponent {
                     showCreate={this.handleModalCreate}
                     onSentToCheck={this.sentToCheck}
                     onCreateCopy={this.handleModalCreateCopy}
-                    onDelete={this.handleDelete} 
+                    onDelete={this.handleDelete}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
