@@ -282,6 +282,19 @@ class VerificationsView extends React.PureComponent {
         }, 100)
     }
 
+    handleDelete = async () => {
+        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
+        {
+            Toast.warning("Не выбрана запись для удаления.");
+            return;
+        }
+
+        const result = await agent.VerificationService.delete(this.state.selectedRow[0]['id'])
+
+        if (result)
+            Toast.info('Запись удалена')
+    }
+    
     render() {        
         return (
             <>
@@ -299,9 +312,10 @@ class VerificationsView extends React.PureComponent {
                     onStartVerification={this.onStartVerification}
                     onCancelVerification={this.onCancelVerification}
                     onReturnToDepartment={this.onReturnToDepartment}
-                    onDeleteVerification={this.onDeleteVerification}
+                    // onDeleteVerification={this.onDeleteVerification}
                     handleShowFilter={this.handleShowFilter}
                     handleShowColumns ={this.handleShowColumns}
+                    onDelete={this.handleDelete} 
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}

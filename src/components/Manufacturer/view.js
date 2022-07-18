@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table} from '@douyinfe/semi-ui'
+import { Table, Toast } from '@douyinfe/semi-ui'
 
 import Toolbar from './toolbar'
 import PanelAppearance from './../common/panelAppearance';
@@ -91,7 +91,7 @@ class ManufacturerView extends React.PureComponent {
                     })
                 )
 
-                this.props.onSelect(record);
+                this.props.onSelect ? this.props.onSelect(record) : null
             }
             else
                 this.setState(prevState => ({
@@ -153,6 +153,19 @@ class ManufacturerView extends React.PureComponent {
         }, 100)
     }
 
+    handleDelete = async () => {
+        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
+        {
+            Toast.warning("Не выбрана запись для удаления.");
+            return;
+        }
+
+        const result = await agent.ManufacturerService.delete(this.state.selectedRow[0]['id'])
+
+        if (result)
+            Toast.info('Запись удалена')
+    }
+
     render() {
         return (
             <>
@@ -164,7 +177,14 @@ class ManufacturerView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar header={'Производители'} onGet={this.getData} showCreate={this.showCreate} handleShowFilter={this.handleShowFilter} handleShowColumns ={this.handleShowColumns} />}
+                title={<Toolbar 
+                    header={'Производители'}
+                    onGet={this.getData} 
+                    showCreate={this.showCreate} 
+                    handleShowFilter={this.handleShowFilter} 
+                    handleShowColumns={this.handleShowColumns} 
+                    onDelete={this.handleDelete}
+                />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{

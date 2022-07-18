@@ -26,11 +26,12 @@ const mapDispatchToProps = dispatch => ({
         items={
                 [
                     { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => props.onGet() },
+                    { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDelete(), disabled: !userHasPermissions('verification.delete') },
                     { itemKey: 'startVerification', text: 'Запустить поверку', icon: <IconPlay />, onClick: (e) => props.onStartVerification(), disabled: !userHasPermissions('verification.play')},
                     { itemKey: 'cancelVerification', text: 'Отменить поверку', icon: <IconStop />, onClick: (e) => props.onCancelVerification(), disabled: !userHasPermissions('verification.reset') },
                     { itemKey: 'toDepartment', text: 'Отдать в отдел', icon: <IconFilledArrowUp />, onClick: (e) => props.onReturnToDepartment(), disabled: !userHasPermissions('verification.return') },
                     { itemKey: 'printOrder', text: 'Печать заявки в ЦСМ', icon: <IconPrint /> },
-                    { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDeleteVerification(), disabled: !userHasPermissions('verification.delete')  },
+                    // { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDeleteVerification(), disabled: !userHasPermissions('verification.delete')  },
                     { itemKey: 'filter', text: 'Фильтрация', icon: <IconFilter />, onClick: (e) => props.handleShowFilter(true) },
                     { itemKey: 'appearance', text: 'Внешний вид', icon: <IconCheckList />, onClick: (e) => props.handleShowColumns(true) }
                 ]

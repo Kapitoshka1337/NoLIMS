@@ -115,6 +115,9 @@ const ManufacturerService = {
   },
   update: (item) => {
     return requests.post('/v1/manufacturer/update', item)
+  },
+  delete: (id) => {
+    return requests.get(`/v1/manufacturer/delete/${id}`)
   }
 };
 
@@ -137,6 +140,9 @@ const UsersService = {
   },
   changePassword: (item) => {
     return requests.post('/account/reset-password', item)
+  },
+  delete: (id) => {
+    return requests.get(`/v1/user/delete/${id}`)
   }
 };
 
@@ -157,6 +163,9 @@ const DepartmentService = {
   },
   update: (item) => {
     return requests.post('/v1/department/update', item)
+  },
+  delete: (id) => {
+    return requests.get(`/v1/department/delete/${id}`)
   }
 };
 
@@ -176,6 +185,9 @@ const LocationService = {
   },
   update: (item) => {
     return requests.post('/v1/location/update', item)
+  },
+  delete: (id) => {
+    return requests.get(`/v1/location/delete/${id}`)
   }
 };
 
@@ -195,6 +207,9 @@ const DocumentKindService = {
   },
   update: (item) => {
     return requests.post('/v1/documentKind/update', item)
+  },
+  delete: (id) => {
+    return requests.get(`/v1/documentKind/delete/${id}`)
   }
 };
 
@@ -245,8 +260,8 @@ const VerificationService = {
   reset: (item) => {
     return requests.post('/v1/verification/reset', item)
   },
-  delete: (item) => {
-    return requests.post('/v1/verification/delete', item)
+  delete: (id) => {
+    return requests.get(`/v1/verification/delete/${id}`)
   },
   return: (item) => {
     return requests.post('/v1/verification/return', item)
@@ -269,7 +284,10 @@ const ChecksService = {
   },
   update: (item) => {
     return requests.post('/v1/check/update', item)
-  }
+  },
+  delete: (id) => {
+    return requests.get(`/v1/check/delete/${id}`)
+  },
 };
 
 const FileService = {
@@ -330,6 +348,9 @@ const RoleService = {
   },
   getClaim: (id) => {
     return requests.get(`/permission/byrole?roleId=${id}`)
+  },
+  delete: (id) => {
+    return requests.get(`/v1/roles/delete/${id}`)
   }
 };
 

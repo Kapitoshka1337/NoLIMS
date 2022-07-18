@@ -11,11 +11,9 @@ import {
 import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
-import AutoCompleteDepartment from "../Department/autoComplete";
 import AutoCompleteEquipment from "../Equipment/autoComplete";
 import AutoCompleteDocumentKind from "../DocumentKind/autoComplete";
 import ButtonOpenCard from './../common/buttonOpenCard';
-import DocumentKindCard from './../DocumentKind/card';
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -161,7 +159,7 @@ class ChecksView extends React.PureComponent {
                     })
                 )
 
-                this.props.onSelect(record);
+                this.props.onSelect ? this.props.onSelect(record) : null
             }
             else
                 this.setState(prevState => ({
@@ -304,6 +302,19 @@ class ChecksView extends React.PureComponent {
         }
     }
 
+    handleDelete = async () => {
+        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
+        {
+            Toast.warning("Не выбрана запись для удаления.");
+            return;
+        }
+
+        const result = await agent.ChecksService.delete(this.state.selectedRow[0]['id'])
+
+        if (result)
+            Toast.info('Запись удалена')
+    }
+
     openCard = (record) => {
         history.push(`/equipment/checks/view/${record.id}`)
     }
@@ -328,6 +339,7 @@ class ChecksView extends React.PureComponent {
                     handleDownload ={this.handleDownload}
                     handlepPrintSticker={this.handlepPrintSticker}
                     handlepPrintCheckTable={this.handlepPrintCheckTable}
+                    onDelete={this.handleDelete}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}

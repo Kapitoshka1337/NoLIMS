@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Nav } from '@douyinfe/semi-ui'
-import { IconRefresh, IconVerify, IconFilter, IconCheckList, IconDownload } from '@douyinfe/semi-icons';
+import { IconRefresh, IconVerify, IconFilter, IconCheckList, IconDownload, IconDelete } from '@douyinfe/semi-icons';
 import { useAbac } from 'react-abac'
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
@@ -27,6 +27,7 @@ const mapDispatchToProps = dispatch => ({
                 [
                     { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => props.onGet() },
                     { itemKey: 'toVerification', text: 'Отправить на поверку', icon: <IconVerify />, onClick: (e) => props.onSentToCheck(), disabled: !userHasPermissions('verification.add') },
+                    { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDelete(), disabled: !userHasPermissions('verification.delete') },
                     { itemKey: 'document', text: 'Экспорт', icon: <IconDownload />,
                         items: [
                             {

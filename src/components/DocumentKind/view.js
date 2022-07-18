@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table} from '@douyinfe/semi-ui'
+import { Table, Toast } from '@douyinfe/semi-ui'
 import agent from '../../agent';
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
@@ -86,7 +86,7 @@ class DocumentKindView extends React.PureComponent {
                     })
                 )
 
-                this.props.onSelect(record);
+                this.props.onSelect ? this.props.onSelect(record) : null
             }
             else
                 this.setState(prevState => ({
@@ -148,6 +148,19 @@ class DocumentKindView extends React.PureComponent {
         }, 100)
     }
 
+    handleDelete = async () => {
+        if (this.state.selectedRow == null || this.state.selectedRow.length <= 0)
+        {
+            Toast.warning("Не выбрана запись для удаления.");
+            return;
+        }
+
+        const result = await agent.DocumentKindService.delete(this.state.selectedRow[0]['id'])
+
+        if (result)
+            Toast.info('Запись удалена')
+    }
+
     render() {
         return (
             <>
@@ -159,7 +172,14 @@ class DocumentKindView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar header={'Виды документов'} onGet={this.getData} handleShowFilter={this.handleShowFilter} handleShowColumns ={this.handleShowColumns} showCreate={this.showCreate} />}
+                title={<Toolbar
+                    header={'Виды документов'}
+                    onGet={this.getData}
+                    handleShowFilter={this.handleShowFilter}
+                    handleShowColumns ={this.handleShowColumns}
+                    showCreate={this.showCreate}
+                    onDelete={this.handleDelete}
+                />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{
