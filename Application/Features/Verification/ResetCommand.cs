@@ -21,19 +21,21 @@ namespace Application.Features.Verification
 
     public class ResetCommandHandler : IRequestHandler<ResetCommand, Response<bool>>
     {
-        private readonly IVerificationRepositoryAsync _equipmentRepositoryAsync;
+        private readonly IVerificationRepositoryAsync _verificationRepository;
+        private readonly IEquipmentRepositoryAsync _equipmentRepository;
         private readonly IMapper _mapper;
 
-        public ResetCommandHandler(IVerificationRepositoryAsync equipmentRepository, IMapper mapper)
+        public ResetCommandHandler(IVerificationRepositoryAsync verificationRepository, IEquipmentRepositoryAsync equipmentRepository, IMapper mapper)
         {
-            _equipmentRepositoryAsync = equipmentRepository;
+            _verificationRepository = verificationRepository;
+            _equipmentRepository = equipmentRepository;
             _mapper = mapper;
         }
         public async Task<Response<bool>> Handle(ResetCommand command, CancellationToken cancellationToken)
         {
             foreach (var eq in command.Verifications)
             {
-                var verification = await _equipmentRepositoryAsync.GetByIdAsync(eq.VerificationId);
+                var verification = await _verificationRepository.GetByIdAsync(eq.VerificationId);
 
                 if (verification == null)
                 {
@@ -48,8 +50,11 @@ namespace Application.Features.Verification
                 }
 
                 verification.StatusId = 1;
+                var equipment = await _equipmentRepository.GetByIdAsync(verification.EquipmentId);
+                equipment.TagId = 2;
 
-                await _equipmentRepositoryAsync.UpdateAsync(verification);
+                await _equipmentRepository.UpdateAsync(equipment);
+                await _verificationRepository.UpdateAsync(verification);
             }
 
             return new Response<bool>(true);
