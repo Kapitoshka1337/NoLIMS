@@ -104,12 +104,8 @@ class LocationCard extends React.PureComponent {
             <>
                 <CardToolbar header={this.state.dataSource.data.NumberRoom} onSave={this.handleSave} formChanged={this.state.formChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
-                    <Row>
-                        <Col>
-                            <Form.Input field='numberRoom' label="Номер" trigger='blur'/>
-                            <AutoCompleteDepartment id={this.state.dataSource.data.departmentId} onOk={this.handleOk}/>
-                        </Col>
-                    </Row>
+                    <Form.Input field='numberRoom' label="Номер" trigger='blur'/>
+                    <AutoCompleteDepartment id={this.state.dataSource.data.departmentId} onOk={this.handleOk}/>
                 </Form>
             </>
         );

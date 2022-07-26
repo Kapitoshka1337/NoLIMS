@@ -79,7 +79,7 @@ class EquipmentView extends React.PureComponent {
                     sorter: (a, b) => a.dateCommissioning - b.dateCommissioning > 0 ? 1 : -1,
                     render: (text, record, index) => this.formatDate(record.dateCommissioning)
                 },
-                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 100, 
+                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 200, 
                     render: (text, record, index) => {
                         return (
                             <>
@@ -196,11 +196,11 @@ class EquipmentView extends React.PureComponent {
         }
 
         let obj = {
-            equipments: []
+            verifications: []
         }
 
         this.state.selectedRow.forEach(el => {
-            obj.equipments.push({ equipmentId: el.id })
+            obj.verifications.push({ equipmentId: el.id })
         })
 
         let result = await agent.VerificationService.add(obj);

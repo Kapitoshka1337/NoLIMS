@@ -74,7 +74,7 @@ class ModalPassedVerification extends React.PureComponent {
     }
 
     onSelectDocumentKind = value => {
-        this.formApi.setValue('documentName', value.name)
+        this.formApi.setValue('documentKindName', value.name)
         this.setState({...this.state, documentKind: value})
     }
 

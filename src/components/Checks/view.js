@@ -180,11 +180,11 @@ class ChecksView extends React.PureComponent {
         }
 
         let obj = {
-            equipments: []
+            verifications: []
         }
 
         this.state.selectedRow.forEach(el => {
-            obj.equipments.push({ equipmentId: el.equipment.id })
+            obj.verifications.push({ equipmentId: el.equipment.id })
         })
 
         let result = await agent.VerificationService.add(obj);
