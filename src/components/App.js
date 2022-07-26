@@ -6,7 +6,7 @@ import { push } from 'connected-react-router'
 import { Spin } from '@douyinfe/semi-ui'
 import { AbacProvider } from 'react-abac'
 
-import { APP_LOAD, REDIRECT } from '../constants/actionTypes'
+import { APP_LOAD, REDIRECT, LOGOUT } from '../constants/actionTypes'
 import agent from '../agent'
 
 const Home = lazy(() => import('../components/Home'/* webpackChunkName: "Home", webpackPreload: true  */))
@@ -30,7 +30,8 @@ const mapDispatchToProps = dispatch => ({
   onLoad: (payload, roles, token) =>
     dispatch({ type: APP_LOAD, payload, roles, token, skipTracking: true }),
   onRedirect: () =>
-    dispatch({ type: REDIRECT })
+    dispatch({ type: REDIRECT }),
+  onClickLogout: () => dispatch({ type: LOGOUT }),
 })
 
 // const rules = {
@@ -67,8 +68,16 @@ class App extends React.PureComponent {
 
     if (token) {
       agent.setToken(token)
-      roles = await agent.Auth.roles();
-      info = await agent.Auth.current();
+      try
+      {
+        roles = await agent.Auth.roles();
+        info = await agent.Auth.current();
+      }
+      catch (error)
+      {
+        this.props.onClickLogout();
+        return
+      }
     }
     
     this.props.onLoad(info, roles, token)
