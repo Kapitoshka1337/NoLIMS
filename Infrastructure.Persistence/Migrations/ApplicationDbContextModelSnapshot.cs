@@ -135,6 +135,15 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("Accuracy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Characteristics")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClassAccuracy")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
 
@@ -153,8 +162,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
+                    b.Property<string>("FifNumber")
                         .HasColumnType("text");
 
                     b.Property<string>("InventoryNumber")
@@ -171,6 +179,12 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<int?>("ManufacturerId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("MeasuringRange")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MeasuringWork")
+                        .HasColumnType("text");
 
                     b.Property<string>("Model")
                         .HasColumnType("text");
@@ -206,8 +220,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("TypeId");
 
                     b.ToTable("Equipment");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Equipment");
                 });
 
             modelBuilder.Entity("Domain.Entities.Equipment.Instruction", b =>
@@ -607,49 +619,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Equipment.EquipmentCI", b =>
-                {
-                    b.HasBaseType("Domain.Entities.Equipment.Equipment");
-
-                    b.Property<string>("Accuracy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClassAccuracy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FifNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("MeasuringRange")
-                        .HasColumnType("text");
-
-                    b.HasDiscriminator().HasValue("EquipmentCI");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Equipment.EquipmentIO", b =>
-                {
-                    b.HasBaseType("Domain.Entities.Equipment.Equipment");
-
-                    b.Property<string>("Accuracy")
-                        .HasColumnType("text")
-                        .HasColumnName("EquipmentIO_Accuracy");
-
-                    b.Property<string>("MeasuringWork")
-                        .HasColumnType("text");
-
-                    b.HasDiscriminator().HasValue("EquipmentIO");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Equipment.EquipmentVO", b =>
-                {
-                    b.HasBaseType("Domain.Entities.Equipment.Equipment");
-
-                    b.Property<string>("Characteristics")
-                        .HasColumnType("text");
-
-                    b.HasDiscriminator().HasValue("EquipmentVO");
                 });
 
             modelBuilder.Entity("Domain.Entities.Base.Department", b =>
