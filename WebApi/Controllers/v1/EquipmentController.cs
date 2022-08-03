@@ -28,27 +28,6 @@ namespace WebApi.Controllers.v1
             return Ok(await Mediator.Send(command));
         }
 
-        [HttpPost("vo")]
-        [Authorize(Policy = PolicyTypes.Equipment.Add)]
-        public async Task<IActionResult> CreateVo(CreateVO command)
-        {
-            return Ok(await Mediator.Send(command));
-        }
-
-        [HttpPost("io")]
-        [Authorize(Policy = PolicyTypes.Equipment.Add)]
-        public async Task<IActionResult> CreateIo(CreateIO command)
-        {
-            return Ok(await Mediator.Send(command));
-        }
-
-        [HttpPost("si")]
-        [Authorize(Policy = PolicyTypes.Equipment.Add)]
-        public async Task<IActionResult> CreateSi(CreateCI command)
-        {
-            return Ok(await Mediator.Send(command));
-        }
-
         [HttpGet("delete/{id}")]
         [Authorize(Policy = PolicyTypes.Equipment.Delete)]
         public async Task<IActionResult> Delete([FromRoute] DeleteEquipmentCommand command)
