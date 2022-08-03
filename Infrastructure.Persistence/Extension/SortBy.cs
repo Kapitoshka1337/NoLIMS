@@ -95,6 +95,36 @@ namespace Infrastructure.Persistence.Extension
                 result = result.Where(x => x.DateCommissioning.Value == request.DateCommissioning);
             }
 
+            if (!string.IsNullOrEmpty(request.FifNumber))
+            {
+                result = result.Where(x => x.FifNumber.ToLower().Contains(request.FifNumber.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(request.Accuracy))
+            {
+                result = result.Where(x => x.Accuracy.ToLower().Contains(request.Accuracy.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(request.ClassAccuracy))
+            {
+                result = result.Where(x => x.ClassAccuracy.ToLower().Contains(request.ClassAccuracy.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(request.MeasuringRange))
+            {
+                result = result.Where(x => x.MeasuringRange.ToLower().Contains(request.MeasuringRange.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(request.MeasuringWork))
+            {
+                result = result.Where(x => x.MeasuringWork.ToLower().Contains(request.MeasuringWork.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(request.Characteristics))
+            {
+                result = result.Where(x => x.Characteristics.ToLower().Contains(request.Characteristics.ToLower()));
+            }
+
             return result;
         }
 

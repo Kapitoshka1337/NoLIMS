@@ -23,7 +23,24 @@ namespace Application.Features.Equipment.Commands.CreateEquipment
         public int DepartmentId { get; set; }
         public int LocationId { get; set; }
         public int TypeId { get; set; }
+        public int TagId { get; set; }
         public int InstructionId { get; set; }
+        public string FifNumber { get; set; }
+
+        // ИО/СИ Точность.
+        public string Accuracy { get; set; }
+
+        // СИ Класс точности.
+        public string ClassAccuracy { get; set; }
+
+        // СИ Диапазон измерений.
+        public string MeasuringRange { get; set; }
+
+        // ИО Диапазон работы.
+        public string MeasuringWork { get; set; }
+
+        // ВО Характеристики.
+        public string Characteristics { get; set; }
     }
 
     public class CreateEquipmentCommandHandler : IRequestHandler<CreateEquipmentCommand, Response<int>>
