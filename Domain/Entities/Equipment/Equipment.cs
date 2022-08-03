@@ -10,15 +10,12 @@ namespace Domain.Entities.Equipment
     {
         public string Name { get; set; }
         public string Number { get; set; }
-        //public string id_function_of_use { get; set; }
-        //public string id_object_study { get; set; }
-
         public string PurposeOfUse { get; set; }
         public string Model { get; set; }
         public string SerialNumber { get; set; }
-        [Column(TypeName="Date")]
+        [Column(TypeName = "Date")]
         public DateTime? DateCreate { get; set; }
-        [Column(TypeName="Date")]
+        [Column(TypeName = "Date")]
         public DateTime? DateCommissioning { get; set; }
         public string InventoryNumber { get; set; }
         public string Description { get; set; }
@@ -34,5 +31,23 @@ namespace Domain.Entities.Equipment
         public Tags Tag { get; set; }
         public virtual IEnumerable<Check> Checks { get; set; }
         public virtual IEnumerable<Moving> Movings { get; set; }
+
+        // СИ ФИФ.
+        public string FifNumber { get; set; }
+
+        // ИО/СИ Точность.
+        public string Accuracy { get; set; }
+
+        // СИ Класс точности.
+        public string ClassAccuracy { get; set; }
+
+        // СИ Диапазон измерений.
+        public string MeasuringRange { get; set; }
+
+        // ИО Диапазон работы.
+        public string MeasuringWork { get; set; }
+
+        // ВО Характеристики.
+        public string Characteristics { get; set; }
     }
 }
