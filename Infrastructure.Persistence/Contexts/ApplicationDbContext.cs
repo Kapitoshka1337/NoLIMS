@@ -36,9 +36,6 @@ namespace Infrastructure.Persistence.Contexts
         
         // Оборудование.
         public DbSet<Equipment>  Equipment { get; set; }
-        public DbSet<EquipmentVO>  EquipmentVOs { get; set; }
-        public DbSet<EquipmentIO>  EquipmentIOs { get; set; }
-        public DbSet<EquipmentCI> EquipmentCIs { get; set; }
         public DbSet<Type> Types { get; set; }
         public DbSet<Manufacturer>  Manufacturers { get; set; }
         public DbSet<Tags> Tags { get; set; }
