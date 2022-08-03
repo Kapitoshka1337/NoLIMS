@@ -46,6 +46,7 @@ class EquipmentView extends React.PureComponent {
             showColumns: false,
             showFilter: false,
             columns: [
+                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 60, render: (text, record, index) => { return (<> <ButtonOpenCard onClick={this.openCard} record={record} /> </> ) } },
                 { type: 'text', filterIndex: 'number', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'number', width: 100, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
                 { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoCompleteDepartment}/>}, type: 'text', filterIndex: 'departmentId', inFilter: true, inAppearance: true, visible: true, title: 'Отдел', dataIndex: 'department.name', width: 200, sorter: (a, b) => a.department.name - b.department.name > 0 ? 1 : -1},
                 { renderFilter: () => { return <AutoCompleteManufacturer form={true} key={'2'} onOk={this.handleOkAutoCompleteManufacturer}/>}, type: 'text', filterIndex: 'manufacturerId', inFilter: true, inAppearance: true, visible: true, title: 'Производитель', dataIndex: 'manufacturer.name', width: 200, sorter: (a, b) => a.manufacturer.name - b.manufacturer.name > 0 ? 1 : -1},
@@ -56,40 +57,28 @@ class EquipmentView extends React.PureComponent {
                 { type: 'text', filterIndex: 'serialNumber', inFilter: true, inAppearance: true, visible: true, title: 'С/Н', dataIndex: 'serialNumber', width: 200, sorter: (a, b) => a.serialNumber - b.serialNumber > 0 ? 1 : -1},
                 { renderFilter: () => { return <AutoCompleteTags form={true} key={'4' } onOk={this.handleOkAutoCompleteTags}/>}, type: 'text', filterIndex: 'tagId', inFilter: true, inAppearance: true, visible: true, title: 'Статус', dataIndex: 'tag.name', width: 100, sorter: (a, b) => a.tag.name - b.tag.name > 0 ? 1 : -1},
                 {
-                    type: 'date',
-                    inFilter: true,
-                    inAppearance: true,
-                    visible: true,
-                    title: 'Дата изготовления',
-                    filterIndex: 'dateCreate',
-                    dataIndex: 'dateCreate',
-                    width: 100,
-                    sorter: (a, b) => a.dateCreate - b.dateCreate > 0 ? 1 : -1,
-                    render: (text, record, index) => this.formatDate(record.dateCreate)
+                    type: 'date', inFilter: true, inAppearance: true, visible: true, title: 'Дата изготовления', filterIndex: 'dateCreate', dataIndex: 'dateCreate', width: 100, sorter: (a, b) => a.dateCreate - b.dateCreate > 0 ? 1 : -1, render: (text, record, index) => this.formatDate(record.dateCreate) },
+                {
+                    type: 'date', inFilter: true, inAppearance: true, visible: true, title: 'Дата ввода в эксплуатацию', filterIndex: 'dateCommissioning', dataIndex: 'dateCommissioning', width: 100, sorter: (a, b) => a.dateCommissioning - b.dateCommissioning > 0 ? 1 : -1, render: (text, record, index) => this.formatDate(record.dateCommissioning)
                 },
                 {
-                    type: 'date',
-                    inFilter: true,
-                    inAppearance: true,
-                    visible: true,
-                    title: 'Дата ввода в эксплуатацию',
-                    filterIndex: 'dateCommissioning',
-                    dataIndex: 'dateCommissioning',
-                    width: 100,
-                    sorter: (a, b) => a.dateCommissioning - b.dateCommissioning > 0 ? 1 : -1,
-                    render: (text, record, index) => this.formatDate(record.dateCommissioning)
+                    type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Точность', filterIndex: 'accuracy', dataIndex: 'accuracy', width: 100, sorter: (a, b) => a.accuracy - b.accuracy > 0 ? 1 : -1
                 },
-                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 200, 
-                    render: (text, record, index) => {
-                        return (
-                            <>
-                                <ButtonOpenCard onClick={this.openCard} record={record} />
-                                {/* <ButtonCopyAdd onClick={this.copyAdd} /> */}
-                            </>
-                            
-                        )
-                    }
-                }
+                {
+                    type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Класс точности', filterIndex: 'classAccuracy', dataIndex: 'classAccuracy', width: 100, sorter: (a, b) => a.classAccuracy - b.classAccuracy > 0 ? 1 : -1
+                },
+                {
+                    type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Характеристики', filterIndex: 'characteristics', dataIndex: 'characteristics', width: 100, sorter: (a, b) => a.characteristics - b.characteristics > 0 ? 1 : -1
+                },
+                {
+                    type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'ФИФ', filterIndex: 'fifNumber', dataIndex: 'fifNumber', width: 100, sorter: (a, b) => a.fifNumber - b.fifNumber > 0 ? 1 : -1
+                },
+                {
+                    type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Диапазон измерений', filterIndex: 'measuringRange', dataIndex: 'measuringRange', width: 100, sorter: (a, b) => a.measuringRange - b.measuringRange > 0 ? 1 : -1
+                },
+                {
+                    type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Диапазон работы', filterIndex: 'measuringWork', dataIndex: 'measuringWork', width: 100, sorter: (a, b) => a.measuringWork - b.measuringWork > 0 ? 1 : -1
+                },
             ],
             cols: [],
             filters: {
@@ -311,6 +300,11 @@ class EquipmentView extends React.PureComponent {
                     showSizeChanger: true
                 }}
                 size={'small'}
+                // onRow={(record, index) => {
+                //     return {
+                //         onClick: event => { console.log(event) },
+                //     };
+                // }}
                 />
                 <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
                 <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>

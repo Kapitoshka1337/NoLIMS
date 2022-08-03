@@ -82,14 +82,8 @@ const EquipmentService = {
     
     return requests.get(url + filterUrl)
   },
-  addVO: (item) => {
-    return requests.post('/v1/equipment/vo', item)
-  },
-  addIO: (item) => {
-    return requests.post('/v1/equipment/io', item)
-  },
-  addSI: (item) => {
-    return requests.post('/v1/equipment/si', item)
+  add: (item) => {
+    return requests.post('/v1/equipment', item)
   },
   get: (id) => {
     return requests.get(`/v1/equipment/detail/${id}`)

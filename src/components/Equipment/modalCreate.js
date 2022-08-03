@@ -65,14 +65,7 @@ class ModalCreateEquipment extends React.PureComponent {
         this.formApi.validate()
             .then(async (values) => {
                 let result;
-                if (values.typeId == 1)
-                    result = await agent.EquipmentService.addVO(values);
-
-                if (values.typeId == 2)
-                    result = await agent.EquipmentService.addIO(values);
-
-                if (values.typeId == 3)
-                    result = await agent.EquipmentService.addSI(values);
+                result = await agent.EquipmentService.add(values);
 
                 if (result.data)
                     this.props.onClose(false)
