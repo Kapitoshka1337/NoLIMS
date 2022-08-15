@@ -7,10 +7,6 @@ const onChangeName = (value, column, filters) => {
     return filter;
 }
 
-const onResetFilter = () => {
-    return {};
-}
-
 function PanelFilter(props)
 {
     return (
@@ -23,10 +19,11 @@ function PanelFilter(props)
             visible={props.show}
             onCancel={() => props.onCancel(false)}
             size={"small"}
+            keepDOM={true}
             footer={
                 <>
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button onClick={() => props.onChange(onResetFilter())}>Сбросить</Button>
+                        <Button onClick={() => props.onChange(() => {return {}})}>Сбросить</Button>
                     </div>
                 </>
             }

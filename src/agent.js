@@ -49,7 +49,7 @@ const computedUrl = (url, page, size, sorter) => {
 const requests = {
   del: url =>
     superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
-  get: (url) =>
+  get: (url) => 
     superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
   put: (url, body) =>
     superagent.put(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),

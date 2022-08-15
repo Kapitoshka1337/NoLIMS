@@ -111,17 +111,17 @@ class EquipmentCard extends React.PureComponent {
     }
 
     handleSave = () => {
-        let fState = this.formApi.getFormState()
-        if (fState.values.dateCreate || fState.values.dateCommissioning)
-        {
-            let currentDate = new Date(fState.values.dateCreate);
-            let nextDate = new Date(fState.values.dateCommissioning);
-            currentDate.setDate(currentDate.getDate() + 1);
-            nextDate.setDate(nextDate.getDate() + 1);
+        // let fState = this.formApi.getFormState()
+        // if (fState.values.dateCreate || fState.values.dateCommissioning)
+        // {
+        //     let currentDate = new Date(fState.values.dateCreate);
+        //     let nextDate = new Date(fState.values.dateCommissioning);
+        //     currentDate.setDate(currentDate.getDate() + 1);
+        //     nextDate.setDate(nextDate.getDate() + 1);
     
-            this.formApi.setValue('dateCreate', currentDate.toJSON().split('T')[0])
-            this.formApi.setValue('dateCommissioning', nextDate.toJSON().split('T')[0])
-        }
+        //     this.formApi.setValue('dateCreate', currentDate.toJSON().split('T')[0])
+        //     this.formApi.setValue('dateCommissioning', nextDate.toJSON().split('T')[0])
+        // }
 
         this.formApi.setValue('departmentId', this.state.departmentItem.id)
         this.formApi.setValue('manufacturerId', this.state.manufacturer.id)
