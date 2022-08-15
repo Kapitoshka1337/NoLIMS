@@ -45,14 +45,17 @@ namespace Application.Mappings
             CreateMap<CreateVO, Application.DTOs.Equipment.EquipmentVO>();
             CreateMap<CreateIO, Application.DTOs.Equipment.EquipmentIO>();
             CreateMap<CreateCI, Application.DTOs.Equipment.EquipmentCI>();
-            CreateMap<UpdateEquipmentCommand, Domain.Entities.Equipment.Equipment>();
-            CreateMap<UpdateEquipmentCommand, Domain.Entities.Equipment.EquipmentVO>();
-            CreateMap<UpdateEquipmentCommand, Domain.Entities.Equipment.EquipmentIO>();
-            CreateMap<UpdateEquipmentCommand, Domain.Entities.Equipment.EquipmentCI>();
+            CreateMap<UpdateEquipmentCommand, Domain.Entities.Equipment.Equipment>()
+                .ForMember(dest => dest.DateCreate, opt => opt.MapFrom(src => src.DateCreate.Value.ToLocalTime()))
+                .ForMember(dest => dest.DateCommissioning, opt => opt.MapFrom(src => src.DateCommissioning.Value.ToLocalTime()))
+                .ReverseMap();
+            //CreateMap<UpdateEquipmentCommand, Domain.Entities.Equipment.EquipmentVO>();
+            //CreateMap<UpdateEquipmentCommand, Domain.Entities.Equipment.EquipmentIO>();
+            //CreateMap<UpdateEquipmentCommand, Domain.Entities.Equipment.EquipmentCI>();
             CreateMap<Application.DTOs.Equipment.Equipment, Domain.Entities.Equipment.Equipment>();
-            CreateMap<Application.DTOs.Equipment.EquipmentVO, Domain.Entities.Equipment.EquipmentVO>();
-            CreateMap<Application.DTOs.Equipment.EquipmentIO, Domain.Entities.Equipment.EquipmentIO>();
-            CreateMap<Application.DTOs.Equipment.EquipmentCI, Domain.Entities.Equipment.EquipmentCI>();
+            //CreateMap<Application.DTOs.Equipment.EquipmentVO, Domain.Entities.Equipment.EquipmentVO>();
+            //CreateMap<Application.DTOs.Equipment.EquipmentIO, Domain.Entities.Equipment.EquipmentIO>();
+            //CreateMap<Application.DTOs.Equipment.EquipmentCI, Domain.Entities.Equipment.EquipmentCI>();
             CreateMap<Application.DTOs.Equipment.Manufacturer, Domain.Entities.Equipment.Manufacturer>();
             CreateMap<Application.DTOs.Equipment.Type, Domain.Entities.Equipment.Type>();
             CreateMap<Application.DTOs.Equipment.Status, Domain.Entities.Equipment.EquipmentStatus>();
@@ -62,9 +65,10 @@ namespace Application.Mappings
 
             // Оборудование. Domain -> DTO
             CreateMap<Domain.Entities.Equipment.Equipment, Application.DTOs.Equipment.Equipment>();
-            CreateMap<Domain.Entities.Equipment.EquipmentVO, EquipmentDetail>();
-            CreateMap<Domain.Entities.Equipment.EquipmentIO, EquipmentDetail>();
-            CreateMap<Domain.Entities.Equipment.EquipmentCI, EquipmentDetail>();
+            CreateMap<Domain.Entities.Equipment.Equipment, EquipmentDetail>();
+            //CreateMap<Domain.Entities.Equipment.EquipmentVO, EquipmentDetail>();
+            //CreateMap<Domain.Entities.Equipment.EquipmentIO, EquipmentDetail>();
+            //CreateMap<Domain.Entities.Equipment.EquipmentCI, EquipmentDetail>();
             CreateMap<Domain.Entities.Equipment.Manufacturer, Application.DTOs.Equipment.Manufacturer>();
             CreateMap<Domain.Entities.Equipment.Tags, Application.DTOs.Equipment.TagsDto>();
             CreateMap<Domain.Entities.Equipment.Tags, Application.Features.Tags.GetAll.ViewModel>();
@@ -87,7 +91,10 @@ namespace Application.Mappings
             CreateMap<Domain.Entities.Equipment.Verification.Verification, GetAllVerificationViewModel>().ReverseMap();
             
             // Поверки.
-            CreateMap<PassedCommand, Domain.Entities.Equipment.Check>();
+            CreateMap<PassedCommand, Domain.Entities.Equipment.Check>()
+                .ForMember(dest => dest.CurrentCheck, opt => opt.MapFrom(src => src.CurrentCheck.Value.ToLocalTime()))
+                .ForMember(dest => dest.NextCheck, opt => opt.MapFrom(src => src.NextCheck.Value.ToLocalTime()))
+                .ReverseMap();
             CreateMap<Query, Parameter>();
             CreateMap<Application.Features.Type.GetAll.Query, Application.Features.Type.GetAll.Parameter>();
             CreateMap<Application.Features.Check.GetAll.Parameter, Application.Features.Check.GetAll.Query>().ReverseMap();
