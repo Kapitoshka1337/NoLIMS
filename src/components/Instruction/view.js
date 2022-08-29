@@ -11,9 +11,8 @@ import {
 import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
-import AutoCompleteEquipment from "../Equipment/autoComplete";
-import AutoCompleteDocumentKind from "../DocumentKind/autoComplete";
 import ButtonOpenCard from './../common/buttonOpenCard';
+import ModalCreate from './modalCreate'
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -43,6 +42,7 @@ class InstructionView extends React.PureComponent {
             showVo: false,
             showColumns: false,
             showFilter: false,
+            showCreate: false,
             columns: [
                 { type: 'text', filterIndex: 'name', inFilter: true, inAppearance: true, visible: true, title: 'Наименование', dataIndex: 'name', width: 100, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'number', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'number', width: 50, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1},
@@ -188,6 +188,14 @@ class InstructionView extends React.PureComponent {
         history.push(`/equipment/instruction/view/${record.id}`)
     }
 
+    showCreate = value => {
+        this.setState({...this.state, showCreate: value});
+    }
+
+    onCreate = value => {
+        this.getData()
+    }
+
     render() {
         return (
             <>
@@ -209,6 +217,7 @@ class InstructionView extends React.PureComponent {
                     handlepPrintSticker={this.handlepPrintSticker}
                     handlepPrintCheckTable={this.handlepPrintCheckTable}
                     onDelete={this.handleDelete}
+                    showCreate={this.showCreate}
                     />}
                 rowSelection={this.rowSelection}
                 onChange={(changes) => this.handlePageChange(changes)}
@@ -220,6 +229,7 @@ class InstructionView extends React.PureComponent {
                 }}/>
                 <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
                 <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
+                <ModalCreate onClose={this.showCreate} onOk={this.onCreate} show={this.state.showCreate}/>
             </>
         );
     }
