@@ -1,12 +1,13 @@
 ﻿using Application.DTOs.Account;
 using Application.Wrappers;
+using MediatR;
 using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
     public interface IAccountService
     {
-        Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress);
+        Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress, IMediator mediator);
         Task<Response<string>> RegisterAsync(RegisterRequest request);
         //Task<Response<string>> ConfirmEmailAsync(string userId, string code);
         Task ForgotPassword(ForgotPasswordRequest model, string origin);

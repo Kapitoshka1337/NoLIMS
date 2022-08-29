@@ -152,6 +152,7 @@ namespace Application.Mappings
 
             // Инструкции.
             CreateMap<InstructionInput, Application.DTOs.Equipment.Instruction>();
+            CreateMap<InstructionUpdate, Application.DTOs.Equipment.Instruction>().ReverseMap();
             CreateMap<Application.DTOs.Equipment.Instruction, Instruction>();
             CreateMap<Instruction, Application.DTOs.Equipment.Instruction>();
             CreateMap<Application.Features.Instruction.GetAll.Query, Application.Features.Instruction.GetAll.Parameter>().ReverseMap();

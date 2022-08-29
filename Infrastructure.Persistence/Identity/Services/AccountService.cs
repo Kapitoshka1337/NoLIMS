@@ -19,6 +19,10 @@ using Application.Enums;
 using System.Threading.Tasks;
 using Application.DTOs.Email;
 using Domain.Entities.Role;
+using Application.Features.Role.WithPermission;
+using MediatR;
+using Application.Features.User.Info;
+using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Identity.Services
 {
@@ -49,7 +53,7 @@ namespace Infrastructure.Identity.Services
             _userService = userService;
         }
 
-        public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress)
+        public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress, IMediator mediator)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
 
@@ -72,11 +76,16 @@ namespace Infrastructure.Identity.Services
             response.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             response.UserName = user.UserName;
             
-            var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
-            var claims = await _userService.GetPermission(user.Id);
-            
-            response.Roles = rolesList.ToList();
-            response.Claims = claims.Claims;
+            var query = new QueryInfo() { Id = user.Id.ToString() };
+            var roleList = await mediator.Send(new GetRoles());
+            var permissionsList = await mediator.Send(query);
+
+            //var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+            //var claims = await _userService.GetPermission(user.Id);
+
+            response.Roles = roleList.Data;
+            response.Permissions = permissionsList.Data.Permissions;
+            response.Claims = permissionsList.Data.Claims;
             
             var refreshToken = GenerateRefreshToken(ipAddress);
             

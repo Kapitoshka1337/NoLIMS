@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Application.DTOs.Account;
 using Application.Interfaces;
 using Infrastructure.Identity.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApi.Controllers
 {
@@ -13,6 +16,8 @@ namespace WebApi.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private IMediator _mediator;
+        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
 
         public AccountController(IAccountService accountService)
         {
@@ -23,7 +28,7 @@ namespace WebApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> AuthenticateAsync(AuthenticationRequest request)
         {
-            return Ok(await _accountService.AuthenticateAsync(request, GenerateIPAddress()));
+            return Ok(await _accountService.AuthenticateAsync(request, GenerateIPAddress(), Mediator));
         }
 
         //[HttpPost("register")]
