@@ -1,5 +1,6 @@
 import superagentPromise from 'superagent-promise';
 import _superagent from 'superagent';
+import axios from 'axios';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
@@ -9,16 +10,56 @@ const encode = encodeURIComponent;
 const responseBody = res => res.body;
 
 let token = null;
+// const tokenDownloadPlugin = req => {
+  //   if (token) {
+    //     req.set('authorization', `Bearer ${token}`);
+    //     req.set('response-type', 'blob');
+    //   }
+    // }
+    // Axios
+const client = axios.create({
+  baseURL: API_ROOT,
+});
+    
 const tokenPlugin = req => {
   if (token) {
-    req.set('authorization', `Bearer ${token}`);
+    client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 }
-const tokenDownloadPlugin = req => {
-  if (token) {
-    req.set('authorization', `Bearer ${token}`);
-    req.set('response-type', 'blob');
+// headers: {
+//   'Authorization': `Bearer ${token}`
+// }
+const request = function(options)
+{
+  const onSuccess = function(response)
+  {
+    // console.log('Request Successful!', response);
+    // console.log('Request headers!', response.headers);
+    return response.data;
   }
+
+  const onError = function(error)
+  {
+    console.log('Request Failed:', error.config);
+
+    if (error.response)
+    {
+      // Request was made but server responded with something
+      // other than 2xx
+      console.error('Data:',    error.response.data);
+
+    }
+    else
+    {
+      // Something else happened while setting up the request
+      // triggered the error
+      console.log('Error Message:', error.message);
+    }
+
+    return Promise.reject(error.response || error.message);
+  }
+
+  return client(options).then(onSuccess).catch(onError);
 }
 
 const computedFilter = (filter) => {
@@ -50,15 +91,28 @@ const requests = {
   del: url =>
     superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
   get: (url) => 
-    superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
+    request({url: url, method: 'GET', headers: {'Authorization': `Bearer ${token}`}}).then(response => response).catch(response => response),
   put: (url, body) =>
     superagent.put(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
   post: (url, body) =>
-    superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody).catch(console.log(responseBody)),
+    request({url: url, method: 'POST', data: body, headers: {'Authorization': `Bearer ${token}`}}).then(response => response).catch(response => response),
   download: (url) =>
-    superagent.get(`${API_ROOT}${url}`).responseType('blob').use(tokenPlugin).then(responseBody => {return responseBody}).catch(console.log(responseBody)),
+    request(
+      {
+        url: url, 
+        method: 'GET', 
+        headers: {'Authorization': `Bearer ${token}`},
+        responseType: 'blob'
+      }).then(response => response).catch(response => response),
   report: (url, body) =>
-    superagent.post(`${API_ROOT}${url}`, body).responseType('blob').use(tokenPlugin).then(responseBody => {return responseBody}).catch(console.log(responseBody))
+    request(
+      {
+        url: url, 
+        method: 'POST', 
+        data: body,
+        headers: {'Authorization': `Bearer ${token}`},
+        responseType: 'blob'
+      }).then(response => response).catch(response => response),
 };
 
 const Auth = {
@@ -287,6 +341,28 @@ const ChecksService = {
   }
 };
 
+const InstructionService = {
+  view: (page, size, sorter = null, filters = null) => {
+    let url = computedUrl('/v1/instruction', page, size, sorter);
+    let filterUrl = "";
+    if (filters) filterUrl = computedFilter(filters);
+    
+    return requests.get(url + filterUrl)
+  },
+  add: (item) => {
+    return requests.post('/v1/instruction', item)
+  },
+  get: (id) => {
+    return requests.get(`/v1/instruction/${id}`)
+  },
+  update: (item) => {
+    return requests.post('/v1/instruction/update', item)
+  },
+  delete: (id) => {
+    return requests.get(`/v1/instruction/delete/${id}`)
+  }
+};
+
 const FileService = {
   upload: (item) => {
     return requests.post('/v1/files/upload', item)
@@ -368,5 +444,6 @@ export default {
   EquipmentTypeService,
   ReportService,
   EquipmentTagsService,
+  InstructionService,
   setToken: _token => { token = _token; }
 };

@@ -36,7 +36,8 @@ class Login extends React.PureComponent {
     this.props.onUnload()
   }
 
-  handleSubmit(values){
+  async handleSubmit(values){
+    // let data = await agent.Auth.login(values.login, values.password);
     this.submitForm(values.login, values.password);
   }
 

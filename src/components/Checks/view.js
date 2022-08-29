@@ -251,7 +251,7 @@ class ChecksView extends React.PureComponent {
         const result = await agent.FileService.download(this.state.selectedRow[0].fileId)
         if (result)
         {
-            const fl = new Blob([result.body], {type: result.type});
+            const fl = new Blob([result], {type: result['type']});
             FileSaver.saveAs(fl, "Документ");
         }
     }

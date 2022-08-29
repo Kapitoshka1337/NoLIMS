@@ -51,7 +51,9 @@ export default (state = defaultState, action) => {
         ...state,
         redirectTo: action.error ? null : '/',
         token: action.error ? null : action.payload.data.jwToken,
-        currentUser: action.error ? null : action.payload.data
+        currentUser: action.error ? null : action.payload.data,
+        roles: action.payload.data.roles,
+        appLoaded: true
       };
     case REGISTER:
       return {
