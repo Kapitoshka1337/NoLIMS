@@ -5,7 +5,7 @@ import { IconSave, IconSetting, IconUserGroup } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
-    EQUIPMENT_VIEW_PAGE_LOADED
+    
 } from '../../constants/actionTypes';
 
 import DepartmentAutocomplete from "../Department/autoComplete";
@@ -18,8 +18,7 @@ const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
 });
 const mapDispatchToProps = dispatch => ({
-    onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
+
   });
 
 class UserCard extends React.PureComponent {

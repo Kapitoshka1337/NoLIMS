@@ -7,7 +7,7 @@ import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
 import agent from '../../agent';
 import {
-    EQUIPMENT_VIEW_PAGE_LOADED
+    
 } from '../../constants/actionTypes';
 import ModalCreateManufacturer from './modalCreate'
 import ButtonOpenCard from '../common/buttonOpenCard'
@@ -18,8 +18,7 @@ const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
 });
 const mapDispatchToProps = dispatch => ({
-    onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
+
   });
 
 class ManufacturerView extends React.PureComponent {

@@ -5,7 +5,7 @@ import { IconSave } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
-    EQUIPMENT_VIEW_PAGE_LOADED
+    
 } from '../../constants/actionTypes';
 
 const mapStateToProps = state => ({
@@ -13,8 +13,7 @@ const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
 });
 const mapDispatchToProps = dispatch => ({
-    onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
+
   });
 
 class EquipmentTypeCard extends React.PureComponent {

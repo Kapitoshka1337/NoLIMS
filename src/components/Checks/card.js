@@ -7,7 +7,7 @@ import FileSaver from 'file-saver'
 import agent from '../../agent';
 import CardToolbar from './cardToolbar';
 import {
-    EQUIPMENT_VIEW_PAGE_LOADED
+    
 } from '../../constants/actionTypes';
 import AutoCompleteEquipment from "../Equipment/autoComplete";
 import AutoCompleteDocumentKind from "../DocumentKind/autoComplete";
@@ -16,8 +16,7 @@ const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
 });
 const mapDispatchToProps = dispatch => ({
-    onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
+
   });
 
 class CheckCard extends React.PureComponent {

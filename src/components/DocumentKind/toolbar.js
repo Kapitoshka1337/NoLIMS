@@ -4,15 +4,13 @@ import { Nav } from '@douyinfe/semi-ui'
 import { IconRefresh, IconPlus, IconFilter, IconCheckList, IconDelete } from '@douyinfe/semi-icons';
 import { useAbac } from 'react-abac'
 import {
-    EQUIPMENT_VIEW_PAGE_LOADED
+    
 } from '../../constants/actionTypes';
 const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
 });
 const mapDispatchToProps = dispatch => ({
-    onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
   });
 
   function Toolbar(props) {

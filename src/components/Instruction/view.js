@@ -6,7 +6,7 @@ import { history } from '../../store';
 
 import agent from '../../agent';
 import {
-  EQUIPMENT_VIEW_PAGE_LOADED
+  
 } from '../../constants/actionTypes';
 import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
@@ -21,8 +21,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload }),
+
     // onUnload: () =>
     //   dispatch({ type: ARTICLE_PAGE_UNLOADED })
   });

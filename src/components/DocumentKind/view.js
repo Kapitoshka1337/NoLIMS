@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Table, Toast } from '@douyinfe/semi-ui'
 import agent from '../../agent';
 import {
-    EQUIPMENT_VIEW_PAGE_LOADED
+    
 } from '../../constants/actionTypes';
 import ModalCreateManufacturer from './modalCreate'
 import { history } from '../../store';
@@ -17,8 +17,7 @@ const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
 });
 const mapDispatchToProps = dispatch => ({
-    onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
+
   });
 
 class DocumentKindView extends React.PureComponent {

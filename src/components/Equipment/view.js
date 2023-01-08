@@ -4,7 +4,7 @@ import { Table, Toast } from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
 import {
-  EQUIPMENT_VIEW_PAGE_LOADED
+  
 } from '../../constants/actionTypes';
 import ModalCreate from './modalCreate';
 import { history } from '../../store';
@@ -24,8 +24,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload }),
     // onUnload: () =>
     //   dispatch({ type: ARTICLE_PAGE_UNLOADED })
   });

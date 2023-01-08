@@ -4,7 +4,7 @@ import { Table, Toast } from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
 import {
-    EQUIPMENT_VIEW_PAGE_LOADED
+    
 } from '../../constants/actionTypes';
 import ModalCreateDepartment from './modalCreate'
 import Toolbar from './toolbar'
@@ -18,8 +18,7 @@ const mapStateToProps = state => ({
   currentUser: state.common.currentUser,
 });
 const mapDispatchToProps = dispatch => ({
-    onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
+
   });
 
 
