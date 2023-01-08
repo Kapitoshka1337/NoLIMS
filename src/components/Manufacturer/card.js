@@ -5,16 +5,29 @@ import { Form, Row, Col } from '@douyinfe/semi-ui'
 import agent from '../../agent';
 import CardToolbar from './cardToolbar';
 import {
-    
+    MANUFACTURER_CARD_LOADED,
+    MANUFACTURER_CARD_UNLOADED,
+    MANUFACTURER_CARD_CHANGED,
+    MANUFACTURER_CARD_INITFORM,
 } from '../../constants/actionTypes';
 
 const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
+  isLoad: state.Manufacturer.isLoad,
+  isChanged: state.Manufacturer.isChanged,
+  isInitForm: state.Manufacturer.isInitForm
 });
 const mapDispatchToProps = dispatch => ({
-
-  });
+    onLoad: payload =>
+      dispatch({ type: MANUFACTURER_CARD_LOADED, payload }),
+    onChange: payload =>
+      dispatch({ type: MANUFACTURER_CARD_CHANGED, payload }),
+    onUnload: payload =>  
+      dispatch({ type: MANUFACTURER_CARD_UNLOADED, payload }),
+    onInitForm: payload =>  
+      dispatch({ type: MANUFACTURER_CARD_INITFORM, payload }),
+});
 
 class ManufacturerCard extends React.PureComponent {
     
@@ -24,16 +37,17 @@ class ManufacturerCard extends React.PureComponent {
         this.state = {
             loading: true,
             dataSource: null,
-            formChanged: false,
-            initForm: false
         }
 
         this.handleSave = this.handleSave.bind(this);
         this.getFormApi = this.getFormApi.bind(this)
     }
 
-    componentDidUpdate(prevProps, prevState){
+    componentWillUnmount () {
+        this.props.onUnload({isLoad: false, isChanged: false, isInitForm: false})
+    }
 
+    componentDidUpdate(prevProps, prevState){
         if (this.state.dataSource)
             this.setState({loading: false})
     }
@@ -47,6 +61,7 @@ class ManufacturerCard extends React.PureComponent {
 
     async componentDidMount(){
         this.getData()
+        this.props.onLoad({isLoad: true, isChanged: false});
     }
 
     getFormApi(formApi) {
@@ -54,17 +69,14 @@ class ManufacturerCard extends React.PureComponent {
     }
 
     handleChangeForm(value) {
-        if (!this.state.initForm)
-        {
-            this.setState({...this.state, initForm: true})
-            return
-        }
+        // if (!this.props.isInitForm)
+        //     return
         
         let form = value.values;
 
         Object.keys(form).forEach(key => {
-            if (this.state.dataSource.data[key] == form[key])
-                this.setState({...this.state, formChanged: true})
+            if (this.state.dataSource.data[key] != form[key])
+                this.props.onChange({isChanged: true, chagnedObject: value})
 
             return
         })
@@ -77,7 +89,7 @@ class ManufacturerCard extends React.PureComponent {
             .then(async (values) =>  {
                 const data = await agent.ManufacturerService.update(values);
                 if (data.succeeded)
-                    this.setState({...this.state, formChanged: false})
+                    this.props.onChange({isChanged: false})
             })
             .catch((errors) => {
                 console.log(errors);
@@ -92,7 +104,7 @@ class ManufacturerCard extends React.PureComponent {
         
         return (
             <>
-                <CardToolbar header={this.state.dataSource.data.name} onSave={this.handleSave} formChanged={this.state.formChanged}/>
+                <CardToolbar header={this.state.dataSource.data.name} onSave={this.handleSave} formChanged={this.props.isChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Row>
                         <Col>

@@ -5,6 +5,7 @@ import common from './reducers/common';
 import Location from './reducers/location';
 import Equipment from './reducers/equipment';
 import Department from './reducers/department';
+import Manufacturer from './reducers/manufacturer';
 
 export default (history) => combineReducers({
   auth,
@@ -12,5 +13,6 @@ export default (history) => combineReducers({
   Location,
   Equipment,
   Department,
+  Manufacturer,
   router: connectRouter(history)
 });
