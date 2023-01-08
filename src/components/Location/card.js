@@ -15,9 +15,9 @@ import CardToolbar from './cardToolbar';
 const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
-  isLoad: state.LocationCard.isLoad,
-  isChanged: state.LocationCard.isChanged,
-  isInitForm: state.LocationCard.isInitForm
+  isLoad: state.Location.isLoad,
+  isChanged: state.Location.isChanged,
+  isInitForm: state.Location.isInitForm
 });
 const mapDispatchToProps = dispatch => ({
     onLoad: payload =>
@@ -38,8 +38,6 @@ class LocationCard extends React.PureComponent {
         this.state = {
             loading: true,
             dataSource: null,
-            formChanged: false,
-            initForm: false,
             departmentItem: {}
         }
 
@@ -74,21 +72,11 @@ class LocationCard extends React.PureComponent {
         this.formApi = formApi;
     }
 
-    isEmptyObject(obj) {
-        var name;
-        for (name in obj) {
-            if (obj.hasOwnProperty(name)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     handleChangeForm(value) {
         if (!this.props.isInitForm)
             return
         
-        this.props.onChange({isChanged: true, chagnedObject: value})
+        this.props.onChange({isChanged: true})
     }
 
     handleOk(value){

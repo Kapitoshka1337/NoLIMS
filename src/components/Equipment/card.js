@@ -4,7 +4,10 @@ import { Form, Row, Col } from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
 import {
-    
+    EQUIPMENT_CARD_LOADED,
+    EQUIPMENT_CARD_UNLOADED,
+    EQUIPMENT_CARD_CHANGED,
+    EQUIPMENT_CARD_INITFORM,
 } from '../../constants/actionTypes';
 
 import DepartmentAutocomplete from "../Department/autoComplete";
@@ -17,10 +20,20 @@ import CardToolbar from './cardToolbar';
 const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
+  isLoad: state.Equipment.isLoad,
+  isChanged: state.Equipment.isChanged,
+  isInitForm: state.Equipment.isInitForm
 });
 const mapDispatchToProps = dispatch => ({
-
-  });
+    onLoad: payload =>
+      dispatch({ type: EQUIPMENT_CARD_LOADED, payload }),
+    onChange: payload =>
+      dispatch({ type: EQUIPMENT_CARD_CHANGED, payload }),
+    onUnload: payload =>  
+      dispatch({ type: EQUIPMENT_CARD_UNLOADED, payload }),
+    onInitForm: payload =>  
+      dispatch({ type: EQUIPMENT_CARD_INITFORM, payload }),
+});
 
 class EquipmentCard extends React.PureComponent {
     
@@ -30,8 +43,6 @@ class EquipmentCard extends React.PureComponent {
         this.state = {
             loading: true,
             dataSource: null,
-            formChanged: false,
-            initForm: false,
             departmentItem: {},
             equipmentType: {},
             equipmentTag: {},
@@ -44,6 +55,10 @@ class EquipmentCard extends React.PureComponent {
         this.handleOkDepartment = this.handleOkDepartment.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.getFormApi = this.getFormApi.bind(this)
+    }
+
+    componentWillUnmount () {
+        this.props.onUnload({isLoad: false, isChanged: false, isInitForm: false})
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -61,6 +76,7 @@ class EquipmentCard extends React.PureComponent {
 
     async componentDidMount(){
         this.getData()
+        this.props.onLoad({isLoad: true, isChanged: false});
     }
 
     getFormApi(formApi) {
@@ -68,25 +84,18 @@ class EquipmentCard extends React.PureComponent {
     }
 
     handleChangeForm(value) {
-        if (!this.state.initForm)
+        if (!this.props.isInitForm)
             return
         
-        let form = value.values;
-
-        Object.keys(form).forEach(key => {
-            if (this.state.dataSource.data[key] == form[key])
-                this.setState({...this.state, formChanged: true})
-
-            return
-        })
+        this.props.onChange({isChanged: true})
     }
 
     handleOkDepartment(value){
         this.formApi.setValue('departmentName', value.name)
         this.setState({...this.state, departmentItem: value})
 
-        if (!this.state.initForm)
-            this.setState({...this.state, initForm: true})
+        if (!this.props.isInitForm)
+            this.props.onInitForm({isInitForm: true})
     }
 
     handleOkEquipmentType = value => {
@@ -133,7 +142,7 @@ class EquipmentCard extends React.PureComponent {
             .then(async (values) =>  {
                 const data = await agent.EquipmentService.update(values);
                 if (data.succeeded)
-                    this.setState({...this.state, formChanged: false})
+                    this.props.onChange({isChanged: false})
             })
             .catch((errors) => {
                 console.log(errors);
@@ -156,7 +165,7 @@ class EquipmentCard extends React.PureComponent {
         
         return (
             <>
-                <CardToolbar header={this.state.dataSource.data.name} onSave={this.handleSave} formChanged={this.state.formChanged}/>
+                <CardToolbar header={this.state.dataSource.data.name} onSave={this.handleSave} formChanged={this.props.isChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <EquipmentTypeAutocomplete id={this.state.dataSource.data.typeId} onOk={this.handleOkEquipmentType} rules={[{ required: true, message }]}/>
                     <Form.Input field='number' label="Регистрационный номер" trigger='blur'/>
