@@ -71,7 +71,7 @@ namespace WebApi.Controllers.v1
 
         [HttpGet("delete/{id}")]
         [Authorize(Policy = PolicyTypes.User.Delete)]
-        public async Task<IActionResult> Delete(DeleteUser query)
+        public async Task<IActionResult> Delete([FromRoute] DeleteUser query)
         {
             return Ok(await Mediator.Send(query));
         }

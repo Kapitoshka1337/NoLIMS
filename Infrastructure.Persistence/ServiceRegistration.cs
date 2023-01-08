@@ -37,6 +37,7 @@ namespace Infrastructure.Persistence
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
             services.AddTransient<IEquipmentRepositoryAsync, EquipmentRepositoryAsync>();
             services.AddTransient<IVerificationRepositoryAsync, VerificationRepositoryAsync>();
+            services.AddTransient<IVerificationStatusRepository, VerificationStatusRepository> ();
             services.AddTransient<ICheckRepository, CheckRepository>();
             services.AddTransient<IMovingRepository, MovingRepository>();
             services.AddTransient<IDocumentKindRepository, DocumentKindRepository>();

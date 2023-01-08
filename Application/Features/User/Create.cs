@@ -2,6 +2,7 @@
 using Application.Wrappers;
 using AutoMapper;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,8 +39,21 @@ namespace Application.Features.User
 
         public async Task<Response<string>> Handle(Create request, CancellationToken cancellationToken)
         {
-            var registerRequest = _mapper.Map<DTOs.Account.RegisterRequest>(request);
-            var response = await _account.RegisterAsync(registerRequest);
+            var response = new Response<string>();
+
+            try
+            {
+                var registerRequest = _mapper.Map<DTOs.Account.RegisterRequest>(request);
+                response = await _account.RegisterAsync(registerRequest);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Data = "Ошибка во время созданяи пользователя.";
+                return response;
+            }
 
             return response;
         }
