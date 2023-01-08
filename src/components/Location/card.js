@@ -4,7 +4,10 @@ import { Form, Row, Col} from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
 import {
-    EQUIPMENT_VIEW_PAGE_LOADED
+    LOCATION_CARD_LOADED,
+    LOCATION_CARD_UNLOADED,
+    LOCATION_CARD_CHANGED,
+    LOCATION_CARD_INITFORM,
 } from '../../constants/actionTypes';
 import AutoCompleteDepartment from '../Department/autoComplete';
 import CardToolbar from './cardToolbar';
@@ -12,10 +15,19 @@ import CardToolbar from './cardToolbar';
 const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
+  isLoad: state.LocationCard.isLoad,
+  isChanged: state.LocationCard.isChanged,
+  isInitForm: state.LocationCard.isInitForm
 });
 const mapDispatchToProps = dispatch => ({
     onLoad: payload =>
-      dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload })
+      dispatch({ type: LOCATION_CARD_LOADED, payload }),
+    onChange: payload =>
+      dispatch({ type: LOCATION_CARD_CHANGED, payload }),
+    onUnload: payload =>  
+      dispatch({ type: LOCATION_CARD_UNLOADED, payload }),
+    onInitForm: payload =>  
+      dispatch({ type: LOCATION_CARD_INITFORM, payload }),
 });
 
 class LocationCard extends React.PureComponent {
@@ -36,6 +48,10 @@ class LocationCard extends React.PureComponent {
         this.getFormApi = this.getFormApi.bind(this)
     }
 
+    componentWillUnmount () {
+        this.props.onUnload({isLoad: false, isChanged: false, isInitForm: false})
+    }
+
     componentDidUpdate(prevProps, prevState){
 
         if (this.state.dataSource)
@@ -51,32 +67,36 @@ class LocationCard extends React.PureComponent {
 
     async componentDidMount(){
         this.getData()
+        this.props.onLoad({isLoad: true, isChanged: false});
     }
 
     getFormApi(formApi) {
         this.formApi = formApi;
     }
 
+    isEmptyObject(obj) {
+        var name;
+        for (name in obj) {
+            if (obj.hasOwnProperty(name)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     handleChangeForm(value) {
-        if (!this.state.initForm)
+        if (!this.props.isInitForm)
             return
         
-        let form = value.values;
-
-        Object.keys(form).forEach(key => {
-            if (this.state.dataSource.data[key] != form[key])
-                this.setState({...this.state, formChanged: true})
-
-            return
-        })
+        this.props.onChange({isChanged: true, chagnedObject: value})
     }
 
     handleOk(value){
         this.formApi.setValue('departmentName', value.name)
         this.setState({...this.state, departmentItem: value})
 
-        if (!this.state.initForm)
-            this.setState({...this.state, initForm: true})
+        if (!this.props.isInitForm)
+            this.props.onInitForm({isInitForm: true})
     }
 
     handleSave = () => {
@@ -87,7 +107,7 @@ class LocationCard extends React.PureComponent {
             .then(async (values) =>  {
                 const data = await agent.LocationService.update(values);
                 if (data.succeeded)
-                    this.setState({...this.state, formChanged: false})
+                    this.props.onChange({isChanged: false})
             })
             .catch((errors) => {
                 console.log(errors);
@@ -102,7 +122,7 @@ class LocationCard extends React.PureComponent {
         
         return (
             <>
-                <CardToolbar header={this.state.dataSource.data.NumberRoom} onSave={this.handleSave} formChanged={this.state.formChanged}/>
+                <CardToolbar header={this.state.dataSource.data.numberRoom} onSave={this.handleSave} formChanged={this.props.isChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Form.Input field='numberRoom' label="Номер" trigger='blur'/>
                     <AutoCompleteDepartment id={this.state.dataSource.data.departmentId} onOk={this.handleOk}/>
