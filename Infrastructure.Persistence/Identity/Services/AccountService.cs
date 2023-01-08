@@ -56,42 +56,44 @@ namespace Infrastructure.Identity.Services
         public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress, IMediator mediator)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
+            var response = new Response<AuthenticationResponse>();
 
             if (user == null)
             {
-                throw new ApiException($"Пользователя с учетной запиьсю '{request.UserName}' не существует.");
+                response.Message = $"Пользователя с учетной запиьсю '{request.UserName}' не существует.";
+                response.Succeeded = true;
+                return response;
             }
             
             var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
             
             if (!result.Succeeded)
             {
-                throw new ApiException($"Не верный логин или пароль.");
+                response.Message = $"Не верный логин или пароль.";
+                response.Succeeded = true;
+                return response;
             }
-            
-            JwtSecurityToken jwtSecurityToken = await GenerateJWToken(user);
-            AuthenticationResponse response = new AuthenticationResponse();
 
-            response.Id = user.Id;
-            response.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-            response.UserName = user.UserName;
+            JwtSecurityToken jwtSecurityToken = await GenerateJWToken(user);
+            response.Data = new AuthenticationResponse();
+            response.Data.Id = user.Id;
+            response.Data.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            response.Data.UserName = user.UserName;
             
             var query = new QueryInfo() { Id = user.Id.ToString() };
             var roleList = await mediator.Send(new GetRoles());
             var permissionsList = await mediator.Send(query);
 
-            //var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
-            //var claims = await _userService.GetPermission(user.Id);
-
-            response.Roles = roleList.Data;
-            response.Permissions = permissionsList.Data.Permissions;
-            response.Claims = permissionsList.Data.Claims;
+            response.Data.Roles = roleList.Data;
+            response.Data.Permissions = permissionsList.Data.Permissions;
+            response.Data.Claims = permissionsList.Data.Claims;
             
             var refreshToken = GenerateRefreshToken(ipAddress);
-            
-            response.RefreshToken = refreshToken.Token;
-            
-            return new Response<AuthenticationResponse>(response, $"Пользователь с учетной записью '{user.UserName}' авторизован.");
+
+            response.Data.RefreshToken = refreshToken.Token;
+            response.Succeeded = true;
+
+            return response;
         }
 
         public async Task<Response<string>> RegisterAsync(RegisterRequest request)
