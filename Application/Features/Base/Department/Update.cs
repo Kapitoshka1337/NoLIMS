@@ -13,6 +13,7 @@ namespace Application.Features.Base.Department
         public int Id { get; set; }
         public string Name { get; set; }
         public string Number { get; set; }
+        public int HeadDepartmentId { get; set; }
     }
 
     public class UpdateDepartmentHandler : IRequestHandler<UpdateDepartment, Response<bool>>
@@ -34,6 +35,7 @@ namespace Application.Features.Base.Department
 
             role.Name = command.Name;
             role.Number = command.Number;
+            role.HeadDepartmentId = command.HeadDepartmentId;
 
             await _roleRepository.UpdateAsync(role);
 

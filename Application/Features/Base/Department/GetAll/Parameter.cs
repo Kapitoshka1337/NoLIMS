@@ -6,5 +6,6 @@ namespace Application.Features.Base.Department.GetAll
     {
         public string Name { get; set; }
         public string Number { get; set; }
+        public int? HeadDepartmentId { get; set; }
     }
 }

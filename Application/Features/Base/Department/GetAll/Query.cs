@@ -16,6 +16,7 @@ namespace Application.Features.Base.Department.GetAll
         public string SortBy { get; set; }
         public string Name { get; set; }
         public string Number { get; set; }
+        public int? HeadDepartmentId { get; set; }
     }
 
     public class QueryHandler : IRequestHandler<Query, PagedResponse<IEnumerable<ViewModel>>>

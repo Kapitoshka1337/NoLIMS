@@ -11,6 +11,7 @@ namespace Application.Features.Base.Department
     {
         public string Name { get; set; }
         public string Number { get; set; }
+        public int HeadDepartmentId { get; set; }
     }
 
     public class DepartmentInputHandler : IRequestHandler<DepartmentInput, Response<int>>
