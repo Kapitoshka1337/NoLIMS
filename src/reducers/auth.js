@@ -3,8 +3,7 @@ import {
   REGISTER,
   LOGIN_PAGE_UNLOADED,
   REGISTER_PAGE_UNLOADED,
-  ASYNC_START,
-  UPDATE_FIELD_AUTH
+  ASYNC_START
 } from '../constants/actionTypes';
 
 export default (state = {}, action) => {
@@ -19,13 +18,6 @@ export default (state = {}, action) => {
     case LOGIN_PAGE_UNLOADED:
     case REGISTER_PAGE_UNLOADED:
       return {};
-    case ASYNC_START:
-      if (action.subtype === LOGIN || action.subtype === REGISTER) {
-        return { ...state, inProgress: true };
-      }
-      break;
-    case UPDATE_FIELD_AUTH:
-      return { ...state, [action.key]: action.value };
     default:
       return state;
   }

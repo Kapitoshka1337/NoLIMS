@@ -2,7 +2,6 @@ import React from 'react'
 import agent from '../agent'
 import { connect } from 'react-redux'
 import {
-  UPDATE_FIELD_AUTH,
   LOGIN,
   LOGIN_PAGE_UNLOADED
 } from '../constants/actionTypes'
@@ -12,10 +11,6 @@ import { Layout, Button, Form, Toast, Card, Col, Row, Banner } from '@douyinfe/s
 const mapStateToProps = state => state.auth
 
 const mapDispatchToProps = dispatch => ({
-  onChangeEmail: value =>
-    dispatch({ type: UPDATE_FIELD_AUTH, key: 'email', value }),
-  onChangePassword: value =>
-    dispatch({ type: UPDATE_FIELD_AUTH, key: 'password', value }),
   onSubmit: (payload) =>
     dispatch({ type: LOGIN, payload: payload }),
   onUnload: () =>

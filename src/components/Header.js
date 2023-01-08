@@ -2,7 +2,7 @@ import React from 'react';
 
 import agent from '../agent'
 import { connect } from 'react-redux'
-import { SETTINGS_SAVED, SETTINGS_PAGE_UNLOADED, LOGOUT } from '../constants/actionTypes'
+import { LOGOUT } from '../constants/actionTypes'
 
 import { Layout, Nav, Avatar, Dropdown, Toast, Modal, Button} from '@douyinfe/semi-ui';
 
@@ -13,9 +13,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onClickLogout: () => dispatch({ type: LOGOUT }),
-  onSubmitForm: user =>
-    dispatch({ type: SETTINGS_SAVED, payload: agent.Auth.save(user) }),
-  onUnload: () => dispatch({ type: SETTINGS_PAGE_UNLOADED })
 })
 
 class Header extends React.PureComponent {
