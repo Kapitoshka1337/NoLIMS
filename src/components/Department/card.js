@@ -4,6 +4,7 @@ import { Form, Row, Col } from '@douyinfe/semi-ui'
 
 import agent from '../../agent';
 import CardToolbar from './cardToolbar';
+import AutoCompleteDepartment from "./autoComplete";
 import {
     EQUIPMENT_VIEW_PAGE_LOADED
 } from '../../constants/actionTypes';
@@ -26,7 +27,8 @@ class DepartmentCard extends React.PureComponent {
             loading: true,
             dataSource: null,
             formChanged: false,
-            initForm: false
+            initForm: false,
+            headUnit: {}
         }
 
         this.handleOk = this.handleOk.bind(this);
@@ -73,12 +75,16 @@ class DepartmentCard extends React.PureComponent {
     }
 
     handleOk(value){
-        
+        this.formApi.setValue('departmentName', value.name)
+        this.setState({...this.state, headUnit: value})
+
+        if (!this.state.initForm)
+            this.setState({...this.state, initForm: true})
     }
 
     handleSave = () => {
         this.formApi.setValue('id', this.props.match.params.id)
-
+        this.formApi.setValue('headDepartmentId', this.state.headUnit.id)
         this.formApi.validate()
             .then(async (values) =>  {
                 const data = await agent.DepartmentService.update(values);
@@ -104,6 +110,7 @@ class DepartmentCard extends React.PureComponent {
                         <Col>
                             <Form.Input field='name' label="Наименование" trigger='blur' rules={[{ required: true, message },]}/>
                             <Form.Input field='number' label="Номер" trigger='blur'/>
+                            <AutoCompleteDepartment id={this.state.dataSource.data.headDepartmentId} onOk={this.handleOk} title="Головное подразделение"/>
                         </Col>
                     </Row>
                 </Form>

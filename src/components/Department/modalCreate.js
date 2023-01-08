@@ -2,6 +2,7 @@ import React from "react"
 import { connect } from 'react-redux'
 import { Modal, Form, Row, Col } from '@douyinfe/semi-ui';
 import agent from "../../agent";
+import AutoCompleteDepartment from "./autoComplete";
 
 const mapStateToProps = state => state.auth
 
@@ -23,6 +24,10 @@ class ModalCreateDepartment extends React.PureComponent {
         this.handleOk = this.handleOk.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.getFormApi = this.getFormApi.bind(this)
+
+        this.state = {
+            headUnit: {}
+        }
     }
 
     getFormApi(formApi) {
@@ -30,6 +35,7 @@ class ModalCreateDepartment extends React.PureComponent {
     }
 
     handleOk() {
+        this.formApi.setValue('headDepartmentId', this.state.headUnit.id)
         this.formApi.validate()
         .then((values) => {
             let result = agent.DepartmentService.add(values);
@@ -48,6 +54,11 @@ class ModalCreateDepartment extends React.PureComponent {
         this.props.onClose(false)
     }
 
+    handleOkAutoComplete = (value) => {
+        this.formApi.setValue('departmentName', value.name)
+        this.setState({headUnit: value})
+    }
+
     render(){
         let message = 'Поле обязательное для заполнения';
         if (!this.props.show) return null;
@@ -62,6 +73,7 @@ class ModalCreateDepartment extends React.PureComponent {
                             </Col>
                             <Col>
                                 <Form.Input field='number' label="Номер" trigger='blur'/>
+                                <AutoCompleteDepartment onOk={this.handleOkAutoComplete} title="Головное подразделение"/>
                             </Col>
                         </Row>
                     </Form>
