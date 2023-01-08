@@ -44,6 +44,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int?>("BusinessUnitId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("HeadDepartmentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -53,6 +56,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessUnitId");
+
+                    b.HasIndex("HeadDepartmentId");
 
                     b.ToTable("Departments");
                 });
@@ -627,7 +632,13 @@ namespace Infrastructure.Persistence.Migrations
                         .WithMany("Departments")
                         .HasForeignKey("BusinessUnitId");
 
+                    b.HasOne("Domain.Entities.Base.Department", "HeadDepartment")
+                        .WithMany()
+                        .HasForeignKey("HeadDepartmentId");
+
                     b.Navigation("BusinessUnit");
+
+                    b.Navigation("HeadDepartment");
                 });
 
             modelBuilder.Entity("Domain.Entities.Base.Location", b =>
