@@ -7,5 +7,7 @@ namespace Domain.Entities.Base
         public string Name { get; set; }
         public string Number { get; set; }
         public BusinessUnit BusinessUnit { get; set; }
+        public Department HeadDepartment { get; set; }
+        public int? HeadDepartmentId { get; set; }
     }
 }
