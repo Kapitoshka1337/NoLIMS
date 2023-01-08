@@ -10,7 +10,6 @@ using Domain.Entities.User;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Persistence.Contexts;
 using Domain.Entities.Role;
-using Infrastructure.Persistence.Repositories;
 using Application.Interfaces.Repositories.Equipment;
 
 namespace WebApi
@@ -34,11 +33,15 @@ namespace WebApi
                     var roleManager = services.GetRequiredService<RoleManager<Role>>();
                     var db = services.GetRequiredService<ApplicationDbContext>();
                     var tags = services.GetRequiredService<ITagsRepository>();
+                    var verificationsStatus = services.GetRequiredService<IVerificationStatusRepository>();
+                    var types = services.GetRequiredService<ITypeRepository>();
 
                     await Infrastructure.Persistence.Seeds.DefaultTags.SeedAsync(tags);
+                    await Infrastructure.Persistence.Seeds.VerificationStatus.SeedAsync(verificationsStatus);
+                    await Infrastructure.Persistence.Seeds.DefaultTypes.SeedAsync(types);
                     await Infrastructure.Identity.Seeds.DefaultRoles.SeedAsync(userManager, roleManager, db);
                     await Infrastructure.Identity.Seeds.DefaultUser.SeedAsync(userManager, roleManager);
-            
+
                     Log.Information("Finished Seeding Default Data");
                     Log.Information("Application Starting");
                 }
@@ -59,7 +62,7 @@ namespace WebApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    //webBuilder.UseUrls("http://0.0.0.0:9001");
+                    // webBuilder.UseUrls("http://0.0.0.0:9001");
                 });
     }
 }
