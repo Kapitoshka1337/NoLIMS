@@ -242,7 +242,9 @@ class VerificationsView extends React.PureComponent {
     }
 
     onOkPassed = () => {
-        this.getData()
+        setTimeout(() => {
+            this.getData()
+        }, 1000)
     }
     
     handleShowColumns = (value) => {

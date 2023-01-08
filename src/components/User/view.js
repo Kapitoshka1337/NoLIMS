@@ -165,7 +165,10 @@ class UsersView extends React.PureComponent {
         const result = await agent.UsersService.delete(this.state.selectedRow[0]['id'])
 
         if (result)
+        {
             Toast.info('Запись удалена')
+            this.getData()
+        }
     }
 
     render() {

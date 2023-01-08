@@ -146,10 +146,10 @@ class ModalCreateEquipment extends React.PureComponent {
                                 <ModalAutoCompelteDepartment onOk={this.selectDepartment} rules={[{ required: true, message }]}/>
                             </Col>
                             <Col>
-                                <ModalAutoCompelteLocation onOk={this.selectLocation}/>
+                                <ModalAutoCompelteLocation onOk={this.selectLocation} rules={[{ required: true, message },]}/>
                             </Col>
                             <Col>
-                                <ModalAutoCompelteTag onOk={this.selectTag}/>
+                                <ModalAutoCompelteTag onOk={this.selectTag} rules={[{ required: true, message },]}/>
                             </Col>
                             <Col >
                                 <Form.Input field='characteristics' label="Характеристики (ВО/ИО/СИ)" trigger='blur'/>
@@ -170,7 +170,7 @@ class ModalCreateEquipment extends React.PureComponent {
                                 <Form.Input field='fifNumber' label="ФИФ (СИ)" disabled={this.state.equipmentType.id != 3} trigger='blur'/>
                             </Col>
                             <Col>
-                                <ModalAutoCompelteManufacturer onOk={this.selectManufacturer}/>
+                                <ModalAutoCompelteManufacturer onOk={this.selectManufacturer} rules={[{ required: true, message },]}/>
                             </Col>
                         </Row>
                     </Form>

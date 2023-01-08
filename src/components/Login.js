@@ -7,7 +7,7 @@ import {
   LOGIN_PAGE_UNLOADED
 } from '../constants/actionTypes'
 
-import { Layout, Button, Form, Toast, Card, Col, Row } from '@douyinfe/semi-ui';
+import { Layout, Button, Form, Toast, Card, Col, Row, Banner } from '@douyinfe/semi-ui';
 
 const mapStateToProps = state => state.auth
 
@@ -16,8 +16,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: UPDATE_FIELD_AUTH, key: 'email', value }),
   onChangePassword: value =>
     dispatch({ type: UPDATE_FIELD_AUTH, key: 'password', value }),
-  onSubmit: (login, password) =>
-    dispatch({ type: LOGIN, payload: agent.Auth.login(login, password) }),
+  onSubmit: (payload) =>
+    dispatch({ type: LOGIN, payload: payload }),
   onUnload: () =>
     dispatch({ type: LOGIN_PAGE_UNLOADED })
 })
@@ -25,10 +25,13 @@ const mapDispatchToProps = dispatch => ({
 class Login extends React.PureComponent {
   constructor () {
     super()
-    // this.changeEmail = ev => this.props.onChangeEmail(ev.target.value)
-    // this.changePassword = ev => this.props.onChangePassword(ev.target.value)
-    this.submitForm = (login, password) => {
-      this.props.onSubmit(login, password)
+    this.submitForm = (payload) => {
+      this.props.onSubmit(payload)
+    }
+
+    this.state = {
+      error: false,
+      errorMessage: ''
     }
   }
 
@@ -37,22 +40,27 @@ class Login extends React.PureComponent {
   }
 
   async handleSubmit(values){
-    // let data = await agent.Auth.login(values.login, values.password);
-    this.submitForm(values.login, values.password);
+    let response = await agent.Auth.login(values.login, values.password);
+    if (response)
+    {
+      if (!response['succeeded'])
+        this.setState({error: response['succeeded'], errorMessage: response['message']});
+      else
+        this.submitForm(response);
+    }
   }
 
   render () {
-    const login = this.props.login
-    const password = this.props.password
+    const banner = (<Banner closeIcon={null} type="danger" description={this.state.errorMessage}/>);
     const { Content } = Layout;
-
     return (
 
       <Layout style={{height: '100%'}}>
         <Content style={{ padding: '24px', backgroundColor: 'var(--semi-color-bg-0)'}}>
             <Row>
-              <Col span={12} offset={6}>
+              <Col span={6} offset={9}>
                 <Card  title='Авторизация'>
+                  {this.state.error ? banner : null}
                   <Form onSubmit={values => this.handleSubmit(values)}>
                     <Form.Input field='login' label='Логин' style={{ width: '100%' }} required></Form.Input>
                     <Form.Input type='password' field='password' label='Пароль' style={{ width: '100%' }} required></Form.Input>
