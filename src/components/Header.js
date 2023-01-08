@@ -65,7 +65,7 @@ class Header extends React.PureComponent {
         >
           ФИО: {this.props.currentUser?.userName}
           <br />
-          Роли: {this.props.currentUser?.roles.map((role) => {return `${role} `})}
+          Роли: {this.props.currentUser?.roles.map((role) => {return `${role.role || role} `})}
         </Modal>
       </Header>
     );
