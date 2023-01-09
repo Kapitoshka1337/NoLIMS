@@ -57,6 +57,10 @@ class ManufacturerCard extends React.PureComponent {
         const data = await agent.ManufacturerService.get(this.props.match.params.id)
         this.setState({...this.state, dataSource: data, loading: false})
         this.formApi.setValues(data.data)
+
+        if (data)
+            if (!this.props.isInitForm)
+                this.props.onInitForm({isInitForm: true})
     }
 
     async componentDidMount(){
@@ -69,17 +73,10 @@ class ManufacturerCard extends React.PureComponent {
     }
 
     handleChangeForm(value) {
-        // if (!this.props.isInitForm)
-        //     return
-        
-        let form = value.values;
-
-        Object.keys(form).forEach(key => {
-            if (this.state.dataSource.data[key] != form[key])
-                this.props.onChange({isChanged: true, chagnedObject: value})
-
+        if (!this.props.isInitForm)
             return
-        })
+
+        this.props.onChange({isChanged: true, chagnedObject: value})
     }
 
     handleSave = () => {

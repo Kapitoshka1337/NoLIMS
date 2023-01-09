@@ -5,7 +5,10 @@ import { IconSave, IconSetting, IconUserGroup } from '@douyinfe/semi-icons';
 
 import agent from '../../agent';
 import {
-    
+    USER_CARD_LOADED,
+    USER_CARD_UNLOADED,
+    USER_CARD_CHANGED,
+    USER_CARD_INITFORM,
 } from '../../constants/actionTypes';
 
 import DepartmentAutocomplete from "../Department/autoComplete";
@@ -16,10 +19,20 @@ import CardToolbar from "./cardToolbar";
 const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
+  isLoad: state.User.isLoad,
+  isChanged: state.User.isChanged,
+  isInitForm: state.User.isInitForm
 });
 const mapDispatchToProps = dispatch => ({
-
-  });
+    onLoad: payload =>
+      dispatch({ type: USER_CARD_LOADED, payload }),
+    onChange: payload =>
+      dispatch({ type: USER_CARD_CHANGED, payload }),
+    onUnload: payload =>  
+      dispatch({ type: USER_CARD_UNLOADED, payload }),
+    onInitForm: payload =>  
+      dispatch({ type: USER_CARD_INITFORM, payload }),
+});
 
 class UserCard extends React.PureComponent {
     
@@ -29,8 +42,6 @@ class UserCard extends React.PureComponent {
         this.state = {
             loading: true,
             dataSource: null,
-            formChanged: false,
-            initForm: false,
             departmentItem: {},
             showChangePassword: false,
             showRoles: false
@@ -39,6 +50,10 @@ class UserCard extends React.PureComponent {
         this.handleOk = this.handleOk.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.getFormApi = this.getFormApi.bind(this)
+    }
+
+    componentWillUnmount () {
+        this.props.onUnload({isLoad: false, isChanged: false, isInitForm: false})
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -56,6 +71,7 @@ class UserCard extends React.PureComponent {
 
     async componentDidMount(){
         this.getData()
+        this.props.onLoad({isLoad: true, isChanged: false});
     }
 
     getFormApi(formApi) {
@@ -63,25 +79,18 @@ class UserCard extends React.PureComponent {
     }
 
     handleChangeForm(value) {
-        if (!this.state.initForm)
+        if (!this.props.isInitForm)
             return
         
-        let form = value.values;
-
-        Object.keys(form).forEach(key => {
-            if (this.state.dataSource.data[key] == form[key])
-                this.setState({...this.state, formChanged: true})
-
-            return
-        })
+        this.props.onChange({isChanged: true})
     }
 
     handleOk(value){
         this.formApi.setValue('departmentName', value.name)
         this.setState({...this.state, departmentItem: value})
 
-        if (!this.state.initForm)
-            this.setState({...this.state, initForm: true})
+        if (!this.props.isInitForm)
+            this.props.onInitForm({isInitForm: true})
     }
 
     handleSave= () => {
@@ -91,8 +100,7 @@ class UserCard extends React.PureComponent {
         this.formApi.validate()
             .then(async (values) =>  {
                 const data = await agent.UsersService.update(values);
-                if (data.succeeded)
-                    this.setState({...this.state, formChanged: false})
+                if (data.succeeded) this.props.onChange({isChanged: false})
             })
             .catch((errors) => {
                 console.log(errors);
@@ -115,7 +123,7 @@ class UserCard extends React.PureComponent {
         
         return (
             <>
-                <CardToolbar header={this.state.dataSource.data.firstName} formChanged={this.state.formChanged} onChangePassword={this.handleChangePassword} onSave={this.handleSave} onRoles={this.handleRoles}/>
+                <CardToolbar header={this.state.dataSource.data.firstName} formChanged={this.props.isChanged} onChangePassword={this.handleChangePassword} onSave={this.handleSave} onRoles={this.handleRoles}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Row>
                         <Col>

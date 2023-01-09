@@ -7,17 +7,28 @@ import FileSaver from 'file-saver'
 import agent from '../../agent';
 import CardToolbar from './cardToolbar';
 import {
-    
+    INSTRUCTION_CARD_LOADED,
+    INSTRUCTION_CARD_UNLOADED,
+    INSTRUCTION_CARD_CHANGED,
+    INSTRUCTION_CARD_INITFORM,
 } from '../../constants/actionTypes';
-import AutoCompleteEquipment from "../Equipment/autoComplete";
-import AutoCompleteDocumentKind from "../DocumentKind/autoComplete";
 const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
+  isLoad: state.Instruction.isLoad,
+  isChanged: state.Instruction.isChanged,
+  isInitForm: state.Instruction.isInitForm
 });
 const mapDispatchToProps = dispatch => ({
-
-  });
+    onLoad: payload =>
+      dispatch({ type: INSTRUCTION_CARD_LOADED, payload }),
+    onChange: payload =>
+      dispatch({ type: INSTRUCTION_CARD_CHANGED, payload }),
+    onUnload: payload =>  
+      dispatch({ type: INSTRUCTION_CARD_UNLOADED, payload }),
+    onInitForm: payload =>  
+      dispatch({ type: INSTRUCTION_CARD_INITFORM, payload }),
+});
 
 class InstructionCard extends React.PureComponent {
     
@@ -28,14 +39,16 @@ class InstructionCard extends React.PureComponent {
             loading: true,
             dataSource: null,
             fileList: [],
-            formChanged: false,
-            initForm: false,
             equipmentItem: {},
             documentKindItem: {}
         }
 
         this.handleSave = this.handleSave.bind(this);
         this.getFormApi = this.getFormApi.bind(this)
+    }
+
+    componentWillUnmount () {
+        this.props.onUnload({isLoad: false, isChanged: false, isInitForm: false})
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -49,6 +62,10 @@ class InstructionCard extends React.PureComponent {
         const data = await agent.InstructionService.get(this.props.match.params.id)
         this.setState({...this.state, dataSource: data, loading: false})
         this.formApi.setValues(data.data)
+
+        if (data)
+            if (!this.props.isInitForm)
+                this.props.onInitForm({isInitForm: true})
     }
 
     async getDataFile(fileId = null){
@@ -62,6 +79,7 @@ class InstructionCard extends React.PureComponent {
     async componentDidMount(){
         await this.getData()
         this.getDataFile(this.state.dataSource.data.fileId)
+        this.props.onLoad({isLoad: true, isChanged: false, isInitForm: true});
     }
 
     getFormApi(formApi) {
@@ -69,20 +87,10 @@ class InstructionCard extends React.PureComponent {
     }
 
     handleChangeForm(value) {
-        if (!this.state.initForm)
-        {
-            this.setState({...this.state, initForm: true})
+        if (!this.props.isInitForm)
             return
-        }
         
-        let form = value.values;
-
-        Object.keys(form).forEach(key => {
-            if (this.state.dataSource.data[key] == form[key])
-                this.setState({...this.state, formChanged: true})
-
-            return
-        })
+        this.props.onChange({isChanged: true})
     }
 
     handleSave = () => {
@@ -96,7 +104,10 @@ class InstructionCard extends React.PureComponent {
         .then(async (values) =>  {
             const data = await agent.InstructionService.update(values);
             if (data.succeeded)
-                this.setState({...this.state, formChanged: false, dataSource: data})
+            {
+                this.props.onChange({isChanged: false})
+                this.setState({...this.state, dataSource: data})
+            }
         })
         .catch((errors) => {
             console.log(errors);
@@ -143,7 +154,7 @@ class InstructionCard extends React.PureComponent {
 
         return (
             <>
-                <CardToolbar header={this.state.dataSource.data.name} onSave={this.handleSave} formChanged={this.state.formChanged}/>
+                <CardToolbar header={this.state.dataSource.data.name} onSave={this.handleSave} formChanged={this.props.isChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Form.Input field='name' label="Наименование" trigger='blur'/>
                     <Form.Input field='number' label="Номер" trigger='blur'/>

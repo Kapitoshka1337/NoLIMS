@@ -7,17 +7,30 @@ import FileSaver from 'file-saver'
 import agent from '../../agent';
 import CardToolbar from './cardToolbar';
 import {
-    
+    CHECKS_CARD_LOADED,
+    CHECKS_CARD_UNLOADED,
+    CHECKS_CARD_CHANGED,
+    CHECKS_CARD_INITFORM,
 } from '../../constants/actionTypes';
 import AutoCompleteEquipment from "../Equipment/autoComplete";
 import AutoCompleteDocumentKind from "../DocumentKind/autoComplete";
 const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
+  isLoad: state.Checks.isLoad,
+  isChanged: state.Checks.isChanged,
+  isInitForm: state.Checks.isInitForm
 });
 const mapDispatchToProps = dispatch => ({
-
-  });
+    onLoad: payload =>
+      dispatch({ type: CHECKS_CARD_LOADED, payload }),
+    onChange: payload =>
+      dispatch({ type: CHECKS_CARD_CHANGED, payload }),
+    onUnload: payload =>  
+      dispatch({ type: CHECKS_CARD_UNLOADED, payload }),
+    onInitForm: payload =>  
+      dispatch({ type: CHECKS_CARD_INITFORM, payload }),
+});
 
 class CheckCard extends React.PureComponent {
     
@@ -28,14 +41,16 @@ class CheckCard extends React.PureComponent {
             loading: true,
             dataSource: null,
             fileList: [],
-            formChanged: false,
-            initForm: false,
             equipmentItem: {},
             documentKindItem: {}
         }
 
         this.handleSave = this.handleSave.bind(this);
         this.getFormApi = this.getFormApi.bind(this)
+    }
+
+    componentWillUnmount () {
+        this.props.onUnload({isLoad: false, isChanged: false, isInitForm: false})
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -62,6 +77,7 @@ class CheckCard extends React.PureComponent {
     async componentDidMount(){
         await this.getData()
         this.getDataFile(this.state.dataSource.data.fileId)
+        this.props.onLoad({isLoad: true, isChanged: false});
     }
 
     getFormApi(formApi) {
@@ -69,20 +85,10 @@ class CheckCard extends React.PureComponent {
     }
 
     handleChangeForm(value) {
-        if (!this.state.initForm)
-        {
-            this.setState({...this.state, initForm: true})
+        if (!this.props.isInitForm)
             return
-        }
-        
-        let form = value.values;
 
-        Object.keys(form).forEach(key => {
-            if (this.state.dataSource.data[key] == form[key])
-                this.setState({...this.state, formChanged: true})
-
-            return
-        })
+        this.props.onChange({isChanged: true, chagnedObject: value})
     }
 
     handleSave = () => {
@@ -110,7 +116,10 @@ class CheckCard extends React.PureComponent {
         .then(async (values) =>  {
             const data = await agent.ChecksService.update(values);
             if (data.succeeded)
-                this.setState({...this.state, formChanged: false, dataSource: data})
+            {
+                this.props.onChange({isChanged: false})
+                this.setState({...this.state, dataSource: data})
+            }
         })
         .catch((errors) => {
             console.log(errors);
@@ -120,17 +129,14 @@ class CheckCard extends React.PureComponent {
     handleOkEquipment = (value) => {
         this.formApi.setValue('equipmentName', value.name)
         this.setState({...this.state, equipmentItem: value})
-
-        if (!this.state.initForm)
-            this.setState({...this.state, initForm: true})
     }
 
     handleOkDocumentKind = (value) => {
         this.formApi.setValue('documentKindName', value.name)
         this.setState({...this.state, documentKindItem: value})
 
-        if (!this.state.initForm)
-            this.setState({...this.state, initForm: true})
+        if (!this.props.isInitForm)
+            this.props.onInitForm({isInitForm: true})
     }
 
     handleDownload = async () => {
@@ -173,7 +179,7 @@ class CheckCard extends React.PureComponent {
 
         return (
             <>
-                <CardToolbar header={this.state.dataSource.data.equipment.name} onSave={this.handleSave} formChanged={this.state.formChanged}/>
+                <CardToolbar header={this.state.dataSource.data.equipment.name} onSave={this.handleSave} formChanged={this.props.isChanged}/>
                 <Form getFormApi={this.getFormApi} onChange={(e) => this.handleChangeForm(e)}>
                     <Form.Input field='numberDocument' label="Рег. номер документа" trigger='blur'/>
                     <Form.DatePicker style={{width: '100%'}} type="date" format="dd.MM.yyyy" field='currentCheck' label="Пройденная поверка" trigger='blur'/>
