@@ -23,7 +23,7 @@ function PanelFilter(props)
             footer={
                 <>
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button onClick={() => props.onChange(() => {return {}})}>Сбросить</Button>
+                        <Button onClick={() => props.onChange(null)}>Сбросить</Button>
                     </div>
                 </>
             }

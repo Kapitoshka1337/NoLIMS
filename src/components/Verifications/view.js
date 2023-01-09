@@ -277,10 +277,15 @@ class VerificationsView extends React.PureComponent {
     }
 
     onChangeInput = (value) => {
-        this.setState({...this.state, filters: value})
-        setTimeout(() => {
-            this.getData()
-        }, 100)
+        if (value != null)
+            this.setState({...this.state, filters: value})
+        else
+        {
+            let filter = this.state.filters;
+            Object.keys(filter).forEach(key => filter[key] = '')
+        }
+        
+        this.getData()
     }
 
     handleDelete = async () => {
