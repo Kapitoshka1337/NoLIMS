@@ -13,7 +13,12 @@ namespace Application.Features.Check.GetAll
         public DateTime? NextCheckEnd { get; set; }
         public int EquipmentId { get; set; }
         public int? DocumentKindId { get; set; }
-        //public int? DepartmentId { get; set; }
-        //public int? TypeId { get; set; }
+        public int? TypeId { get; set; }
+        public int? DepartmentId { get; set; }
+        public string Number { get; set; }
+        public string Model { get; set; }
+        public string SerialNumber { get; set; }
+        public int? TagId { get; set; }
+
     }
 }
