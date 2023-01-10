@@ -10,33 +10,75 @@ const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
 });
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
 
   });
 
-  function Toolbar(props) {
-    const { userHasPermissions } = useAbac();
+function Toolbar(props) {
+  const { userHasPermissions } = useAbac();
 
-    return (
-        <Nav
-        header={{text: props.header}}
-        style={{padding: 0}}
-        mode={'horizontal'}
-        items={
-                [
-                    { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => props.onGet() },
-                    { itemKey: 'create', text: 'Создать', icon: <IconPlus />, onClick: (e) => props.showCreate(true), disabled: !userHasPermissions('equipment.add') },
-                    { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDelete(), disabled: !userHasPermissions('equipment.delete') },
-                    { itemKey: 'toVerification', text: 'Отправить на поверку', icon: <IconVerify />, onClick: (e) => props.onSentToCheck(), disabled: !userHasPermissions('verification.add')},
-                    { itemKey: 'changeLocation', text: 'Сменить местоположение', icon: <IconMapPin />, disabled: !userHasPermissions('equipment.edit')},
-                    { itemKey: 'createCopy', text: 'Создать копию', icon: <IconCopyAdd />, onClick: (e) => props.onCreateCopy(true), disabled: !userHasPermissions('equipment.add') },
-                    { itemKey: 'filter', text: 'Фильтрация', icon: <IconFilter />, onClick: (e) => props.handleShowFilter(true) },
-                    { itemKey: 'appearance', text: 'Внешний вид', icon: <IconCheckList />, onClick: (e) => props.handleShowColumns(true) }
-                ]
-            }
-        />
-    )
+  return (
+    <section className="action_panel style_Toolbar">
+      <h3 style={{ marginLeft: 5 }}>Оборудование</h3>
+      <div style={{ display: "flex", marginBottom: 10 }}>
+        <ButtonGroup>
+          <Button
+            id="update"
+            onClick={(e) => props.onGet()}
+            icon={<IconRefresh />}
+          >
+            Обновить
+          </Button>
+          <Button
+            id="create"
+            disabled={!userHasPermissions("equipment.add")}
+            onClick={(e) => props.showCreate(true)}
+            icon={<IconPlus />}
+          >
+            Создать
+          </Button>
+          <Button
+            id="delete"
+            disabled={!userHasPermissions("equipment.delete")}
+            onClick={(e) => props.onDelete()}
+            icon={<IconDelete />}
+          >
+            Удалить запись
+          </Button>
+          <Button
+            id="toVerification"
+            disabled={!userHasPermissions("verification.add")}
+            onClick={(e) => props.onSentToCheck()}
+            icon={<IconVerify />}
+          >
+            Отправить на поверку
+          </Button>
+          <Button
+            id="createCopy"
+            disabled={!userHasPermissions("equipment.add")}
+            onClick={(e) => props.onCreateCopy(true)}
+            icon={<IconCopyAdd />}
+          >
+            Создать копию
+          </Button>
+          <Button
+            id="filter"
+            onClick={(e) => props.handleShowFilter(true)}
+            icon={<IconFilter />}
+          >
+            Фильтрация
+          </Button>
+          <Button
+            id="appearance"
+            onClick={(e) => props.handleShowColumns(true)}
+            icon={<IconCheckList />}
+          >
+            Внешний вид
+          </Button>
+        </ButtonGroup>
+      </div>
+    </section>
+  );
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Toolbar);

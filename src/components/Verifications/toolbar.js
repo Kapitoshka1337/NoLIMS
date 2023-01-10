@@ -10,34 +10,82 @@ const mapStateToProps = state => ({
   ...state,
   currentUser: state.common.currentUser,
 });
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
 
-  });
+});
 
-  function Toolbar(props) {
-    const { userHasPermissions } = useAbac();
+function Toolbar(props) {
+  const { userHasPermissions } = useAbac();
 
-    return (
-        <Nav
-        header={{text: props.header}}
-        style={{padding: 0}}
-        mode={'horizontal'}
-        items={
-                [
-                    { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => props.onGet() },
-                    { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDelete(), disabled: !userHasPermissions('verification.delete') },
-                    { itemKey: 'startVerification', text: 'Запустить поверку', icon: <IconPlay />, onClick: (e) => props.onStartVerification(), disabled: !userHasPermissions('verification.play')},
-                    { itemKey: 'cancelVerification', text: 'Отменить поверку', icon: <IconStop />, onClick: (e) => props.onCancelVerification(), disabled: !userHasPermissions('verification.reset') },
-                    { itemKey: 'toDepartment', text: 'Отдать в отдел', icon: <IconFilledArrowUp />, onClick: (e) => props.onReturnToDepartment(), disabled: !userHasPermissions('verification.return') },
-                    { itemKey: 'printOrder', text: 'Печать заявки в ЦСМ', icon: <IconPrint /> },
-                    // { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDeleteVerification(), disabled: !userHasPermissions('verification.delete')  },
-                    { itemKey: 'filter', text: 'Фильтрация', icon: <IconFilter />, onClick: (e) => props.handleShowFilter(true) },
-                    { itemKey: 'appearance', text: 'Внешний вид', icon: <IconCheckList />, onClick: (e) => props.handleShowColumns(true) }
-                ]
-            }
-        />
-    )
+  return (
+    <section className="action_panel style_Toolbar">
+      <h3 style={{ marginLeft: 5 }}>Поверки</h3>
+      <div style={{ display: "flex", marginBottom: 10 }}>
+        <ButtonGroup>
+          <Button
+            id="update"
+            onClick={(e) => props.onGet()}
+            icon={<IconRefresh />}
+          >
+            Обновить
+          </Button>
+          <Button
+            id="delete"
+            disabled={!userHasPermissions("equipment.delete")}
+            onClick={(e) => props.onDelete()}
+            icon={<IconDelete />}
+          >
+            Удалить запись
+          </Button>
+          <Button
+            id="startVerification"
+            disabled={!userHasPermissions("verification.play")}
+            onClick={(e) => props.onStartVerification()}
+            icon={<IconPlay />}
+          >
+            Запустить поверку
+          </Button>
+          <Button
+            id="cancelVerification"
+            disabled={!userHasPermissions("verification.reset")}
+            onClick={(e) => props.onCancelVerification()}
+            icon={<IconStop />}
+          >
+            Отменить поверку
+          </Button>
+          <Button
+            id="toDepartment"
+            disabled={!userHasPermissions("verification.return")}
+            onClick={(e) => props.onReturnToDepartment()}
+            icon={<IconFilledArrowUp />}
+          >
+            Отдать в отдел
+          </Button>
+          <Button
+            id="printOrder"
+            onClick={(e) => props.onGet()}
+            icon={<IconPrint />}
+          >
+            Печать заявки в ЦСМ
+          </Button>
+          <Button
+            id="filter"
+            onClick={(e) => props.handleShowFilter(true)}
+            icon={<IconFilter />}
+          >
+            Фильтрация
+          </Button>
+          <Button
+            id="appearance"
+            onClick={(e) => props.handleShowColumns(true)}
+            icon={<IconCheckList />}
+          >
+            Внешний вид
+          </Button>
+        </ButtonGroup>
+      </div>
+    </section>
+  );
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Toolbar);

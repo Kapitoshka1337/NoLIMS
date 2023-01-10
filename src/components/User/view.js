@@ -11,7 +11,8 @@ import ModalCreateUser from './modalCreate'
 import Toolbar from './toolbar'
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
-import ButtonOpenCard from '../common/buttonOpenCard'
+import ButtonOpenCard from '../common/buttonOpenCard';
+import "../style.css";
 
 const mapStateToProps = state => ({
   ...state,
@@ -37,8 +38,8 @@ class UsersView extends React.PureComponent {
             showColumns: false,
             showFilter: false,
             columns: [
-                { type: 'text', filterIndex: 'firstName', inFilter: true, inAppearance: true, visible: true, title: 'Имя', dataIndex: 'firstName', width: 200, sorter: (a, b) => a.firstName - b.firstName > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'middleName', inFilter: true, inAppearance: true, visible: true, title: 'Фамилия', dataIndex: 'middleName', width: 200, sorter: (a, b) => a.middleName - b.middleName > 0 ? 1 : -1},
+                { type: 'text', filterIndex: 'firstName', inFilter: true, inAppearance: true, visible: true, title: 'Имя', dataIndex: 'firstName', width: 200, sorter: (a, b) => a.firstName - b.firstName > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'lastName', inFilter: true, inAppearance: true, visible: true, title: 'Отчество', dataIndex: 'lastName', width: 200, sorter: (a, b) => a.lastName - b.lastName > 0 ? 1 : -1},
                 { type: 'text', filterIndex: 'userName', inFilter: true, inAppearance: true, visible: true, title: 'Учетная запись', dataIndex: 'userName', width: 200, sorter: (a, b) => a.userName - b.userName > 0 ? 1 : -1},
                 { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 100, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
@@ -178,6 +179,18 @@ class UsersView extends React.PureComponent {
     render() {
         return (
             <>
+            <div className="style_Toolbar">
+            <Toolbar 
+                    header={'Сотрудники'} 
+                    getData={this.getData}
+                    handleShowFilter={this.handleShowFilter}
+                    handleShowColumns={this.handleShowColumns}
+                    showCreate={this.showCreate}
+                    roles={this.roles}
+                    onDelete={this.handleDelete}
+                />
+            </div>
+            <div className="style_Tab">
                 <Table
                 columns={this.state.cols}
                 dataSource={this.state.dataSource.data}
@@ -186,27 +199,21 @@ class UsersView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar 
-                    header={'Сотрудники'} 
-                    getData={this.getData}
-                    handleShowFilter={this.handleShowFilter}
-                    handleShowColumns={this.handleShowColumns}
-                    showCreate={this.showCreate}
-                    roles={this.roles}
-                    onDelete={this.handleDelete}
-                />}
                 rowSelection={this.rowSelection}
+                scroll={{ y: 600, x: 0 }}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{
                     currentPage: this.state.currentPage,
                     pageSize: this.state.pageSize,
                     total: this.state.dataSource.totalRecords,
-                    showSizeChanger: true
+                    showSizeChanger: true,
+                    position: "top",
                 }}
                 />
                 <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
                 <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
                 <ModalCreateUser onClose={this.showCreate} onOk={this.onCreate} show={this.state.showCreate} />
+                </div>
             </>
         );
     }

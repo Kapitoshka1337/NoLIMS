@@ -152,7 +152,7 @@ class ModalCreateEquipment extends React.PureComponent {
                                 <ModalAutoCompelteTag onOk={this.selectTag} rules={[{ required: true, message },]}/>
                             </Col>
                             <Col >
-                                <Form.Input field='characteristics' label="Характеристики (ВО/ИО/СИ)" trigger='blur'/>
+                                <Form.Input field='characteristics' label="Характеристики (ВО/ИО/СИ) (± °C)" trigger='blur'/>
                             </Col>
                             <Col >
                                 <Form.Input field='measuringWork' label="Диапазон работы (ИО)" disabled={this.state.equipmentType.id != 2} trigger='blur'/>
