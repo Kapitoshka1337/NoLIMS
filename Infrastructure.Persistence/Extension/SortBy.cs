@@ -267,6 +267,31 @@ namespace Infrastructure.Persistence.Extension
                 result = result.Where(x => x.NumberDocument.ToLower().Contains(request.NumberDocument.ToLower()));
             }
 
+            if (request.TypeId > 0)
+            {
+                result = result.Where(x => x.Equipment.TypeId.Equals(request.TypeId));
+            }
+            if (request.DepartmentId > 0)
+            {
+                result = result.Where(x => x.Equipment.DepartmentId.Equals(request.DepartmentId));
+            }
+            if (!string.IsNullOrEmpty(request.Number))
+            {
+                result = result.Where(x => x.Equipment.Number.ToLower().Contains(request.Number.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(request.Model))
+            {
+                result = result.Where(x => x.Equipment.Model.ToLower().Contains(request.Model.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(request.SerialNumber))
+            {
+                result = result.Where(x => x.Equipment.SerialNumber.ToLower().Contains(request.SerialNumber.ToLower()));
+            }
+            if (request.TagId > 0)
+            {
+                result = result.Where(x => x.Equipment.TagId.Equals(request.TagId));
+            }
+
             return result;
         }
 
