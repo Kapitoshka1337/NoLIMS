@@ -61,7 +61,7 @@ namespace Infrastructure.Identity.Services
             if (user == null)
             {
                 response.Message = $"Пользователя с учетной запиьсю '{request.UserName}' не существует.";
-                response.Succeeded = true;
+                response.Succeeded = false;
                 return response;
             }
             
@@ -70,7 +70,7 @@ namespace Infrastructure.Identity.Services
             if (!result.Succeeded)
             {
                 response.Message = $"Не верный логин или пароль.";
-                response.Succeeded = true;
+                response.Succeeded = false;
                 return response;
             }
 
