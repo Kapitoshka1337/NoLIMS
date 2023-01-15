@@ -39,7 +39,7 @@ class Login extends React.PureComponent {
     if (response)
     {
       if (!response['succeeded'])
-        this.setState({error: response['succeeded'], errorMessage: response['message']});
+        this.setState({error: true, errorMessage: response['message']});
       else
         this.submitForm(response);
     }
