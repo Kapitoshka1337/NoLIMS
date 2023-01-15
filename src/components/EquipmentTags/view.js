@@ -106,15 +106,8 @@ class EquipmentTypeView extends React.PureComponent {
 
         return (
             <>
-                <Table
-                columns={columns}
-                dataSource={this.state.dataSource.data}
-                loading={this.state.loading}
-                resizable
-                bordered
-                showHeader={true}
-                rowKey={'id'}
-                title={<Nav
+            <div className="style_Toolbar">
+            <Nav
                     header={{text: 'Статусы оборудования'}}
                     style={{padding: 0}}
                     mode={'horizontal'}
@@ -123,14 +116,25 @@ class EquipmentTypeView extends React.PureComponent {
                                 { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => this.getData() }
                             ]
                         }
-                    />}
+                    />
+            </div>
+                <Table
+                columns={columns}
+                dataSource={this.state.dataSource.data}
+                loading={this.state.loading}
+                resizable
+                bordered
+                showHeader={true}
+                rowKey={'id'}
                 rowSelection={this.rowSelection}
+                scroll={{ y: 600, x: 0 }}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{
                     currentPage: this.state.currentPage,
                     pageSize: this.state.pageSize,
                     total: this.state.dataSource.totalRecords,
-                    showSizeChanger: true
+                    showSizeChanger: true,
+                    position: "top",
                 }}/>
                 <ModalCreateManufacturer onClose={this.showCreate} onOk={this.onCreate} show={this.state.showCreate}/>
             </>

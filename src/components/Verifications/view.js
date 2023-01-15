@@ -13,6 +13,7 @@ import Toolbar from './toolbar';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
 import AutoCompleteDepartment from "../Department/autoComplete";
+import "../style.css";
 
 const mapStateToProps = state => ({
   ...state.EquipmentView,
@@ -43,12 +44,12 @@ class VerificationsView extends React.PureComponent {
             showFilter: false,
             columns: [
                 { renderFilter: () => { return <AutoCompleteDepartment form={true} key={'1'} onOk={this.handleOkAutoComplete}/>}, type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Подразделение', dataIndex: 'equipment.department.name', width: 200, sorter: (a, b) => a.equipment.department.name - b.equipment.department.name > 0 ? 1 : -1 },
-                { type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Номер оборудования', dataIndex: 'equipment.number', width: 200, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1 },
+                { type: 'text', filterIndex: '', inFilter: true, inAppearance: true, visible: true, title: 'Номер оборудования', dataIndex: 'equipment.number', width: 95, sorter: (a, b) => a.equipment.number - b.equipment.number > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: 'equipmentName', inFilter: true, inAppearance: true, visible: true, title: 'Наименование оборудования', dataIndex: 'equipment.name', width: 200, sorter: (a, b) => a.equipment.name - b.equipment.name > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: 'equipmentModel', inFilter: true, inAppearance: true, visible: true, title: 'Модель', dataIndex: 'equipment.model', width: 200, sorter: (a, b) => a.equipment.model - b.equipment.model > 0 ? 1 : -1 },
                 { type: 'text', filterIndex: 'equipmentSerialNumber', inFilter: true, inAppearance: true, visible: true, title: 'Серийный номер', dataIndex: 'equipment.serialNumber', width: 200, sorter: (a, b) => a.equipment.serialNumber - b.equipment.serialNumber > 0 ? 1 : -1 },
-                { type: 'text', filterIndex: '', inFilter: false, inAppearance: true, visible: true, title: 'Состояние', dataIndex: 'status.name', width: 200, sorter: (a, b) => a.status.name - b.status.name > 0 ? 1 : -1 },
-                { inFilter: false, inAppearance: false, visible: true,title: '', dataIndex: 'actions', width: 100, render: (text, record, index) =>  <ButtonOpenCard content={"Заполнить поверку"} icon={<IconTickCircle />} onClick={(e) => this.onPassedVerification(record, true)} record={record} disabled={record.statusId == 1 || record.statusId == 3} />}
+                { type: 'text', filterIndex: '', inFilter: false, inAppearance: true, visible: true, title: 'Состояние', dataIndex: 'status.name', width: 120, sorter: (a, b) => a.status.name - b.status.name > 0 ? 1 : -1 },
+                { inFilter: false, inAppearance: false, visible: true,title: '', dataIndex: 'actions', width: 50, render: (text, record, index) =>  <ButtonOpenCard content={"Заполнить поверку"} icon={<IconTickCircle />} onClick={(e) => this.onPassedVerification(record, true)} record={record} disabled={record.statusId == 1 || record.statusId == 3} />}
             ],
             cols: [],
             filters: {
@@ -304,15 +305,8 @@ class VerificationsView extends React.PureComponent {
     render() {        
         return (
             <>
-                <Table
-                columns={this.state.cols}
-                dataSource={this.state.dataSource.data}
-                loading={this.state.loading}
-                resizable
-                bordered
-                showHeader={true}
-                rowKey={'id'}
-                title={<Toolbar 
+            <div className="style_Toolbar">
+            <Toolbar 
                     header={'Поверки'}
                     onGet={this.getData}
                     onStartVerification={this.onStartVerification}
@@ -322,18 +316,31 @@ class VerificationsView extends React.PureComponent {
                     handleShowFilter={this.handleShowFilter}
                     handleShowColumns ={this.handleShowColumns}
                     onDelete={this.handleDelete} 
-                    />}
+                    />
+            </div>
+            <div className="style_Tab">
+                <Table
+                columns={this.state.cols}
+                dataSource={this.state.dataSource.data}
+                loading={this.state.loading}
+                resizable
+                bordered
+                showHeader={true}
+                rowKey={'id'}
                 rowSelection={this.rowSelection}
+                scroll={{ y: 600, x: 0 }}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{
                     currentPage: this.state.currentPage,
                     pageSize: this.state.pageSize,
                     total: this.state.dataSource.totalRecords,
-                    showSizeChanger: true
+                    showSizeChanger: true,
+                    position: "top",
                 }}/>
                 <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
                 <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
                 <ModalPassedVerification onClose={this.onPassedVerification} onOk={this.onOkPassed} show={this.state.showPassed} passedEquipment={this.state.passedEquipment}/>
+                </div>
             </>
         );
     }

@@ -16,6 +16,7 @@ import LocationtAutocomplete from "../Location/autoComplete";
 import EquipmentTypeAutocomplete from "../EquipmentTypes/autoComplete";
 import EquipmentTagAutocomplete from "../EquipmentTags/autoComplete";
 import CardToolbar from './cardToolbar';
+import "../style.css";
 
 const mapStateToProps = state => ({
   ...state,
@@ -178,7 +179,7 @@ class EquipmentCard extends React.PureComponent {
                     <DepartmentAutocomplete id={this.state.dataSource.data.departmentId} onOk={this.handleOkDepartment} rules={[{ required: true, message }]}/>
                     <LocationtAutocomplete id={this.state.dataSource.data.locationId} onOk={this.handleOkLocation}/>
                     <EquipmentTagAutocomplete id={this.state.dataSource.data.tagId} onOk={this.handleOkEquipmentTag} rules={[{ required: true, message }]}/>
-                    <Form.Input field='characteristics' label="Характеристики (ВО/ИО/СИ) (± °)" trigger='blur'/>
+                    <Form.Input field='characteristics' label="Характеристики (ВО/ИО/СИ) (± °C)" trigger='blur'/>
                     <Form.Input field='measuringWork' label="Диапазон работы (ИО)" disabled={this.state.dataSource.data.typeId != 2} trigger='blur'/>
                     <Form.Input field='accuracy' label="Точность (ИО/СИ)" disabled={this.state.dataSource.data.typeId != 2 && this.state.dataSource.data.typeId != 3} trigger='blur'/>
                     <Form.Input field='measuringRange' label="Диапазон измерений (СИ)" disabled={this.state.dataSource.data.typeId != 3} trigger='blur'/>

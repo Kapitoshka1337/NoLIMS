@@ -46,13 +46,6 @@ class ModalCreateEquipment extends React.PureComponent {
     }
 
     async componentDidMount(){
-        // console.log(typeof(this.props.onCopy))
-        console.log('typeof(this.props.onCopy)')
-        // if (this.props.onCopy)
-        // {
-        //     console.log("!= null")
-        //     this.getData()
-        // }
     }
 
     handleOk() {
@@ -152,7 +145,7 @@ class ModalCreateEquipment extends React.PureComponent {
                                 <ModalAutoCompelteTag onOk={this.selectTag} rules={[{ required: true, message },]}/>
                             </Col>
                             <Col >
-                                <Form.Input field='characteristics' label="Характеристики (ВО/ИО/СИ)" trigger='blur'/>
+                                <Form.Input field='characteristics' label="Характеристики (ВО/ИО/СИ) (± °C)" trigger='blur'/>
                             </Col>
                             <Col >
                                 <Form.Input field='measuringWork' label="Диапазон работы (ИО)" disabled={this.state.equipmentType.id != 2} trigger='blur'/>

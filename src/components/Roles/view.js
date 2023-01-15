@@ -11,7 +11,8 @@ import ModalCreateRole from './modalCreate'
 import Toolbar from './toolbar'
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
-import ButtonOpenCard from '../common/buttonOpenCard'
+import ButtonOpenCard from '../common/buttonOpenCard';
+import "../style.css";
 
 const mapStateToProps = state => ({
   ...state,
@@ -169,6 +170,17 @@ class RolesView extends React.PureComponent {
     render() {
         return (
             <>
+            <div className="style_Toolbar">
+            <Toolbar 
+                    header={'Роли'} 
+                    getData={this.getData} 
+                    handleShowFilter={this.handleShowFilter} 
+                    handleShowColumns={this.handleShowColumns} 
+                    showCreate={this.showCreate}
+                    onDelete={this.handleDelete}
+                />
+            </div>
+            <div className="style_Tab">
                 <Table
                 columns={this.state.cols}
                 dataSource={this.state.dataSource.data}
@@ -177,26 +189,21 @@ class RolesView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar 
-                    header={'Роли'} 
-                    getData={this.getData} 
-                    handleShowFilter={this.handleShowFilter} 
-                    handleShowColumns={this.handleShowColumns} 
-                    showCreate={this.showCreate}
-                    onDelete={this.handleDelete}
-                />}
                 rowSelection={this.rowSelection}
+                scroll={{ y: 600, x: 0 }}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{
                     currentPage: this.state.currentPage,
                     pageSize: this.state.pageSize,
                     total: this.state.dataSource.totalRecords,
-                    showSizeChanger: true
+                    showSizeChanger: true,
+                    position: "top",
                 }}
                 />
                 <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
                 <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
                 <ModalCreateRole onClose={this.showCreate} onOk={this.onCreate} show={this.state.showCreate} />
+                </div>
             </>
         );
     }

@@ -12,6 +12,7 @@ import { history } from '../../store';
 import ButtonOpenCard from './../common/buttonOpenCard';
 import PanelAppearance from './../common/panelAppearance';
 import PanelFilter from './../common/panelFilter';
+import "../style.css";
 
 const mapStateToProps = state => ({
   ...state,
@@ -38,9 +39,9 @@ class DepartmentView extends React.PureComponent {
             showFilter: false,
             showColumns: false,
             columns: [
+                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'number', width: 30, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1 },
                 { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Наименование', dataIndex: 'name', width: 200, sorter: (a, b) => a.name - b.name > 0 ? 1 : -1 },
-                { type: 'text', inFilter: true, inAppearance: true, visible: true, title: 'Номер', dataIndex: 'number', width: 200, sorter: (a, b) => a.number - b.number > 0 ? 1 : -1 },
-                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: '12px', render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
+                { inFilter: false, inAppearance: false, visible: true, title: '', dataIndex: 'actions', width: 50, render: (text, record, index) => <ButtonOpenCard onClick={this.openCard} record={record} />}
             ],
             cols: [],
             filters: {
@@ -173,6 +174,18 @@ class DepartmentView extends React.PureComponent {
     render() {
         return (
             <>
+            <div className="style_Toolbar">
+            <Toolbar
+                    header={'Подразделения'}
+                    getData={this.getData}
+                    showCreate={this.showCreate}
+                    handleShowFilter={this.handleShowFilter}
+                    handleShowColumns ={this.handleShowColumns}
+                    roles={this.roles}
+                    onDelete={this.handleDelete} 
+                /> 
+            </div>
+            <div className="style_Tab">
                 <Table
                 columns={this.state.cols}
                 dataSource={this.state.dataSource.data}
@@ -181,26 +194,20 @@ class DepartmentView extends React.PureComponent {
                 bordered
                 showHeader={true}
                 rowKey={'id'}
-                title={<Toolbar
-                    header={'Подразделения'}
-                    getData={this.getData}
-                    showCreate={this.showCreate}
-                    handleShowFilter={this.handleShowFilter}
-                    handleShowColumns ={this.handleShowColumns}
-                    roles={this.roles}
-                    onDelete={this.handleDelete} 
-                />}
                 rowSelection={this.rowSelection}
+                scroll={{ y: 600, x: 0 }}
                 onChange={(changes) => this.handlePageChange(changes)}
                 pagination={{
                     currentPage: this.state.currentPage,
                     pageSize: this.state.pageSize,
                     total: this.state.dataSource.totalRecords,
-                    showSizeChanger: true
+                    showSizeChanger: true,
+                    position: "top",
                 }}/>
                 <PanelFilter show={this.state.showFilter} onCancel={this.handleShowFilter} onChange={this.onChangeInput} filters={this.state.filters} columns={this.state.columns}/>
                 <PanelAppearance onChangeVisibleColumn={this.changeVisibleColumn} columns={this.state.columns} show={this.state.showColumns} onCancel={this.handleShowColumns}/>
                 <ModalCreateDepartment onClose={this.showCreate} onOk={this.onCreate} show={this.state.showCreate}/>
+                </div>
             </>
         );
     }

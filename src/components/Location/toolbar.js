@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Nav } from '@douyinfe/semi-ui'
+import { Button, ButtonGroup, SplitButtonGroup } from "@douyinfe/semi-ui";
 import { IconRefresh, IconPlus, IconFilter, IconCheckList, IconDelete } from '@douyinfe/semi-icons';
 import { useAbac } from 'react-abac'
 import {
@@ -18,20 +18,50 @@ const mapDispatchToProps = dispatch => ({
     const { userHasPermissions } = useAbac();
 
     return (
-        <Nav
-        header={{text: props.header}}
-        style={{padding: 0}}
-        mode={'horizontal'}
-        items={
-                [
-                    { itemKey: 'update', text: 'Обновить', icon: <IconRefresh />, onClick: (e) => props.onGet() },
-                    { itemKey: 'create', text: 'Создать', icon: <IconPlus />, onClick: (e) => props.showCreate(true), disabled: !userHasPermissions('location.add') },
-                    { itemKey: 'delete', text: 'Удалить запись', icon: <IconDelete />, onClick: (e) => props.onDelete(), disabled: !userHasPermissions('location.delete') },
-                    { itemKey: 'filter', text: 'Фильтрация', icon: <IconFilter />, onClick: (e) => props.handleShowFilter(true) },
-                    { itemKey: 'appearance', text: 'Внешний вид', icon: <IconCheckList />, onClick: (e) => props.handleShowColumns(true) }
-                ]
-            }
-        />
+        <section className="action_panel style_Toolbar">
+      <h3 style={{ marginLeft: 5 }}>Местоположение</h3>
+      <div style={{ display: "flex", marginBottom: 10 }}>
+        <ButtonGroup>
+          <Button
+            id="update"
+            onClick={(e) => props.onGet()}
+            icon={<IconRefresh />}
+          >
+            Обновить
+          </Button>
+          <Button
+            id="create"
+            disabled={!userHasPermissions('location.add') }
+            onClick={(e) => props.showCreate(true)}
+            icon={<IconPlus />}
+          >
+            Создать
+          </Button>
+          <Button
+            id="delete"
+            disabled={!userHasPermissions('location.delete')}
+            onClick={(e) => props.onDelete()}
+            icon={<IconDelete />}
+          >
+            Удалить запись
+          </Button>
+          <Button
+            id="filter"
+            onClick={(e) => props.handleShowFilter(true)}
+            icon={<IconFilter />}
+          >
+            Фильтрация
+          </Button>
+          <Button
+            id="appearance"
+            onClick={(e) => props.handleShowColumns(true)}
+            icon={<IconCheckList />}
+          >
+            Внешний вид
+          </Button>
+        </ButtonGroup>
+      </div>
+    </section>
     )
 }
 
