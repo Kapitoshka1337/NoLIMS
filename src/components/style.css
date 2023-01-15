@@ -6,13 +6,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
 .style_Tab td:hover {
     overflow: inherit;
     text-overflow: inherit;
     white-space: inherit;
     height: auto;
   }
-  .semi-form-field-label {
-    -webkit-user-select: auto;
-    user-select: auto;
-  }
+
+.semi-form-field-label {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
