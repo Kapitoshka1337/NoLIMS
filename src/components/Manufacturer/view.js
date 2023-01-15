@@ -211,8 +211,6 @@ class ManufacturerView extends React.PureComponent {
       this.getData();
     }, 100);
   };
-        }
-        
 
   handleDelete = async () => {
     if (this.state.selectedRow == null || this.state.selectedRow.length <= 0) {

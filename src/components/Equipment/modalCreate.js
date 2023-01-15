@@ -46,13 +46,6 @@ class ModalCreateEquipment extends React.PureComponent {
     }
 
     async componentDidMount(){
-        // console.log(typeof(this.props.onCopy))
-        console.log('typeof(this.props.onCopy)')
-        // if (this.props.onCopy)
-        // {
-        //     console.log("!= null")
-        //     this.getData()
-        // }
     }
 
     handleOk() {

@@ -2,11 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { Table, Toast } from "@douyinfe/semi-ui";
 import agent from "../../agent";
-import { EQUIPMENT_VIEW_PAGE_LOADED } from "../../constants/actionTypes";
     
 import { history } from "../../store";
 import ButtonOpenCard from "./../common/buttonOpenCard";
 import Toolbar from "./toolbar";
+import ModalCreateManufacturer from "./modalCreate";
 import PanelAppearance from "./../common/panelAppearance";
 import PanelFilter from "./../common/panelFilter";
 import "../style.css";
@@ -16,7 +16,6 @@ const mapStateToProps = (state) => ({
   currentUser: state.common.currentUser,
 });
 const mapDispatchToProps = (dispatch) => ({
-  onLoad: (payload) => dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload }),
 });
 
 class DocumentKindView extends React.PureComponent {

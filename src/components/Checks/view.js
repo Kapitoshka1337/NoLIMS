@@ -312,16 +312,19 @@ class ChecksView extends React.PureComponent {
     filter["documentKindId"] = value.id;
     this.onChangeInput(filter);
   };
+
   handleOkAutoCompleteTags = (value) => {
     let filter = this.state.filters;
     filter["tagId"] = value.id;
     this.onChangeInput(filter);
   };
+
   handleOkAutoCompleteType = (value) => {
     let filter = this.state.filters;
     filter["typeId"] = value.id;
     this.onChangeInput(filter);
   };
+
   componentDidUpdate() {
     if (this.state.dataSource) this.setState({ loading: false });
   }
@@ -454,7 +457,6 @@ class ChecksView extends React.PureComponent {
       this.getData();
     }, 100);
   };
-    }
 
   handleDownload = async () => {
     if (this.state.selectedRow == null || this.state.selectedRow.length <= 0) {

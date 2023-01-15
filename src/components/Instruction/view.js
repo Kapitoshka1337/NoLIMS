@@ -197,8 +197,6 @@ class InstructionView extends React.PureComponent {
       this.getData();
     }, 100);
   };
-        }
-        
 
   handleDownload = async () => {
     if (this.state.selectedRow == null || this.state.selectedRow.length <= 0) {

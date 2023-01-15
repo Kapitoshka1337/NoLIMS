@@ -3,12 +3,12 @@ import { connect } from "react-redux";
 import { Table, Toast } from "@douyinfe/semi-ui";
 
 import agent from "../../agent";
-import { EQUIPMENT_VIEW_PAGE_LOADED } from "../../constants/actionTypes";
   
 import { history } from "../../store";
 import ButtonOpenCard from "./../common/buttonOpenCard";
 import ButtonCopyAdd from "./../common/buttonCopyAdd";
 import Toolbar from "./toolbar";
+import ModalCreate from "./modalCreate";
 import PanelAppearance from "./../common/panelAppearance";
 import PanelFilter from "./../common/panelFilter";
 import AutoCompleteDepartment from "../Department/autoComplete";
@@ -24,7 +24,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onLoad: (payload) => dispatch({ type: EQUIPMENT_VIEW_PAGE_LOADED, payload }),
   // onUnload: () =>
   //   dispatch({ type: ARTICLE_PAGE_UNLOADED })
 });
@@ -488,7 +487,6 @@ class EquipmentView extends React.PureComponent {
       this.getData();
     }, 100);
   };
-        }
         
 
   handleDelete = async () => {
