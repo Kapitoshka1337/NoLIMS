@@ -183,6 +183,7 @@ class DepartmentView extends React.PureComponent {
                     handleShowColumns ={this.handleShowColumns}
                     roles={this.roles}
                     onDelete={this.handleDelete} 
+                    onGet={this.getData}
                 /> 
             </div>
             <div className="style_Tab">

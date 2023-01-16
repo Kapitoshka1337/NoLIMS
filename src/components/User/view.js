@@ -188,6 +188,7 @@ class UsersView extends React.PureComponent {
                     showCreate={this.showCreate}
                     roles={this.roles}
                     onDelete={this.handleDelete}
+                    onGet={this.getData}
                 />
             </div>
             <div className="style_Tab">

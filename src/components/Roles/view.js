@@ -178,6 +178,7 @@ class RolesView extends React.PureComponent {
                     handleShowColumns={this.handleShowColumns} 
                     showCreate={this.showCreate}
                     onDelete={this.handleDelete}
+                    onGet={this.getData}
                 />
             </div>
             <div className="style_Tab">
