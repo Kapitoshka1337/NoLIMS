@@ -94,14 +94,14 @@ class CheckCard extends React.PureComponent {
     handleSave = () => {
         let fState = this.formApi.getFormState()
 
-        if (fState.values.currentCheck != null)
+        if (fState.values.currentCheck != null || fState.values.currentCheck != fState.values.currentCheck)
         {
             let currentDate = new Date(fState.values.currentCheck);
             currentDate.setDate(currentDate.getDate() + 1);
             this.formApi.setValue('currentCheck', currentDate.toJSON().split('T')[0])
         }
 
-        if (fState.values.nextCheck != null)
+        if (fState.values.nextCheck != null || fState.values.nextCheck != fState.values.nextCheck)
         {
             let nextDate = new Date(fState.values.nextCheck);
             nextDate.setDate(nextDate.getDate() + 1);
