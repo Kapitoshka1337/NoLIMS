@@ -19,10 +19,7 @@ using Application.Enums;
 using System.Threading.Tasks;
 using Application.DTOs.Email;
 using Domain.Entities.Role;
-using Application.Features.Role.WithPermission;
 using MediatR;
-using Application.Features.User.Info;
-using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Identity.Services
 {
@@ -55,17 +52,17 @@ namespace Infrastructure.Identity.Services
 
         public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress, IMediator mediator)
         {
-            var user = await _userManager.FindByNameAsync(request.UserName);
+            var account = await _userManager.FindByNameAsync(request.UserName);
             var response = new Response<AuthenticationResponse>();
 
-            if (user == null)
+            if (account == null)
             {
                 response.Message = $"Пользователя с учетной запиьсю '{request.UserName}' не существует.";
                 response.Succeeded = false;
                 return response;
             }
             
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(account.UserName, request.Password, false, lockoutOnFailure: false);
             
             if (!result.Succeeded)
             {
@@ -74,19 +71,31 @@ namespace Infrastructure.Identity.Services
                 return response;
             }
 
-            JwtSecurityToken jwtSecurityToken = await GenerateJWToken(user);
+            JwtSecurityToken jwtSecurityToken = await GenerateJWToken(account);
             response.Data = new AuthenticationResponse();
-            response.Data.Id = user.Id;
+            response.Data.Id = account.Id;
             response.Data.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-            response.Data.UserName = user.UserName;
-            
-            var query = new QueryInfo() { Id = user.Id.ToString() };
-            var roleList = await mediator.Send(new GetRoles());
-            var permissionsList = await mediator.Send(query);
+            response.Data.UserName = account.UserName;
 
-            response.Data.Roles = roleList.Data;
-            response.Data.Permissions = permissionsList.Data.Permissions;
-            response.Data.Claims = permissionsList.Data.Claims;
+            var permissions = new List<string>();
+            var claims = await _userService.GetPermission(account.Id);
+            var user = await _userManager.FindByIdAsync(account.Id.ToString());
+            var roles = await _userManager.GetRolesAsync(user);
+
+            foreach (var role in roles)
+            {
+                var rl = await _roleManager.FindByNameAsync(role);
+                var cls = await _roleManager.GetClaimsAsync(rl);
+
+                foreach (var claim in cls)
+                {
+                    permissions.Add(claim.Value);
+                }
+            }
+
+            response.Data.Roles = roles;
+            response.Data.Permissions = permissions;
+            response.Data.Claims = claims.Claims;
             
             var refreshToken = GenerateRefreshToken(ipAddress);
 

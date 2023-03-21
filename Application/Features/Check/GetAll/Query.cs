@@ -27,8 +27,6 @@ namespace Application.Features.Check.GetAll
         public string Model { get; set; }
         public string SerialNumber { get; set; }
         public int? TagId { get; set; }
-
-        //public EqViewModelSearch Equipment { get; set; }
     }
 
     public class QueryHandler : IRequestHandler<Query, PagedResponse<IEnumerable<ViewModel>>>
