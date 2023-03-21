@@ -499,7 +499,7 @@ class ChecksView extends React.PureComponent {
 
     const result = await agent.ReportService.sticker(obj);
     if (result) {
-      const fl = new Blob([result.body], { type: result.type });
+      const fl = new Blob([result], { type: result.type });
       FileSaver.saveAs(fl, "Этикетки");
     }
   };
