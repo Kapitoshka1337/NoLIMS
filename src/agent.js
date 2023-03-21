@@ -4,20 +4,12 @@ import axios from 'axios';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
-const API_ROOT = process.env.REACT_APP_BACKEND_URL || 'https://localhost:9001/api'
+const API_ROOT = process.env.REACT_APP_BACKEND_URL || 'http://192.168.0.156:9001/api'
 
-//''http://192.168.0.156:9001/api';' //
 const encode = encodeURIComponent;
 const responseBody = res => res.body;
 
 let token = null;
-// const tokenDownloadPlugin = req => {
-  //   if (token) {
-    //     req.set('authorization', `Bearer ${token}`);
-    //     req.set('response-type', 'blob');
-    //   }
-    // }
-    // Axios
 const client = axios.create({
   baseURL: API_ROOT,
 });
@@ -27,15 +19,10 @@ const tokenPlugin = req => {
     client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 }
-// headers: {
-//   'Authorization': `Bearer ${token}`
-// }
 const request = function(options)
 {
   const onSuccess = function(response)
   {
-    // console.log('Request Successful!', response);
-    // console.log('Request headers!', response.headers);
     return response.data;
   }
 
@@ -45,15 +32,10 @@ const request = function(options)
 
     if (error.response)
     {
-      // Request was made but server responded with something
-      // other than 2xx
       console.error('Data:',    error.response.data);
-
     }
     else
     {
-      // Something else happened while setting up the request
-      // triggered the error
       console.log('Error Message:', error.message);
     }
 
@@ -113,7 +95,7 @@ const requests = {
         data: body,
         headers: {'Authorization': `Bearer ${token}`},
         responseType: 'blob'
-      }).then(response => response).catch(response => response),
+      }).then(response => {return response}).catch(response => response),
 };
 
 const Auth = {
