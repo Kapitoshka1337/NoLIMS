@@ -45,11 +45,17 @@ namespace Application.Features.Check.Update
 
                 return rsp;
             }
+            // This  is utc date time
+            DateTime? currentDate = command.CurrentCheck;
+            DateTime? nextDate = command.NextCheck;
+            TimeZoneInfo systemTimeZone = TimeZoneInfo.Local;
+            DateTime currentLocalDateTime = TimeZoneInfo.ConvertTimeFromUtc(currentDate.Value, systemTimeZone);
+            DateTime nextLocalDateTime = TimeZoneInfo.ConvertTimeFromUtc(nextDate.Value, systemTimeZone);
 
             item.EquipmentId = command.EquipmentId;
             item.DocumentKindId = command.DocumentKindId;
-            item.CurrentCheck = command.CurrentCheck;
-            item.NextCheck = command.NextCheck;
+            item.CurrentCheck = currentLocalDateTime;
+            item.NextCheck = nextLocalDateTime;
             item.NumberDocument = command.NumberDocument;
             item.FileId = command.FileId;
 
