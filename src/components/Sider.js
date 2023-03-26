@@ -71,7 +71,7 @@ class Sider extends React.PureComponent {
     return (
       <Sider style={{ backgroundColor: "var(--semi-color-bg-1)" }}>
         <Nav
-          isCollapsed={false}
+          isCollapsed={true}
           style={{ height: "100%" }}
           items={this.state.items}
           header={{

@@ -1,5 +1,4 @@
-.style_Tab td  {
-    display: inline-block;
+.style_Tab td, th {
     position: relative;
     width: 100%;
     white-space: nowrap;
@@ -7,7 +6,7 @@
     text-overflow: ellipsis;
 }
 
-.style_Tab td:hover {
+.style_Tab th:hover, td:hover {
     overflow: inherit;
     text-overflow: inherit;
     white-space: inherit;

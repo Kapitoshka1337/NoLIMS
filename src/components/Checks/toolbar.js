@@ -69,13 +69,13 @@ function Toolbar(props) {
             onClick={(e) => props.handlepPrintCheckTable()}
             icon={<IconPrint />}
           >
-            Печать таблицы поверок
+            {/* Печать таблицы поверок
           </Button>
           <Button
             id="filter"
             onClick={(e) => props.handleShowFilter(true)}
             icon={<IconFilter />}
-          >
+          > */}
             Фильтрация
           </Button>
           <Button

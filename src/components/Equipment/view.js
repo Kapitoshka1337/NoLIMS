@@ -54,7 +54,7 @@ class EquipmentView extends React.PureComponent {
             return (
               <>
                 {" "}
-                <ButtonOpenCard onClick={this.openCard} record={record} />{" "}
+                <ButtonOpenCard onClick={this.openCard} record={record}/>{" "}
               </>
             );
           },
@@ -444,7 +444,7 @@ class EquipmentView extends React.PureComponent {
   };
 
   openCard(record) {
-    history.push(`/equipment/view/${record.id}`);
+    history.push(window.open(`/equipment/view/${record.id}`));
   }
 
   copyAdd(record) {
