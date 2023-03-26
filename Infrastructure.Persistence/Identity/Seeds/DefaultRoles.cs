@@ -28,10 +28,12 @@ namespace Infrastructure.Identity.Seeds
                     RoleClaim loginView = new RoleClaim() { RoleId = basicRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Index.loginView, Resource = Permissionss.Index.Resource };
                     RoleClaim userView = new RoleClaim() { RoleId = basicRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Index.userInfo, Resource = Permissionss.Index.Resource };
                     RoleClaim indexView = new RoleClaim() { RoleId = basicRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Login.indexView, Resource = Permissionss.Login.Resource };
+                    RoleClaim rolesInfo = new RoleClaim() { RoleId = basicRole.Id, ClaimType = CustomClaimTypes.Permission, ClaimValue = Permissionss.Roles.Info, Resource = Permissionss.Roles.Resource };
 
                     await db.Set<RoleClaim>().AddAsync(loginView);
                     await db.Set<RoleClaim>().AddAsync(userView);
                     await db.Set<RoleClaim>().AddAsync(indexView);
+                    await db.Set<RoleClaim>().AddAsync(rolesInfo);
                     await db.SaveChangesAsync();
                 }
             }
