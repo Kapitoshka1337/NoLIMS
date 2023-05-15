@@ -250,6 +250,9 @@
         match: 'dm',
         kub: function(val) {
             return val * 1000
+        },
+        dm: function(val) {
+            return val
         }
     })
 
