@@ -49,10 +49,11 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    host: '0.0.0.0',
+    //host: '0.0.0.0',
     proxy: {
       '/api': {
-          target: 'http://laravel/api',
+          //target: 'http://laravel/api',
+          target: 'http://nolims/public/api',
           pathRewrite: {'^/api' : ''},
           secure: false,
           changeOrigin: true,

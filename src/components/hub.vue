@@ -3,7 +3,7 @@
     <v-app-bar color="primary" dense dark app>
       <v-toolbar-title>НеЛИС</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-title>{{user}} ({{idDep}})</v-toolbar-title>
+      <v-toolbar-title>{{ user }} ({{ idDep }})</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="dialogGuide = true">
         <v-icon>mdi-help-circle-outline</v-icon>
@@ -20,10 +20,12 @@
             <v-card class="mx-auto" max-width="512" outlined>
               <v-card-title>{{ card.header }}</v-card-title>
               <v-divider></v-divider>
-              <v-card-text>Описание</v-card-text>
+              <v-card-text>{{ card.description }}</v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
-                <v-btn block color="success" :ripple="false" :to="card.link">Открыть</v-btn>
+                <v-btn block color="success" :ripple="false" :to="card.link"
+                  >Открыть</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-col>
@@ -44,23 +46,36 @@ export default {
   data () {
     return {
       cards: [
-        {
-          header: 'Госзадание',
-          description: 'Описание',
-          link: '/gz'
-        },
+        // {
+        //   header: 'Госзадание',
+        //   description: 'Описание',
+        //   link: '/gz'
+        // },
         {
           id: 1,
           header: 'Реактив',
-          description: 'Описание',
+          description: 'Использование расходных материалов',
           link: '/reagent'
         },
         {
           id: 2,
           header: 'Оборудование',
-          description: 'Описание',
+          description: 'Учёт СИ, ИО, ВО',
           link: '/equipment'
+        },
+        {
+          id: 3,
+          header: 'Направление',
+          description: 'Печать направлений на исследования',
+          link: '/researches'
+        },
+        {
+          id: 4,
+          header: 'Пользователи',
+          description: 'Назначение уровня доступа пользователя',
+          link: '/user'
         }
+        
       ],
       dialogGuide: false
     }

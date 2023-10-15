@@ -43,13 +43,17 @@ import MetrologRepair from "./components/equipment/metrolog/repair/index.vue";
 import MetrologInstructions from "./components/equipment/metrolog/instructions/index.vue";
 import MetrologMaintenance from "./components/equipment/metrolog/services/index.vue";
 import Calendar from "./components/equipment/components/calendar/index.vue";
+//Researches
+import ResearchesMain from "./components/researches/main.vue";
+import ResearchesIndex from "./components/researches/index/index.vue";
+import ResearchesSamples from "./components/researches/samples/index.vue";
 //GZ
-import GzMain from "./components/gz/main.vue";
-import GzIndex from "./components/gz/index/index.vue";
-import GzAnimal from "./components/gz/animal/index.vue";
-import GzMethods from "./components/gz/methods/index.vue";
-import GzPlan from "./components/gz/plan/index.vue";
-import GzReport from "./components/gz/report/index.vue";
+// import GzMain from "./components/gz/main.vue";
+// import GzIndex from "./components/gz/index/index.vue";
+// import GzAnimal from "./components/gz/animal/index.vue";
+// import GzMethods from "./components/gz/methods/index.vue";
+// import GzPlan from "./components/gz/plan/index.vue";
+// import GzReport from "./components/gz/report/index.vue";
 
 Vue.prototype.$http = Axios;
 Vue.prototype.$convert = Convert;
@@ -57,7 +61,7 @@ const token = localStorage.getItem('token');
 if(token){
   Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
-if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.156';
+if(process.env.NODE_ENV === 'production') Vue.prototype.$http.defaults.baseURL = 'http://nolims/public/';
 //Vue.prototype.$http.defaults.baseURL = 'http://192.168.0.156';
 
 Vue.use(SuiVue);
@@ -107,15 +111,21 @@ var router = new VueRouter({
         { path: 'repair', component: MetrologRepair, meta: { name: 'equipment', roles: [4, 5] } },
       ]
     },
-    { path: '/gz', component: GzMain, meta: { name: 'gz', requiresAuth: true, roles: [6] },
+        { path: '/researches', component: ResearchesMain, meta: { name: 'researches', requiresAuth: true, roles: [4] },
       children: [
-        { path: '', component: GzIndex, meta: { name: 'gz', roles: [6] } },
-        { path: 'animals', component: GzAnimal, meta: { name: 'gz', roles: [6] } },
-        { path: 'methods', component: GzMethods, meta: { name: 'gz', roles: [6] } },
-        { path: 'report', component: GzReport, meta: { name: 'gz', roles: [6] } },
-        { path: 'plan', component: GzPlan, meta: { name: 'gz', roles: [6] } },
+        { path: '', component: ResearchesIndex, meta: { name: 'researches', roles: [4] } },
+        { path: '', component: ResearchesSamples, meta: { name: 'samples', roles: [4] } },
       ]
     },
+    // { path: '/gz', component: GzMain, meta: { name: 'gz', requiresAuth: true, roles: [6] },
+    //   children: [
+    //     { path: '', component: GzIndex, meta: { name: 'gz', roles: [6] } },
+    //     { path: 'animals', component: GzAnimal, meta: { name: 'gz', roles: [6] } },
+    //     { path: 'methods', component: GzMethods, meta: { name: 'gz', roles: [6] } },
+    //     { path: 'report', component: GzReport, meta: { name: 'gz', roles: [6] } },
+    //     { path: 'plan', component: GzPlan, meta: { name: 'gz', roles: [6] } },
+    //   ]
+    // },
     {
       path: '*',
       redirect: '/login'

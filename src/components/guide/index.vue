@@ -19,16 +19,18 @@
 
 <script>
 import hub from './hub.vue';
-import gz from './gz.vue';
+// import gz from './gz.vue';
 import reagent from './reagent.vue';
 import equipment from './equipment.vue';
+import researches from './researches.vue';
 
 export default {
 	components: {
 		hub: hub,
-		gz: gz,
+		// gz: gz,
 		reagent: reagent,
 		equipment: equipment,
+		researches: researches,
 	},
 	props: {
 		dialogOpen: false,

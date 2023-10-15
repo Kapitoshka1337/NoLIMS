@@ -1,23 +1,23 @@
 <template>
 	<v-row>
 		<v-col cols="12">
-			<Pivot v-if="reports.dataSource.data.length" ref="pivot" toolbar height="800" :report="reports"
+			<!-- <Pivot v-if="reports.dataSource.data.length" ref="pivot" toolbar height="800" :report="reports"
 			v-bind:licenseKey="key"
 			v-bind:beforetoolbarcreated="customizeToolbar">
-			</Pivot>
+			</Pivot> -->
 		</v-col>
 	</v-row>
 </template>
 
 <script>
-import {Pivot} from "vue-flexmonster";
-import 'flexmonster/flexmonster.css';
-import loc from "../../../plugins/localization.json";
+// import {Pivot} from "vue-flexmonster";
+// import 'flexmonster/flexmonster.css';
+// import loc from "../../../plugins/localization.json";
 
 export default {
-	components: {
-		'Pivot': Pivot
-	},
+	// components: {
+	// 	'Pivot': Pivot
+	// },
 	data(){
 		return {
 			reports: {
@@ -65,7 +65,7 @@ export default {
 		}
 	},
 	created(){
-		this.getReport();
+		// this.getReport();
 	}
 }
 </script>

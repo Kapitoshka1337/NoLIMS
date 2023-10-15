@@ -202,6 +202,12 @@
 								<v-list-item @click="printTable()">
 									<v-list-item-title>Таблица проверок</v-list-item-title>
 								</v-list-item>
+									<v-list-item @click="printAct()">
+									<v-list-item-title>Акт ввода оборудования</v-list-item-title>
+								</v-list-item>
+									<v-list-item @click="printActIgra()">
+									<v-list-item-title>Акт ввода оборудования Игра</v-list-item-title>
+								</v-list-item>
 							</v-list>
 						</v-menu>
 						<v-dialog v-model="dialog_verification" max-width="1256px">
@@ -466,6 +472,40 @@ export default {
 				.then(response =>{
 					const file = new Blob([response.data], {type: 'application/pdf'});
 					fs.saveAs(file, 'Этикетки.pdf');
+					this.overlay = false;
+				}).catch(error => (this.overlay = false, alert('Ошибка формирования')));
+			}
+			else alert('Не выбрано оборудование');
+		},
+		printAct() {
+			if(this.selected.length > 0)
+			{
+				let obj = [];
+				for (let item in this.selected)
+					obj.push(this.selected[item].id);
+				let objs = {item: obj};
+				this.overlay = true;
+				this.$http.post(`/api/equipment/printer/act`, objs, {responseType: 'blob'})
+				.then(response =>{
+					const file = new Blob([response.data], {type: 'application/pdf'});
+					fs.saveAs(file, 'Акт ввода.pdf');
+					this.overlay = false;
+				}).catch(error => (this.overlay = false, alert('Ошибка формирования')));
+			}
+			else alert('Не выбрано оборудование');
+		},
+				printActIgra() {
+			if(this.selected.length > 0)
+			{
+				let obj = [];
+				for (let item in this.selected)
+					obj.push(this.selected[item].id);
+				let objs = {item: obj};
+				this.overlay = true;
+				this.$http.post(`/api/equipment/printer/actIgra`, objs, {responseType: 'blob'})
+				.then(response =>{
+					const file = new Blob([response.data], {type: 'application/pdf'});
+					fs.saveAs(file, 'Акт ввода.pdf');
 					this.overlay = false;
 				}).catch(error => (this.overlay = false, alert('Ошибка формирования')));
 			}
