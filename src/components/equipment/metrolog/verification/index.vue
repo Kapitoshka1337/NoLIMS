@@ -134,7 +134,8 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
-			<passed-dialog :visible="showPassed" :equipment="kit" @close="closeDialog()" @submit="submitAfter" :internal-submit="true"></passed-dialog>
+      <passed-dialog :visible="showPassed" :equipment="kit" @close="closeDialog()" :internal-submit="true"></passed-dialog>
+			<!-- <passed-dialog :visible="showPassed" :equipment="kit" @close="closeDialog()" @submit="submitAfter()" :internal-submit="true"></passed-dialog> -->
 		</v-col>
 	</v-row>
 </template>
@@ -168,6 +169,15 @@ export default {
 				{ text: 'Отдано', align: 'end', sortable: false, value: 'date_received_department' },
 				{ text: '', align: 'center', sortable: false, value: 'actions', filterable: false, width: 100}
 			],
+      editedItem: {
+				equipment: null,
+				number_card: null,
+				model: null,
+				date_current_check: null,
+				date_next_check: null,
+				number_document: null,
+				file: null
+			},
 			search: '',
 			gridData: [],
 			gridData1: [],
@@ -236,7 +246,8 @@ export default {
 			checkIndex: -1,
 			kitIndex: -1,
 			overlay: false,
-			showPassed: false
+			showPassed: false,
+      editedIndex: null
 		}
 	},
 	methods: {
@@ -257,8 +268,8 @@ export default {
 			this.kit = Object.assign({}, item);
 			if(!item.is_received_before && !item.is_received_after)
 				this.submitBefore();
-			else if(item.is_received_before && item.is_received_after && !item.is_received_department)
-				this.submitDepartment();
+			else if(item.is_received_before && item.is_received_after && !item.is_received_department);
+				// this.submitDepartment();
 			else if(item.id_status_check === 2 || 3)
 				this.showPassed = true;
 			//else if(item.is_received_before && !item.is_received_after)
@@ -281,6 +292,15 @@ export default {
 				Object.assign(this.gridData1[this.kitIndex], response.data.kit);
 			}).catch(error => (this.param = false, alert(error.response.data.message), this.close()));
 		},
+    selectedEquipment(item){
+			this.editedIndex = this.gridData.indexOf(item);
+			if(item.value) this.$emit('id', this.kit.id_equipment);
+		},
+    editItem(item) {
+			// this.editedIndex = this.gridData.indexOf(item);
+			// this.editedItem = Object.assign({}, item);
+			this.showPassed = true;
+		},
 		submitAfter(data){
 			let prepare = data;
 			let formData = new FormData();
@@ -291,7 +311,7 @@ export default {
 			formData.append('number_document', prepare.number_document);
 			formData.append('file', prepare.file);
 
-			this.$http.post(`/api/equipment/verification/${this.kit.id_checks}/${this.kit.id_kit_row}/after`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+			this.$http.put(`/api/equipment/verification/${this.kit.id_checks}/${this.kit.id_kit_row}/after`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
 			.then(response => {
 				this.closeDialog();
 				Object.assign(this.gridData[this.checkIndex], response.data.check);
@@ -372,6 +392,11 @@ export default {
 	computed: {
 		idDep(){
 			return this.$store.getters.idDepartment;
+		},
+    isTime(){
+			let current = new Date(this.editedItem.date_current_check);
+			let next = new Date(this.editedItem.date_next_check);
+			return current.getUTCFullYear() >= next.getUTCFullYear();
 		},
 		header(){
 			if(this.check.id_status_check === 1) return `№ ${this.check.id} - Отправляемое оборудование`;

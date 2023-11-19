@@ -218,6 +218,7 @@ export default {
 				{ text: 'Отдел', align: 'start', sortable: true, value: 'department', filter: value => {return this.activeFilters.department ? this.activeFilters.department.includes(value) : true}},
 				{ text: 'Вид', align: 'start', sortable: true, value: 'type', filter: value => {return this.activeFilters.type ? this.activeFilters.type.includes(value) : true}},
 				{ text: 'Оборудование', align: 'start', sortable: true, value: 'equipment' },
+				{ text: 'Модель', align: 'start', sortable: true, value: 'model' },
 				{ text: 'С/Н', align: 'end', sortable: true, value: 'serial_number'},
 				{ text: 'Пройденная', align: 'start', sortable: true, value: 'date_current_check',
 			filter: value => {return !this.DateFilters.current_start_date && !this.DateFilters.current_end_date ? true :

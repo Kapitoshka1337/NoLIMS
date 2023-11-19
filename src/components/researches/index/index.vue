@@ -1,328 +1,214 @@
 <template>
-  <body>
-    <el-dialog :visible.sync="printDialog" class="printDialog">
-      <div ref="print">
-        <div class="pages print-page page-a4" size="A4">
-          <header>
-            <div class="BYYR">
-              <div class="uvdc">
-                <p>
-                  Бюджетное Учреждение Удмуртской Республики "Удмуртский
-                  ветеринарно-диагностический центр"
-                </p>
-              </div>
-              <div>
-                <div class="DF">
-                  <p>ДФ.03.23.2019</p>
-                </div>
-                <div class="QMS">
-                  <p>СИСТЕМА МЕНЕДЖМЕНТА КАЧЕСТВА</p>
-                  <p>Документированная форма</p>
-                  <p><b>Направление на испытания</b></p>
-                </div>
-                <div class="page">
-                  <p>Страница 1 из 2</p>
-                </div>
-              </div>
-            </div>
-          </header>
-          <div class="naprav">
-            <div>
-              <p>НАПРАВЛЕНИЕ на испытание от ___________________</p>
-            </div>
-            <div>
-              <div class="sampleSent">
-                <p>
-                  Пробы направил: {{ user }} ________________________________
-                </p>
-                <p class="podpis">подпись фамилия дата</p>
-              </div>
-              <div class="sampleRece">
-                <p>
-                  Пробы принял: ____________________________________________
-                </p>
-                <p class="podpis">подпись фамилия дата</p>
-              </div>
-            </div>
-            <div class="punkt23">
-              <p>2. Направлено в отдел: <input type="text" /></p>
-              <p>3. Информация по исследованиям:</p>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th style="width: 2.5cm">Регистрационный № образца</th>
-                  <th style="width: 3.5cm">Наименование образца</th>
-                  <th style="width: 1.8cm">
-                    Масса (количество) образца (кг, дм3, шт.)
-                  </th>
-                  <th style="width: 4cm">Показатели</th>
-                  <th style="width: 3cm">
-                    НД на метод испытания (№ пункта области аккредитации ИЦ)
-                  </th>
-                  <th style="width: 3cm">
-                    Дата получения образца, фамилия и подпись исполнителя
-                  </th>
-                  <th style="width: 2.5cm">
-                    Результат испытаний, ед. измерения
-                  </th>
-                  <th style="width: 2.5cm">Дата окончания исследования</th>
-                  <th style="width: 3cm">
-                    Фамилия и подпись отвественного за результат
-                  </th>
-                  <th>Дополнительная информация</th>
-                </tr>
-                <tr>
-                  <th>1</th>
-                  <th>2</th>
-                  <th>3</th>
-                  <th>4</th>
-                  <th>5</th>
-                  <th>6</th>
-                  <th>7</th>
-                  <th>8</th>
-                  <th>9</th>
-                  <th>10</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th><input type="text" /></th>
-                  <th><input type="text" /></th>
-                  <th><input type="text" /></th>
-                  <th><input type="text" /></th>
-                  <th><input type="text" /></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </tbody>
-            </table>
-            <div class="punkt23">
-              <p>Примечение <input type="text" /></p>
-              <p>
-                Данные в протокол (по требованию заказчика):
-                <input type="checkbox" /> средства измерения,
-                <input type="checkbox" />
-                эталоны, ГСО
-              </p>
-              <p>Выбор методик:</p>
-              <input type="checkbox" /> За ИЦ <input type="checkbox" /> За
-              заказчиком ___________________________________________________
-              (наименование методик, предложенных заказчиком)
-              <p>
-                Руководитель подразделения, проводишвшего исследования
-                ____________ _______________ _____________
-              </p>
-              <p class="podpis , naprav">подпись фамилия дата</p>
-              <p>
-                Результаты получил ветеринарный врач ОПиРП _______________
-                _________________ ________________
-              </p>
-              <p class="podpis , naprav">подпись фамилия дата</p>
-            </div>
-          </div>
-          <footer>
-            <table>
-              <thead>
-                <tr>
-                  <th style="width: 9.5cm">
-                    Регистрационный № пробы (образца)
-                  </th>
-                  <th style="width: 9.5cm">Показатели</th>
-                  <th style="width: 9.5cm">
-                    Оборудование (№ пункта в списке оборудования ИЦ БУ УР
-                    "УВДЦ")
-                  </th>
-                </tr>
-                <tr>
-                  <th>1</th>
-                  <th>2</th>
-                  <th>3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th>""</th>
-                  <th>""</th>
-                  <th>""</th>
-                </tr>
-              </tbody>
-            </table>
-          </footer>
-        </div>
-      </div>
-    </el-dialog>
-  </body>
+  <v-form>
+    <div>
+      <keep-alive>
+        <!-- <ul>
+          <li>
+            <component
+              v-for="index in object"
+              :key="index"
+              v-bind:is="component"
+            ></component>
+          </li>
+        </ul> -->
+        <v-container class="cont">
+          <v-row class="rowt" align="center" justify="center">
+            <v-col cols="12" md="2">
+              <v-text-field
+                v-model="sample.reg_num"
+                :counter="10"
+                label="Регистрационный номер"
+                required
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-text-field
+                v-model="sample.name"
+                :counter="10"
+                label="Название"
+                required
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="2">
+              <v-text-field
+                v-model="sample.massa"
+                :counter="10"
+                label="Объём \ масса"
+                required
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="1">
+              <v-text-field
+                v-model="sample.SI"
+                :counter="10"
+                label="Указать СИ"
+                required
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="1">
+              <v-text-field
+                v-model="sample.metod"
+                :counter="10"
+                label="Метод выбирает заказчик"
+                required
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-autocomplete
+                v-model="sample.indicator"
+                :counter="10"
+                label="Показатель"
+                required
+                hide-details
+                v-bind:disabled="!users.length"
+                :items="isUsers"
+              ></v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-text-field
+                v-model="sample.note"
+                :counter="10"
+                label="Примечание"
+                required
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+      </keep-alive>
+    </div>
+
+    <!-- <v-btn v-on:click="add()"
+      >Добавить следующий образец в данное направление</v-btn
+    > -->
+    <!-- <v-btn v-on:click="del()"
+      >Убрать последнюю строку в данном направлении</v-btn
+    > -->
+    <v-row align="center" justify="center">
+      <v-col cols="auto">
+        <v-btn @click="submit()" :loading="loading"
+          >Сформировать направление</v-btn
+        ></v-col
+      ></v-row
+    >
+  </v-form>
 </template>
 
-<script>
-// import guide from './../guide/index.vue';
+
+  <script>
+import component from "./component.vue";
 
 export default {
-  // components: {
-  //   guide: guide
-  // },
-  // data () {
-  //   return {
-  //     drawer: false,
-  //     dialogGuide: false
-  //   }
-  // },
-  methods: {
-    logout() {
-      this.$store.dispatch("logout").then(() => {
-        this.$router.push("/login");
-      });
-    },
-    dialogClose(data) {
-      this.dialogGuide = data;
-    },
-    parentEvent(type, forEachNum, newArr, count, pageSize) {
-      this.printNextPage = type
-      this.forEachNum = forEachNum
-      this.testNewData = newArr
-      this.pageCount = count
-      this.pageSize = pageSize
-    },
-    sonEvent(type, newArr, pageSize) {
-      this.printNextPage = type
-      this.testNewData = newArr
-      this.pageSize = pageSize
-    },
-    print() {
-      this.$print(this.$refs.print)
-    },
+  components: {
+    comp: component,
+  },
+  data() {
+    return {
+      component: "comp",
+      object: 1,
+      sample: {
+        reg_num: null,
+        name: null,
+        massa: null,
+        SI: null,
+        metod: null,
+        indicator: null,
+        note: null,
+        user: null,
+      },
+      gridData: [],
+      users: [],
+      dialog: false,
+      editedIndex: -1,
+      loading: false,
+      load: false,
+      overlay: false,
+      changedSamples: {},
+      indentificationData: null,
+      indentificationDataCopy: null,
+    };
   },
   computed: {
     user() {
       return this.$store.getters.name;
     },
-    // idDep(){
-    //   return this.$store.getters.idDepartment;
-    // }
+
+    isUsers() {
+      if (this.users.length) {
+        let obj = [];
+        for (let i in this.users)
+          obj.push({
+            key: this.users[i].name,
+            value: this.users[i].id,
+            text: this.users[i].name,
+          });
+        return obj;
+      }
+    },
+  },
+  methods: {
+    submit() {
+      // if (this.getInternalSubmit) {
+      //   this.$emit("submit", this.passedData);
+      //   this.loading = true;
+      //   return true;
+      // }
+
+      let formData = new FormData();
+      formData.append("reg_num", this.sample.reg_num);
+      formData.append("name", this.sample.name);
+      formData.append("massa", this.sample.massa);
+      formData.append("SI", this.sample.SI);
+      formData.append("metod", this.sample.metod);
+      formData.append("indicator", this.sample.indicator);
+      formData.append("note", this.sample.note);
+      this.loading = true;
+      this.$http
+        .post("/api/direction", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then(
+          (response) => (
+            (this.loading = false),
+            (this.dialog = false),
+            this.getInstructions()
+          )
+        )
+        .catch(
+          (error) => (
+            (this.loading = false), alert(error.response.data.message)
+          )
+        );
+    },
+    add() {
+      this.object++;
+    },
+    del() {
+      this.object--;
+    },
+    getUsers() {
+      this.loading = !this.loading;
+      this.$http
+        .get("/api/structure/indicator")
+        .then(
+          (response) => (
+            (this.users = response.data), (this.loading = !this.loading)
+          )
+        )
+        .catch(
+          (error) => (
+            alert(error.response.data.message), (this.loading = !this.loading)
+          )
+        );
+    },
+  },
+  created() {
+    this.getUsers();
   },
 };
 </script>
-
-<style scoped>
-.printDialog .el-dialog{
-    width: 300mm;
-  }
-  
-  .page-a4{
-    width: 297mm;
-    margin: 10mm;
-    position: relative
-  }
-  
-    .print-page{
-    width: 297mm;
-    height: 210mm;
-    margin: 0 auto;
-    text-align: center;
-    margin-bottom: 14mm;
-    border: 1px solid #bbb;
-    border-bottom: 0;
-  }
-@page {
-  size: A4 landscape;
-  background-image: none;
-  margin: auto;
-  width: 29.7cm;
-}
-
-.pages {
-  size: A4 landscape;
-  display: block;
-  margin: 0 auto;
-  width: 29.7cm;
-  height: 21cm;
-}
-
-.BYYR {
-  width: 29cm;
-  height: 2cm;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  font-size: 3mm;
-}
-
-.uvdc {
-  margin: 0;
-  padding: 0;
-  width: 29cm;
-  height: 5mm;
-  border: 0.5mm solid black;
-}
-
-.DF {
-  width: 2.5cm;
-  height: 1.5cm;
-  border: 0.5mm solid black;
-  border-top-width: 0mm;
-  border-right-width: 0mm;
-  padding-top: 5mm;
-  float: left;
-}
-
-.QMS {
-  width: 22cm;
-  height: 1.5cm;
-  border: 0.5mm solid black;
-  border-top-width: 0mm;
-  float: left;
-}
-
-.QMS p {
-  margin: 0;
-  padding: 0;
-}
-
-.page {
-  width: 4.5cm;
-  height: 1.5cm;
-  border: 0.5mm solid black;
-  border-top-width: 0mm;
-  border-left-width: 0mm;
-  padding-top: 5mm;
-  float: left;
-}
-
-.naprav {
-  text-align: center;
-}
-
-.naprav p {
-  margin: 0;
-  padding: 0;
-}
-
-.sampleSent {
-  float: left;
-}
-
-.sampleRece {
-  float: right;
-}
-
-.punkt23 {
-  clear: both;
-  text-align: left;
-}
-
-table,
-th {
-  border-collapse: collapse;
-  border: 0.5mm solid black;
-  text-align: center;
-  font-size: 3mm;
-}
-
-.podpis {
-  font-size: 2mm;
-}
-</style>

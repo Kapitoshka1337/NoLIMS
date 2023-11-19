@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="drawer" dark app>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="title"> Направление </v-list-item-title>
+          <v-list-item-title class="title"> Исследования </v-list-item-title>
           <v-list-item-subtitle> БУ УР "УВДЦ" </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -11,27 +11,27 @@
       <v-list dense>
         <v-list-item to="/researches">
           <v-list-item-icon>
-            <v-icon color="orange">mdi-view-dashboard</v-icon>
+            <v-icon color="orange">mdi-directions</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Создать направление</v-list-item-title>
         </v-list-item>
-        <v-list-item to="/samples">
+        <v-list-item to="/researches/samples">
           <v-list-item-icon>
-            <v-icon color="orange">mdi-view-dashboard</v-icon>
+            <v-icon color="blue">mdi-database</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Образцы</v-list-item-title>
         </v-list-item>
-        <v-list-item to="/indicator">
+        <v-list-item to="/researches/direction">
           <v-list-item-icon>
-            <v-icon color="orange">mdi-view-dashboard</v-icon>
+            <v-icon color="green">mdi-sign-direction</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Направления</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/researches/indicator">
+          <v-list-item-icon>
+            <v-icon color="red">mdi-view-dashboard</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Показатели</v-list-item-title>
-        </v-list-item>
-        <v-list-item to="/researche">
-          <v-list-item-icon>
-            <v-icon color="orange">mdi-view-dashboard</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Исследования</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>

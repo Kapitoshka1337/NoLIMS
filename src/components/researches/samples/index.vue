@@ -1,280 +1,300 @@
 <template>
-  <body>
-    <div class="pages" size="A4">
-      <header>
-        <div class="BYYR">
-          <div class="uvdc">
-            <p>
-              Бюджетное Учреждение Удмуртской Республики "Удмуртский
-              ветеринарно-диагностический центр"
-            </p>
-          </div>
-          <div>
-            <div class="DF">
-              <p>ДФ.03.23.2019</p>
-            </div>
-            <div class="QMS">
-              <p>СИСТЕМА МЕНЕДЖМЕНТА КАЧЕСТВА</p>
-              <p>Документированная форма</p>
-              <p><b>Направление на испытания</b></p>
-            </div>
-            <div class="page">
-              <p>Страница 1 из 2</p>
-            </div>
-          </div>
-        </div>
-      </header>
-      <div class="naprav">
-        <div>
-          <p>НАПРАВЛЕНИЕ на испытание от ___________________</p>
-        </div>
-        <div>
-          <div class="sampleSent">
-            <p>Пробы направил: __________________________________________</p>
-            <p class="podpis">подпись фамилия дата</p>
-          </div>
-          <div class="sampleRece">
-            <p>Пробы принял: ____________________________________________</p>
-            <p class="podpis">подпись фамилия дата</p>
-          </div>
-        </div>
-        <div class="punkt23">
-          <p>
-            2. Направлено в отдел: __________________________________________
-          </p>
-          <p>3. Информация по исследованиям:</p>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 2.5cm">Регистрационный № образца</th>
-              <th style="width: 3.5cm">Наименование образца</th>
-              <th style="width: 1.8cm">
-                Масса (количество) образца (кг, дм3, шт.)
-              </th>
-              <th style="width: 4cm">Показатели</th>
-              <th style="width: 3cm">
-                НД на метод испытания (№ пункта области аккредитации ИЦ)
-              </th>
-              <th style="width: 3cm">
-                Дата получения образца, фамилия и подпись исполнителя
-              </th>
-              <th style="width: 2.5cm">Результат испытаний, ед. измерения</th>
-              <th style="width: 2.5cm">Дата окончания исследования</th>
-              <th style="width: 3cm">
-                Фамилия и подпись отвественного за результат
-              </th>
-              <th>Дополнительная информация</th>
-            </tr>
-            <tr>
-              <th>1</th>
-              <th>2</th>
-              <th>3</th>
-              <th>4</th>
-              <th>5</th>
-              <th>6</th>
-              <th>7</th>
-              <th>8</th>
-              <th>9</th>
-              <th>10</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>""</th>
-              <th>""</th>
-              <th>""</th>
-              <th>""</th>
-              <th>""</th>
-              <th>""</th>
-              <th>""</th>
-              <th>""</th>
-              <th>""</th>
-              <th>""</th>
-            </tr>
-          </tbody>
-        </table>
-        <div class="punkt23">
-          <p>Примечение ___________________________________________</p>
-          <p>
-            Данные в протокол (по требованию заказчика): - средства измерения,
-            эталоны, ГСО
-          </p>
-          <p>Выбор методик:</p>
-          <input type="checkbox" /> За ИЦ <input type="checkbox" /> За
-          заказчиком ___________________________________________________
-          (наименование методик, предложенных заказчиком)
-          <p>
-            Руководитель подразделения, проводишвшего исследования ____________
-            _______________ _____________
-          </p>
-          <p class="podpis , naprav">подпись фамилия дата</p>
-          <p>
-            Результаты получил ветеринарный врач ОПиРП _______________
-            _________________ ________________
-          </p>
-          <p class="podpis , naprav">подпись фамилия дата</p>
-        </div>
-      </div>
-      <footer>
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 9.5cm">Регистрационный № пробы (образца)</th>
-              <th style="width: 9.5cm">Показатели</th>
-              <th style="width: 9.5cm">
-                Оборудование (№ пункта в списке оборудования ИЦ БУ УР "УВДЦ")
-              </th>
-            </tr>
-            <tr>
-              <th>1</th>
-              <th>2</th>
-              <th>3</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>""</th>
-              <th>""</th>
-              <th>""</th>
-            </tr>
-          </tbody>
-        </table>
-      </footer>
-    </div>
-  </body>
+  <v-row>
+    <v-col cols="12">
+      <v-data-table
+        calculate-widths
+        dense
+        :headers="tableColumn"
+        :items="gridData"
+        :items-per-page="30"
+        :loading="load"
+        :search="search"
+        :footer-props="{
+          showFirstLastPage: true,
+          firstIcon: 'mdi-arrow-collapse-left',
+          lastIcon: 'mdi-arrow-collapse-right',
+          prevIcon: 'mdi-minus',
+          nextIcon: 'mdi-plus',
+          itemsPerPageOptions: [30, 50, 100, -1],
+          itemsPerPageText: 'Отобразить на странице',
+        }"
+      >
+        <template v-slot:top>
+          <v-toolbar flat dense>
+            <v-toolbar-title>Образцы</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-text-field
+              v-model="search"
+              label="Поиск"
+              clearable
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-toolbar>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-btn icon color="blue" @click="editedItem(item)"
+            ><v-icon>mdi-pencil</v-icon></v-btn
+          >
+        </template>
+        <template v-slot:no-data> Пока ничего нет :( </template>
+      </v-data-table>
+    </v-col>
+    <v-dialog dense v-model="dialog" max-width="512">
+      <v-card>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                disabled
+                label="id"
+                v-model="item.id"
+              ></v-text-field>
+              <v-text-field
+                dense
+                outlined
+                clearable
+                label="Номер образца"
+                v-model="item.reg_num"
+              ></v-text-field>
+              <v-text-field
+                dense
+                outlined
+                clearable
+                label="Название образца"
+                v-model="item.name"
+              ></v-text-field>
+              <v-autocomplete
+                dense
+                outlined
+                clearable
+                v-bind:disabled="!users.length"
+                :items="isUsers"
+                label="Зарегестрировал"
+                v-model="item.id_user"
+              ></v-autocomplete>
+              <v-text-field
+                dense
+                outlined
+                clearable
+                label="Дата регистрации"
+                v-model="item.date_current_check"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="success" @click="submit()" :loading="loading">ОК</v-btn>
+          <v-btn color="error" @click="dialog = false">Отмена</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-overlay :value="overlay">
+      <v-progress-circular
+        indeterminate
+        size="64"
+        color="yellow"
+      ></v-progress-circular>
+    </v-overlay>
+  </v-row>
 </template>
 
-<script>
-// import guide from './../guide/index.vue';
-
-// export default {
-//   components: {
-//     guide: guide
-//   },
-//   data () {
-//     return {
-//       drawer: false,
-//       dialogGuide: false
-//     }
-//   },
-//   methods: {
-//     logout(){
-//       this.$store.dispatch('logout').then(() => {
-//       this.$router.push('/login')});
-//     },
-//     dialogClose(data){
-//       this.dialogGuide = data;
-//     }
-//   },
-//   computed: {
-//     user(){
-//       return this.$store.getters.name;
-//     },
-//     idDep(){
-//       return this.$store.getters.idDepartment;
-// 		}
-//   }
-// }
-</script>
-
 <style scoped>
-page {
-  size: A4 landscape;
-  background-image: none;
-  margin: auto;
-  width: 29.7cm;
-}
-
-.pages {
-  size: A4 landscape;
-  display: block;
-  margin: 0 auto;
-  width: 29.7cm;
-  height: 21cm;
-}
-
-.BYYR {
-  width: 29cm;
-  height: 2cm;
-  margin: 0;
+.text {
   padding: 0;
-  text-align: center;
-  font-size: 3mm;
-}
-
-.uvdc {
-  margin: 0;
-  padding: 0;
-  width: 29cm;
-  height: 5mm;
-  border: 0.5mm solid black;
-}
-
-.DF {
-  width: 2.5cm;
-  height: 1.5cm;
-  border: 0.5mm solid black;
-  border-top-width: 0mm;
-  border-right-width: 0mm;
-  padding-top: 5mm;
-  float: left;
-}
-
-.QMS {
-  width: 22cm;
-  height: 1.5cm;
-  border: 0.5mm solid black;
-  border-top-width: 0mm;
-  float: left;
-}
-
-.QMS p {
-  margin: 0;
-  padding: 0;
-}
-
-.page {
-  width: 4.5cm;
-  height: 1.5cm;
-  border: 0.5mm solid black;
-  border-top-width: 0mm;
-  border-left-width: 0mm;
-  padding-top: 5mm;
-  float: left;
-}
-
-.naprav {
-  text-align: center;
-}
-
-.naprav p {
-  margin: 0;
-  padding: 0;
-}
-
-.sampleSent {
-  float: left;
-}
-
-.sampleRece {
-  float: right;
-}
-
-.punkt23 {
-  clear: both;
-  text-align: left;
-}
-
-table,
-th {
-  border-collapse: collapse;
-  border: 0.5mm solid black;
-  text-align: center;
-  font-size: 3mm;
-}
-
-.podpis {
-  font-size: 2mm;
 }
 </style>
+<script>
+export default {
+  data() {
+    return {
+      tableColumn: [
+      {
+          text: "id",
+          align: "start",
+          sortable: true,
+          value: "id",
+        },
+        {
+          text: "Номер образца",
+          align: "start",
+          sortable: true,
+          value: "reg_num",
+        },
+        {
+          text: "Название образца",
+          align: "start",
+          sortable: true,
+          value: "name",
+        },
+        {
+          text: "Зарегистрировал",
+          align: "start",
+          sortable: true,
+          value: "user_name",
+        },
+        {
+          text: "Дата регистрации",
+          align: "start",
+          sortable: true,
+          value: "date_current_check",
+        },
+        { text: "", align: "start", sortable: false, value: "actions" },
+      ],
+      gridData: [],
+      users: [],
+      search: "",
+      item: {
+        id: null,
+        id_user: null,
+        reg_num: null,
+        name: null,
+        user_name: null,
+        date_current_check: null,
+      },
+      defaultItem: {
+        id: null,
+        id_user: null,
+        reg_num: null,
+        name: null,
+        date_current_check: null,
+      },
+      dialog: false,
+      editedIndex: -1,
+      loading: false,
+      load: false,
+      overlay: false,
+      changedItem: {},
+      indentificationData: null,
+      indentificationDataCopy: null,
+    };
+  },
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1
+        ? "Добавление показателя"
+        : "Изменение показателя";
+    },
+    isUsers() {
+      if (this.users.length) {
+        let obj = [];
+        for (let i in this.users)
+          obj.push({
+            key: this.users[i].name,
+            value: this.users[i].id,
+            text: this.users[i].name,
+          });
+        return obj;
+      }
+    },
+  },
+  watch: {
+    dialog(newVal) {
+      if (!newVal) this.item = {};
+    },
+  },
+  indentificationData: {
+    handler: function (val, old) {
+      let ob = this.indentificationDataCopy;
+      let ch = this.changedItem;
+      Object.keys(val.id_roles).forEach(function (row) {
+        if (ob[row] != val.id_roles[row]) ch[row] = val.id_roles[row];
+      });
+    },
+    deep: true,
+  },
+  methods: {
+    getInstructions() {
+      this.load = true;
+      this.$http
+        .get("/api/samples")
+        .then(
+          (response) => ((this.load = false), (this.gridData = response.data))
+        )
+        .catch(
+          (error) => ((this.load = false), alert(error.response.data.message))
+        );
+    },
+    editedItem(item) {
+      this.editedIndex = this.gridData.indexOf(item);
+      this.item = Object.assign({}, item);
+      this.dialog = true;
+    },
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.item = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+    submit() {
+      if (this.editedIndex > -1) {
+        this.loading = true;
+        this.$http
+          .put(`/api/samples/${this.item.id}`, this.item, {
+            headers: { "Content-Type": "application/json" },
+          })
+          .then((response) => {
+            this.loading = false;
+            this.dialog = false;
+            Object.assign(this.gridData[this.editedIndex], this.item);
+            this.close();
+          })
+          .catch(
+            (error) => (
+              (this.loading = false), alert(error.response.data.message)
+            )
+          );
+        location.reload();
+      } else {
+        // let formData = new FormData();
+        // formData.append("name", this.item.name);
+        // formData.append("metod", this.item.metod);
+        // formData.append("id_department", this.item.id_department);
+        // this.loading = true;
+        // this.$http
+        //   .post("/api/samples", formData, {
+        //     headers: { "Content-Type": "multipart/form-data" },
+        //   })
+        //   .then(
+        //     (response) => (
+        //       (this.loading = false),
+        //       (this.dialog = false),
+        //       this.getInstructions()
+        //     )
+        //   )
+        //   .catch(
+        //     (error) => (
+        //       (this.loading = false), alert(error.response.data.message)
+        //     )
+        //   );
+      }
+    },
+    today(date){
+			return date === null || new Date(date).toLocaleString().split(',')[0];
+		},
+    getUsers() {
+      this.loading = !this.loading;
+      this.$http
+        .get("/api/structure/usersON")
+        .then(
+          (response) => (
+            (this.users = response.data), (this.loading = !this.loading)
+          )
+        )
+        .catch(
+          (error) => (
+            alert(error.response.data.message), (this.loading = !this.loading)
+          )
+        );
+    },
+  },
+  created() {
+    this.getInstructions();
+    this.getUsers();
+  },
+};
+</script>

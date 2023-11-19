@@ -63,17 +63,17 @@ export default {
           description: 'Учёт СИ, ИО, ВО',
           link: '/equipment'
         },
+        // {
+        //   id: 3,
+        //   header: 'Направление',
+        //   description: 'Печать направлений на исследования',
+        //   link: '/researches'
+        // },
         {
           id: 3,
-          header: 'Направление',
-          description: 'Печать направлений на исследования',
-          link: '/researches'
-        },
-        {
-          id: 4,
           header: 'Пользователи',
           description: 'Назначение уровня доступа пользователя',
-          link: '/user'
+          link: '/users'
         }
         
       ],

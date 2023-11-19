@@ -70,7 +70,7 @@ export default {
 			}
 
 			let formData = new FormData();
-			formData.append('id_equipment', this.getEquipment.id_equipment || this.getEquipment.id);
+			formData.append('id_equipment', this.getEquipment.id_equipment || this.getEquipment.id || this.kit.id_equipment);
 			formData.append('date_current_check', this.passedData.date_current_check);
 			formData.append('date_next_check', this.passedData.date_next_check);
 			formData.append('id_upload_document_type', this.passedData.id_upload_document_type);
