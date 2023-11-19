@@ -14,25 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('auth')->group(function () {
+Route::prefix('auth')->group(function (){
 	Route::post('login', 'AuthController@login');
 	Route::post('logout', 'AuthController@logout');
 	Route::post('singup', 'AuthController@singup');
 	Route::post('refresh', 'AuthController@refresh');
 });
 
-Route::prefix('structure')->group(function () {
+Route::prefix('structure')->group(function(){
 	Route::get('', 'Structure\StructureController@structure');
 	Route::get('users', 'Structure\StructureController@users');
-	Route::get('department', 'Structure\StructureController@departments');
-	Route::get('indicator', 'Structure\StructureController@indicators');
-	Route::get('role', 'Structure\StructureController@role');
-	Route::get('usersON', 'Structure\StructureController@usersON');
 });
 
-Route::group(['middleware' => ['jwt.verify']], function () {
+Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::prefix('reagent')->group(function () {
-		Route::prefix('storage')->group(function () {
+		Route::prefix('storage')->group(function(){
 			Route::get('', 'Reagent\StorageController@view');
 			Route::get('all', 'Reagent\StorageController@viewAll');
 			Route::post('expenses', 'Reagent\ExpensesController@create');
@@ -40,50 +36,47 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 			Route::put('archive/{id}', 'Reagent\StorageController@toArchive');
 			Route::get('print/{id}', 'Reagent\StorageController@print');
 		});
-		Route::prefix('arrivals')->group(function () {
+		Route::prefix('arrivals')->group(function(){
 			Route::get('', 'Reagent\ArrivalsController@view');
 			Route::post('', 'Reagent\ArrivalsController@create');
 			Route::get('{id}/materials', 'Reagent\ArrivalsController@materials');
 			Route::put('updloc/{id}', 'Reagent\ArrivalsController@updateLocation');
 		});
-		Route::prefix('expenses')->group(function () {
+		Route::prefix('expenses')->group(function(){
 			Route::get('', 'Reagent\ExpensesController@view');
 			Route::post('correct', 'Reagent\ExpensesController@create_correct');
 			Route::post('{id}/renewal', 'Reagent\ExpensesController@renewal');
 		});
-		Route::prefix('writeoff')->group(function () {
+		Route::prefix('writeoff')->group(function(){
 			Route::post('', 'Reagent\WriteoffController@view');
 		});
-		Route::prefix('material')->group(function () {
+		Route::prefix('material')->group(function(){
 			Route::get('', 'Reagent\MaterialController@view');
 		});
-		Route::prefix('moving')->group(function () {
+		Route::prefix('moving')->group(function(){
 			Route::get('', 'Reagent\MovingController@view');
 			Route::post('', 'Reagent\MovingController@create');
 			Route::get('{id}/materials', 'Reagent\MovingController@materials');
 			Route::put('allow/{id}/{from}', 'Reagent\MovingController@allowUpdate');
 			Route::put('deny/{id}', 'Reagent\MovingController@denyUpdate');
 		});
-		Route::prefix('locations')->group(function () {
+		Route::prefix('locations')->group(function(){
 			Route::get('', 'Reagent\LocationController@view');
 			Route::post('', 'Reagent\LocationController@create');
 			Route::put('{id}', 'Reagent\LocationController@update');
 		});
-		Route::prefix('corrections')->group(function () {
+		Route::prefix('corrections')->group(function(){
 			Route::get('', 'Reagent\CorrectionController@view');
 			Route::put('allow/{id}', 'Reagent\CorrectionController@allowUpdate');
 			Route::put('deny/{id}', 'Reagent\CorrectionController@denyUpdate');
 		});
-		Route::prefix('dashboard')->group(function () {
-			Route::get('main', 'Reagent\DashboardController@dashboard');
-		});
 	});
 	Route::prefix('equipment')->group(function () {
-		Route::prefix('metrolog')->group(function () {
+		Route::prefix('metrolog')->group(function(){
 			Route::get('', 'Equipment\MetrologController@view');
 			Route::post('', 'Equipment\EquipmentController@create');
 		});
-		Route::prefix('equipments')->group(function () {
+		Route::prefix('equipments')->group(function(){
 			Route::get('{id}', 'Equipment\EquipmentController@view');
 			Route::post('{id}/passed', 'Equipment\EquipmentController@passed');
 			Route::put('{id}/update', 'Equipment\EquipmentController@update');
@@ -93,7 +86,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 			Route::post('{id}/moving', 'Equipment\EquipmentController@moving');
 			Route::post('maintenance', 'Equipment\EquipmentController@maintenance');
 		});
-		Route::prefix('verification')->group(function () {
+		Route::prefix('verification')->group(function(){
 			Route::get('', 'Equipment\VerificationController@view');
 			Route::post('', 'Equipment\VerificationController@create');
 			Route::get('{id}/equipments', 'Equipment\VerificationController@equipments');
@@ -103,32 +96,31 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 			Route::put('{check}/{id}/before', 'Equipment\VerificationController@before');
 			Route::put('{check}/{id}/after', 'Equipment\VerificationController@after');
 		});
-		Route::prefix('support')->group(function () {
+		Route::prefix('support')->group(function(){
 			Route::get('documents', 'Equipment\SupportController@docType');
 			Route::get('locations', 'Equipment\SupportController@forNewEquipment');
 			Route::get('maintenances', 'Equipment\SupportController@maintenances');
-			Route::get('moving', 'Equipment\SupportController@movingKind');
 			Route::get('today', 'Equipment\SupportController@dashboard');
 		});
-		Route::prefix('instructions')->group(function () {
+		Route::prefix('instructions')->group(function(){
 			Route::get('', 'Equipment\InstructionsController@view');
 			Route::post('', 'Equipment\InstructionsController@create');
 			Route::post('{id}/update', 'Equipment\InstructionsController@update');
 			Route::get('file/{id}', 'Equipment\InstructionsController@download');
 		});
-		Route::prefix('maintenances')->group(function () {
+		Route::prefix('maintenances')->group(function(){
 			Route::get('', 'Equipment\MaintenancesController@view');
 			Route::post('', 'Equipment\MaintenancesController@create');
 			Route::put('{id}', 'Equipment\MaintenancesController@update');
 		});
-		Route::prefix('repair')->group(function () {
+		Route::prefix('repair')->group(function(){
 			Route::get('', 'Equipment\RepairController@view');
 			Route::post('{id}', 'Equipment\RepairController@create');
 			Route::put('{id}/allow', 'Equipment\RepairController@allow');
 			Route::put('{id}/deny', 'Equipment\RepairController@deny');
 			Route::put('{id}/finish', 'Equipment\RepairController@finish');
 		});
-		Route::prefix('printer')->group(function () {
+		Route::prefix('printer')->group(function(){
 			Route::post('sticker', 'Equipment\PrinterController@sticker');
 			Route::post('table', 'Equipment\PrinterController@table');
 			Route::post('protocol', 'Equipment\PrinterController@protocol');
@@ -137,46 +129,35 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 			Route::post('actIgra', 'Equipment\PrinterController@ActIgraEnter');
 		});
 	});
-	Route::prefix('users')->group(function () {
-		Route::get('', 'Users\UsersController@view');
-		Route::post('', 'Users\UsersController@create');
-		Route::put('{id}/update', 'Users\UsersController@update');
+	Route::prefix('gz')->group(function () {
+		Route::prefix('index')->group(function(){
+			Route::get('', 'Gz\IndexController@view');
+			Route::post('', 'Gz\IndexController@create');
+			Route::post('farm', 'Gz\IndexController@create_farm');
+		});
+		Route::prefix('plan')->group(function(){
+			Route::get('{id}', 'Gz\PlanController@view');
+			Route::post('', 'Gz\PlanController@create');
+			Route::post('quarter', 'Gz\PlanController@quarter_create');
+			Route::post('update', 'Gz\PlanController@update');
+		});
+		Route::prefix('animals')->group(function(){
+			Route::get('', 'Gz\AnimalController@view');
+			Route::post('', 'Gz\AnimalController@create');
+			Route::put('{id}', 'Gz\AnimalController@update');
+		});
+		Route::prefix('methods')->group(function(){
+			Route::get('', 'Gz\MethodController@view');
+			Route::post('', 'Gz\MethodController@create');
+			Route::put('{id}', 'Gz\MethodController@update');
+		});
+		Route::prefix('report')->group(function(){
+			Route::get('', 'Gz\ReportController@view');
+		});
+		Route::prefix('support')->group(function(){
+			Route::get('create', 'Gz\SupportController@create');
+			Route::get('ycreate', 'Gz\SupportController@ycreate');
+			Route::get('vetstations', 'Gz\SupportController@vetstations');
+		});
 	});
-	// Ресурсный контроллер для работы с таблицей показателей
-	// Route::resource('indicator', 'Researches\IndicatorController');
-	// Ресурсный контроллер для работы с таблицей образцов
-	// Route::resource('samples', 'Researches\SamplesController');
-	// Ресусрный контроллер для рабты с таблицей направления
-	// Route::resource('direction', 'Researches\DirectionController');
-	// Route::prefix('gz')->group(function () {
-	// 	Route::prefix('index')->group(function(){
-	// 		Route::get('', 'Gz\IndexController@view');
-	// 		Route::post('', 'Gz\IndexController@create');
-	// 		Route::post('farm', 'Gz\IndexController@create_farm');
-	// 	});
-	// 	Route::prefix('plan')->group(function(){
-	// 		Route::get('{id}', 'Gz\PlanController@view');
-	// 		Route::post('', 'Gz\PlanController@create');
-	// 		Route::post('quarter', 'Gz\PlanController@quarter_create');
-	// 		Route::post('update', 'Gz\PlanController@update');
-	// 	});
-	// 	Route::prefix('animals')->group(function(){
-	// 		Route::get('', 'Gz\AnimalController@view');
-	// 		Route::post('', 'Gz\AnimalController@create');
-	// 		Route::put('{id}', 'Gz\AnimalController@update');
-	// 	});
-	// 	Route::prefix('methods')->group(function(){
-	// 		Route::get('', 'Gz\MethodController@view');
-	// 		Route::post('', 'Gz\MethodController@create');
-	// 		Route::put('{id}', 'Gz\MethodController@update');
-	// 	});
-	// 	Route::prefix('report')->group(function(){
-	// 		Route::get('', 'Gz\ReportController@view');
-	// 	});
-	// 	Route::prefix('support')->group(function(){
-	// 		Route::get('create', 'Gz\SupportController@create');
-	// 		Route::get('ycreate', 'Gz\SupportController@ycreate');
-	// 		Route::get('vetstations', 'Gz\SupportController@vetstations');
-	// 	});
-	// });
 });

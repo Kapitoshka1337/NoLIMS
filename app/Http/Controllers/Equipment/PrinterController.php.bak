@@ -124,7 +124,7 @@ class PrinterController extends Controller
 		$output2 = public_path() . "\downloads";
 		$options = [
 			'format' => ['pdf'],
-			'params' => ['id_eq' => 'id = '. $ids ],
+			'params' => ['id_eq' => 'id = '. $ids ];
 			'db_connection' => [
 				'driver' => 'generic',
 				'host' => env('DB_HOST'),
@@ -140,32 +140,5 @@ class PrinterController extends Controller
 		$jasper->process($input, $output, $options)->execute();
 		// Изменить имя файла *.jasper / вместо * указать своё имя файла
 		return response()->download($output2 . '\act.pdf')->deleteFileAfterSend();
-	}
-
-	public function ActIgraEnter (Request $req)
-	{
-		$ids = implode(",", $req->input('item'));
-		// Изменить имя файла *.jasper / вместо * указать своё имя файла
-		$input = public_path() . '/template/actIgra.jasper';
-		$output = public_path() . '/downloads/';
-		$output2 = public_path() . "\downloads";
-		$options = [
-			'format' => ['pdf'],
-			'params' => ['id_eq' => 'id = '. $ids ],
-			'db_connection' => [
-				'driver' => 'generic',
-				'host' => env('DB_HOST'),
-				'port' => env('DB_PORT'),
-				'database' => env('DB_DATABASE'),
-				'username' => env('DB_USERNAME'),
-				'password' => env('DB_PASSWORD'),
-				'jdbc_driver' => env('JDBC_DRIVER'),
-				'jdbc_url' => env('JDBC_URL')
-			]
-		];
-		$jasper = new PHPJasper;
-		$jasper->process($input, $output, $options)->execute();
-		// Изменить имя файла *.jasper / вместо * указать своё имя файла
-		return response()->download($output2 . '\actIgra.pdf')->deleteFileAfterSend();
 	}
 }

@@ -13,6 +13,8 @@ use App\Models\Equipment\equipment_list_maintenance;
 use App\Models\Equipment\equipment_total_check;
 use App\Models\Share\location;
 use App\Models\Share\department;
+use App\Models\Equipment\moving_kind;
+use App\Models\Equipment\moving_type;
 
 class SupportController extends Controller
 {
@@ -38,10 +40,14 @@ class SupportController extends Controller
 
 	public function forNewEquipment()
 	{
-		return response()->json(array('locations' => location::get(), 'department' => department::get(), 'type' => equipment_type::get()), 200);
+		return response()->json(array(
+			'locations' => location::get(), 
+			'department' => department::get(), 
+			'type' => equipment_type::get()
+		), 200);
 	}
 
-	public function maintenances()
+	public function services()
 	{
 		$eq = array(
 			'executor' => equipment_executor::get(),
@@ -54,5 +60,10 @@ class SupportController extends Controller
 	public function dashboard()
 	{
 		return response()->json(equipment_total_check::whereBetween('date_next_check', [date('Y-m-01'), date('Y-m-t')])->get() ,200);
+	}
+
+	public function movingKind()
+	{
+		return response()->json(moving_kind::with('types')->get());
 	}
 }
